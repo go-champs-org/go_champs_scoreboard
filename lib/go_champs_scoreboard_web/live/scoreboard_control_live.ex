@@ -1,6 +1,5 @@
 defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
   alias GoChampsScoreboard.Games.Games
-  alias GoChampsScoreboard.GameTickerSupervisor
   alias GoChampsScoreboardWeb.Components.Modals
   use GoChampsScoreboardWeb, :live_view
   require Logger
@@ -93,7 +92,6 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
   end
 
   def handle_event("start-live-mode", _, socket) do
-    GameTickerSupervisor.start_game_ticker(socket.assigns.game_state.result.id)
     {:noreply, socket}
   end
 

@@ -65,10 +65,6 @@ defmodule Components.BasketballControls.Game do
     ~H"""
     <div class="columns is-multiline">
       <div class="column is-12">
-        <button class="button" phx-click="start-live-mode">
-          Start live
-        </button>
-
         <button class="button">
           Undo
         </button>
@@ -98,7 +94,9 @@ defmodule Components.BasketballControls.Game do
   def away_team_totals(assigns) do
     ~H"""
     <div class="columns is-multiline">
-      <div class="column is-12"></div>
+      <div class="column is-12">
+        <Components.BasketballControls.Game.live_controls game_state={@game_state} />
+      </div>
 
       <div class="column is-12">
         <button class="button is-large">
@@ -114,6 +112,20 @@ defmodule Components.BasketballControls.Game do
         </button>
       </div>
     </div>
+    """
+  end
+
+  def live_controls(assigns) do
+    ~H"""
+    <div class="live-mode"></div>
+
+    <button class="button" phx-click="start-live-mode">
+      Start live
+    </button>
+
+    <button class="button" phx-click="end-live-mode">
+      End live
+    </button>
     """
   end
 

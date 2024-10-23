@@ -6,7 +6,11 @@ defmodule Components.BasketballControls.Modals do
   def add_new_player(assigns) do
     ~H"""
     <GoChampsScoreboardWeb.CoreComponents.modal id={@id} state={@state}>
-      <.form for={@form_add_new_player} class="form" phx-submit="add-player-to-team">
+      <.form
+        for={@form_add_new_player}
+        class="form"
+        phx-submit="add-player-to-team"
+      >
         <header class="modal-card-head">
           <p class="modal-card-title">Add player to <%= @selected_team %></p>
         </header>

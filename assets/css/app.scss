@@ -13,3 +13,22 @@
 @use "../../node_modules/bulma/sass/elements/content";
 @use "../../node_modules/bulma/sass/elements/table";
 @use "../../node_modules/bulma/sass/elements/title";
+
+.live-mode {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: rgb(5, 193, 58);
+    filter: blur(3px);
+    animation: grow-shrink 1s ease-in-out infinite;
+}
+
+@keyframes grow-shrink {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
