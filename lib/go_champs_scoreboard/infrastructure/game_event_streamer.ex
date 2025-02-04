@@ -1,4 +1,4 @@
-defmodule GoChampsScoreboard.Infrastructure.GameEventsListener do
+defmodule GoChampsScoreboard.Infrastructure.GameEventStreamer do
   use GenServer
   alias GoChampsScoreboard.Infrastructure.Stream.{PayloadBuilder, Publisher}
   alias GoChampsScoreboard.Events.StreamConfigs
@@ -36,6 +36,6 @@ defmodule GoChampsScoreboard.Infrastructure.GameEventsListener do
   end
 
   defp via_tuple(game_id) do
-    {:via, Registry, {GoChampsScoreboard.Infrastructure.GameEventsListenerRegistry, game_id}}
+    {:via, Registry, {GoChampsScoreboard.Infrastructure.GameEventStreamerRegistry, game_id}}
   end
 end

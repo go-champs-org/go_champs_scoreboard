@@ -1,7 +1,7 @@
-defmodule GoChampsScoreboard.Infrastructure.GameEventsListenerSupervisor do
+defmodule GoChampsScoreboard.Infrastructure.GameEventStreamerSupervisor do
   use DynamicSupervisor
 
-  @behaviour GoChampsScoreboard.Infrastructure.GameEventsListenerSupervisorBehavior
+  @behaviour GoChampsScoreboard.Infrastructure.GameEventStreamerSupervisorBehavior
 
   @two_days_in_milliseconds 172_800_000
 
@@ -15,10 +15,10 @@ defmodule GoChampsScoreboard.Infrastructure.GameEventsListenerSupervisor do
   end
 
   @impl true
-  def start_game_events_listener(game_id) do
+  def start_game_event_streamer(game_id) do
     child_spec = %{
       id: game_id,
-      start: {GoChampsScoreboard.Infrastructure.GameEventsListener, :start_link, [game_id]},
+      start: {GoChampsScoreboard.Infrastructure.GameEventStreamer, :start_link, [game_id]},
       type: :worker,
       restart: :transient,
       shutdown: @two_days_in_milliseconds
@@ -28,7 +28,7 @@ defmodule GoChampsScoreboard.Infrastructure.GameEventsListenerSupervisor do
   end
 
   @impl true
-  def check_game_events_listener(game_id) do
+  def check_game_event_streamer(game_id) do
     children = DynamicSupervisor.which_children(__MODULE__)
 
     case Enum.find(children, fn {id, _, _, _} -> id == game_id end) do
@@ -38,8 +38,8 @@ defmodule GoChampsScoreboard.Infrastructure.GameEventsListenerSupervisor do
   end
 
   @impl true
-  def stop_game_events_listener(game_id) do
-    case Registry.lookup(GoChampsScoreboard.Infrastructure.GameEventsListenerRegistry, game_id) do
+  def stop_game_event_streamer(game_id) do
+    case Registry.lookup(GoChampsScoreboard.Infrastructure.GameEventStreamerRegistry, game_id) do
       [{pid, _}] ->
         :ok = GenServer.call(pid, :process_pending_messages)
         DynamicSupervisor.terminate_child(__MODULE__, pid)
@@ -49,8 +49,8 @@ defmodule GoChampsScoreboard.Infrastructure.GameEventsListenerSupervisor do
     end
   end
 
-  def stop_all_game_events_listeners do
-    Registry.select(GoChampsScoreboard.Infrastructure.GameEventsListenerRegistry, [
+  def stop_all_game_event_streamers do
+    Registry.select(GoChampsScoreboard.Infrastructure.GameEventStreamerRegistry, [
       {{:"$1", :"$2", :"$3"}, [], [:"$1"]}
     ])
     |> Enum.each(fn pid ->
