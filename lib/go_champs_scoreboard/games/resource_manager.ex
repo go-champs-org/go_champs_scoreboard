@@ -4,6 +4,7 @@ defmodule GoChampsScoreboard.Games.ResourceManager do
   """
   @behaviour GoChampsScoreboard.Games.ResourceManagerBehavior
 
+  alias GoChampsScoreboard.Infrastructure.GameCaptureTemporalStatsSupervisor
   alias GoChampsScoreboard.Infrastructure.GameEventStreamerSupervisor
   alias GoChampsScoreboard.Infrastructure.GameTickerSupervisor
 
@@ -12,7 +13,8 @@ defmodule GoChampsScoreboard.Games.ResourceManager do
   def check_and_restart(
         game_id,
         game_event_streamer_supervisor \\ GameEventStreamerSupervisor,
-        game_ticker_supervisor \\ GameTickerSupervisor
+        game_ticker_supervisor \\ GameTickerSupervisor,
+        game_capture_temporal_stats_supervisor \\ GameCaptureTemporalStatsSupervisor
       ) do
     case game_event_streamer_supervisor.check_game_event_streamer(game_id) do
       {:error, :not_found} ->
@@ -29,6 +31,14 @@ defmodule GoChampsScoreboard.Games.ResourceManager do
       _ ->
         :ok
     end
+
+    case game_capture_temporal_stats_supervisor.check_game_capture_temporal_stats(game_id) do
+      {:error, :not_found} ->
+        game_capture_temporal_stats_supervisor.start_game_capture_temporal_stats(game_id)
+
+      _ ->
+        :ok
+    end
   end
 
   @impl true
@@ -36,10 +46,12 @@ defmodule GoChampsScoreboard.Games.ResourceManager do
   def start_up(
         game_id,
         game_event_streamer_supervisor \\ GameEventStreamerSupervisor,
-        game_ticker_supervisor \\ GameTickerSupervisor
+        game_ticker_supervisor \\ GameTickerSupervisor,
+        game_capture_temporal_stats_supervisor \\ GameCaptureTemporalStatsSupervisor
       ) do
     game_event_streamer_supervisor.start_game_event_streamer(game_id)
     game_ticker_supervisor.start_game_ticker(game_id)
+    game_capture_temporal_stats_supervisor.start_game_capture_temporal_stats(game_id)
 
     :ok
   end
@@ -49,8 +61,10 @@ defmodule GoChampsScoreboard.Games.ResourceManager do
   def shut_down(
         game_id,
         game_event_streamer_supervisor \\ GameEventStreamerSupervisor,
-        game_ticker_supervisor \\ GameTickerSupervisor
+        game_ticker_supervisor \\ GameTickerSupervisor,
+        game_capture_temporal_stats_supervisor \\ GameCaptureTemporalStatsSupervisor
       ) do
+    game_capture_temporal_stats_supervisor.stop_game_capture_temporal_stats(game_id)
     game_event_streamer_supervisor.stop_game_event_streamer(game_id)
     game_ticker_supervisor.stop_game_ticker(game_id)
 
