@@ -1,5 +1,6 @@
 defmodule GoChampsScoreboard.Infrastructure.GameCaptureTemporalStats do
   use GenServer
+  alias GoChampsScoreboard.Games.TemporalStats
   alias GoChampsScoreboard.Games.Messages.PubSub
 
   def start_link(game_id) do
@@ -13,11 +14,13 @@ defmodule GoChampsScoreboard.Infrastructure.GameCaptureTemporalStats do
   end
 
   def handle_info(
-        {:game_reacted_to_event, %{event: event, game_state: game_state} = _payload},
+        {:game_reacted_to_event, %{event: event, game_state: game_state}},
         state
       ) do
-    IO.inspect(game_state)
-    IO.inspect(event)
+    if event.impact_temporal_stats do
+      TemporalStats.handle(game_state)
+    end
+
     {:noreply, state}
   end
 
