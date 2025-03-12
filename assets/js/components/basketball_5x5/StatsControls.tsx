@@ -2,8 +2,10 @@ import React from 'react';
 import { PlayerSelection } from './Main';
 import debounce from '../../debounce';
 import { invokeButtonClickRef } from '../../shared/invokeButtonClick';
+import { ViewSettingsState } from '../../types';
 
 interface StatsControlsProps {
+  viewSettings: ViewSettingsState;
   pushEvent: (event: string, payload: any) => void;
   playerSelection: PlayerSelection;
   selectPlayer: (playerSelection: PlayerSelection | null) => void;
@@ -13,6 +15,7 @@ function StatsControls({
   pushEvent,
   playerSelection,
   selectPlayer,
+  viewSettings,
 }: StatsControlsProps) {
   const buttonRefs = {
     '1': React.useRef<HTMLButtonElement>(null),
@@ -93,39 +96,43 @@ function StatsControls({
             +3 PTS
           </button>
         </div>
-        <div className="column is-4 has-text-centered">
-          <button
-            ref={buttonRefs.q}
-            className="button is-tall is-danger"
-            onClick={() => onStatUpdate('free_throws_missed')}
-            disabled={buttonsDisabled}
-          >
-            <span className="shortcut">Q</span>
-            Miss 1 PT
-          </button>
-        </div>
-        <div className="column is-4 has-text-centered">
-          <button
-            ref={buttonRefs.w}
-            className="button is-tall is-danger"
-            onClick={() => onStatUpdate('field_goals_missed')}
-            disabled={buttonsDisabled}
-          >
-            <span className="shortcut">W</span>
-            Miss 2 PTS
-          </button>
-        </div>
-        <div className="column is-4 has-text-centered">
-          <button
-            ref={buttonRefs.e}
-            className="button is-tall is-danger"
-            onClick={() => onStatUpdate('three_point_field_goals_missed')}
-            disabled={buttonsDisabled}
-          >
-            <span className="shortcut">E</span>
-            Miss 3 PTS
-          </button>
-        </div>
+        {viewSettings.view === 'basketball-medium' && (
+          <>
+            <div className="column is-4 has-text-centered">
+              <button
+                ref={buttonRefs.q}
+                className="button is-tall is-danger"
+                onClick={() => onStatUpdate('free_throws_missed')}
+                disabled={buttonsDisabled}
+              >
+                <span className="shortcut">Q</span>
+                Miss 1 PT
+              </button>
+            </div>
+            <div className="column is-4 has-text-centered">
+              <button
+                ref={buttonRefs.w}
+                className="button is-tall is-danger"
+                onClick={() => onStatUpdate('field_goals_missed')}
+                disabled={buttonsDisabled}
+              >
+                <span className="shortcut">W</span>
+                Miss 2 PTS
+              </button>
+            </div>
+            <div className="column is-4 has-text-centered">
+              <button
+                ref={buttonRefs.e}
+                className="button is-tall is-danger"
+                onClick={() => onStatUpdate('three_point_field_goals_missed')}
+                disabled={buttonsDisabled}
+              >
+                <span className="shortcut">E</span>
+                Miss 3 PTS
+              </button>
+            </div>
+          </>
+        )}
         <div className="column is-4 has-text-centered">
           <button
             ref={buttonRefs.a}

@@ -30,6 +30,7 @@ defmodule GoChampsScoreboard.Games.GamesTest do
       set_test_game()
       # Let's say teams have been updated in Go Champs
       set_go_champs_api_respose("Go champs updated away team", "Go champs updated home team")
+      set_go_champs_view_setting_api_response()
 
       result_game_state = Games.find_or_bootstrap("some-game-id", "token")
 
@@ -67,6 +68,7 @@ defmodule GoChampsScoreboard.Games.GamesTest do
   describe "find_or_bootstrap/1 when game is not set" do
     test "bootstraps game from go champs, store it and returns it" do
       set_go_champs_api_respose()
+      set_go_champs_view_setting_api_response()
 
       result_game_state = Games.find_or_bootstrap("some-game-id", "token")
 
@@ -207,6 +209,18 @@ defmodule GoChampsScoreboard.Games.GamesTest do
     expect(@http_client, :get, fn url, headers ->
       assert url =~ "some-game-id"
       assert headers == [{"Authorization", "Bearer token"}]
+
+      {:ok, %HTTPoison.Response{body: response_body |> Poison.encode!(), status_code: 200}}
+    end)
+  end
+
+  defp set_go_champs_view_setting_api_response() do
+    response_body = %{
+      "data" => nil
+    }
+
+    expect(@http_client, :get, fn url ->
+      assert url =~ "some-game-id/scoreboard-setting"
 
       {:ok, %HTTPoison.Response{body: response_body |> Poison.encode!(), status_code: 200}}
     end)

@@ -19,6 +19,18 @@ defmodule GoChampsScoreboard.ApiClient do
     |> handle_response()
   end
 
+  def get_scoreboard_setting(game_id, config \\ system_config()) do
+    url = Keyword.get(config, :url, "") <> @games_path <> "/" <> game_id <> "/scoreboard-setting"
+    http_client = Keyword.get(config, :http_client)
+
+    Logger.info("[Get Game Scoreboard Setting]: From Go Champs Api", url: url)
+
+    url
+    |> http_client.get()
+    |> log()
+    |> handle_response()
+  end
+
   defp log(response) do
     Logger.info("[Get Game]: Response from Go Champs Api", response: response)
     response

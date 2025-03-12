@@ -3,6 +3,7 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
   alias GoChampsScoreboard.Games.Models.PlayerState
   alias GoChampsScoreboard.Games.Models.GameClockState
   alias GoChampsScoreboard.Games.Models.LiveState
+  alias GoChampsScoreboard.Games.Models.ViewSettingsState
 
   @type t :: %__MODULE__{
           id: String.t(),
@@ -10,9 +11,18 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
           home_team: TeamState,
           sport_id: String.t(),
           clock_state: GameClockState,
-          live_state: LiveState
+          live_state: LiveState,
+          view_settings_state: ViewSettingsState
         }
-  defstruct [:id, :away_team, :home_team, :clock_state, :sport_id, :live_state]
+  defstruct [
+    :id,
+    :away_team,
+    :home_team,
+    :clock_state,
+    :sport_id,
+    :live_state,
+    :view_settings_state
+  ]
 
   @spec new(
           String.t(),
@@ -20,16 +30,26 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
           TeamState.t(),
           GameClockState.t(),
           LiveState.t(),
-          String.t()
+          String.t(),
+          ViewSettingsState.t()
         ) :: t()
-  def new(id, away_team, home_team, clock_state, live_state, sport_id \\ "basketball") do
+  def new(
+        id,
+        away_team,
+        home_team,
+        clock_state,
+        live_state,
+        sport_id \\ "basketball",
+        view_settings_state \\ ViewSettingsState.new()
+      ) do
     %__MODULE__{
       id: id,
       away_team: away_team,
       home_team: home_team,
       clock_state: clock_state,
       sport_id: sport_id,
-      live_state: live_state
+      live_state: live_state,
+      view_settings_state: view_settings_state
     }
   end
 
@@ -44,7 +64,8 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
           players: [%PlayerState{}]
         },
         clock_state: %GameClockState{},
-        live_state: %LiveState{}
+        live_state: %LiveState{},
+        view_settings_state: %ViewSettingsState{}
       }
     )
   end

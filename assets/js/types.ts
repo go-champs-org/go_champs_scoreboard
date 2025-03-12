@@ -30,6 +30,10 @@ export interface LiveState {
   state: 'not_started' | 'in_progress' | 'ended';
 }
 
+export interface ViewSettingsState {
+  view: 'basketball-medium' | 'basketball-basic';
+}
+
 export interface GameState {
   id: string;
   away_team: TeamState;
@@ -37,6 +41,7 @@ export interface GameState {
   sport_id: string;
   clock_state: GameClockState;
   live_state: LiveState;
+  view_settings_state: ViewSettingsState;
 }
 
 export type TeamType = 'home' | 'away';
@@ -64,5 +69,8 @@ export const DEFAULT_GAME_STATE = {
   },
   live_state: {
     state: 'not_started',
+  },
+  view_settings_state: {
+    view: 'basketball-medium',
   },
 } as GameState;

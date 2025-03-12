@@ -22,6 +22,48 @@ interface MainProps extends LiveReactBase {
   game_state: GameState;
 }
 
+interface TopControlsProps {
+  game_state: GameState;
+  pushEvent: (event: string, payload: any) => void;
+}
+
+function TopControls({ game_state, pushEvent }: TopControlsProps) {
+  if (game_state.view_settings_state.view === 'basketball-basic') {
+    return (
+      <div className="columns is-multiline">
+        <div className="column is-6">
+          <TeamControls team={game_state.away_team} teamType="away" />
+        </div>
+        <div className="column is-6">
+          <TeamControls team={game_state.home_team} teamType="home" />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="columns is-multiline">
+      <div className="column is-4">
+        <TeamControls team={game_state.away_team} teamType="away" />
+      </div>
+
+      <div className="column is-4">
+        <ClockControls
+          clock_state={game_state.clock_state}
+          live_state={game_state.live_state}
+          pushEvent={pushEvent}
+        />
+      </div>
+
+      <div className="column is-4">
+        <div className="panel">
+          <TeamControls team={game_state.home_team} teamType="home" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Main({ game_state, pushEvent }: MainProps) {
   const [playerSelection, setPlayerSelection] = useState<PlayerSelection>(null);
   const showEndLiveModal = game_state.live_state.state === 'ended';
@@ -31,22 +73,8 @@ function Main({ game_state, pushEvent }: MainProps) {
       <TopLevel game_state={game_state} pushEvent={pushEvent} />
 
       <div className="columns is-multiline">
-        <div className="column is-4">
-          <TeamControls team={game_state.away_team} teamType="away" />
-        </div>
-
-        <div className="column is-4">
-          <ClockControls
-            clock_state={game_state.clock_state}
-            live_state={game_state.live_state}
-            pushEvent={pushEvent}
-          />
-        </div>
-
-        <div className="column is-4">
-          <div className="panel">
-            <TeamControls team={game_state.home_team} teamType="home" />
-          </div>
+        <div className="column is-12">
+          <TopControls game_state={game_state} pushEvent={pushEvent} />
         </div>
 
         <div className="column is-4">
@@ -64,6 +92,7 @@ function Main({ game_state, pushEvent }: MainProps) {
             playerSelection={playerSelection}
             pushEvent={pushEvent}
             selectPlayer={setPlayerSelection}
+            viewSettings={game_state.view_settings_state}
           />
         </div>
 

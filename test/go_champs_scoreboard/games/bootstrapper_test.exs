@@ -95,6 +95,11 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
         "live_state" => "ended"
       }
     }
+    @response_setting_body %{
+      "data" => %{
+        "view" => "basketball-basic"
+      }
+    }
 
     test "maps game id" do
       expect(@http_client, :get, fn url, headers ->
@@ -102,6 +107,12 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
         assert headers == [{"Authorization", "Bearer token"}]
 
         {:ok, %HTTPoison.Response{body: @response_body |> Poison.encode!(), status_code: 200}}
+      end)
+
+      expect(@http_client, :get, fn url ->
+        assert url =~ "game-id/scoreboard-setting"
+
+        {:ok, %HTTPoison.Response{body: %{"data" => nil} |> Poison.encode!(), status_code: 200}}
       end)
 
       game =
@@ -169,6 +180,34 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
       assert game.home_team.total_player_stats == %{}
 
       assert game.live_state.state == :ended
+      assert game.sport_id == "basketball"
+      assert game.view_settings_state.view == "basketball-medium"
+    end
+
+    test "maps game and view settings" do
+      expect(@http_client, :get, fn url, headers ->
+        assert url =~ "game-id"
+        assert headers == [{"Authorization", "Bearer token"}]
+
+        {:ok, %HTTPoison.Response{body: @response_body |> Poison.encode!(), status_code: 200}}
+      end)
+
+      expect(@http_client, :get, fn url ->
+        assert url =~ "game-id/scoreboard-setting"
+
+        {:ok,
+         %HTTPoison.Response{body: @response_setting_body |> Poison.encode!(), status_code: 200}}
+      end)
+
+      game =
+        Bootstrapper.bootstrap_from_go_champs(
+          GoChampsScoreboard.Games.Bootstrapper.bootstrap(),
+          "game-id",
+          "token"
+        )
+
+      assert game.sport_id == "basketball"
+      assert game.view_settings_state.view == "basketball-basic"
     end
   end
 end

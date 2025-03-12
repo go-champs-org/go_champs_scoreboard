@@ -5,6 +5,7 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
   alias GoChampsScoreboard.Games.Models.GameState
   alias GoChampsScoreboard.Games.Models.PlayerState
   alias GoChampsScoreboard.Games.Models.TeamState
+  alias GoChampsScoreboard.Games.Models.ViewSettingsState
 
   @mock_initial_period_time 600
 
@@ -22,11 +23,13 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
   def bootstrap_from_go_champs(game, game_id, token) do
     {:ok, game_response} = ApiClient.get_game(game_id, token)
 
+    {:ok, view_settings_response} = ApiClient.get_scoreboard_setting(game_id)
+
     game
-    |> map_game_response_to_game(game_response)
+    |> map_game_response_to_game(game_response, view_settings_response)
   end
 
-  defp map_game_response_to_game(game_state, game_data) do
+  defp map_game_response_to_game(game_state, game_data, view_settings_data) do
     game_response = game_data["data"]
     away_team = map_api_team_to_team(game_response["away_team"])
     home_team = map_api_team_to_team(game_response["home_team"])
@@ -37,7 +40,17 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
 
     live_state = map_live_state(game_response["live_state"])
 
-    GameState.new(game_id, away_team, home_team, clock_state, live_state)
+    view_settings_state = map_view_settings_state(view_settings_data["data"])
+
+    GameState.new(
+      game_id,
+      away_team,
+      home_team,
+      clock_state,
+      live_state,
+      "basketball",
+      view_settings_state
+    )
   end
 
   defp map_api_team_to_team(team) do
@@ -62,6 +75,17 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
       "in_progress" -> LiveState.new(:in_progress)
       "ended" -> LiveState.new(:ended)
       _ -> LiveState.new(:not_started)
+    end
+  end
+
+  defp map_view_settings_state(view_settings_data) do
+    case view_settings_data do
+      nil ->
+        ViewSettingsState.new()
+
+      data ->
+        view = Map.get(data, "view", "basketball-medium")
+        ViewSettingsState.new(view)
     end
   end
 end
