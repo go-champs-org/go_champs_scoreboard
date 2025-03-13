@@ -4,7 +4,11 @@ import debounce from '../../debounce';
 import { invokeButtonClickRef } from '../../shared/invokeButtonClick';
 import { ViewSettingsState } from '../../types';
 
-function MediumBasicStatsButtons({ buttonRefs, onStatUpdate, buttonsDisabled }) {
+function MediumBasicStatsButtons({
+  buttonRefs,
+  onStatUpdate,
+  buttonsDisabled,
+}) {
   return (
     <div className="columns is-multiline">
       <div className="column is-4 has-text-centered">
@@ -257,7 +261,7 @@ function BasicStatsButtons({ buttonRefs, onStatUpdate, buttonsDisabled }) {
         </button>
       </div>
     </div>
-  )
+  );
 }
 
 interface StatsControlsProps {
@@ -320,11 +324,18 @@ function StatsControls({
   return (
     <div className="controls">
       {viewSettings.view === 'basketball-basic' ? (
-        <BasicStatsButtons buttonRefs={buttonRefs} onStatUpdate={onStatUpdate} buttonsDisabled={buttonsDisabled} />
+        <BasicStatsButtons
+          buttonRefs={buttonRefs}
+          onStatUpdate={onStatUpdate}
+          buttonsDisabled={buttonsDisabled}
+        />
       ) : (
-        <MediumBasicStatsButtons buttonRefs={buttonRefs} onStatUpdate={onStatUpdate} buttonsDisabled={buttonsDisabled} />
-      )
-      }
+        <MediumBasicStatsButtons
+          buttonRefs={buttonRefs}
+          onStatUpdate={onStatUpdate}
+          buttonsDisabled={buttonsDisabled}
+        />
+      )}
     </div>
   );
 }

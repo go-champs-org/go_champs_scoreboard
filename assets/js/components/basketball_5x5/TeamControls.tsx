@@ -44,7 +44,6 @@ export function BasicTeamControls({ team, teamType }: TeamControlsProps) {
               </div>
             </div>
             <div className="column is-3">
-
               <div className="team-stat">
                 <p className="stat-label">STLs:</p>
                 <p className="stat-value">
@@ -53,9 +52,7 @@ export function BasicTeamControls({ team, teamType }: TeamControlsProps) {
               </div>
             </div>
 
-
             <div className="column is-3">
-
               <div className="team-stat">
                 <p className="stat-label">BLKs:</p>
                 <p className="stat-value">
@@ -67,7 +64,7 @@ export function BasicTeamControls({ team, teamType }: TeamControlsProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function TeamControls({ team, teamType }: TeamControlsProps) {

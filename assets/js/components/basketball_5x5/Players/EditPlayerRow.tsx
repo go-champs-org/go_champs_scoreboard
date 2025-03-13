@@ -84,17 +84,132 @@ interface EditPlayerRowProps {
   pushEvent: (event: string, data: any) => void;
 }
 
-function EditPlayerRow({ player, teamType, pushEvent }: EditPlayerRowProps) {
+export function BasicEditPlayerRow({
+  player,
+  teamType,
+  pushEvent,
+}: EditPlayerRowProps) {
   const onUpdatePlayerNumber = (value: string) => {
     pushEvent('update-player-in-team', {
       ['team-type']: teamType,
       player: { ...player, number: value },
     });
   };
-  const onUpdatePlayerName = (value: string) => {
+  const onRemovePlayer = () => {
+    pushEvent('remove-player-in-team', {
+      ['team-type']: teamType,
+      ['player-id']: player.id,
+    });
+  };
+  return (
+    <tr key={player.id}>
+      <td
+        style={{
+          maxWidth: '30px',
+          width: '30px',
+        }}
+      >
+        <FormField
+          initialValue={player.number}
+          onChange={onUpdatePlayerNumber}
+          render={(value, onChange) => (
+            <input
+              className="input is-small"
+              type="text"
+              value={value}
+              onChange={onChange}
+            />
+          )}
+        />
+      </td>
+      <td
+        style={{
+          maxWidth: '140px',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          textWrap: 'nowrap',
+          verticalAlign: 'middle',
+        }}
+      >
+        {player.name}
+      </td>
+      <td>
+        <StatInput
+          player={player}
+          statKey="free_throws_made"
+          pushEvent={pushEvent}
+          teamType={teamType}
+        />
+      </td>
+      <td>
+        <StatInput
+          player={player}
+          statKey="field_goals_made"
+          pushEvent={pushEvent}
+          teamType={teamType}
+        />
+      </td>
+      <td>
+        <StatInput
+          player={player}
+          statKey="three_point_field_goals_made"
+          pushEvent={pushEvent}
+          teamType={teamType}
+        />
+      </td>
+      <td>
+        <StatInput
+          player={player}
+          statKey="rebounds_defensive"
+          pushEvent={pushEvent}
+          teamType={teamType}
+        />
+      </td>
+      <td>
+        <StatInput
+          player={player}
+          statKey="assists"
+          pushEvent={pushEvent}
+          teamType={teamType}
+        />
+      </td>
+      <td>
+        <StatInput
+          player={player}
+          statKey="blocks"
+          pushEvent={pushEvent}
+          teamType={teamType}
+        />
+      </td>
+      <td>
+        <StatInput
+          player={player}
+          statKey="steals"
+          pushEvent={pushEvent}
+          teamType={teamType}
+        />
+      </td>
+      <td>
+        <DoubleClickButton
+          className="button is-warning is-small"
+          onClick={onRemovePlayer}
+        >
+          &#10008;
+        </DoubleClickButton>
+      </td>
+    </tr>
+  );
+}
+
+function MediumEditPlayerRow({
+  player,
+  teamType,
+  pushEvent,
+}: EditPlayerRowProps) {
+  const onUpdatePlayerNumber = (value: string) => {
     pushEvent('update-player-in-team', {
       ['team-type']: teamType,
-      player: { ...player, name: value },
+      player: { ...player, number: value },
     });
   };
   const onRemovePlayer = () => {
@@ -262,4 +377,4 @@ function EditPlayerRow({ player, teamType, pushEvent }: EditPlayerRowProps) {
   );
 }
 
-export default EditPlayerRow;
+export default MediumEditPlayerRow;
