@@ -56,15 +56,17 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
       </div>
 
       <div className="level-right">
-        <p className="level-item">
-          <a
-            className="button is-info"
-            href={`/scoreboard/stream_views/${game_state.id}`}
-            target="_blank"
-          >
-            Stream Views (OBS)
-          </a>
-        </p>
+        {game_state.view_settings_state.view !== 'basketball-basic' && (
+          <p className="level-item">
+            <a
+              className="button is-info"
+              href={`/scoreboard/stream_views/${game_state.id}`}
+              target="_blank"
+            >
+              Stream Views (OBS)
+            </a>
+          </p>
+        )}
         <p className="level-item">
           {game_state.live_state.state === 'in_progress' ? (
             <button className="button is-danger" onClick={onEndLive}>
@@ -82,6 +84,3 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
 }
 
 export default TopLevel;
-function useState(arg0: boolean): [any, any] {
-  throw new Error('Function not implemented.');
-}
