@@ -18,7 +18,7 @@ defmodule GoChampsScoreboard.Infrastructure.GameCaptureTemporalStats do
         state
       ) do
     if event.impact_temporal_stats do
-      # TemporalStats.handle(game_state)
+      TemporalStats.handle(game_state)
     end
 
     {:noreply, state}

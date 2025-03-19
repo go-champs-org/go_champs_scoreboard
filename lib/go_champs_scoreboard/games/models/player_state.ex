@@ -25,11 +25,15 @@ defmodule GoChampsScoreboard.Games.Models.PlayerState do
 
   defimpl Poison.Decoder, for: GoChampsScoreboard.Games.Models.PlayerState do
     def decode(
-          %{state: state},
+          %{id: id, name: name, number: number, state: state, stats_values: stats_values},
           _options
         ) do
       %GoChampsScoreboard.Games.Models.PlayerState{
-        state: String.to_atom(state)
+        state: String.to_atom(state),
+        id: id,
+        name: name,
+        number: number,
+        stats_values: stats_values
       }
     end
   end
