@@ -65,7 +65,12 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
 
     Enum.map(team_players, fn player ->
       name = Map.get(player, "shirt_name") || Map.get(player, "name") || "No name"
-      PlayerState.new(player["id"], name, player["shirt_number"], :available)
+
+      state =
+        Map.get(player, "state", "available")
+        |> String.to_atom()
+
+      PlayerState.new(player["id"], name, player["shirt_number"], state)
     end)
   end
 

@@ -4,12 +4,14 @@ interface DoubleClickButtonProps {
   onClick: () => void;
   children?: React.ReactNode;
   className?: string;
+  disabled?: boolean;
 }
 
 function DoubleClickButton({
   className,
   children,
   onClick,
+  disabled = false,
 }: DoubleClickButtonProps) {
   const [clickCount, setClickCount] = React.useState(0);
 
@@ -25,6 +27,7 @@ function DoubleClickButton({
     <button
       className={`${className} ${clickCount === 1 ? 'is-danger' : ''}`}
       onClick={handleClick}
+      disabled={disabled}
     >
       {children}
     </button>

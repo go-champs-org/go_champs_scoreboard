@@ -162,7 +162,7 @@ function PlayersControls({
     (player) => player.state === 'playing',
   );
   const benchPlayers = team.players.filter(
-    (player) => player.state !== 'playing',
+    (player) => player.state !== 'playing' && player.state !== 'not_available',
   );
   const initialView = playingPlayers.length < 5 ? 'not_started' : 'playing';
   const [playerView, setPlayerView] = React.useState<PlayerView>(initialView);

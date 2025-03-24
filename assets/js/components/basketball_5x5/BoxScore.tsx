@@ -9,6 +9,10 @@ interface TableProps {
   team: TeamState;
 }
 
+function boxScorePlayers(team: TeamState) {
+  return team.players.filter((player) => player.state !== 'not_available');
+}
+
 function BasicTable({ team }: TableProps) {
   return (
     <div className="table-container">
@@ -70,7 +74,7 @@ function BasicTable({ team }: TableProps) {
           </tr>
         </thead>
         <tbody>
-          {team.players.map((player) => (
+          {boxScorePlayers(team).map((player) => (
             <tr key={player.id}>
               <td>{player.number}</td>
               <td>{player.name}</td>
@@ -219,7 +223,7 @@ function MediumTable({ team }: TableProps) {
           </tr>
         </thead>
         <tbody>
-          {team.players.map((player) => (
+          {boxScorePlayers(team).map((player) => (
             <tr key={player.id}>
               <td>{player.number}</td>
               <td>{player.name}</td>

@@ -56,6 +56,7 @@ function StatInput({ player, statKey, pushEvent, teamType }: StatInputProps) {
           showButtons ? 'show' : 'hide'
         }`}
         onClick={onMinusClick}
+        disabled={player.state === 'not_available'}
       >
         -
       </button>
@@ -70,10 +71,34 @@ function StatInput({ player, statKey, pushEvent, teamType }: StatInputProps) {
           showButtons ? 'show' : 'hide'
         }`}
         onClick={onPlusClick}
+        disabled={player.state === 'not_available'}
       >
         +
       </button>
     </div>
+  );
+}
+
+function NameCell({ player }: { player: PlayerState }) {
+  const CellContent = () => (
+    <div
+      style={{
+        maxWidth: '140px',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        textWrap: 'nowrap',
+        verticalAlign: 'middle',
+      }}
+    >
+      {player.name}
+    </div>
+  );
+  return player.state === 'not_available' ? (
+    <div className="has-tooltip" data-tooltip="Player is not available">
+      <CellContent />
+    </div>
+  ) : (
+    <CellContent />
   );
 }
 
@@ -118,20 +143,17 @@ export function BasicEditPlayerRow({
               type="text"
               value={value}
               onChange={onChange}
+              disabled={player.state === 'not_available'}
             />
           )}
         />
       </td>
       <td
         style={{
-          maxWidth: '140px',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          textWrap: 'nowrap',
           verticalAlign: 'middle',
         }}
       >
-        {player.name}
+        <NameCell player={player} />
       </td>
       <td>
         <StatInput
@@ -193,6 +215,7 @@ export function BasicEditPlayerRow({
         <DoubleClickButton
           className="button is-warning is-small"
           onClick={onRemovePlayer}
+          disabled={player.state === 'not_available'}
         >
           &#10008;
         </DoubleClickButton>
@@ -230,20 +253,17 @@ function MediumEditPlayerRow({
               type="text"
               value={value}
               onChange={onChange}
+              disabled={player.state === 'not_available'}
             />
           )}
         />
       </td>
       <td
         style={{
-          maxWidth: '140px',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          textWrap: 'nowrap',
           verticalAlign: 'middle',
         }}
       >
-        {player.name}
+        <NameCell player={player} />
       </td>
       <td>
         <StatInput
@@ -369,6 +389,7 @@ function MediumEditPlayerRow({
         <DoubleClickButton
           className="button is-warning is-small"
           onClick={onRemovePlayer}
+          disabled={player.state === 'not_available'}
         >
           &#10008;
         </DoubleClickButton>
