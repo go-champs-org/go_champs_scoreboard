@@ -4,6 +4,8 @@ import { GameState } from '../../types';
 import Modal from '../Modal';
 import BoxScore from './BoxScore';
 import EditPlayersModal from './Players/EditPlayersModal';
+import useConnectionState from '../../shared/useConnectionState';
+import { OnlineIcon, OfflineIcon } from '../../shared/ConnectionStatusesIcon';
 
 interface TopLevelProps {
   game_state: GameState;
@@ -19,6 +21,8 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
   const onEndLive = () => {
     pushEvent('end-game-live-mode', {});
   };
+
+  const liveSocket = useConnectionState();
 
   return (
     <nav className="level">
@@ -67,6 +71,9 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
             </a>
           </p>
         )}
+        <p className="level-item">
+          {liveSocket === 'connected' ? <OnlineIcon /> : <OfflineIcon />}
+        </p>
         <p className="level-item">
           {game_state.live_state.state === 'in_progress' ? (
             <button className="button is-danger" onClick={onEndLive}>
