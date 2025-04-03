@@ -23,7 +23,7 @@ defmodule GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinitionTest 
   end
 
   describe "handle/2" do
-    test "updates live_mode to :in_progress in GameState" do
+    test "updates live_mode to :in_progress and started_at in GameState" do
       game_state = %GameState{
         id: "1",
         away_team: %TeamState{
@@ -32,7 +32,7 @@ defmodule GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinitionTest 
         home_team: %TeamState{
           players: []
         },
-        live_state: %LiveState{state: :not_started}
+        live_state: %LiveState{state: :not_started, started_at: nil}
       }
 
       game =
@@ -42,6 +42,9 @@ defmodule GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinitionTest 
         )
 
       assert game.live_state.state == :in_progress
+      current_time = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+      started_at_truncated = game.live_state.started_at |> NaiveDateTime.truncate(:second)
+      assert started_at_truncated == current_time
     end
   end
 end

@@ -26,7 +26,18 @@ defmodule GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition do
         game_state,
         _event \\ nil
       ) do
-    %{game_state | live_state: %{state: :in_progress}}
+    # Update the game state to in progress
+    # and set the started_at time
+    started_at = DateTime.utc_now()
+
+    %GameState{
+      game_state
+      | live_state: %{
+          game_state.live_state
+          | state: :in_progress,
+            started_at: started_at
+        }
+    }
   end
 
   @impl true

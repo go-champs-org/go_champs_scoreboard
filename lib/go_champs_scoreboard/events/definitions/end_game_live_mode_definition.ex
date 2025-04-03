@@ -29,7 +29,12 @@ defmodule GoChampsScoreboard.Events.Definitions.EndGameLiveModeDefinition do
         game_state,
         _event \\ nil
       ) do
-    %{game_state | live_state: %{state: :ended}}
+    game_state
+    |> Map.put(:live_state, %{
+      game_state.live_state
+      | state: :ended,
+        ended_at: NaiveDateTime.utc_now()
+    })
   end
 
   @impl true
