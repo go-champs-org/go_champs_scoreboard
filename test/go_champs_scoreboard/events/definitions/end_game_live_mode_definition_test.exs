@@ -41,7 +41,7 @@ defmodule GoChampsScoreboard.Events.Definitions.EndGameLiveModeDefinitionTest do
         )
 
       assert game.live_state.state == :ended
-      mix(assert game.live_state.started_at != nil)
+      assert game.live_state.started_at != nil
 
       current_time = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
       ended_at_truncated = game.live_state.ended_at |> NaiveDateTime.truncate(:second)

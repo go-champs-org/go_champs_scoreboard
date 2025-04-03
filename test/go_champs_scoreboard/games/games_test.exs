@@ -1,8 +1,6 @@
 defmodule GoChampsScoreboard.Games.GamesTest do
   use ExUnit.Case
   alias GoChampsScoreboard.Events.Definitions.UpdateClockStateDefinition
-  alias GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition
-  alias GoChampsScoreboard.Events.Definitions.EndGameLiveModeDefinition
   alias GoChampsScoreboard.Games.Games
   alias GoChampsScoreboard.Games.Models.{GameState, GameClockState, LiveState, TeamState}
 
@@ -89,16 +87,13 @@ defmodule GoChampsScoreboard.Games.GamesTest do
     test "starts up ResourceManager and returns a handled StartGameLiveMode game state" do
       set_test_game()
 
-      event = StartGameLiveModeDefinition.create("some-game-id", %{})
-      handled_game = get_test_game() |> StartGameLiveModeDefinition.handle(event)
-
       expect(@resource_manager, :start_up, fn _game_id ->
         :ok
       end)
 
       result_game = Games.start_live_mode("some-game-id", @resource_manager)
 
-      assert handled_game == result_game
+      assert result_game.live_state.state == :in_progress
 
       unset_test_game()
     end
@@ -108,16 +103,13 @@ defmodule GoChampsScoreboard.Games.GamesTest do
     test "shuts down ResourceManager and returns a handled EndGameLiveMode game state" do
       set_test_game()
 
-      event = EndGameLiveModeDefinition.create("some-game-id", %{})
-      handled_game = get_test_game() |> EndGameLiveModeDefinition.handle(event)
-
       expect(@resource_manager, :shut_down, fn _game_id ->
         :ok
       end)
 
       result_game = Games.end_live_mode("some-game-id", @resource_manager)
 
-      assert handled_game == result_game
+      assert result_game.live_state.state == :ended
 
       unset_test_game()
     end
