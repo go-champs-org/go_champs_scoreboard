@@ -15,11 +15,23 @@ interface TopLevelProps {
 function TopLevel({ game_state, pushEvent }: TopLevelProps) {
   const [showBoxScoreModal, setShowBoxScoreModal] = React.useState(false);
   const [showEditPlayersModal, setShowEditPlayersModal] = React.useState(false);
+  const [showEndLiveWarningModal, setShowEndLiveWarningModal] =
+    React.useState(false);
   const onStartLive = () => {
     pushEvent('start-game-live-mode', {});
   };
   const onEndLive = () => {
-    pushEvent('end-game-live-mode', {});
+    const startedAt = new Date(game_state.live_state.started_at); // Parse the UTC date
+    const now = new Date(); // Current local time
+    const fortyFiveMinutesInMs = 45 * 60 * 1000; // 45 minutes in milliseconds
+
+    debugger;
+    if (now.getTime() - startedAt.getTime() > fortyFiveMinutesInMs) {
+      pushEvent('end-game-live-mode', {});
+      return;
+    } else {
+      setShowEndLiveWarningModal(true);
+    }
   };
 
   const liveSocket = useConnectionState();
@@ -57,6 +69,35 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
           onCloseModal={() => setShowEditPlayersModal(false)}
           pushEvent={pushEvent}
         />
+        <Modal
+          title="Are you sure?"
+          onClose={() => setShowEndLiveWarningModal(false)}
+          showModal={showEndLiveWarningModal}
+        >
+          <>
+            <p>
+              Are you sure you want to end the live mode? The game will be
+              considered finished and you will not be able to start it again.
+            </p>
+            <div className="modal-card-foot">
+              <button
+                className="button is-danger"
+                onClick={() => {
+                  pushEvent('end-game-live-mode', {});
+                  setShowEndLiveWarningModal(false);
+                }}
+              >
+                End Live
+              </button>
+              <button
+                className="button"
+                onClick={() => setShowEndLiveWarningModal(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </>
+        </Modal>
       </div>
 
       <div className="level-right">

@@ -28,6 +28,8 @@ export interface GameClockState {
 
 export interface LiveState {
   state: 'not_started' | 'in_progress' | 'ended';
+  started_at: string;
+  ended_at: string;
 }
 
 export interface ViewSettingsState {
