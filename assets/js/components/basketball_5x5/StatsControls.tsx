@@ -2,7 +2,7 @@ import React from 'react';
 import { PlayerSelection } from './Main';
 import debounce from '../../debounce';
 import { invokeButtonClickRef } from '../../shared/invokeButtonClick';
-import { ViewSettingsState } from '../../types';
+import { LiveState, ViewSettingsState } from '../../types';
 
 function MediumBasicStatsButtons({
   buttonRefs,
@@ -266,6 +266,7 @@ function BasicStatsButtons({ buttonRefs, onStatUpdate, buttonsDisabled }) {
 
 interface StatsControlsProps {
   viewSettings: ViewSettingsState;
+  liveState: LiveState;
   pushEvent: (event: string, payload: any) => void;
   playerSelection: PlayerSelection;
   selectPlayer: (playerSelection: PlayerSelection | null) => void;
@@ -275,6 +276,7 @@ function StatsControls({
   pushEvent,
   playerSelection,
   selectPlayer,
+  liveState,
   viewSettings,
 }: StatsControlsProps) {
   const buttonRefs = {
@@ -319,7 +321,8 @@ function StatsControls({
     return () => document.removeEventListener('keydown', listener);
   }, [selectPlayer, buttonRefs]);
 
-  const buttonsDisabled = playerSelection === null;
+  const buttonsDisabled =
+    liveState.state !== 'in_progress' || playerSelection === null;
 
   return (
     <div className="controls">

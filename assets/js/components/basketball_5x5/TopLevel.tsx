@@ -25,7 +25,6 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
     const now = new Date(); // Current local time
     const fortyFiveMinutesInMs = 45 * 60 * 1000; // 45 minutes in milliseconds
 
-    debugger;
     if (now.getTime() - startedAt.getTime() > fortyFiveMinutesInMs) {
       pushEvent('end-game-live-mode', {});
       return;

@@ -89,6 +89,7 @@ function Main({ game_state, pushEvent }: MainProps) {
 
         <div className="column is-4">
           <StatsControls
+            liveState={game_state.live_state}
             playerSelection={playerSelection}
             pushEvent={pushEvent}
             selectPlayer={setPlayerSelection}
