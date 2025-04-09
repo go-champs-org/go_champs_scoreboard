@@ -211,7 +211,7 @@ defmodule GoChampsScoreboard.Games.TeamsTest do
     end
   end
 
-  describe "list_players" do
+  describe "find_players" do
     test "returns the list of players for the given team type" do
       game_state = %GameState{
         home_team: %TeamState{
@@ -253,7 +253,7 @@ defmodule GoChampsScoreboard.Games.TeamsTest do
                    "assists" => 300
                  }
                }
-             ] == Teams.list_players(game_state, "home")
+             ] == Teams.find_players(game_state, "home")
     end
   end
 
