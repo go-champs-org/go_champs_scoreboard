@@ -100,6 +100,9 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
       </div>
 
       <div className="level-right">
+        <p className="level-item">
+          {liveSocket === 'connected' ? <OnlineIcon /> : <OfflineIcon />}
+        </p>
         {game_state.view_settings_state.view !== 'basketball-basic' && (
           <p className="level-item">
             <a
@@ -111,9 +114,6 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
             </a>
           </p>
         )}
-        <p className="level-item">
-          {liveSocket === 'connected' ? <OnlineIcon /> : <OfflineIcon />}
-        </p>
         <p className="level-item">
           {game_state.live_state.state === 'in_progress' ? (
             <button className="button is-danger" onClick={onEndLive}>
