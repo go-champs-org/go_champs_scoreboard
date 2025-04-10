@@ -35,7 +35,7 @@ defmodule GoChampsScoreboard.Events.Definitions.GameTickDefinition do
       |> Enum.reduce(game_state.home_team, fn player, team ->
         ticked_player =
           game_state.sport_id
-          |> Sports.player_tick(player, new_clock_state)
+          |> Sports.player_tick(player, game_state.clock_state)
 
         Teams.update_player_in_team(team, ticked_player)
       end)
@@ -45,7 +45,7 @@ defmodule GoChampsScoreboard.Events.Definitions.GameTickDefinition do
       |> Enum.reduce(game_state.away_team, fn player, team ->
         ticked_player =
           game_state.sport_id
-          |> Sports.player_tick(player, new_clock_state)
+          |> Sports.player_tick(player, game_state.clock_state)
 
         Teams.update_player_in_team(team, ticked_player)
       end)
