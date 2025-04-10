@@ -1,6 +1,7 @@
 defmodule GoChampsScoreboard.Events.Definitions.GameTickDefinition do
   @behaviour GoChampsScoreboard.Events.Definitions.DefinitionBehavior
 
+  alias GoChampsScoreboard.Games.Teams
   alias GoChampsScoreboard.Events.Models.Event
   alias GoChampsScoreboard.Games.Games
   alias GoChampsScoreboard.Games.Models.GameState
@@ -29,8 +30,30 @@ defmodule GoChampsScoreboard.Events.Definitions.GameTickDefinition do
       game_state.sport_id
       |> Sports.tick(game_state.clock_state)
 
+    new_home_team =
+      Teams.find_players(game_state, "home")
+      |> Enum.reduce(game_state.home_team, fn player, team ->
+        ticked_player =
+          game_state.sport_id
+          |> Sports.player_tick(player, new_clock_state)
+
+        Teams.update_player_in_team(team, ticked_player)
+      end)
+
+    new_away_team =
+      Teams.find_players(game_state, "away")
+      |> Enum.reduce(game_state.away_team, fn player, team ->
+        ticked_player =
+          game_state.sport_id
+          |> Sports.player_tick(player, new_clock_state)
+
+        Teams.update_player_in_team(team, ticked_player)
+      end)
+
     game_state
     |> Games.update_clock_state(new_clock_state)
+    |> Games.update_team("home", new_home_team)
+    |> Games.update_team("away", new_away_team)
   end
 
   @impl true

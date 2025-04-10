@@ -30,6 +30,12 @@ defmodule GoChampsScoreboard.Events.Definitions.GameTickDefinitionTest do
           time: 10,
           period: 1,
           state: :running
+        },
+        away_team: %{
+          players: []
+        },
+        home_team: %{
+          players: []
         }
       }
 
@@ -38,6 +44,42 @@ defmodule GoChampsScoreboard.Events.Definitions.GameTickDefinitionTest do
       assert game.clock_state.time == 9
       assert game.clock_state.period == 1
       assert game.clock_state.state == :running
+    end
+
+    test "returns the game state with update players for basketball" do
+      game_state = %GameState{
+        id: "1",
+        sport_id: "basketball",
+        clock_state: %GameClockState{
+          time: 10,
+          period: 1,
+          state: :running
+        },
+        home_team: %{
+          players: [
+            %{id: "player1", state: :playing, stats_values: %{"minutes_played" => 0}},
+            %{id: "player2", state: :playing, stats_values: %{"minutes_played" => 2}}
+          ]
+        },
+        away_team: %{
+          players: [
+            %{id: "player3", state: :playing, stats_values: %{"minutes_played" => 0}},
+            %{id: "player4", state: :playing, stats_values: %{"minutes_played" => 2}}
+          ]
+        }
+      }
+
+      game = GameTickDefinition.handle(game_state)
+
+      assert game.home_team.players == [
+               %{id: "player1", state: :playing, stats_values: %{"minutes_played" => 1}},
+               %{id: "player2", state: :playing, stats_values: %{"minutes_played" => 3}}
+             ]
+
+      assert game.away_team.players == [
+               %{id: "player3", state: :playing, stats_values: %{"minutes_played" => 1}},
+               %{id: "player4", state: :playing, stats_values: %{"minutes_played" => 3}}
+             ]
     end
   end
 end

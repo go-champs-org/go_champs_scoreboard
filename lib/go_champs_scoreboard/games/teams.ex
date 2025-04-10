@@ -34,6 +34,11 @@ defmodule GoChampsScoreboard.Games.Teams do
     |> Enum.find(fn player -> player.id == player_id end)
   end
 
+  @spec find_players(GameState.t(), String.t()) :: [PlayerState.t()]
+  def find_players(game_state, team_type) do
+    find_team(game_state, team_type).players
+  end
+
   @spec find_team(GameState.t(), String.t()) :: TeamState.t()
   def find_team(game_state, team_type) do
     case team_type do
@@ -41,11 +46,6 @@ defmodule GoChampsScoreboard.Games.Teams do
       "away" -> game_state.away_team
       _ -> raise RuntimeError, message: "Invalid team type"
     end
-  end
-
-  @spec list_players(GameState.t(), String.t()) :: [PlayerState.t()]
-  def list_players(game_state, team_type) do
-    find_team(game_state, team_type).players
   end
 
   @spec update_player_in_team(TeamState.t(), PlayerState.t()) :: TeamState.t()

@@ -1,4 +1,5 @@
 defmodule GoChampsScoreboard.Sports.Sports do
+  alias GoChampsScoreboard.Games.Models.PlayerState
   alias GoChampsScoreboard.Sports.Basketball
   alias GoChampsScoreboard.Statistics.Models.Stat
   alias GoChampsScoreboard.Games.Models.GameClockState
@@ -19,4 +20,9 @@ defmodule GoChampsScoreboard.Sports.Sports do
 
   @spec tick(String.t(), GameClockState.t()) :: GameClockState.t()
   def tick("basketball", game_clock_state), do: Basketball.GameClock.tick(game_clock_state)
+
+  @spec player_tick(String.t(), PlayerState.t(), GameClockState.t()) :: PlayerState.t()
+  def player_tick("basketball", player, game_clock_state) do
+    Basketball.PlayerClock.player_tick(player, game_clock_state)
+  end
 end
