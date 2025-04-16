@@ -24,6 +24,7 @@ import topbar from '../vendor/topbar';
 import LiveReact, { initLiveReact } from 'phoenix_live_react';
 import Scoreboard from './components/Scoreboard';
 import StreamViews from './components/StreamViews';
+import ReportViewer from './shared/ReportViewer';
 
 // load react components
 const hooks = { LiveReact };
@@ -56,6 +57,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket;
 window.Components = {
+  ReportViewer,
   Scoreboard,
   StreamViews,
 };
