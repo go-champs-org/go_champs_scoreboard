@@ -26,11 +26,33 @@
     display: flex;
     justify-content: space-between;
 
-    .name {
+    .identifier {
       position: relative;
       width: 70%;
       font-weight: bold;
       font-size: 50px;
+
+      .logo {
+        position: absolute;
+        top: 7px;
+        left: 10px;
+        width: 75px;
+        max-width: 75px;
+        height: 75px;
+        max-height: 75px;
+        pointer-events: none;
+      }
+
+      .tri-code {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 105px;
+        top: 7px;
+        right: 10px;
+        pointer-events: none;
+      }
 
       .text {
         position: absolute;
@@ -53,6 +75,16 @@
       padding-block: 0;
       width: 100%;
       height: 100%;
+    }
+
+    input[type='color']::-webkit-color-swatch {
+      border-radius: 0;
+      border: none;
+      box-shadow: 0px;
+      padding: 0;
+      padding-inline: 0;
+      padding-block: 0;
+      background: linear-gradient(#fdfdff00 0%, #7575755b 50%, #fdfdff00 100%);
     }
 
     input[type='color']::-webkit-color-swatch-wrapper {

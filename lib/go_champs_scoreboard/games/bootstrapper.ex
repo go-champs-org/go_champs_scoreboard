@@ -55,9 +55,11 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
 
   defp map_api_team_to_team(team) do
     name = Map.get(team, "name", "No team")
+    logo_url = Map.get(team, "logo_url", "")
+    tri_code = Map.get(team, "tri_code", "")
     players = map_team_players_to_players(team)
 
-    TeamState.new(name, players)
+    TeamState.new(name, players, %{}, %{}, tri_code, logo_url)
   end
 
   defp map_team_players_to_players(team) do
