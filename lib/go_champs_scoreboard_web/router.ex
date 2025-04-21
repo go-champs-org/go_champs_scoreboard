@@ -1,4 +1,5 @@
 defmodule GoChampsScoreboardWeb.Router do
+  alias GoChampsScoreboardWeb.ScoreboardReportViewers
   alias GoChampsScoreboardWeb.ErrorController
   alias GoChampsScoreboardWeb.ScoreboardController
   alias GoChampsScoreboardWeb.ScoreboardControlLive
@@ -40,6 +41,7 @@ defmodule GoChampsScoreboardWeb.Router do
 
     get "/load/:game_id", ScoreboardController, :load
     live "/control/:game_id", ScoreboardControlLive
+    live "/report_viewer/:game_id", ScoreboardReportViewers
     live "/stream_views/:game_id", ScoreboardStreamViewsLive
   end
 

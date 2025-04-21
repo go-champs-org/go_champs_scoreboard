@@ -4,6 +4,7 @@
     "format-check": "prettier --check \"{assets,test}/**/*.{js,ts,jsx,tsx,html,heex,css,scss}\""
   },
   "dependencies": {
+    "@react-pdf/renderer": "^4.3.0",
     "bulma": "^1.0.2",
     "bulma-tooltip": "^3.0.2",
     "react": "^19.0.0",
