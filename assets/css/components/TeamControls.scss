@@ -1,6 +1,24 @@
 @import '../colors.scss';
 
 .team-controls {
+  .is-flex-direction-row-reverse {
+    .logo-container .logo {
+      left: 5px;
+    }
+  }
+
+  .logo-container {
+    position: relative;
+
+    .logo {
+      top: 0;
+      right: 5px;
+      position: absolute;
+      width: 65px;
+      height: 65px;
+    }
+  }
+
   .team-stat {
     color: $white-dark;
     display: flex;

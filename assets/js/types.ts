@@ -17,6 +17,8 @@ export interface TeamState {
   players: PlayerState[];
   total_player_stats: { [key: string]: number };
   stats_values: { [key: string]: number };
+  tri_code: string;
+  logo_url: string;
 }
 
 export interface GameClockState {

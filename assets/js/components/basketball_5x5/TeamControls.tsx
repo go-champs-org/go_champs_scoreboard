@@ -15,9 +15,18 @@ export function BasicTeamControls({ team, teamType }: TeamControlsProps) {
     <div className="controls team-controls">
       <div className={`columns is-multiline ${reverseClass}`}>
         <div
-          className={`column is-9 is-flex is-align-items-center ${teamNameClass}`}
+          className={`column is-7 is-flex is-align-items-center ${teamNameClass}`}
         >
           <p className="title is-4">{team.name}</p>
+        </div>
+        <div className="column is-2">
+          {team.logo_url && (
+            <img
+              src={team.logo_url}
+              alt={`${team.name} logo`}
+              className="team-logo"
+            />
+          )}
         </div>
         <div className="column is-3">
           <p className="chip-label title is-4">
@@ -75,9 +84,18 @@ function TeamControls({ team, teamType }: TeamControlsProps) {
     <div className="controls team-controls">
       <div className={`columns is-multiline ${reverseClass}`}>
         <div
-          className={`column is-9 is-flex is-align-items-center ${teamNameClass}`}
+          className={`column is-7 is-flex is-align-items-center ${teamNameClass}`}
         >
           <p className="title is-4">{team.name}</p>
+        </div>
+        <div className="column is-2 logo-container">
+          {team.logo_url && (
+            <img
+              src={team.logo_url}
+              alt={`${team.name} logo`}
+              className="logo"
+            />
+          )}
         </div>
         <div className="column is-3">
           <p className="chip-label title is-4">

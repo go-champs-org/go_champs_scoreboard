@@ -28,6 +28,8 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
         "id" => "game-id",
         "away_team" => %{
           "name" => "Team A",
+          "tri_code" => "ABC",
+          "logo_url" => "https://example.com/logo.png",
           "players" => [
             %{
               "id" => "player-1",
@@ -150,6 +152,8 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
       assert player_6.number == nil
       assert player_6.state == :available
       assert game.away_team.total_player_stats == %{}
+      assert game.away_team.tri_code == "ABC"
+      assert game.away_team.logo_url == "https://example.com/logo.png"
 
       [player_7, player_8, player_9, player_10, player_11, player_12] = game.home_team.players
       assert game.home_team.name == "Team B"
@@ -178,6 +182,8 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
       assert player_12.number == nil
       assert player_12.state == :available
       assert game.home_team.total_player_stats == %{}
+      assert game.home_team.tri_code == ""
+      assert game.home_team.logo_url == ""
 
       assert game.live_state.state == :ended
       assert game.sport_id == "basketball"

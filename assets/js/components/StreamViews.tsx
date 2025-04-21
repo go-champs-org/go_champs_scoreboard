@@ -1,5 +1,5 @@
 import React from 'react';
-import { GameState, DEFAULT_GAME_STATE } from '../types';
+import { GameState, DEFAULT_GAME_STATE, TeamState } from '../types';
 
 interface StreamViewsProps {
   game_data: string;
@@ -65,11 +65,11 @@ function AnimatedScore({ score }: { score: number }) {
 }
 
 function TeamScore({
-  teamName,
+  team,
   score,
   defaultColor,
 }: {
-  teamName: string;
+  team: TeamState;
   score: number;
   defaultColor: string;
 }) {
@@ -81,12 +81,24 @@ function TeamScore({
     setContrastColor(getContrastColor(color));
   };
 
+  const shouldUseLogoAndTriCode = team.logo_url && team.tri_code;
+
   return (
     <div className="team-score">
-      <div className="name">
-        <span className="text" style={{ color: contrastColor }}>
-          {teamName}
-        </span>
+      <div className="identifier">
+        {shouldUseLogoAndTriCode ? (
+          <>
+            <img className="logo" src={team.logo_url} alt={team.tri_code} />
+            <span className="tri-code" style={{ color: contrastColor }}>
+              {team.tri_code}
+            </span>
+          </>
+        ) : (
+          <span className="text" style={{ color: contrastColor }}>
+            {team.tri_code || team.name}
+          </span>
+        )}
+
         <input
           type="color"
           value={color}
@@ -109,14 +121,14 @@ function StreamViews({ game_data }: StreamViewsProps) {
         <div className="columns is-multiline is-vcentered">
           <div className="column has-text-centered away">
             <TeamScore
-              teamName={game_state.away_team.name}
+              team={game_state.away_team}
               score={game_state.away_team.total_player_stats['points'] || 0}
               defaultColor="#970c10"
             />
           </div>
           <div className="column has-text-centered home">
             <TeamScore
-              teamName={game_state.home_team.name}
+              team={game_state.home_team}
               score={game_state.home_team.total_player_stats['points'] || 0}
               defaultColor="#2b5615"
             />
