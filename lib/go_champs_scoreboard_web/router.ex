@@ -25,6 +25,12 @@ defmodule GoChampsScoreboardWeb.Router do
     get "/", PageController, :home
   end
 
+  scope "/v1", GoChampsScoreboardWeb do
+    pipe_through :api
+
+    resources "/event-logs", EventLogController
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", GoChampsScoreboardWeb do
   #   pipe_through :api

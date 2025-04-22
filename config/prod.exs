@@ -10,6 +10,12 @@ config :go_champs_scoreboard, GoChampsScoreboardWeb.Endpoint,
   url: [port: 443, scheme: "https"],
   force_ssl: [rewrite_on: [:x_forwarded_proto]]
 
+config :go_champs_scoreboard, GoChampsScoreboard.Repo,
+  ssl: true,
+  ssl_opts: [verify: :verify_none],
+  url: System.get_env("DATABASE_URL"),
+  pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10")
+
 # Configures Swoosh API Client
 config :swoosh, api_client: Swoosh.ApiClient.Finch, finch_name: GoChampsScoreboard.Finch
 

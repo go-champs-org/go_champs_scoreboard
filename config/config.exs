@@ -8,8 +8,13 @@
 import Config
 
 config :go_champs_scoreboard,
-  # ecto_repos: [GoChampsScoreboard.Repo],
+  ecto_repos: [GoChampsScoreboard.Repo],
   generators: [timestamp_type: :utc_datetime]
+
+config :go_champs_scoreboard, GoChampsScoreboard.Repo,
+  migration_primary_key: [type: :uuid],
+  migration_foreign_key: [type: :uuid],
+  migration_timestamps: [type: :utc_datetime]
 
 # Configures the endpoint
 config :go_champs_scoreboard, GoChampsScoreboardWeb.Endpoint,

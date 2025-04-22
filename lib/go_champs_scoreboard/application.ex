@@ -12,6 +12,9 @@ defmodule GoChampsScoreboard.Application do
     redis_url = System.get_env("REDIS_URL") || "redis"
 
     children = [
+      # Start the Ecto repository
+      GoChampsScoreboard.Repo,
+      # Start the Telemetry supervisor
       GoChampsScoreboardWeb.Telemetry,
       {DynamicSupervisor,
        name: GoChampsScoreboard.Infrastructure.GameTickerSupervisor, strategy: :one_for_one},

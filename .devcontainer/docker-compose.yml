@@ -26,14 +26,14 @@ services:
     # (Adding the "ports" property to this file will not forward from a Codespace.)
 
   db:
-    image: postgres:latest
+    image: postgres:10-alpine
     restart: unless-stopped
     volumes:
       - postgres-data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
-      POSTGRES_DB: postgres
+      POSTGRES_DB: go_champs_scoreboard_dev
 
     # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward MongoDB locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
@@ -41,7 +41,7 @@ services:
     image: redis
     command: redis-server
     ports:
-      - "6379:6379"
+      - '6379:6379'
 
 volumes:
   postgres-data:
