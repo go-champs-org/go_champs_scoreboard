@@ -7,7 +7,9 @@ defmodule GoChampsScoreboard.Events.EventLog do
           key: String.t(),
           game_id: Ecto.UUID.t(),
           timestamp: DateTime.t(),
-          payload: any()
+          payload: map(),
+          game_clock_time: integer(),
+          game_clock_period: integer()
         }
 
   schema "event_logs" do
@@ -15,6 +17,10 @@ defmodule GoChampsScoreboard.Events.EventLog do
     field :key, :string
     field :payload, :map
     field :game_id, Ecto.UUID
+    # Time in seconds
+    field :game_clock_time, :integer
+    # Period number
+    field :game_clock_period, :integer
 
     timestamps(type: :utc_datetime)
   end
@@ -22,7 +28,15 @@ defmodule GoChampsScoreboard.Events.EventLog do
   @doc false
   def changeset(event_log, attrs) do
     event_log
-    |> cast(attrs, [:id, :game_id, :key, :timestamp, :payload])
-    |> validate_required([:game_id, :key, :timestamp])
+    |> cast(attrs, [
+      :id,
+      :game_id,
+      :key,
+      :timestamp,
+      :payload,
+      :game_clock_time,
+      :game_clock_period
+    ])
+    |> validate_required([:game_id, :key, :timestamp, :game_clock_time, :game_clock_period])
   end
 end

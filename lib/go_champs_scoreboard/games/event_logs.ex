@@ -11,30 +11,11 @@ defmodule GoChampsScoreboard.Games.EventLogs do
       key: event.key,
       game_id: event.game_id,
       payload: event.payload,
-      timestamp: event.timestamp
+      timestamp: event.timestamp,
+      game_clock_time: event.clock_state_time_at,
+      game_clock_period: event.clock_state_period_at
     })
     |> Repo.insert()
-  end
-
-  @spec insert_after_event(Ecto.UUID.t(), Event.t()) :: {:ok, EventLog.t()} | {:error, any()}
-  def insert_after_event(prior_event_id, event) do
-    prior_event = Repo.get(EventLog, prior_event_id)
-
-    if prior_event do
-      after_timestamp = DateTime.add(prior_event.timestamp, 1, :microsecond)
-
-      %EventLog{}
-      |> EventLog.changeset(%{
-        key: event.key,
-        game_id: event.game_id,
-        payload: event.payload,
-        timestamp: after_timestamp,
-        prior_event_id: prior_event.id
-      })
-      |> Repo.insert()
-    else
-      {:error, :prior_event_not_found}
-    end
   end
 
   @spec update_payload(Ecto.UUID.t(), map()) :: {:ok, EventLog.t()} | {:error, any()}
@@ -73,7 +54,7 @@ defmodule GoChampsScoreboard.Games.EventLogs do
     query =
       from e in EventLog,
         where: e.game_id == ^game_id,
-        order_by: [asc: e.timestamp]
+        order_by: [asc: e.game_clock_period, desc: e.game_clock_time]
 
     Repo.all(query)
   end

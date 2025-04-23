@@ -9,20 +9,26 @@ defmodule GoChampsScoreboardWeb.EventLogControllerTest do
     timestamp: ~U[2025-04-21 00:39:00.000000Z],
     key: "some key",
     payload: %{},
-    game_id: "7488a646-e31f-11e4-aace-600308960662"
+    game_id: "7488a646-e31f-11e4-aace-600308960662",
+    game_clock_time: 10,
+    game_clock_period: 1
   }
   @update_attrs %{
     timestamp: ~U[2025-04-22 00:39:00.000000Z],
     key: "some updated key",
     payload: %{},
-    game_id: "7488a646-e31f-11e4-aace-600308960668"
+    game_id: "7488a646-e31f-11e4-aace-600308960668",
+    game_clock_time: 20,
+    game_clock_period: 2
   }
   @invalid_attrs %{
     id: nil,
     timestamp: nil,
     key: nil,
     payload: nil,
-    game_id: nil
+    game_id: nil,
+    game_clock_time: nil,
+    game_clock_period: nil
   }
 
   setup %{conn: conn} do
@@ -47,7 +53,9 @@ defmodule GoChampsScoreboardWeb.EventLogControllerTest do
                "game_id" => "7488a646-e31f-11e4-aace-600308960662",
                "key" => "some key",
                "payload" => %{},
-               "timestamp" => "2025-04-21T00:39:00.000000Z"
+               "timestamp" => "2025-04-21T00:39:00.000000Z",
+               "game_clock_time" => 10,
+               "game_clock_period" => 1
              } = json_response(conn, 200)["data"]
     end
 
@@ -73,7 +81,9 @@ defmodule GoChampsScoreboardWeb.EventLogControllerTest do
                "game_id" => "7488a646-e31f-11e4-aace-600308960668",
                "key" => "some updated key",
                "payload" => %{},
-               "timestamp" => "2025-04-22T00:39:00.000000Z"
+               "timestamp" => "2025-04-22T00:39:00.000000Z",
+               "game_clock_time" => 20,
+               "game_clock_period" => 2
              } = json_response(conn, 200)["data"]
     end
 

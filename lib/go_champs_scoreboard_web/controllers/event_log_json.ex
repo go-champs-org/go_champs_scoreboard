@@ -21,7 +21,9 @@ defmodule GoChampsScoreboardWeb.EventLogJSON do
       game_id: event_log.game_id,
       key: event_log.key,
       timestamp: event_log.timestamp,
-      payload: event_log.payload
+      payload: event_log.payload,
+      game_clock_time: event_log.game_clock_time,
+      game_clock_period: event_log.game_clock_period
     }
   end
 end

@@ -12,7 +12,9 @@ defmodule GoChampsScoreboard.EventsTest do
       timestamp: nil,
       key: nil,
       payload: nil,
-      game_id: nil
+      game_id: nil,
+      game_clock_time: nil,
+      game_clock_period: nil
     }
 
     test "list_event_logs/0 returns all event_logs" do
@@ -30,7 +32,9 @@ defmodule GoChampsScoreboard.EventsTest do
         timestamp: ~U[2025-04-21 00:39:00.000000Z],
         key: "some key",
         payload: %{},
-        game_id: "7488a646-e31f-11e4-aace-600308960662"
+        game_id: "7488a646-e31f-11e4-aace-600308960662",
+        game_clock_time: 10,
+        game_clock_period: 1
       }
 
       assert {:ok, %EventLog{} = event_log} = Events.create_event_log(valid_attrs)
@@ -39,6 +43,8 @@ defmodule GoChampsScoreboard.EventsTest do
       assert event_log.key == "some key"
       assert event_log.payload == %{}
       assert event_log.game_id == "7488a646-e31f-11e4-aace-600308960662"
+      assert event_log.game_clock_time == 10
+      assert event_log.game_clock_period == 1
     end
 
     test "create_event_log/1 with invalid data returns error changeset" do
@@ -52,7 +58,9 @@ defmodule GoChampsScoreboard.EventsTest do
         timestamp: ~U[2025-04-22 00:39:00.000000Z],
         key: "some updated key",
         payload: %{},
-        game_id: "7488a646-e31f-11e4-aace-600308960668"
+        game_id: "7488a646-e31f-11e4-aace-600308960668",
+        game_clock_time: 20,
+        game_clock_period: 2
       }
 
       assert {:ok, %EventLog{} = event_log} = Events.update_event_log(event_log, update_attrs)
@@ -60,6 +68,8 @@ defmodule GoChampsScoreboard.EventsTest do
       assert event_log.key == "some updated key"
       assert event_log.payload == %{}
       assert event_log.game_id == "7488a646-e31f-11e4-aace-600308960668"
+      assert event_log.game_clock_time == 20
+      assert event_log.game_clock_period == 2
     end
 
     test "update_event_log/2 with invalid data returns error changeset" do

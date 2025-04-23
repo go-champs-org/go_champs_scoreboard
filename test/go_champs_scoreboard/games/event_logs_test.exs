@@ -100,55 +100,6 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
     end
   end
 
-  describe "insert_after_event" do
-    test "inserts an event after a specific event" do
-      update_player_stat_event =
-        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
-          "7488a646-e31f-11e4-aace-600308960668",
-          10,
-          1,
-          %{
-            "operation" => "increment",
-            "team-type" => "home",
-            "player-id" => "123",
-            "stat-id" => "field_goals_made"
-          }
-        )
-
-      {:ok, event_log} = EventLogs.persist(update_player_stat_event)
-
-      new_event =
-        GoChampsScoreboard.Events.Definitions.UpdateClockTimeAndPeriodDefinition.create(
-          "7488a646-e31f-11e4-aace-600308960668",
-          10,
-          1,
-          %{
-            "property" => "time",
-            "operation" => "increment"
-          }
-        )
-
-      {:ok, inserted_event_log} = EventLogs.insert_after_event(event_log.id, new_event)
-
-      assert inserted_event_log.key == new_event.key
-      assert inserted_event_log.game_id == new_event.game_id
-      assert inserted_event_log.payload == new_event.payload
-      assert inserted_event_log.timestamp == DateTime.add(event_log.timestamp, 1, :microsecond)
-    end
-
-    test "returns error for non-existent event log" do
-      new_event = %{
-        key: "new-event",
-        game_id: "7488a646-e31f-11e4-aace-600308960668",
-        payload: %{"new_key" => "new_value"},
-        timestamp: DateTime.utc_now()
-      }
-
-      assert EventLogs.insert_after_event("7488a646-e31f-11e4-aace-600308960668", new_event) ==
-               {:error, :prior_event_not_found}
-    end
-  end
-
   describe "delete/1" do
     test "deletes the event log by ID" do
       update_player_stat_event =
@@ -176,24 +127,11 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
     test "retrieves all event logs for a specific game ID sorted by timestamp" do
       game_id = "7488a646-e31f-11e4-aace-600308960668"
 
-      event1 =
-        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
-          game_id,
-          10,
-          1,
-          %{
-            "operation" => "increment",
-            "team-type" => "home",
-            "player-id" => "123",
-            "stat-id" => "field_goals_made"
-          }
-        )
-
       event3 =
         GoChampsScoreboard.Events.Definitions.UpdateClockTimeAndPeriodDefinition.create(
           game_id,
-          10,
-          1,
+          7,
+          2,
           %{
             "property" => "time",
             "operation" => "increment"
@@ -203,7 +141,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       event2 =
         GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
           game_id,
-          10,
+          2,
           1,
           %{
             "operation" => "decrement",
@@ -216,26 +154,47 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       event4 =
         GoChampsScoreboard.Events.Definitions.UpdateClockTimeAndPeriodDefinition.create(
           game_id,
-          10,
-          1,
+          6,
+          2,
           %{
             "property" => "period",
             "operation" => "increment"
           }
         )
 
+      event1 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_id,
+          9,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => "123",
+            "stat-id" => "field_goals_made"
+          }
+        )
+
       {:ok, event1} = EventLogs.persist(event1)
       {:ok, event2} = EventLogs.persist(event2)
-      {:ok, event3} = EventLogs.insert_after_event(event1.id, event3)
+      {:ok, event3} = EventLogs.persist(event3)
       {:ok, event4} = EventLogs.persist(event4)
 
       event_logs = EventLogs.get_all_by_game_id(game_id)
 
       assert length(event_logs) == 4
       assert Enum.at(event_logs, 0).id == event1.id
-      assert Enum.at(event_logs, 1).id == event3.id
-      assert Enum.at(event_logs, 2).id == event2.id
+      assert Enum.at(event_logs, 0).game_clock_time == 9
+      assert Enum.at(event_logs, 0).game_clock_period == 1
+      assert Enum.at(event_logs, 1).id == event2.id
+      assert Enum.at(event_logs, 1).game_clock_time == 2
+      assert Enum.at(event_logs, 1).game_clock_period == 1
+      assert Enum.at(event_logs, 2).id == event3.id
+      assert Enum.at(event_logs, 2).game_clock_time == 7
+      assert Enum.at(event_logs, 2).game_clock_period == 2
       assert Enum.at(event_logs, 3).id == event4.id
+      assert Enum.at(event_logs, 3).game_clock_time == 6
+      assert Enum.at(event_logs, 3).game_clock_period == 2
     end
   end
 end
