@@ -8,7 +8,6 @@ defmodule GoChampsScoreboard.Events.EventLog do
     field :key, :string
     field :payload, :map
     field :game_id, Ecto.UUID
-    field :sequence_number, :integer
 
     timestamps(type: :utc_datetime)
   end
@@ -16,7 +15,7 @@ defmodule GoChampsScoreboard.Events.EventLog do
   @doc false
   def changeset(event_log, attrs) do
     event_log
-    |> cast(attrs, [:id, :game_id, :key, :timestamp, :sequence_number, :payload])
-    |> validate_required([:game_id, :key, :timestamp, :sequence_number])
+    |> cast(attrs, [:id, :game_id, :key, :timestamp, :payload])
+    |> validate_required([:game_id, :key, :timestamp])
   end
 end

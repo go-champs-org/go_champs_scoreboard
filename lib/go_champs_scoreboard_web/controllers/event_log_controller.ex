@@ -15,7 +15,7 @@ defmodule GoChampsScoreboardWeb.EventLogController do
     with {:ok, %EventLog{} = event_log} <- Events.create_event_log(event_log_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", ~p"/v1/event_logs/#{event_log}")
+      |> put_resp_header("location", ~p"/v1/event-logs/#{event_log}")
       |> render(:show, event_log: event_log)
     end
   end

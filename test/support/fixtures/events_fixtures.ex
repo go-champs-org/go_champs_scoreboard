@@ -14,7 +14,6 @@ defmodule GoChampsScoreboard.EventsFixtures do
         game_id: "7488a646-e31f-11e4-aace-600308960662",
         key: "some key",
         payload: %{},
-        sequence_number: 42,
         timestamp: ~U[2025-04-21 00:39:00.000000Z]
       })
       |> GoChampsScoreboard.Events.create_event_log()
