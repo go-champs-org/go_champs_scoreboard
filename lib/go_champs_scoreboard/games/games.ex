@@ -138,7 +138,7 @@ defmodule GoChampsScoreboard.Games.Games do
 
   @spec get_game(String.t()) :: {:ok, GameState.t()} | {:ok, nil} | {:error, any()}
   def get_game(game_id) do
-    case Redix.command(:games_cache, ["GET", game_id]) do
+    case Redix.command(:games_cache, ["GET", game_key(game_id)]) do
       {:ok, nil} ->
         {:ok, nil}
 
@@ -152,13 +152,24 @@ defmodule GoChampsScoreboard.Games.Games do
 
   @spec update_game(GameState.t()) :: GameState.t()
   defp update_game(game_state) do
-    Redix.command(:games_cache, ["SET", game_state.id, game_state, "EX", @two_days_in_seconds])
+    Redix.command(:games_cache, [
+      "SET",
+      game_key(game_state.id),
+      game_state,
+      "EX",
+      @two_days_in_seconds
+    ])
+
     game_state
   end
 
   @spec delete_game(String.t()) :: :ok
   defp delete_game(game_id) do
-    Redix.command(:games_cache, ["DEL", game_id])
+    Redix.command(:games_cache, ["DEL", game_key(game_id)])
     :ok
+  end
+
+  defp game_key(game_id) do
+    "game:#{game_id}"
   end
 end
