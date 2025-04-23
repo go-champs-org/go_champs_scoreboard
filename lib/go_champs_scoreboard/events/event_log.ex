@@ -3,6 +3,13 @@ defmodule GoChampsScoreboard.Events.EventLog do
   use GoChampsScoreboard.Schema
   import Ecto.Changeset
 
+  @type t :: %__MODULE__{
+          key: String.t(),
+          game_id: Ecto.UUID.t(),
+          timestamp: DateTime.t(),
+          payload: any()
+        }
+
   schema "event_logs" do
     field :timestamp, :utc_datetime_usec
     field :key, :string

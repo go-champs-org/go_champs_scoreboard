@@ -8,6 +8,8 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       update_player_stat_event =
         GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
           "7488a646-e31f-11e4-aace-600308960668",
+          10,
+          1,
           %{
             "operation" => "increment",
             "team-type" => "home",
@@ -39,6 +41,8 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       update_player_stat_event =
         GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
           "7488a646-e31f-11e4-aace-600308960668",
+          10,
+          1,
           %{
             "operation" => "increment",
             "team-type" => "home",
@@ -66,6 +70,8 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       update_player_stat_event =
         GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
           "7488a646-e31f-11e4-aace-600308960668",
+          10,
+          1,
           %{
             "operation" => "increment",
             "team-type" => "home",
@@ -99,6 +105,8 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       update_player_stat_event =
         GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
           "7488a646-e31f-11e4-aace-600308960668",
+          10,
+          1,
           %{
             "operation" => "increment",
             "team-type" => "home",
@@ -112,6 +120,8 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       new_event =
         GoChampsScoreboard.Events.Definitions.UpdateClockTimeAndPeriodDefinition.create(
           "7488a646-e31f-11e4-aace-600308960668",
+          10,
+          1,
           %{
             "property" => "time",
             "operation" => "increment"
@@ -144,6 +154,8 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       update_player_stat_event =
         GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
           "7488a646-e31f-11e4-aace-600308960668",
+          10,
+          1,
           %{
             "operation" => "increment",
             "team-type" => "home",
@@ -167,6 +179,8 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       event1 =
         GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
           game_id,
+          10,
+          1,
           %{
             "operation" => "increment",
             "team-type" => "home",
@@ -178,6 +192,8 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       event3 =
         GoChampsScoreboard.Events.Definitions.UpdateClockTimeAndPeriodDefinition.create(
           game_id,
+          10,
+          1,
           %{
             "property" => "time",
             "operation" => "increment"
@@ -187,6 +203,8 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       event2 =
         GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
           game_id,
+          10,
+          1,
           %{
             "operation" => "decrement",
             "team-type" => "away",
@@ -198,6 +216,8 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       event4 =
         GoChampsScoreboard.Events.Definitions.UpdateClockTimeAndPeriodDefinition.create(
           game_id,
+          10,
+          1,
           %{
             "property" => "period",
             "operation" => "increment"

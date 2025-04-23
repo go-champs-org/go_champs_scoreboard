@@ -16,8 +16,13 @@ defmodule GoChampsScoreboard.Events.Definitions.EndGameLiveModeDefinitionTest do
 
   describe "create/2" do
     test "returns event" do
-      assert %Event{key: "end-game-live-mode", game_id: "some-game-id"} =
-               EndGameLiveModeDefinition.create("some-game-id", %{})
+      assert %Event{
+               key: "end-game-live-mode",
+               game_id: "some-game-id",
+               clock_state_time_at: 10,
+               clock_state_period_at: 1
+             } =
+               EndGameLiveModeDefinition.create("some-game-id", 10, 1, %{})
     end
   end
 

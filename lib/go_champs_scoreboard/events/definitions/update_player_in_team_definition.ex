@@ -19,8 +19,14 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayerInTeamDefinition do
   def validate(_game_state, _paylod), do: {:ok}
 
   @impl true
-  @spec create(game_id :: String.t(), payload :: any()) :: Event.t()
-  def create(game_id, payload), do: Event.new(@key, game_id, payload)
+  @spec create(
+          game_id :: String.t(),
+          clock_state_time_at :: integer(),
+          clock_state_period_at :: integer(),
+          payload :: any()
+        ) :: Event.t()
+  def create(game_id, clock_state_time_at, clock_state_period_at, payload),
+    do: Event.new(@key, game_id, clock_state_time_at, clock_state_period_at, payload)
 
   @impl true
   @spec handle(GameState.t(), Event.t()) :: GameState.t()

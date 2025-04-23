@@ -17,8 +17,13 @@ defmodule GoChampsScoreboard.Events.Definitions.SubstitutePlayerDefinitionTest d
 
   describe "create/2" do
     test "returns event" do
-      assert %Event{key: "substitute-player", game_id: "some-game-id"} =
-               SubstitutePlayerDefinition.create("some-game-id", %{
+      assert %Event{
+               key: "substitute-player",
+               game_id: "some-game-id",
+               clock_state_time_at: 10,
+               clock_state_period_at: 1
+             } =
+               SubstitutePlayerDefinition.create("some-game-id", 10, 1, %{
                  "team-type" => "home",
                  "playing-player-id" => "some-id",
                  "bench-player-id" => "some-other-id"
@@ -58,7 +63,7 @@ defmodule GoChampsScoreboard.Events.Definitions.SubstitutePlayerDefinitionTest d
         "bench-player-id" => "some-other"
       }
 
-      event = SubstitutePlayerDefinition.create(game_state.id, event_payload)
+      event = SubstitutePlayerDefinition.create(game_state.id, 10, 1, event_payload)
 
       new_game_state = SubstitutePlayerDefinition.handle(game_state, event)
 
@@ -107,7 +112,7 @@ defmodule GoChampsScoreboard.Events.Definitions.SubstitutePlayerDefinitionTest d
         "bench-player-id" => "some-other"
       }
 
-      event = SubstitutePlayerDefinition.create(game_state.id, event_payload)
+      event = SubstitutePlayerDefinition.create(game_state.id, 10, 1, event_payload)
 
       new_game_state = SubstitutePlayerDefinition.handle(game_state, event)
 
@@ -159,7 +164,7 @@ defmodule GoChampsScoreboard.Events.Definitions.SubstitutePlayerDefinitionTest d
         "bench-player-id" => "some-other"
       }
 
-      event = SubstitutePlayerDefinition.create(game_state.id, event_payload)
+      event = SubstitutePlayerDefinition.create(game_state.id, 10, 1, event_payload)
 
       new_game_state = SubstitutePlayerDefinition.handle(game_state, event)
 
@@ -208,7 +213,7 @@ defmodule GoChampsScoreboard.Events.Definitions.SubstitutePlayerDefinitionTest d
         "bench-player-id" => "some-other"
       }
 
-      event = SubstitutePlayerDefinition.create(game_state.id, event_payload)
+      event = SubstitutePlayerDefinition.create(game_state.id, 10, 1, event_payload)
 
       new_game_state = SubstitutePlayerDefinition.handle(game_state, event)
 

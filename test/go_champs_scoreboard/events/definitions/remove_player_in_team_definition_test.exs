@@ -19,8 +19,13 @@ defmodule GoChampsScoreboard.Events.Definitions.RemovePlayerInTeamDefinitionTest
 
   describe "create/2" do
     test "returns event" do
-      assert %Event{key: "remove-player-in-team", game_id: "some-game-id"} =
-               RemovePlayerInTeamDefinition.create("some-game-id", %{
+      assert %Event{
+               key: "remove-player-in-team",
+               game_id: "some-game-id",
+               clock_state_time_at: 10,
+               clock_state_period_at: 1
+             } =
+               RemovePlayerInTeamDefinition.create("some-game-id", 10, 1, %{
                  "team-type" => "home",
                  "player-id" => "some-id"
                })
@@ -51,7 +56,7 @@ defmodule GoChampsScoreboard.Events.Definitions.RemovePlayerInTeamDefinitionTest
       }
 
       event =
-        RemovePlayerInTeamDefinition.create(game_state.id, remove_player_in_team_payload)
+        RemovePlayerInTeamDefinition.create(game_state.id, 10, 1, remove_player_in_team_payload)
 
       game = RemovePlayerInTeamDefinition.handle(game_state, event)
       players = game.home_team.players

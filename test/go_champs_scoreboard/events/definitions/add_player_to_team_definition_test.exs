@@ -21,8 +21,13 @@ defmodule GoChampsScoreboard.Events.Definitions.AddPlayerToTeamDefinitionTest do
 
   describe "create/2" do
     test "returns event" do
-      assert %Event{key: "add-player-to-team", game_id: "some-game-id"} =
-               AddPlayerToTeamDefinition.create("some-game-id", %{
+      assert %Event{
+               key: "add-player-to-team",
+               game_id: "some-game-id",
+               clock_state_time_at: 10,
+               clock_state_period_at: 1
+             } =
+               AddPlayerToTeamDefinition.create("some-game-id", 10, 1, %{
                  "team-type" => "home",
                  "name" => "Michael Jordan",
                  "number" => 23
@@ -48,7 +53,7 @@ defmodule GoChampsScoreboard.Events.Definitions.AddPlayerToTeamDefinitionTest do
         "number" => 23
       }
 
-      event = AddPlayerToTeamDefinition.create(game_state.id, add_player_to_team_payload)
+      event = AddPlayerToTeamDefinition.create(game_state.id, 10, 1, add_player_to_team_payload)
 
       game = AddPlayerToTeamDefinition.handle(game_state, event)
       [player] = game.home_team.players

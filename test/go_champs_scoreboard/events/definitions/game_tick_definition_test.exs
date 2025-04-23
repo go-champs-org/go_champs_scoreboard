@@ -16,8 +16,13 @@ defmodule GoChampsScoreboard.Events.Definitions.GameTickDefinitionTest do
 
   describe "create/2" do
     test "returns an event" do
-      assert %Event{key: "game-tick", game_id: "some-game-id"} =
-               GameTickDefinition.create("some-game-id", %{})
+      assert %Event{
+               key: "game-tick",
+               game_id: "some-game-id",
+               clock_state_time_at: 10,
+               clock_state_period_at: 1
+             } =
+               GameTickDefinition.create("some-game-id", 10, 1, %{})
     end
   end
 

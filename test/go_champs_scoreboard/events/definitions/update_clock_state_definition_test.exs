@@ -17,8 +17,13 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateClockStateDefinitionTest d
 
   describe "create/2" do
     test "returns event" do
-      assert %Event{key: "update-clock-state", game_id: "some-game-id"} =
-               UpdateClockStateDefinition.create("some-game-id", %{"state" => "stopped"})
+      assert %Event{
+               key: "update-clock-state",
+               game_id: "some-game-id",
+               clock_state_time_at: 10,
+               clock_state_period_at: 1
+             } =
+               UpdateClockStateDefinition.create("some-game-id", 10, 1, %{"state" => "stopped"})
     end
   end
 
@@ -34,7 +39,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateClockStateDefinitionTest d
         }
       }
 
-      event = UpdateClockStateDefinition.create(game_state.id, %{"state" => "stopped"})
+      event = UpdateClockStateDefinition.create(game_state.id, 10, 1, %{"state" => "stopped"})
 
       new_game_state = UpdateClockStateDefinition.handle(game_state, event)
 

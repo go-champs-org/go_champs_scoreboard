@@ -20,8 +20,13 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinitionTest d
 
   describe "create/2" do
     test "returns event" do
-      assert %Event{key: "update-player-stat", game_id: "some-game-id"} =
-               UpdatePlayerStatDefinition.create("some-game-id", %{
+      assert %Event{
+               key: "update-player-stat",
+               game_id: "some-game-id",
+               clock_state_time_at: 10,
+               clock_state_period_at: 1
+             } =
+               UpdatePlayerStatDefinition.create("some-game-id", 10, 1, %{
                  "operation" => "increment",
                  "team-type" => "home",
                  "player-id" => "123",
@@ -66,7 +71,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinitionTest d
         "stat-id" => "field_goals_made"
       }
 
-      event = UpdatePlayerStatDefinition.create("some-game-id", payload)
+      event = UpdatePlayerStatDefinition.create("some-game-id", 10, 1, payload)
 
       expected_state = %GameState{
         home_team: %{

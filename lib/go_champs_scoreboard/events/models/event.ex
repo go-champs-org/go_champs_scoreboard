@@ -3,18 +3,22 @@ defmodule GoChampsScoreboard.Events.Models.Event do
           key: String.t(),
           game_id: String.t(),
           timestamp: DateTime.t(),
+          clock_state_time_at: integer(),
+          clock_state_period_at: integer(),
           payload: any()
         }
 
-  defstruct [:key, :game_id, :timestamp, :payload]
+  defstruct [:key, :game_id, :timestamp, :clock_state_time_at, :clock_state_period_at, :payload]
 
-  @spec new(String.t(), String.t()) :: t()
-  @spec new(String.t(), String.t(), any()) :: t()
-  def new(key, game_id, payload \\ nil) do
+  @spec new(String.t(), String.t(), integer(), integer()) :: t()
+  @spec new(String.t(), String.t(), integer(), integer(), any()) :: t()
+  def new(key, game_id, clock_state_time_at, clock_state_period_at, payload \\ nil) do
     %__MODULE__{
       key: key,
       game_id: game_id,
       timestamp: DateTime.utc_now(),
+      clock_state_time_at: clock_state_time_at,
+      clock_state_period_at: clock_state_period_at,
       payload: payload
     }
   end

@@ -8,7 +8,7 @@ defmodule GoChampsScoreboard.Events.ValidatorCreatorTest do
     @game_id "some-game-id"
 
     test "returns :ok and event" do
-      set_test_game()
+      current_game_state = set_test_game()
 
       assert {:ok, event} =
                ValidatorCreator.validate_and_create(@event_key, @game_id, %{
@@ -19,6 +19,8 @@ defmodule GoChampsScoreboard.Events.ValidatorCreatorTest do
 
       assert event.key == @event_key
       assert event.game_id == @game_id
+      assert event.clock_state_time_at == current_game_state.clock_state.time
+      assert event.clock_state_period_at == current_game_state.clock_state.period
 
       unset_test_game()
     end
@@ -41,6 +43,7 @@ defmodule GoChampsScoreboard.Events.ValidatorCreatorTest do
     live_state = LiveState.new()
     game_state = GameState.new("some-game-id", away_team, home_team, clock_state, live_state)
     Redix.command(:games_cache, ["SET", "some-game-id", game_state])
+    game_state
   end
 
   defp unset_test_game() do

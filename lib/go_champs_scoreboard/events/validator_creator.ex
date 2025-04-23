@@ -8,10 +8,18 @@ defmodule GoChampsScoreboard.Events.ValidatorCreator do
   def validate_and_create(key, game_id, payload \\ nil) do
     case Registry.get_definition(key) do
       {:ok, definition} ->
-        case Games.get_game(game_id)
+        {:ok, game_state} = Games.get_game(game_id)
+
+        case game_state
              |> definition.validate(payload) do
           {:ok} ->
-            {:ok, definition.create(game_id, payload)}
+            {:ok,
+             definition.create(
+               game_id,
+               game_state.clock_state.time,
+               game_state.clock_state.period,
+               payload
+             )}
 
           {:error, error} ->
             {:error, error}

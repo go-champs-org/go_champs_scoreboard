@@ -23,8 +23,13 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayerInTeamDefinitionTest
 
   describe "create/2" do
     test "returns event" do
-      assert %Event{key: "update-player-in-team", game_id: "some-game-id"} =
-               UpdatePlayerInTeamDefinition.create("some-game-id", %{
+      assert %Event{
+               key: "update-player-in-team",
+               game_id: "some-game-id",
+               clock_state_time_at: 10,
+               clock_state_period_at: 1
+             } =
+               UpdatePlayerInTeamDefinition.create("some-game-id", 10, 1, %{
                  "team-type" => "home",
                  "player" => %{
                    "id" => "some-id",
@@ -57,7 +62,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayerInTeamDefinitionTest
       }
 
       event =
-        UpdatePlayerInTeamDefinition.create(game_state.id, update_player_in_team_payload)
+        UpdatePlayerInTeamDefinition.create(game_state.id, 10, 1, update_player_in_team_payload)
 
       game = UpdatePlayerInTeamDefinition.handle(game_state, event)
       [player] = game.home_team.players

@@ -131,7 +131,7 @@ defmodule GoChampsScoreboard.Games.GamesTest do
     test "when UpdateClockState event is given, returns a game handled by the event" do
       set_test_game()
 
-      event = UpdateClockStateDefinition.create("some-game-id", %{"state" => "running"})
+      event = UpdateClockStateDefinition.create("some-game-id", 10, 1, %{"state" => "running"})
       handled_game = get_test_game() |> UpdateClockStateDefinition.handle(event)
 
       result_game_state = Games.react_to_event(event, "some-game-id")

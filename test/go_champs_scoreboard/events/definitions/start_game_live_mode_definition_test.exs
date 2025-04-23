@@ -17,8 +17,13 @@ defmodule GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinitionTest 
 
   describe "create/2" do
     test "returns event" do
-      assert %Event{key: "start-game-live-mode", game_id: "some-game-id"} =
-               StartGameLiveModeDefinition.create("some-game-id", %{})
+      assert %Event{
+               key: "start-game-live-mode",
+               game_id: "some-game-id",
+               clock_state_time_at: 10,
+               clock_state_period_at: 1
+             } =
+               StartGameLiveModeDefinition.create("some-game-id", 10, 1, %{})
     end
   end
 

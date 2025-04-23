@@ -19,8 +19,13 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateClockTimeAndPeriodDefiniti
 
   describe "create/2" do
     test "returns event" do
-      assert %Event{key: "update-clock-time-and-period", game_id: "some-game-id"} =
-               UpdateClockTimeAndPeriodDefinition.create("some-game-id", %{
+      assert %Event{
+               key: "update-clock-time-and-period",
+               game_id: "some-game-id",
+               clock_state_time_at: 10,
+               clock_state_period_at: 1
+             } =
+               UpdateClockTimeAndPeriodDefinition.create("some-game-id", 10, 1, %{
                  "property" => "time",
                  "operation" => "increment"
                })
@@ -50,7 +55,12 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateClockTimeAndPeriodDefiniti
       }
 
       event =
-        UpdateClockTimeAndPeriodDefinition.create(game_state.id, update_player_in_team_payload)
+        UpdateClockTimeAndPeriodDefinition.create(
+          game_state.id,
+          10,
+          1,
+          update_player_in_team_payload
+        )
 
       assert %GameState{
                id: "1",
@@ -91,7 +101,12 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateClockTimeAndPeriodDefiniti
       }
 
       event =
-        UpdateClockTimeAndPeriodDefinition.create(game_state.id, update_player_in_team_payload)
+        UpdateClockTimeAndPeriodDefinition.create(
+          game_state.id,
+          10,
+          1,
+          update_player_in_team_payload
+        )
 
       assert %GameState{
                id: "1",
@@ -132,7 +147,12 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateClockTimeAndPeriodDefiniti
       }
 
       event =
-        UpdateClockTimeAndPeriodDefinition.create(game_state.id, update_player_in_team_payload)
+        UpdateClockTimeAndPeriodDefinition.create(
+          game_state.id,
+          10,
+          1,
+          update_player_in_team_payload
+        )
 
       assert %GameState{
                id: "1",
@@ -173,7 +193,12 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateClockTimeAndPeriodDefiniti
       }
 
       event =
-        UpdateClockTimeAndPeriodDefinition.create(game_state.id, update_player_in_team_payload)
+        UpdateClockTimeAndPeriodDefinition.create(
+          game_state.id,
+          10,
+          1,
+          update_player_in_team_payload
+        )
 
       assert %GameState{
                id: "1",
@@ -214,7 +239,12 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateClockTimeAndPeriodDefiniti
       }
 
       event =
-        UpdateClockTimeAndPeriodDefinition.create(game_state.id, update_player_in_team_payload)
+        UpdateClockTimeAndPeriodDefinition.create(
+          game_state.id,
+          10,
+          1,
+          update_player_in_team_payload
+        )
 
       assert %GameState{
                id: "1",
@@ -255,7 +285,12 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateClockTimeAndPeriodDefiniti
       }
 
       event =
-        UpdateClockTimeAndPeriodDefinition.create(game_state.id, update_player_in_team_payload)
+        UpdateClockTimeAndPeriodDefinition.create(
+          game_state.id,
+          10,
+          1,
+          update_player_in_team_payload
+        )
 
       assert %GameState{
                id: "1",
@@ -296,7 +331,12 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateClockTimeAndPeriodDefiniti
       }
 
       event =
-        UpdateClockTimeAndPeriodDefinition.create(game_state.id, update_player_in_team_payload)
+        UpdateClockTimeAndPeriodDefinition.create(
+          game_state.id,
+          10,
+          1,
+          update_player_in_team_payload
+        )
 
       assert %GameState{
                id: "1",
@@ -337,7 +377,12 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateClockTimeAndPeriodDefiniti
       }
 
       event =
-        UpdateClockTimeAndPeriodDefinition.create(game_state.id, update_player_in_team_payload)
+        UpdateClockTimeAndPeriodDefinition.create(
+          game_state.id,
+          10,
+          1,
+          update_player_in_team_payload
+        )
 
       assert %GameState{
                id: "1",
