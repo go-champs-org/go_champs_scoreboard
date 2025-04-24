@@ -137,7 +137,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
   # end
 
   describe "get_all_by_game_id/1" do
-    test "retrieves all event logs for a specific game ID sorted by timestamp" do
+    test "retrieves all event logs for a specific game ID sorted by period, time and timestamp" do
       game_id = "7488a646-e31f-11e4-aace-600308960668"
 
       event3 =
@@ -175,6 +175,19 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
           }
         )
 
+      event5 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_id,
+          6,
+          2,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => "123",
+            "stat-id" => "rebounds"
+          }
+        )
+
       event1 =
         GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
           game_id,
@@ -192,11 +205,14 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       {:ok, event1} = EventLogs.persist(event1, game_state)
       {:ok, event2} = EventLogs.persist(event2, game_state)
       {:ok, event3} = EventLogs.persist(event3, game_state)
+      # Event if event5 was persisted before event4, it should be sorted after event4
+      # because event4 has created before event5
+      {:ok, event5} = EventLogs.persist(event5, game_state)
       {:ok, event4} = EventLogs.persist(event4, game_state)
 
       event_logs = EventLogs.get_all_by_game_id(game_id)
 
-      assert length(event_logs) == 4
+      assert length(event_logs) == 5
       assert Enum.at(event_logs, 0).id == event1.id
       assert Enum.at(event_logs, 0).game_clock_time == 9
       assert Enum.at(event_logs, 0).game_clock_period == 1
@@ -209,6 +225,9 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       assert Enum.at(event_logs, 3).id == event4.id
       assert Enum.at(event_logs, 3).game_clock_time == 6
       assert Enum.at(event_logs, 3).game_clock_period == 2
+      assert Enum.at(event_logs, 4).id == event5.id
+      assert Enum.at(event_logs, 4).game_clock_time == 6
+      assert Enum.at(event_logs, 4).game_clock_period == 2
     end
   end
 

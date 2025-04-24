@@ -85,7 +85,7 @@ defmodule GoChampsScoreboard.Games.EventLogs do
     query =
       from e in EventLog,
         where: e.game_id == ^game_id,
-        order_by: [asc: e.game_clock_period, desc: e.game_clock_time]
+        order_by: [asc: e.game_clock_period, desc: e.game_clock_time, asc: e.timestamp]
 
     Repo.all(query)
   end
