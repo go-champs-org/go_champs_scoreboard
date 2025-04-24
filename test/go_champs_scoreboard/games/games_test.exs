@@ -13,53 +13,58 @@ defmodule GoChampsScoreboard.Games.GamesTest do
 
   describe "find_or_bootstrap/1 when game is set" do
     test "returns game_state" do
-      set_test_game(:in_progress)
+      game_state = set_test_game(:in_progress)
 
-      result_game_state = Games.find_or_bootstrap("some-game-id")
+      result_game_state = Games.find_or_bootstrap(game_state.id)
 
-      assert result_game_state.id == "some-game-id"
+      assert result_game_state.id == game_state.id
       assert result_game_state.away_team.name == "Some away team"
       assert result_game_state.home_team.name == "Some home team"
 
-      unset_test_game()
+      unset_test_game(game_state.id)
     end
 
     test "returns bootstrapped game from go champs if current game is not_started" do
-      set_test_game()
+      game_state = set_test_game()
       # Let's say teams have been updated in Go Champs
-      set_go_champs_api_respose("Go champs updated away team", "Go champs updated home team")
-      set_go_champs_view_setting_api_response()
+      set_go_champs_api_respose(
+        game_state.id,
+        "Go champs updated away team",
+        "Go champs updated home team"
+      )
 
-      result_game_state = Games.find_or_bootstrap("some-game-id", "token")
+      set_go_champs_view_setting_api_response(game_state.id)
 
-      {:ok, stored_game} = Redix.command(:games_cache, ["GET", "some-game-id"])
+      result_game_state = Games.find_or_bootstrap(game_state.id, "token")
+
+      {:ok, stored_game} = Redix.command(:games_cache, ["GET", game_state.id])
 
       redis_game = GameState.from_json(stored_game)
 
-      assert redis_game.id == "some-game-id"
-      assert result_game_state.id == "some-game-id"
+      assert redis_game.id == game_state.id
+      assert result_game_state.id == game_state.id
       assert result_game_state.away_team.name == "Go champs updated away team"
       assert result_game_state.home_team.name == "Go champs updated home team"
 
-      unset_test_game()
+      unset_test_game(game_state.id)
     end
 
     test "return game from cache and restart resource manager if game is in progress" do
-      set_test_game(:in_progress)
+      game_state = set_test_game(:in_progress)
 
       expect(@resource_manager, :check_and_restart, fn game_id ->
-        assert game_id == "some-game-id"
+        assert game_id == game_state.id
 
         :ok
       end)
 
-      result_game_state = Games.find_or_bootstrap("some-game-id", "token", @resource_manager)
+      result_game_state = Games.find_or_bootstrap(game_state.id, "token", @resource_manager)
 
-      assert result_game_state.id == "some-game-id"
+      assert result_game_state.id == game_state.id
       assert result_game_state.away_team.name == "Some away team"
       assert result_game_state.home_team.name == "Some home team"
 
-      unset_test_game()
+      unset_test_game(game_state.id)
     end
   end
 
@@ -79,66 +84,56 @@ defmodule GoChampsScoreboard.Games.GamesTest do
       assert result_game_state.away_team.name == "Go champs away team"
       assert result_game_state.home_team.name == "Go champs home team"
 
-      unset_test_game()
+      unset_test_game("some-game-id")
     end
   end
 
   describe "start_live_mode/1" do
     test "starts up ResourceManager and returns a handled StartGameLiveMode game state" do
-      set_test_game()
+      game_state = set_test_game()
 
-      expect(@resource_manager, :start_up, fn _game_id ->
+      expect(@resource_manager, :start_up, fn game_id ->
+        assert game_id == game_state.id
         :ok
       end)
 
-      result_game = Games.start_live_mode("some-game-id", @resource_manager)
+      result_game = Games.start_live_mode(game_state.id, @resource_manager)
 
       assert result_game.live_state.state == :in_progress
 
-      unset_test_game()
+      unset_test_game(game_state.id)
     end
   end
 
   describe "end_live_mode/1" do
     test "shuts down ResourceManager and returns a handled EndGameLiveMode game state" do
-      set_test_game()
+      game_state = set_test_game()
 
-      expect(@resource_manager, :shut_down, fn _game_id ->
+      expect(@resource_manager, :shut_down, fn game_id ->
+        assert game_id == game_state.id
         :ok
       end)
 
-      result_game = Games.end_live_mode("some-game-id", @resource_manager)
+      result_game = Games.end_live_mode(game_state.id, @resource_manager)
 
       assert result_game.live_state.state == :ended
 
-      unset_test_game()
-    end
-  end
-
-  describe "reset_live_mode/1" do
-    test "deletes a game from cache" do
-      set_test_game()
-
-      Games.reset_live_mode("some-game-id")
-
-      {:ok, game_json} = Redix.command(:games_cache, ["GET", "some-game-id"])
-
-      assert game_json == nil
+      unset_test_game(game_state.id)
     end
   end
 
   describe "react_to_event/2 for started game" do
     test "when UpdateClockState event is given, returns a game handled by the event" do
-      set_test_game()
+      game_state = set_test_game()
 
-      event = UpdateClockStateDefinition.create("some-game-id", 10, 1, %{"state" => "running"})
-      handled_game = get_test_game() |> UpdateClockStateDefinition.handle(event)
+      event = UpdateClockStateDefinition.create(game_state.id, 10, 1, %{"state" => "running"})
+      handled_game = get_test_game(game_state.id) |> UpdateClockStateDefinition.handle(event)
 
-      result_game_state = Games.react_to_event(event, "some-game-id")
+      result_game_state = Games.react_to_event(event, game_state.id)
 
       assert result_game_state == handled_game
 
-      unset_test_game()
+      unset_test_game(game_state.id)
     end
   end
 
@@ -183,12 +178,13 @@ defmodule GoChampsScoreboard.Games.GamesTest do
   end
 
   defp set_go_champs_api_respose(
+         game_id \\ "some-game-id",
          away_team_name \\ "Go champs away team",
          home_team_name \\ "Go champs home team"
        ) do
     response_body = %{
       "data" => %{
-        "id" => "some-game-id",
+        "id" => game_id,
         "away_team" => %{
           "name" => away_team_name
         },
@@ -199,20 +195,20 @@ defmodule GoChampsScoreboard.Games.GamesTest do
     }
 
     expect(@http_client, :get, fn url, headers ->
-      assert url =~ "some-game-id"
+      assert url =~ game_id
       assert headers == [{"Authorization", "Bearer token"}]
 
       {:ok, %HTTPoison.Response{body: response_body |> Poison.encode!(), status_code: 200}}
     end)
   end
 
-  defp set_go_champs_view_setting_api_response() do
+  defp set_go_champs_view_setting_api_response(game_id \\ "some-game-id") do
     response_body = %{
       "data" => nil
     }
 
     expect(@http_client, :get, fn url ->
-      assert url =~ "some-game-id/scoreboard-setting"
+      assert url =~ "#{game_id}/scoreboard-setting"
 
       {:ok, %HTTPoison.Response{body: response_body |> Poison.encode!(), status_code: 200}}
     end)
@@ -223,16 +219,21 @@ defmodule GoChampsScoreboard.Games.GamesTest do
     home_team = TeamState.new("Some home team")
     clock_state = GameClockState.new()
     live_state = LiveState.new(live_state)
-    game_state = GameState.new("some-game-id", away_team, home_team, clock_state, live_state)
-    Redix.command(:games_cache, ["SET", "some-game-id", game_state])
+
+    game_state =
+      GameState.new(Ecto.UUID.generate(), away_team, home_team, clock_state, live_state)
+
+    Redix.command(:games_cache, ["SET", game_state.id, game_state])
+
+    game_state
   end
 
-  defp unset_test_game() do
-    Redix.command(:games_cache, ["DEL", "some-game-id"])
+  defp unset_test_game(game_id) do
+    Redix.command(:games_cache, ["DEL", game_id])
   end
 
-  defp get_test_game() do
-    {:ok, game_json} = Redix.command(:games_cache, ["GET", "some-game-id"])
+  defp get_test_game(game_id) do
+    {:ok, game_json} = Redix.command(:games_cache, ["GET", game_id])
     GameState.from_json(game_json)
   end
 end

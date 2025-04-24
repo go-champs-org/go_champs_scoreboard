@@ -82,25 +82,6 @@ defmodule GoChampsScoreboard.Games.Games do
     end
   end
 
-  @spec reset_live_mode(String.t()) :: :ok
-  def reset_live_mode(game_id) do
-    case get_game(game_id) do
-      {:ok, nil} ->
-        raise RuntimeError, message: "Game not found"
-
-      {:ok, _current_game_state} ->
-        {:ok, reset_event} =
-          ResetGameLiveModeDefinition.key()
-          |> ValidatorCreator.validate_and_create(game_id)
-
-        react_to_event(reset_event, game_id)
-
-        delete_game(game_id)
-
-        :ok
-    end
-  end
-
   @spec react_to_event(Event.t(), GameState.t()) :: GameState.t()
   def react_to_event(event, game_id) do
     case get_game(game_id) do
