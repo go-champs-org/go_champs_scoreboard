@@ -28,6 +28,10 @@ defmodule GoChampsScoreboardWeb.Router do
   scope "/v1", GoChampsScoreboardWeb do
     pipe_through :api
 
+    resources "/games", GameController, only: [] do
+      resources "/event-logs", EventLogController, only: [:index], as: :event_logs
+    end
+
     resources "/event-logs", EventLogController
   end
 

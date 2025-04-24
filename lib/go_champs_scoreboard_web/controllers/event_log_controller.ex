@@ -3,12 +3,20 @@ defmodule GoChampsScoreboardWeb.EventLogController do
 
   alias GoChampsScoreboard.Events
   alias GoChampsScoreboard.Events.EventLog
+  alias GoChampsScoreboard.Games.EventLogs
 
   action_fallback GoChampsScoreboardWeb.FallbackController
 
-  def index(conn, _params) do
-    event_logs = Events.list_event_logs()
-    render(conn, :index, event_logs: event_logs)
+  def index(conn, params) do
+    case params do
+      %{"game_id" => game_id} ->
+        event_logs = EventLogs.get_all_by_game_id(game_id)
+        render(conn, :index, event_logs: event_logs)
+
+      _ ->
+        event_logs = Events.list_event_logs()
+        render(conn, :index, event_logs: event_logs)
+    end
   end
 
   def create(conn, %{"event_log" => event_log_params}) do

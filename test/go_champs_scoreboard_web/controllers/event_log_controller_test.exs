@@ -40,6 +40,30 @@ defmodule GoChampsScoreboardWeb.EventLogControllerTest do
       conn = get(conn, ~p"/v1/event-logs")
       assert json_response(conn, 200)["data"] == []
     end
+
+    test "lists all events pertaning to game id", %{conn: conn} do
+      event_log = event_log_fixture()
+      conn = get(conn, ~p"/v1/games/#{event_log.game_id}/event-logs")
+
+      assert json_response(conn, 200)["data"] == [
+               %{
+                 "id" => event_log.id,
+                 "game_id" => "7488a646-e31f-11e4-aace-600308960662",
+                 "key" => "some key",
+                 "payload" => %{},
+                 "timestamp" => "2025-04-21T00:39:00.000000Z",
+                 "game_clock_time" => 10,
+                 "game_clock_period" => 1
+               }
+             ]
+    end
+
+    test "doest not lists events for other games", %{conn: conn} do
+      event_log_fixture()
+      conn = get(conn, ~p"/v1/games/#{Ecto.UUID.generate()}/event-logs")
+
+      assert json_response(conn, 200)["data"] == []
+    end
   end
 
   describe "create event_log" do
