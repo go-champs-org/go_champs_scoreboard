@@ -12,11 +12,19 @@ defmodule GoChampsScoreboard.Events.Models.Event do
 
   @spec new(String.t(), String.t(), integer(), integer()) :: t()
   @spec new(String.t(), String.t(), integer(), integer(), any()) :: t()
-  def new(key, game_id, clock_state_time_at, clock_state_period_at, payload \\ nil) do
+  @spec new(String.t(), String.t(), integer(), integer(), any(), DateTime.t()) :: t()
+  def new(
+        key,
+        game_id,
+        clock_state_time_at,
+        clock_state_period_at,
+        payload \\ nil,
+        timestamp \\ DateTime.utc_now()
+      ) do
     %__MODULE__{
       key: key,
       game_id: game_id,
-      timestamp: DateTime.utc_now(),
+      timestamp: timestamp,
       clock_state_time_at: clock_state_time_at,
       clock_state_period_at: clock_state_period_at,
       payload: payload

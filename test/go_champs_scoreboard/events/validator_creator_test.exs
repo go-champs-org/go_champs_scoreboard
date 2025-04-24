@@ -36,6 +36,39 @@ defmodule GoChampsScoreboard.Events.ValidatorCreatorTest do
     end
   end
 
+  describe "create/3 for AddPlayerToTeam" do
+    @event_key "add-player-to-team"
+    @game_id "some-game-id"
+    @clock_time 10
+    @clock_period 1
+
+    test "creates event with correct attributes" do
+      assert {:ok, event} =
+               ValidatorCreator.create(
+                 @event_key,
+                 @game_id,
+                 @clock_time,
+                 @clock_period,
+                 %{
+                   "team_type" => "home",
+                   "name" => "Michael Jordan",
+                   "number" => 23
+                 }
+               )
+
+      assert event.key == @event_key
+      assert event.game_id == @game_id
+      assert event.clock_state_time_at == @clock_time
+      assert event.clock_state_period_at == @clock_period
+
+      assert event.payload == %{
+               "team_type" => "home",
+               "name" => "Michael Jordan",
+               "number" => 23
+             }
+    end
+  end
+
   defp set_test_game() do
     away_team = TeamState.new("Some away team")
     home_team = TeamState.new("Some home team")

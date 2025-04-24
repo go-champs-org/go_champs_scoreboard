@@ -29,4 +29,22 @@ defmodule GoChampsScoreboard.Events.ValidatorCreator do
         {:error, "Event definition not registered for key: #{key}"}
     end
   end
+
+  @spec create(String.t(), String.t(), integer(), integer(), any()) ::
+          {:ok, Event.t()}
+  def create(key, game_id, clock_time, clock_period, payload) do
+    case Registry.get_definition(key) do
+      {:ok, definition} ->
+        {:ok,
+         definition.create(
+           game_id,
+           clock_time,
+           clock_period,
+           payload
+         )}
+
+      {:error, :not_registered} ->
+        {:error, "Event definition not registered for key: #{key}"}
+    end
+  end
 end

@@ -2,6 +2,7 @@ defmodule GoChampsScoreboard.Events.EventLog do
   use Ecto.Schema
   use GoChampsScoreboard.Schema
   import Ecto.Changeset
+  alias GoChampsScoreboard.Events.GameSnapshot
 
   @type t :: %__MODULE__{
           key: String.t(),
@@ -21,6 +22,8 @@ defmodule GoChampsScoreboard.Events.EventLog do
     field :game_clock_time, :integer
     # Period number
     field :game_clock_period, :integer
+
+    has_one :snapshot, GameSnapshot, foreign_key: :event_log_id
 
     timestamps(type: :utc_datetime)
   end
