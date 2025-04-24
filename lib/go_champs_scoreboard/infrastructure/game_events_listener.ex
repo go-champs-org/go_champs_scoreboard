@@ -1,5 +1,6 @@
 defmodule GoChampsScoreboard.Infrastructure.GameEventsListener do
   use GenServer
+  alias GoChampsScoreboard.Games.EventLogs
   alias GoChampsScoreboard.Infrastructure.Stream.{PayloadBuilder, Publisher}
   alias GoChampsScoreboard.Events.StreamConfigs
   alias GoChampsScoreboard.Games.Messages.PubSub
@@ -14,12 +15,19 @@ defmodule GoChampsScoreboard.Infrastructure.GameEventsListener do
     {:ok, %{game_id: game_id}}
   end
 
-  def handle_info({:game_reacted_to_event, %{event: event} = payload}, state) do
+  def handle_info(
+        {:game_reacted_to_event, %{event: event, game_state: game_state} = payload},
+        state
+      ) do
     stream_config = StreamConfigs.find_for_game_event(event.key)
 
     if stream_config.streamable do
       PayloadBuilder.build(stream_config.payload_builder, payload)
       |> Publisher.publish()
+    end
+
+    if event.meta[:persistable] do
+      EventLogs.persist(event, game_state)
     end
 
     {:noreply, state}

@@ -27,7 +27,10 @@ defmodule GoChampsScoreboard.Events.Definitions.GameTickDefinition do
           payload :: any()
         ) :: Event.t()
   def create(game_id, clock_state_time_at, clock_state_period_at, _payload),
-    do: Event.new(@key, game_id, clock_state_time_at, clock_state_period_at)
+    do:
+      Event.new(@key, game_id, clock_state_time_at, clock_state_period_at, nil, %{
+        persistable: false
+      })
 
   @impl true
   @spec handle(game_state :: GameState.t(), event :: Event.t()) :: GameState.t()
