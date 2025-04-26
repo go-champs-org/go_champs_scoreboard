@@ -4,6 +4,8 @@ defmodule GoChampsScoreboard.Sports.Sports do
   alias GoChampsScoreboard.Statistics.Models.Stat
   alias GoChampsScoreboard.Games.Models.GameClockState
 
+  import Ecto.Query
+
   @spec find_player_stat(String.t(), String.t()) :: Stat.t()
   def find_player_stat("basketball", stat_id), do: Basketball.Basketball.find_player_stat(stat_id)
 
@@ -24,5 +26,17 @@ defmodule GoChampsScoreboard.Sports.Sports do
   @spec player_tick(String.t(), PlayerState.t(), GameClockState.t()) :: PlayerState.t()
   def player_tick("basketball", player, game_clock_state) do
     Basketball.PlayerClock.player_tick(player, game_clock_state)
+  end
+
+  @spec event_logs_order_by(String.t(), Ecto.Query.t()) :: Ecto.Query.t()
+  def event_logs_order_by("basketball", query) do
+    Basketball.EventLogsOperations.order_by(query)
+  end
+
+  @spec event_logs_order_by(String.t(), Ecto.Query.t()) :: Ecto.Query.t()
+  def event_logs_order_by(_, query) do
+    from e in query,
+      order_by: [desc: e.inserted_at],
+      select: e
   end
 end

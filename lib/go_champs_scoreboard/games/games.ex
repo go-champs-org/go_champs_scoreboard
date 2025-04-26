@@ -1,6 +1,5 @@
 defmodule GoChampsScoreboard.Games.Games do
   alias GoChampsScoreboard.Events.Definitions.EndGameLiveModeDefinition
-  alias GoChampsScoreboard.Events.Definitions.ResetGameLiveModeDefinition
   alias GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition
   alias GoChampsScoreboard.Events.ValidatorCreator
   alias GoChampsScoreboard.Events.Models.Event
@@ -135,11 +134,5 @@ defmodule GoChampsScoreboard.Games.Games do
   defp update_game(game_state) do
     Redix.command(:games_cache, ["SET", game_state.id, game_state, "EX", @two_days_in_seconds])
     game_state
-  end
-
-  @spec delete_game(String.t()) :: :ok
-  defp delete_game(game_id) do
-    Redix.command(:games_cache, ["DEL", game_id])
-    :ok
   end
 end

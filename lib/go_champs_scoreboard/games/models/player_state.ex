@@ -29,7 +29,7 @@ defmodule GoChampsScoreboard.Games.Models.PlayerState do
           _options
         ) do
       %GoChampsScoreboard.Games.Models.PlayerState{
-        state: String.to_atom(state),
+        state: if(is_nil(state), do: :not_available, else: String.to_atom(state)),
         id: id,
         name: name,
         number: number,

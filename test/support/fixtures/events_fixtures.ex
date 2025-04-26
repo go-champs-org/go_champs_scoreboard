@@ -4,6 +4,9 @@ defmodule GoChampsScoreboard.EventsFixtures do
   entities via the `GoChampsScoreboard.Events` context.
   """
 
+  alias GoChampsScoreboard.Games.EventLogs
+  import GoChampsScoreboard.GameStateFixtures
+
   @doc """
   Generate a event_log.
   """
@@ -19,6 +22,25 @@ defmodule GoChampsScoreboard.EventsFixtures do
         game_clock_period: 1
       })
       |> GoChampsScoreboard.Events.create_event_log()
+
+    event_log
+  end
+
+  @doc """
+  Generate a event_log with a snapshot.
+  """
+  def event_log_with_snapshot_fixture(_attrs \\ %{}) do
+    game_state = game_state_fixture()
+
+    start_live_event =
+      GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+        game_state.id,
+        10,
+        1,
+        %{}
+      )
+
+    {:ok, event_log} = EventLogs.persist(start_live_event, game_state)
 
     event_log
   end

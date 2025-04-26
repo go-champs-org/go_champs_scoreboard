@@ -78,64 +78,6 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
     end
   end
 
-  # describe "update_payload/2" do
-  #   test "updates the event log payload by ID" do
-  #     update_player_stat_event =
-  #       GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
-  #         "7488a646-e31f-11e4-aace-600308960668",
-  #         10,
-  #         1,
-  #         %{
-  #           "operation" => "increment",
-  #           "team-type" => "home",
-  #           "player-id" => "123",
-  #           "stat-id" => "field_goals_made"
-  #         }
-  #       )
-
-  #     {:ok, event_log} = EventLogs.persist(update_player_stat_event)
-
-  #     updated_payload = %{
-  #       "operation" => "decrement",
-  #       "team-type" => "away",
-  #       "player-id" => "456",
-  #       "stat-id" => "rebounds"
-  #     }
-
-  #     {:ok, updated_event_log} = EventLogs.update_payload(event_log.id, updated_payload)
-
-  #     assert updated_event_log.payload == updated_payload
-  #   end
-
-  #   test "returns error for non-existent event log" do
-  #     assert EventLogs.update_payload("7488a646-e31f-11e4-aace-600308960668", %{}) ==
-  #              {:error, :not_found}
-  #   end
-  # end
-
-  # describe "delete/1" do
-  #   test "deletes the event log by ID" do
-  #     update_player_stat_event =
-  #       GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
-  #         "7488a646-e31f-11e4-aace-600308960668",
-  #         10,
-  #         1,
-  #         %{
-  #           "operation" => "increment",
-  #           "team-type" => "home",
-  #           "player-id" => "123",
-  #           "stat-id" => "field_goals_made"
-  #         }
-  #       )
-
-  #     {:ok, event_log} = EventLogs.persist(update_player_stat_event)
-  #     assert EventLogs.get(event_log.id) != nil
-
-  #     EventLogs.delete(event_log.id)
-  #     assert EventLogs.get(event_log.id) == nil
-  #   end
-  # end
-
   describe "get_all_by_game_id/1" do
     test "retrieves all event logs for a specific game ID sorted by period, time and timestamp" do
       game_id = "7488a646-e31f-11e4-aace-600308960668"
@@ -228,6 +170,144 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       assert Enum.at(event_logs, 4).id == event5.id
       assert Enum.at(event_logs, 4).game_clock_time == 6
       assert Enum.at(event_logs, 4).game_clock_period == 2
+    end
+  end
+
+  describe "get_first_created_by_game_id/1" do
+    test "retrieves the first event log with game snapshot for a specific game ID" do
+      game_id = "7488a646-e31f-11e4-aace-600308960668"
+
+      game_state = game_state_fixture()
+
+      start_live_event =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          game_id,
+          1,
+          1,
+          %{}
+        )
+
+      update_player_stat_event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_id,
+          10,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => "123",
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      {:ok, first_event_log} = EventLogs.persist(start_live_event, game_state)
+      {:ok, _second_event_log} = EventLogs.persist(update_player_stat_event, game_state)
+      {:ok, _third_event_log} = EventLogs.persist(update_player_stat_event, game_state)
+
+      retrieved_event_log = EventLogs.get_first_created_by_game_id(game_id)
+
+      assert retrieved_event_log.id == first_event_log.id
+      assert retrieved_event_log.key == first_event_log.key
+      assert retrieved_event_log.game_id == first_event_log.game_id
+      assert retrieved_event_log.payload == first_event_log.payload
+
+      assert retrieved_event_log.snapshot.state ==
+               first_event_log.snapshot.state
+               |> Poison.encode!()
+               |> GameState.from_json()
+    end
+
+    test "returns nil for non-existent game ID" do
+      assert EventLogs.get_first_created_by_game_id(Ecto.UUID.generate()) == nil
+    end
+  end
+
+  describe "get_pior_event_log/1" do
+    test "retrieves the event log prior to a specific event log with the its associated parsed game snapshot" do
+      game_state = basketball_game_state_fixture()
+
+      payload1 = %{
+        "operation" => "increment",
+        "team-type" => "home",
+        "player-id" => "123",
+        "stat-id" => "field_goals_made"
+      }
+
+      payload2 = %{
+        "operation" => "decrement",
+        "team-type" => "away",
+        "player-id" => "456",
+        "stat-id" => "rebounds_defensive"
+      }
+
+      event1 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          8,
+          1,
+          payload1
+        )
+
+      event2_game_state = %{
+        game_state
+        | away_team: %{
+            game_state.away_team
+            | players: [
+                %{
+                  id: "456",
+                  stats_values: %{"rebounds_defensive" => 0}
+                }
+              ]
+          }
+      }
+
+      event2 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          7,
+          1,
+          payload2
+        )
+
+      {:ok, event_log1} = EventLogs.persist(event1, game_state)
+      {:ok, event_log2} = EventLogs.persist(event2, event2_game_state)
+
+      retrieved_event_log = EventLogs.get_pior_event_log(event_log2)
+
+      assert retrieved_event_log.id == event_log1.id
+      assert retrieved_event_log.key == event_log1.key
+      assert retrieved_event_log.game_id == event_log1.game_id
+      assert retrieved_event_log.payload == event_log1.payload
+
+      assert retrieved_event_log.snapshot.state ==
+               event_log1.snapshot.state
+               |> Poison.encode!()
+               |> GameState.from_json()
+    end
+
+    test "returns nil if no prior event log exists" do
+      game_state = basketball_game_state_fixture()
+
+      payload = %{
+        "operation" => "increment",
+        "team-type" => "home",
+        "player-id" => "123",
+        "stat-id" => "field_goals_made"
+      }
+
+      event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          game_state.clock_state.time,
+          game_state.clock_state.period,
+          payload
+        )
+
+      {:ok, event_log} = EventLogs.persist(event, game_state)
+      # Attempt to retrieve the prior event log for the first event log
+      retrieved_event_log = EventLogs.get_pior_event_log(event_log)
+      # Since this is the first event log, it should return nil
+      assert retrieved_event_log == nil
     end
   end
 
