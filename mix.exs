@@ -58,7 +58,8 @@ defmodule GoChampsScoreboard.MixProject do
       {:bandit, "~> 1.5"},
       {:amqp, "~> 3.3"},
       {:amqp_client, "~> 3.12"},
-      {:rabbit_common, "~> 3.13.4", override: true}
+      {:rabbit_common, "~> 3.13.4", override: true},
+      {:corsica, "~> 2.1"}
     ]
   end
 

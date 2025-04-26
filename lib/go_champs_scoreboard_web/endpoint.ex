@@ -15,6 +15,12 @@ defmodule GoChampsScoreboardWeb.Endpoint do
     websocket: [connect_info: [session: @session_options]],
     longpoll: [connect_info: [session: @session_options]]
 
+  # CORS configuration
+  @cors_config Application.compile_env(:go_champs_scoreboard, __MODULE__)[:cors] || [origins: "*"]
+
+  plug Corsica,
+       @cors_config
+
   # Serve at "/" the static files from "priv/static" directory.
   #
   # You should set gzip to true if you are running phx.digest

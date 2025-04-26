@@ -72,6 +72,17 @@ config :go_champs_scoreboard, dev_routes: true
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 
+# CORS Configuration for Development
+config :go_champs_scoreboard, GoChampsScoreboardWeb.Endpoint,
+  cors: [
+    origins: "*",
+    allow_credentials: true,
+    allow_methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers: ["Authorization", "Content-Type", "Accept", "Origin", "User-Agent"],
+    expose_headers: ["content-length", "x-request-id"],
+    max_age: 86400
+  ]
+
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20

@@ -25,5 +25,16 @@ config :swoosh, local: false
 # Do not print debug messages in production
 config :logger, level: :info
 
+# CORS Configuration for Production
+config :go_champs_scoreboard, GoChampsScoreboardWeb.Endpoint,
+  cors: [
+    origins: ~r/https:\/\/(.*\.)?go-champs\.com$/,
+    allow_credentials: true,
+    allow_methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers: ["Authorization", "Content-Type", "Accept", "Origin", "User-Agent"],
+    expose_headers: ["content-length", "x-request-id"],
+    max_age: 86400
+  ]
+
 # Runtime production configuration, including reading
 # of environment variables, is done on config/runtime.exs.
