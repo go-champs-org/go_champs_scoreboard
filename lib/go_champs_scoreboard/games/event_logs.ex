@@ -156,32 +156,107 @@ defmodule GoChampsScoreboard.Games.EventLogs do
     end
   end
 
+  @doc """
+  Retrieves the prior event log for a given event log along with its snapshot.
+  This function finds the event log that occurred immediately before the specified event log
+  in the context of the same game. It returns the prior event log with its snapshot if found,
+  or nil if no prior event log exists.
+
+  NOTE: This function queries the database for all event logs associated with the game ID of the specified event log and finds the prior event log based on the index of the current event log in the list.
+  It is important to note that this function does not persist any changes to the database.
+  Instead, it simply returns the prior event log with its snapshot if found, or nil if not found.
+
+  ## Parameters
+  - `event_log`: The event log for which to retrieve the prior event log.
+  ## Returns
+  - The prior event log with its snapshot if found, or nil if not found.
+  ## Example
+  ```
+  iex> event_log = %EventLog{
+    id: "some-uuid",
+    game_id: "game-id",
+    key: "event_key",
+    payload: %{"key" => "value"},
+    timestamp: ~N[2023-10-01 12:00:00],
+    game_clock_time: 120,
+    game_clock_period: 1
+  }
+  iex> prior_event_log = get_pior_event_log(event_log)
+  iex> prior_event_log
+  %EventLog{
+    id: "prior-uuid",
+    game_id: "game-id",
+    key: "event_key",
+    payload: %{"key" => "value"},
+    timestamp: ~N[2023-10-01 11:00:00],
+    game_clock_time: 100,
+    game_clock_period: 1
+  }
+  ```
+  """
   @spec get_pior_event_log(EventLog.t()) :: EventLog.t() | nil
   def get_pior_event_log(event_log) do
-    first_event_log = get_first_created_by_game_id(event_log.game_id)
+    all_game_event_logs = get_all_by_game_id(event_log.game_id)
 
-    if first_event_log do
-      all_game_event_logs = get_all_by_game_id(event_log.game_id)
+    case Enum.find_index(all_game_event_logs, fn el -> el.id == event_log.id end) do
+      event_log_index when event_log_index > 0 ->
+        prior_event_log_index = event_log_index - 1
+        prior_event_log = Enum.at(all_game_event_logs, prior_event_log_index)
 
-      case Enum.find_index(all_game_event_logs, fn el -> el.id == event_log.id end) do
-        event_log_index when event_log_index > 0 ->
-          prior_event_log_index = event_log_index - 1
-          prior_event_log = Enum.at(all_game_event_logs, prior_event_log_index)
-
-          if prior_event_log do
-            prior_event_log
-            |> Repo.preload(:snapshot)
-            |> parse_snapshot()
-          else
-            nil
-          end
-
-        _ ->
+        if prior_event_log do
+          prior_event_log
+          |> Repo.preload(:snapshot)
+          |> parse_snapshot()
+        else
           nil
-      end
-    else
-      nil
+        end
+
+      _ ->
+        nil
     end
+  end
+
+  @doc """
+  Retrieves all event logs that occurred after a given event log.
+  This function finds all event logs that occurred after the specified event log in the context of the same game.
+  It returns a list of event logs if found, or an empty list if no event logs exist for that game ID.
+  ## Parameters
+  - `event_log`: The event log for which to retrieve the subsequent event logs.
+  ## Returns
+  - A list of event logs that occurred after the specified event log.
+  ## Example
+  ```
+  iex> event_log = %EventLog{
+    id: "some-uuid",
+    game_id: "game-id",
+    key: "event_key",
+    payload: %{"key" => "value"},
+    timestamp: ~N[2023-10-01 12:00:00],
+    game_clock_time: 120,
+    game_clock_period: 1
+  }
+  iex> subsequent_event_logs = get_subsequent_event_logs(event_log)
+  iex> subsequent_event_logs
+  [
+    %EventLog{
+      id: "next-uuid",
+      game_id: "game-id",
+      key: "event_key",
+      payload: %{"key" => "value"},
+      timestamp: ~N[2023-10-01 12:05:00],
+      game_clock_time: 130,
+      game_clock_period: 1
+    },
+    ...
+  ]
+  ```
+  """
+  @spec get_subsequent_event_logs(Ecto.UUID.t()) :: [EventLog.t()]
+  def get_subsequent_event_logs(event_log) do
+    all_event_logs = get_all_by_game_id(event_log.game_id)
+    event_log_index = Enum.find_index(all_event_logs, fn el -> el.id == event_log.id end)
+
+    Enum.slice(all_event_logs, (event_log_index + 1)..Enum.count(all_event_logs))
   end
 
   @doc """
