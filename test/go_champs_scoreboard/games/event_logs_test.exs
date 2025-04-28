@@ -1,7 +1,11 @@
 defmodule GoChampsScoreboard.Games.EventLogsTest do
   use ExUnit.Case
   use GoChampsScoreboard.DataCase
+  alias Ecto.Repo
+  alias GoChampsScoreboard.Repo
+  alias GoChampsScoreboard.Events.GameSnapshot
   alias GoChampsScoreboard.Games.Models.GameState
+  alias GoChampsScoreboard.Events.Handler
   alias GoChampsScoreboard.Games.EventLogs
 
   import GoChampsScoreboard.GameStateFixtures
@@ -44,6 +48,34 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       assert event_log.inserted_at != nil
       assert event_log.updated_at != nil
       assert game_state_snapshoted == game_state
+    end
+  end
+
+  describe "delete/1" do
+    test "deletes the event log and its associated snapshot from the database" do
+      update_player_stat_event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          "7488a646-e31f-11e4-aace-600308960668",
+          10,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => "123",
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      game_state = game_state_fixture()
+      {:ok, event_log} = EventLogs.persist(update_player_stat_event, game_state)
+      {:ok, _delete_event_log} = EventLogs.delete(event_log.id)
+
+      assert EventLogs.get(event_log.id) == nil
+      assert GameSnapshot |> Repo.get(event_log.snapshot.id) == nil
+    end
+
+    test "returns an error if the event log does not exist" do
+      assert EventLogs.delete(Ecto.UUID.generate()) == {:error, :not_found}
     end
   end
 
@@ -170,6 +202,124 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       assert Enum.at(event_logs, 4).id == event5.id
       assert Enum.at(event_logs, 4).game_clock_time == 6
       assert Enum.at(event_logs, 4).game_clock_period == 2
+    end
+  end
+
+  describe "get_all_by_game_id/2" do
+    test "retrieves all event logs for a specific game ID and filters by event key" do
+      game_id = "7488a646-e31f-11e4-aace-600308960668"
+
+      event1 =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          game_id,
+          10,
+          1,
+          %{}
+        )
+
+      event2 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_id,
+          2,
+          1,
+          %{
+            "operation" => "decrement",
+            "team-type" => "away",
+            "player-id" => "456",
+            "stat-id" => "rebounds"
+          }
+        )
+
+      game_state = game_state_fixture()
+      {:ok, event_log1} = EventLogs.persist(event1, game_state)
+      {:ok, _event_log2} = EventLogs.persist(event2, game_state)
+
+      event_logs = EventLogs.get_all_by_game_id(game_id, key: event_log1.key)
+
+      assert length(event_logs) == 1
+      assert Enum.at(event_logs, 0).id == event_log1.id
+    end
+
+    test "retrieves all event logs for a specific game ID and filters by game_clock_period" do
+      game_id = "7488a646-e31f-11e4-aace-600308960668"
+
+      event1 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_id,
+          10,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "away",
+            "player-id" => "456",
+            "stat-id" => "rebounds"
+          }
+        )
+
+      event2 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_id,
+          10,
+          2,
+          %{
+            "operation" => "increment",
+            "team-type" => "away",
+            "player-id" => "456",
+            "stat-id" => "rebounds"
+          }
+        )
+
+      game_state = game_state_fixture()
+      {:ok, event_log1} = EventLogs.persist(event1, game_state)
+      {:ok, _event_log2} = EventLogs.persist(event2, game_state)
+
+      event_logs =
+        EventLogs.get_all_by_game_id(game_id, game_clock_period: event_log1.game_clock_period)
+
+      assert length(event_logs) == 1
+      assert Enum.at(event_logs, 0).id == event_log1.id
+    end
+
+    test "retrieves all event logs and associated game snapshots for a specific game ID" do
+      game_id = "7488a646-e31f-11e4-aace-600308960668"
+
+      event1 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_id,
+          10,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "away",
+            "player-id" => "456",
+            "stat-id" => "rebounds"
+          }
+        )
+
+      event2 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_id,
+          10,
+          2,
+          %{
+            "operation" => "increment",
+            "team-type" => "away",
+            "player-id" => "456",
+            "stat-id" => "rebounds"
+          }
+        )
+
+      game_state = game_state_fixture()
+      {:ok, event_log1} = EventLogs.persist(event1, game_state)
+      {:ok, event_log2} = EventLogs.persist(event2, game_state)
+
+      event_logs = EventLogs.get_all_by_game_id(game_id, with_snapshot: true)
+
+      assert length(event_logs) == 2
+      assert Enum.at(event_logs, 0).id == event_log1.id
+      assert Enum.at(event_logs, 0).snapshot.state == event_log1.snapshot.state
+      assert Enum.at(event_logs, 1).id == event_log2.id
+      assert Enum.at(event_logs, 1).snapshot.state == event_log2.snapshot.state
     end
   end
 
@@ -311,8 +461,8 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
     end
   end
 
-  describe "get_subsequent_event_logs/1" do
-    test "retrieves all event logs after a specific event log" do
+  describe "subsequent_event_logs/2" do
+    test "filters out all event logs prior than the given event_log" do
       game_state = basketball_game_state_fixture()
 
       payload1 = %{
@@ -348,7 +498,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       {:ok, event_log1} = EventLogs.persist(event1, game_state)
       {:ok, event_log2} = EventLogs.persist(event2, game_state)
 
-      retrieved_event_logs = EventLogs.get_subsequent_event_logs(event_log1)
+      retrieved_event_logs = EventLogs.subsequent_event_logs([event_log1, event_log2], event_log1)
 
       assert length(retrieved_event_logs) == 1
       assert Enum.at(retrieved_event_logs, 0).id == event_log2.id
@@ -420,12 +570,16 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
           payload4
         )
 
-      {:ok, _event_log1} = EventLogs.persist(event1, game_state)
+      {:ok, event_log1} = EventLogs.persist(event1, game_state)
       {:ok, event_log2} = EventLogs.persist(event2, game_state)
       {:ok, event_log3} = EventLogs.persist(event3, game_state)
       {:ok, event_log4} = EventLogs.persist(event4, game_state)
 
-      retrieved_event_logs = EventLogs.get_subsequent_event_logs(event_log2)
+      retrieved_event_logs =
+        EventLogs.subsequent_event_logs(
+          [event_log1, event_log2, event_log3, event_log4],
+          event_log2
+        )
 
       assert length(retrieved_event_logs) == 2
       assert Enum.at(retrieved_event_logs, 0).id == event_log3.id
@@ -471,13 +625,161 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
           payload2
         )
 
-      {:ok, _event_log1} = EventLogs.persist(event1, game_state)
+      {:ok, event_log1} = EventLogs.persist(event1, game_state)
       {:ok, event_log2} = EventLogs.persist(event2, game_state)
 
       # Attempt to retrie ve event logs after the last event log
-      retrieved_event_logs = EventLogs.get_subsequent_event_logs(event_log2)
+      retrieved_event_logs = EventLogs.subsequent_event_logs([event_log1, event_log2], event_log2)
 
       assert retrieved_event_logs == []
+    end
+  end
+
+  describe "update_single_event_snapshot/2" do
+    test "updates the event log snapshot applying its payload to prior event log snapshot" do
+      game_state = basketball_game_state_fixture()
+
+      payload1 = %{
+        "operation" => "increment",
+        "team-type" => "home",
+        "player-id" => "123",
+        "stat-id" => "field_goals_made"
+      }
+
+      payload2 = %{
+        "operation" => "increment",
+        "team-type" => "home",
+        "player-id" => "123",
+        "stat-id" => "field_goals_made"
+      }
+
+      event1 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          8,
+          1,
+          payload1
+        )
+
+      event2 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          7,
+          1,
+          payload2
+        )
+
+      game_state_for_event1 =
+        Handler.handle(game_state, event1)
+
+      expected_game_state_for_event2 =
+        Handler.handle(game_state_for_event1, event2)
+
+      expected_player_field_goals_made =
+        expected_game_state_for_event2.home_team.players
+        |> find_player_by_id("123")
+        |> Map.get(:stats_values)
+        |> Map.get("field_goals_made")
+
+      {:ok, event_log1} = EventLogs.persist(event1, game_state_for_event1)
+      # Persist the second event log with the first event log's snapshot
+      {:ok, event_log2} = EventLogs.persist(event2, game_state_for_event1)
+
+      {:ok, _updated_snapshot} = EventLogs.update_single_event_snapshot(event_log2, event_log1)
+
+      updated_event_log2_with_snapshot =
+        EventLogs.get(event_log2.id, with_snapshot: true)
+
+      actual_player_field_goals_made =
+        updated_event_log2_with_snapshot.snapshot.state.home_team.players
+        |> find_player_by_id("123")
+        |> Map.get(:stats_values)
+        |> Map.get("field_goals_made")
+
+      assert actual_player_field_goals_made ==
+               expected_player_field_goals_made
+    end
+  end
+
+  describe "update_subsequent_event_log_snapshots/1" do
+    test "updates the snapshots of all subsequent event logs after a specific event log" do
+      game_state = basketball_game_state_fixture()
+
+      payload_increment_field_goals_made = %{
+        "operation" => "increment",
+        "team-type" => "home",
+        "player-id" => "123",
+        "stat-id" => "field_goals_made"
+      }
+
+      event1 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          8,
+          1,
+          payload_increment_field_goals_made
+        )
+
+      game_state_for_event1 =
+        Handler.handle(game_state, event1)
+
+      event2 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          7,
+          1,
+          payload_increment_field_goals_made
+        )
+
+      event3 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          6,
+          1,
+          payload_increment_field_goals_made
+        )
+
+      event4 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          5,
+          1,
+          payload_increment_field_goals_made
+        )
+
+      # Note we are persisting events with the same game state
+      # So the last snapshot does not contains the effects of all events
+      {:ok, _event_log1} = EventLogs.persist(event1, game_state_for_event1)
+      {:ok, event_log2} = EventLogs.persist(event2, game_state_for_event1)
+      {:ok, _event_log3} = EventLogs.persist(event3, game_state_for_event1)
+      {:ok, _event_log4} = EventLogs.persist(event4, game_state_for_event1)
+
+      {[{:ok, updated_event_log2}, {:ok, updated_event_log3}, {:ok, updated_event_log4}], _} =
+        EventLogs.update_subsequent_event_log_snapshots(event_log2)
+
+      exppected_game_state_for_event2 =
+        Handler.handle(game_state_for_event1, event2)
+
+      exppected_game_state_for_event3 =
+        Handler.handle(exppected_game_state_for_event2, event3)
+
+      exppected_game_state_for_event4 =
+        Handler.handle(exppected_game_state_for_event3, event4)
+
+      assert updated_event_log2.snapshot.state
+             |> get_field_goals_made_from_player_in_game_state("123") ==
+               exppected_game_state_for_event2
+               |> get_field_goals_made_from_player_in_game_state("123")
+
+      assert updated_event_log3.snapshot.state
+             |> get_field_goals_made_from_player_in_game_state("123") ==
+               exppected_game_state_for_event3
+               |> get_field_goals_made_from_player_in_game_state("123")
+
+      assert updated_event_log4.snapshot.state
+             |> get_field_goals_made_from_player_in_game_state("123") ==
+               exppected_game_state_for_event4
+               |> get_field_goals_made_from_player_in_game_state("123")
     end
   end
 
@@ -613,5 +915,21 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
 
   defp find_player_by_id(players, player_id) do
     Enum.find(players, fn player -> player.id == player_id end)
+  end
+
+  defp get_field_goals_made_from_player_in_game_state(game_state, player_id, team \\ "home") do
+    case team do
+      "home" ->
+        game_state.home_team.players
+        |> find_player_by_id(player_id)
+        |> Map.get(:stats_values)
+        |> Map.get("field_goals_made")
+
+      "away" ->
+        game_state.away_team.players
+        |> find_player_by_id(player_id)
+        |> Map.get(:stats_values)
+        |> Map.get("field_goals_made")
+    end
   end
 end

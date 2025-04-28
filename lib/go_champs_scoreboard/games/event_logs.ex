@@ -8,6 +8,19 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   alias GoChampsScoreboard.Sports.Sports
   import Ecto.Query
 
+  @spec delete(Ecto.UUID.t()) :: {:ok, EventLog.t()} | {:error, any()}
+  def delete(id) do
+    event_log = get(id)
+
+    case event_log do
+      nil ->
+        {:error, :not_found}
+
+      _ ->
+        Repo.delete(event_log)
+    end
+  end
+
   @spec persist(Event.t(), GameState.t()) :: :ok | {:error, any()}
   def persist(event, game_state) do
     Repo.transaction(fn ->
@@ -40,8 +53,11 @@ defmodule GoChampsScoreboard.Games.EventLogs do
             })
 
           case Repo.insert(snapshot_changeset) do
-            {:ok, _snapshot} -> event_log |> Repo.preload(:snapshot)
-            {:error, reason} -> Repo.rollback(reason)
+            {:ok, _snapshot} ->
+              event_log |> Repo.preload(:snapshot) |> parse_snapshot()
+
+            {:error, reason} ->
+              Repo.rollback(reason)
           end
 
         {:error, reason} ->
@@ -65,18 +81,31 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   #   end
   # end
 
-  @spec get(Ecto.UUID.t()) :: EventLog.t() | nil
-  def get(id) do
-    EventLog
-    |> Repo.get(id)
+  @spec get(Ecto.UUID.t(), Keyword.t()) :: EventLog.t() | nil
+  def get(id, opts \\ []) do
+    with_snapshot? = Keyword.get(opts, :with_snapshot, false)
+
+    if with_snapshot? do
+      EventLog
+      |> Repo.get(id)
+      |> Repo.preload(:snapshot)
+      |> parse_snapshot()
+    else
+      EventLog
+      |> Repo.get(id)
+    end
   end
 
   @doc """
   Retrieves all event logs associated with a given game ID.
   This function queries the database for all event logs related to the specified game ID.
-  It returns a list of event logs if found sorted by the sport sort logic, or an empty list if no event logs exist for that game ID.
+  It returns a list of event logs sorted by the sport sort logic.
   ## Parameters
   - `game_id`: The ID of the game for which to retrieve event logs.
+  - `opts`: Optional parameters to customize the query.
+    - `:with_snapshot`: If true, preloads the snapshot associated with each event log.
+    - `:game_clock_period`: Filters event logs by game clock period if provided.
+    - `:key`: Filters event logs by key if provided.
   ## Returns
   - A list of event logs associated with the specified game ID, sorted by the sport sort logic.
   ## Example
@@ -97,20 +126,50 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   ]
   ```
   """
-  @spec get_all_by_game_id(Ecto.UUID.t()) :: [EventLog.t()]
-  def get_all_by_game_id(game_id) do
+  @spec get_all_by_game_id(Ecto.UUID.t(), Keyword.t()) :: [EventLog.t()]
+  def get_all_by_game_id(game_id, opts \\ []) do
+    with_snapshot? = Keyword.get(opts, :with_snapshot, false)
+    game_clock_period = Keyword.get(opts, :game_clock_period, nil)
+    key = Keyword.get(opts, :key, nil)
+
     first_event_log = get_first_created_by_game_id(game_id)
 
     if first_event_log do
-      query =
-        from e in EventLog,
-          where: e.game_id == ^game_id
+      base_query = from e in EventLog, where: e.game_id == ^game_id
+
+      # Apply period filter if provided
+      period_query =
+        if game_clock_period do
+          from e in base_query, where: e.game_clock_period == ^game_clock_period
+        else
+          base_query
+        end
+
+      # Apply key filter if provided
+      key_query =
+        if key do
+          from e in period_query, where: e.key == ^key
+        else
+          period_query
+        end
 
       ordered_query =
         first_event_log.snapshot.state.sport_id
-        |> Sports.event_logs_order_by(query)
+        |> Sports.event_logs_order_by(key_query)
 
-      Repo.all(ordered_query)
+      # Preload snapshot if requested
+      query =
+        if with_snapshot? do
+          from e in ordered_query,
+            preload: [:snapshot]
+        else
+          ordered_query
+        end
+
+      Enum.map(Repo.all(query), fn event_log ->
+        event_log
+        |> parse_snapshot()
+      end)
     else
       []
     end
@@ -217,13 +276,49 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   end
 
   @doc """
-  Retrieves all event logs that occurred after a given event log.
+  Retrieves all subsequent event logs for a given list of event logs and a specific event log.
   This function finds all event logs that occurred after the specified event log in the context of the same game.
-  It returns a list of event logs if found, or an empty list if no event logs exist for that game ID.
+  It returns a list of subsequent event logs.
+
   ## Parameters
-  - `event_log`: The event log for which to retrieve the subsequent event logs.
+  - `all_event_logs`: A list of all event logs associated with the game ID.
+  - `event_log`: The event log for which to retrieve subsequent event logs.
   ## Returns
-  - A list of event logs that occurred after the specified event log.
+  - A list of subsequent event logs that occurred after the specified event log.
+
+  ## Example:
+  ```
+  iex> event_logs = [
+    %EventLog{id: "1", game_id: "game-id", key: "event_key_1"},
+    %EventLog{id: "2", game_id: "game-id", key: "event_key_2"},
+    %EventLog{id: "3", game_id: "game-id", key: "event_key_3"}
+  ]
+  iex> event_log = %EventLog{id: "2", game_id: "game-id", key: "event_key_2"}
+  iex> subsequent_event_logs = subsequent_event_logs(event_logs, event_log)
+  iex> subsequent_event_logs
+  [
+    %EventLog{id: "3", game_id: "game-id", key: "event_key_3"}
+  ]
+  ```
+  """
+  @spec subsequent_event_logs([EventLog.t()], EventLog.t()) :: [EventLog.t()]
+  def subsequent_event_logs(all_event_logs, event_log) do
+    event_log_index = Enum.find_index(all_event_logs, fn el -> el.id == event_log.id end)
+
+    Enum.slice(all_event_logs, (event_log_index + 1)..Enum.count(all_event_logs))
+  end
+
+  @doc """
+  Updates the game state snapshot for a single event log.
+  This function applies the event log to the prior game state snapshot and updates the snapshot in the database.
+  It is designed to be idempotent, meaning that applying the same event log multiple times
+  will not change the final game state snapshot.
+  ## Parameters
+  - `event_log`: The event log to be processed.
+  - `prior_event_log`: The prior event log to use as the base for the update.
+  ## Returns
+  - `{:ok, GameSnapshot.t()}` if the update was successful.
+  - `{:error, any()}` if there was an error during the update.
   ## Example
   ```
   iex> event_log = %EventLog{
@@ -235,28 +330,110 @@ defmodule GoChampsScoreboard.Games.EventLogs do
     game_clock_time: 120,
     game_clock_period: 1
   }
-  iex> subsequent_event_logs = get_subsequent_event_logs(event_log)
-  iex> subsequent_event_logs
-  [
-    %EventLog{
-      id: "next-uuid",
-      game_id: "game-id",
-      key: "event_key",
-      payload: %{"key" => "value"},
-      timestamp: ~N[2023-10-01 12:05:00],
-      game_clock_time: 130,
-      game_clock_period: 1
-    },
-    ...
-  ]
+  iex> prior_event_log = %EventLog{
+    id: "prior-uuid",
+    game_id: "game-id",
+    key: "event_key",
+    payload: %{"key" => "value"},
+    timestamp: ~N[2023-10-01 11:00:00],
+    game_clock_time: 100,
+    game_clock_period: 1
+  }
+  iex> {:ok, updated_event_log} = update_single_event_snapshot(event_log, prior_event_log)
   ```
   """
-  @spec get_subsequent_event_logs(Ecto.UUID.t()) :: [EventLog.t()]
-  def get_subsequent_event_logs(event_log) do
-    all_event_logs = get_all_by_game_id(event_log.game_id)
-    event_log_index = Enum.find_index(all_event_logs, fn el -> el.id == event_log.id end)
+  @spec update_single_event_snapshot(EventLog.t(), EventLog.t()) ::
+          {:ok, EventLog.t()} | {:error, any()}
+  def update_single_event_snapshot(event_log, prior_event_log) do
+    updated_game_state_snapshot =
+      apply_event_log_to_game_state(event_log, prior_event_log.snapshot.state)
 
-    Enum.slice(all_event_logs, (event_log_index + 1)..Enum.count(all_event_logs))
+    json_state =
+      updated_game_state_snapshot
+      |> Poison.encode!()
+      |> Poison.decode!()
+
+    snapshot_changeset =
+      event_log.snapshot
+      |> GoChampsScoreboard.Events.GameSnapshot.changeset(%{
+        state: json_state
+      })
+
+    Repo.update(snapshot_changeset)
+  end
+
+  @doc """
+  Updates the game state snapshots for all subsequent event logs.
+  This function applies each subsequent event log to the prior game state snapshot
+  and updates the snapshot in the database.
+
+  ## Parameters
+  - `event_log`: The event log to be processed.
+  ## Returns
+  - A tuple containing:
+    - A list of tuples with the result of each update operation.
+    - The final game state after applying all the event logs.
+  ## Example
+  ```
+  iex> event_log = %EventLog{
+    id: "some-uuid",
+    game_id: "game-id",
+    key: "event_key",
+    payload: %{"key" => "value"},
+    timestamp: ~N[2023-10-01 12:00:00],
+    game_clock_time: 120,
+    game_clock_period: 1
+  }
+  iex> {:ok, updated_event_logs, final_game_state} = update_subsequent_event_log_snapshots(event_log)
+  iex> updated_event_logs
+  [
+    {:ok, %EventLog{id: "updated-uuid", ...}},
+    {:ok, %EventLog{id: "updated-uuid-2", ...}}
+  ]
+  iex> final_game_state
+  %GameState{
+    players: [%{id: 1, stats: %{points: 10}}, %{id: 2, stats: %{points: 5}}]
+  }
+  ```
+  """
+  @spec update_subsequent_event_log_snapshots(EventLog.t()) :: {
+          [{:ok, EventLog.t()} | {:error, any()}],
+          GameState.t()
+        }
+  def update_subsequent_event_log_snapshots(event_log) do
+    first_prior_event_log = get_pior_event_log(event_log)
+
+    current_and_subsequent_event_logs =
+      get_all_by_game_id(event_log.game_id, with_snapshot: true)
+      |> subsequent_event_logs(first_prior_event_log)
+
+    Enum.map_reduce(
+      current_and_subsequent_event_logs,
+      first_prior_event_log.snapshot.state,
+      fn event_log, prior_game_state_snapshot ->
+        updated_game_state_snapshot =
+          apply_event_log_to_game_state(event_log, prior_game_state_snapshot)
+
+        json_state =
+          updated_game_state_snapshot
+          |> Poison.encode!()
+          |> Poison.decode!()
+
+        snapshot_changeset =
+          event_log.snapshot
+          |> GoChampsScoreboard.Events.GameSnapshot.changeset(%{
+            state: json_state
+          })
+
+        case Repo.update(snapshot_changeset) do
+          {:ok, _snapshot} ->
+            {{:ok, get(event_log.id, with_snapshot: true)}, updated_game_state_snapshot}
+
+          {:error, reason} ->
+            Repo.rollback(reason)
+        end
+      end
+    )
   end
 
   @doc """
@@ -337,18 +514,24 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   end
 
   defp parse_snapshot(event_log) do
-    game_state_map =
-      event_log.snapshot.state
-      |> Poison.encode!()
+    if Ecto.assoc_loaded?(event_log.snapshot) do
+      # Snapshot is loaded, process it
+      game_state_map =
+        event_log.snapshot.state
+        |> Poison.encode!()
 
-    game_state_snapshotted = GameState.from_json(game_state_map)
+      game_state_snapshotted = GameState.from_json(game_state_map)
 
-    event_snapshot = %{
-      event_log.snapshot
-      | state: game_state_snapshotted
-    }
+      event_snapshot = %{
+        event_log.snapshot
+        | state: game_state_snapshotted
+      }
 
-    event_log
-    |> Map.put(:snapshot, event_snapshot)
+      event_log
+      |> Map.put(:snapshot, event_snapshot)
+    else
+      # Snapshot not loaded, return event_log as is
+      event_log
+    end
   end
 end
