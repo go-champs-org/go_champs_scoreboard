@@ -77,6 +77,76 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
     test "returns an error if the event log does not exist" do
       assert EventLogs.delete(Ecto.UUID.generate()) == {:error, :not_found}
     end
+
+    test "deletes the event log and updates all the subsequent event logs" do
+      game_state = basketball_game_state_fixture()
+
+      payload_to_increment_field_goals_made = %{
+        "operation" => "increment",
+        "team-type" => "home",
+        "player-id" => "123",
+        "stat-id" => "field_goals_made"
+      }
+
+      event1 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          8,
+          1,
+          payload_to_increment_field_goals_made
+        )
+
+      game_state_for_event1 =
+        game_state |> Handler.handle(event1)
+
+      event2 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          7,
+          1,
+          payload_to_increment_field_goals_made
+        )
+
+      game_state_for_event2 = game_state_for_event1 |> Handler.handle(event2)
+
+      event3 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          6,
+          1,
+          payload_to_increment_field_goals_made
+        )
+
+      game_state_for_event3 = game_state_for_event2 |> Handler.handle(event3)
+
+      {:ok, _event_log1} = EventLogs.persist(event1, game_state_for_event1)
+      {:ok, event_log2} = EventLogs.persist(event2, game_state_for_event2)
+      {:ok, event_log3} = EventLogs.persist(event3, game_state_for_event3)
+
+      {:ok, _delete_event_log} = EventLogs.delete(event_log2.id)
+
+      assert EventLogs.get(event_log2.id) == nil
+      assert GameSnapshot |> Repo.get(event_log2.snapshot.id) == nil
+
+      # Check all events for the game
+      event_logs = EventLogs.get_all_by_game_id(game_state.id, with_snapshot: true)
+      assert length(event_logs) == 2
+      assert Enum.at(event_logs, 1).id == event_log3.id
+      assert Enum.at(event_logs, 1).key == event_log3.key
+      assert Enum.at(event_logs, 1).game_id == event_log3.game_id
+      assert Enum.at(event_logs, 1).payload == event_log3.payload
+
+      expected_field_goals_made =
+        game_state_for_event3
+        |> get_field_goals_made_from_player_in_game_state("123")
+        |> (fn field_goals_made ->
+              field_goals_made - 1
+            end).()
+
+      assert Enum.at(event_logs, 1).snapshot.state
+             |> get_field_goals_made_from_player_in_game_state("123") ==
+               expected_field_goals_made
+    end
   end
 
   describe "get/1" do

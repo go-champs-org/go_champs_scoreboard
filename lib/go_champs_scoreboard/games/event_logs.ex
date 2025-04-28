@@ -17,7 +17,23 @@ defmodule GoChampsScoreboard.Games.EventLogs do
         {:error, :not_found}
 
       _ ->
-        Repo.delete(event_log)
+        next_event_log = get_next_event_log(event_log)
+
+        case Repo.delete(event_log) do
+          {:ok, event_log} ->
+            case next_event_log do
+              nil ->
+                {:ok, event_log}
+
+              _ ->
+                # Update the game state snapshot for the next event log
+                update_subsequent_event_log_snapshots(next_event_log)
+                {:ok, event_log}
+            end
+
+          {:error, reason} ->
+            Repo.rollback(reason)
+        end
     end
   end
 
