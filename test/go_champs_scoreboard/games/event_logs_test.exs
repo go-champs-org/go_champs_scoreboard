@@ -461,6 +461,82 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
     end
   end
 
+  describe "get_next_event_log/1" do
+    test "retrieves the event log after a specific event log with the its associated parsed game snapshot" do
+      game_state = basketball_game_state_fixture()
+
+      payload1 = %{
+        "operation" => "increment",
+        "team-type" => "home",
+        "player-id" => "123",
+        "stat-id" => "field_goals_made"
+      }
+
+      payload2 = %{
+        "operation" => "decrement",
+        "team-type" => "away",
+        "player-id" => "456",
+        "stat-id" => "rebounds_defensive"
+      }
+
+      event1 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          8,
+          1,
+          payload1
+        )
+
+      event2 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          7,
+          1,
+          payload2
+        )
+
+      {:ok, event_log1} = EventLogs.persist(event1, game_state)
+      {:ok, event_log2} = EventLogs.persist(event2, game_state)
+
+      retrieved_event_log = EventLogs.get_next_event_log(event_log1)
+
+      assert retrieved_event_log.id == event_log2.id
+      assert retrieved_event_log.key == event_log2.key
+      assert retrieved_event_log.game_id == event_log2.game_id
+      assert retrieved_event_log.payload == event_log2.payload
+
+      assert retrieved_event_log.snapshot.state ==
+               event_log2.snapshot.state
+               |> Poison.encode!()
+               |> GameState.from_json()
+    end
+
+    test "returns nil if no next event log exists" do
+      game_state = basketball_game_state_fixture()
+
+      payload = %{
+        "operation" => "increment",
+        "team-type" => "home",
+        "player-id" => "123",
+        "stat-id" => "field_goals_made"
+      }
+
+      event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          game_state.clock_state.time,
+          game_state.clock_state.period,
+          payload
+        )
+
+      {:ok, event_log} = EventLogs.persist(event, game_state)
+      # Attempt to retrieve the next event log for the last event log
+      retrieved_event_log = EventLogs.get_next_event_log(event_log)
+      # Since this is the last event log, it should return nil
+      assert retrieved_event_log == nil
+    end
+  end
+
   describe "subsequent_event_logs/2" do
     test "filters out all event logs prior than the given event_log" do
       game_state = basketball_game_state_fixture()

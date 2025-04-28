@@ -216,6 +216,68 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   end
 
   @doc """
+  Retrieves the next event log for a given event log along with its snapshot.
+  This function finds the event log that occurred immediately after the specified event log
+  in the context of the same game. It returns the next event log with its snapshot if found,
+  or nil if no next event log exists.
+
+  NOTE: This function queries the database for all event logs associated with the game ID of the specified event log and finds the prior event log based on the index of the current event log in the list.
+  It is important to note that this function does not persist any changes to the database.
+  Instead, it simply returns the prior event log with its snapshot if found, or nil if not found.
+
+  ## Parameters
+  - `event_log`: The event log for which to retrieve the prior event log.
+  ## Returns
+  - The prior event log with its snapshot if found, or nil if not found.
+  ## Example
+  ```
+  iex> event_log = %EventLog{
+    id: "some-uuid",
+    game_id: "game-id",
+    key: "event_key",
+    payload: %{"key" => "value"},
+    timestamp: ~N[2023-10-01 12:00:00],
+    game_clock_time: 120,
+    game_clock_period: 1
+  }
+  iex> next_event_log = get_next_event_log(event_log)
+  iex> next_event_log
+  %EventLog{
+    id: "next-uuid",
+    game_id: "game-id",
+    key: "event_key",
+    payload: %{"key" => "value"},
+    timestamp: ~N[2023-10-01 13:00:00],
+    game_clock_time: 130,
+    game_clock_period: 1
+  }
+  ```
+  """
+  @spec get_next_event_log(EventLog.t()) :: EventLog.t() | nil
+  def get_next_event_log(event_log) do
+    all_game_event_logs = get_all_by_game_id(event_log.game_id)
+
+    number_of_event_logs = Enum.count(all_game_event_logs)
+
+    case Enum.find_index(all_game_event_logs, fn el -> el.id == event_log.id end) do
+      event_log_index when event_log_index < number_of_event_logs - 1 ->
+        next_event_log_index = event_log_index + 1
+        next_event_log = Enum.at(all_game_event_logs, next_event_log_index)
+
+        if next_event_log do
+          next_event_log
+          |> Repo.preload(:snapshot)
+          |> parse_snapshot()
+        else
+          nil
+        end
+
+      _ ->
+        nil
+    end
+  end
+
+  @doc """
   Retrieves the prior event log for a given event log along with its snapshot.
   This function finds the event log that occurred immediately before the specified event log
   in the context of the same game. It returns the prior event log with its snapshot if found,
