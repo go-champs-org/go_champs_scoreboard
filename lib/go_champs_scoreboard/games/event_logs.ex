@@ -9,31 +9,54 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   import Ecto.Query
 
   @spec delete(Ecto.UUID.t()) :: {:ok, EventLog.t()} | {:error, any()}
+  @spec delete(Ecto.UUID.t()) :: {:ok, EventLog.t()} | {:error, any()}
   def delete(id) do
-    event_log = get(id)
+    with {:ok, event_log} <- fetch_event_log(id),
+         :ok <- validate_not_first_event(event_log),
+         {:ok, next_event_log} <- get_next_event_log_if_exists(event_log),
+         {:ok, deleted_event_log} <- do_delete(event_log) do
+      case next_event_log do
+        nil ->
+          {:ok, deleted_event_log}
 
-    case event_log do
-      nil ->
-        {:error, :not_found}
+        event ->
+          # Update snapshots if next event exists
+          update_subsequent_event_log_snapshots(event)
+          {:ok, deleted_event_log}
+      end
+    end
+  end
 
-      _ ->
-        next_event_log = get_next_event_log(event_log)
+  # Fetch the event log or return an error
+  defp fetch_event_log(id) do
+    case get(id) do
+      nil -> {:error, :not_found}
+      event_log -> {:ok, event_log}
+    end
+  end
 
-        case Repo.delete(event_log) do
-          {:ok, event_log} ->
-            case next_event_log do
-              nil ->
-                {:ok, event_log}
+  # Validate that we're not trying to delete the first event
+  defp validate_not_first_event(event_log) do
+    first_event_log = get_first_created_by_game_id(event_log.game_id)
 
-              _ ->
-                # Update the game state snapshot for the next event log
-                update_subsequent_event_log_snapshots(next_event_log)
-                {:ok, event_log}
-            end
+    if event_log.id == first_event_log.id do
+      {:error, :cannot_delete_first_event_log}
+    else
+      :ok
+    end
+  end
 
-          {:error, reason} ->
-            Repo.rollback(reason)
-        end
+  # Get the next event log if it exists
+  defp get_next_event_log_if_exists(event_log) do
+    # We use {:ok, nil} to indicate no next event but still success
+    {:ok, get_next_event_log(event_log)}
+  end
+
+  # Perform the actual deletion
+  defp do_delete(event_log) do
+    case Repo.delete(event_log) do
+      {:ok, deleted} -> {:ok, deleted}
+      {:error, reason} -> {:error, reason}
     end
   end
 

@@ -53,6 +53,14 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
 
   describe "delete/1" do
     test "deletes the event log and its associated snapshot from the database" do
+      first_event =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          "7488a646-e31f-11e4-aace-600308960668",
+          10,
+          1,
+          %{}
+        )
+
       update_player_stat_event =
         GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
           "7488a646-e31f-11e4-aace-600308960668",
@@ -67,15 +75,12 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
         )
 
       game_state = game_state_fixture()
+      {:ok, _first_event_log} = EventLogs.persist(first_event, game_state)
       {:ok, event_log} = EventLogs.persist(update_player_stat_event, game_state)
       {:ok, _delete_event_log} = EventLogs.delete(event_log.id)
 
       assert EventLogs.get(event_log.id) == nil
       assert GameSnapshot |> Repo.get(event_log.snapshot.id) == nil
-    end
-
-    test "returns an error if the event log does not exist" do
-      assert EventLogs.delete(Ecto.UUID.generate()) == {:error, :not_found}
     end
 
     test "deletes the event log and updates all the subsequent event logs" do
@@ -146,6 +151,26 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       assert Enum.at(event_logs, 1).snapshot.state
              |> get_field_goals_made_from_player_in_game_state("123") ==
                expected_field_goals_made
+    end
+
+    test "returns an error if the event log does not exist" do
+      assert EventLogs.delete(Ecto.UUID.generate()) == {:error, :not_found}
+    end
+
+    test "returns an error if the event log is the first of a game" do
+      game_state = basketball_game_state_fixture()
+
+      event =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          game_state.id,
+          game_state.clock_state.time,
+          game_state.clock_state.period,
+          %{}
+        )
+
+      {:ok, event_log} = EventLogs.persist(event, game_state)
+
+      assert EventLogs.delete(event_log.id) == {:error, :cannot_delete_first_event_log}
     end
   end
 
@@ -435,6 +460,40 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
                first_event_log.snapshot.state
                |> Poison.encode!()
                |> GameState.from_json()
+    end
+
+    test "retrieves the first event log no matter the time they were persisted" do
+      game_id = "7488a646-e31f-11e4-aace-600308960668"
+
+      game_state = game_state_fixture()
+
+      start_live_event =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          game_id,
+          1,
+          1,
+          %{}
+        )
+
+      update_player_stat_event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_id,
+          10,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => "123",
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      {:ok, _second_event_log} = EventLogs.persist(update_player_stat_event, game_state)
+      {:ok, first_event_log} = EventLogs.persist(start_live_event, game_state)
+
+      retrieved_event_log = EventLogs.get_first_created_by_game_id(game_id)
+
+      assert retrieved_event_log.id == first_event_log.id
     end
 
     test "returns nil for non-existent game ID" do

@@ -36,7 +36,7 @@ defmodule GoChampsScoreboard.Sports.Sports do
   @spec event_logs_order_by(String.t(), Ecto.Query.t()) :: Ecto.Query.t()
   def event_logs_order_by(_, query) do
     from e in query,
-      order_by: [desc: e.inserted_at],
+      order_by: [asc: e.timestamp],
       select: e
   end
 end
