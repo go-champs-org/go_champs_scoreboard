@@ -501,7 +501,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
     end
   end
 
-  describe "get_pior_event_log/1" do
+  describe "get_pior/1" do
     test "retrieves the event log prior to a specific event log with the its associated parsed game snapshot" do
       game_state = basketball_game_state_fixture()
 
@@ -551,7 +551,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       {:ok, event_log1} = EventLogs.persist(event1, game_state)
       {:ok, event_log2} = EventLogs.persist(event2, event2_game_state)
 
-      retrieved_event_log = EventLogs.get_pior_event_log(event_log2)
+      retrieved_event_log = EventLogs.get_pior(event_log2)
 
       assert retrieved_event_log.id == event_log1.id
       assert retrieved_event_log.key == event_log1.key
@@ -584,13 +584,13 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
 
       {:ok, event_log} = EventLogs.persist(event, game_state)
       # Attempt to retrieve the prior event log for the first event log
-      retrieved_event_log = EventLogs.get_pior_event_log(event_log)
+      retrieved_event_log = EventLogs.get_pior(event_log)
       # Since this is the first event log, it should return nil
       assert retrieved_event_log == nil
     end
   end
 
-  describe "get_next_event_log/1" do
+  describe "get_next/1" do
     test "retrieves the event log after a specific event log with the its associated parsed game snapshot" do
       game_state = basketball_game_state_fixture()
 
@@ -627,7 +627,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       {:ok, event_log1} = EventLogs.persist(event1, game_state)
       {:ok, event_log2} = EventLogs.persist(event2, game_state)
 
-      retrieved_event_log = EventLogs.get_next_event_log(event_log1)
+      retrieved_event_log = EventLogs.get_next(event_log1)
 
       assert retrieved_event_log.id == event_log2.id
       assert retrieved_event_log.key == event_log2.key
@@ -660,7 +660,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
 
       {:ok, event_log} = EventLogs.persist(event, game_state)
       # Attempt to retrieve the next event log for the last event log
-      retrieved_event_log = EventLogs.get_next_event_log(event_log)
+      retrieved_event_log = EventLogs.get_next(event_log)
       # Since this is the last event log, it should return nil
       assert retrieved_event_log == nil
     end
@@ -840,7 +840,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
     end
   end
 
-  describe "update_single_event_snapshot/2" do
+  describe "update_single_snapshot/2" do
     test "updates the event log snapshot applying its payload to prior event log snapshot" do
       game_state = basketball_game_state_fixture()
 
@@ -890,7 +890,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       # Persist the second event log with the first event log's snapshot
       {:ok, event_log2} = EventLogs.persist(event2, game_state_for_event1)
 
-      {:ok, _updated_snapshot} = EventLogs.update_single_event_snapshot(event_log2, event_log1)
+      {:ok, _updated_snapshot} = EventLogs.update_single_snapshot(event_log2, event_log1)
 
       updated_event_log2_with_snapshot =
         EventLogs.get(event_log2.id, with_snapshot: true)
@@ -906,7 +906,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
     end
   end
 
-  describe "update_subsequent_event_log_snapshots/1" do
+  describe "update_subsequent_snapshots/1" do
     test "updates the snapshots of all subsequent event logs after a specific event log" do
       game_state = basketball_game_state_fixture()
 
@@ -960,7 +960,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       {:ok, _event_log4} = EventLogs.persist(event4, game_state_for_event1)
 
       {[{:ok, updated_event_log2}, {:ok, updated_event_log3}, {:ok, updated_event_log4}], _} =
-        EventLogs.update_subsequent_event_log_snapshots(event_log2)
+        EventLogs.update_subsequent_snapshots(event_log2)
 
       exppected_game_state_for_event2 =
         Handler.handle(game_state_for_event1, event2)
@@ -988,7 +988,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
     end
   end
 
-  describe "apply_event_log_to_game_state/2" do
+  describe "apply_to_game_state/2" do
     test "applies an event log to a game state" do
       game_state = basketball_game_state_fixture()
 
@@ -1009,7 +1009,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
 
       {:ok, event_log} = EventLogs.persist(event, game_state)
 
-      updated_game_state = EventLogs.apply_event_log_to_game_state(event_log, game_state)
+      updated_game_state = EventLogs.apply_to_game_state(event_log, game_state)
 
       updated_player_field_goals_made =
         updated_game_state.home_team.players

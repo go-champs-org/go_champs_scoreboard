@@ -13,7 +13,7 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   def delete(id) do
     with {:ok, event_log} <- fetch_event_log(id),
          :ok <- validate_not_first_event(event_log),
-         {:ok, next_event_log} <- get_next_event_log_if_exists(event_log),
+         {:ok, next_event_log} <- get_next_if_exists(event_log),
          {:ok, deleted_event_log} <- do_delete(event_log) do
       case next_event_log do
         nil ->
@@ -21,7 +21,7 @@ defmodule GoChampsScoreboard.Games.EventLogs do
 
         event ->
           # Update snapshots if next event exists
-          update_subsequent_event_log_snapshots(event)
+          update_subsequent_snapshots(event)
           {:ok, deleted_event_log}
       end
     end
@@ -47,9 +47,9 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   end
 
   # Get the next event log if it exists
-  defp get_next_event_log_if_exists(event_log) do
+  defp get_next_if_exists(event_log) do
     # We use {:ok, nil} to indicate no next event but still success
-    {:ok, get_next_event_log(event_log)}
+    {:ok, get_next(event_log)}
   end
 
   # Perform the actual deletion
@@ -279,7 +279,7 @@ defmodule GoChampsScoreboard.Games.EventLogs do
     game_clock_time: 120,
     game_clock_period: 1
   }
-  iex> next_event_log = get_next_event_log(event_log)
+  iex> next_event_log = get_next(event_log)
   iex> next_event_log
   %EventLog{
     id: "next-uuid",
@@ -292,8 +292,8 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   }
   ```
   """
-  @spec get_next_event_log(EventLog.t()) :: EventLog.t() | nil
-  def get_next_event_log(event_log) do
+  @spec get_next(EventLog.t()) :: EventLog.t() | nil
+  def get_next(event_log) do
     all_game_event_logs = get_all_by_game_id(event_log.game_id)
 
     number_of_event_logs = Enum.count(all_game_event_logs)
@@ -341,7 +341,7 @@ defmodule GoChampsScoreboard.Games.EventLogs do
     game_clock_time: 120,
     game_clock_period: 1
   }
-  iex> prior_event_log = get_pior_event_log(event_log)
+  iex> prior_event_log = get_pior(event_log)
   iex> prior_event_log
   %EventLog{
     id: "prior-uuid",
@@ -354,8 +354,8 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   }
   ```
   """
-  @spec get_pior_event_log(EventLog.t()) :: EventLog.t() | nil
-  def get_pior_event_log(event_log) do
+  @spec get_pior(EventLog.t()) :: EventLog.t() | nil
+  def get_pior(event_log) do
     all_game_event_logs = get_all_by_game_id(event_log.game_id)
 
     case Enum.find_index(all_game_event_logs, fn el -> el.id == event_log.id end) do
@@ -440,14 +440,14 @@ defmodule GoChampsScoreboard.Games.EventLogs do
     game_clock_time: 100,
     game_clock_period: 1
   }
-  iex> {:ok, updated_event_log} = update_single_event_snapshot(event_log, prior_event_log)
+  iex> {:ok, updated_event_log} = update_single_snapshot(event_log, prior_event_log)
   ```
   """
-  @spec update_single_event_snapshot(EventLog.t(), EventLog.t()) ::
+  @spec update_single_snapshot(EventLog.t(), EventLog.t()) ::
           {:ok, EventLog.t()} | {:error, any()}
-  def update_single_event_snapshot(event_log, prior_event_log) do
+  def update_single_snapshot(event_log, prior_event_log) do
     updated_game_state_snapshot =
-      apply_event_log_to_game_state(event_log, prior_event_log.snapshot.state)
+      apply_to_game_state(event_log, prior_event_log.snapshot.state)
 
     json_state =
       updated_game_state_snapshot
@@ -485,7 +485,7 @@ defmodule GoChampsScoreboard.Games.EventLogs do
     game_clock_time: 120,
     game_clock_period: 1
   }
-  iex> {:ok, updated_event_logs, final_game_state} = update_subsequent_event_log_snapshots(event_log)
+  iex> {:ok, updated_event_logs, final_game_state} = update_subsequent_snapshots(event_log)
   iex> updated_event_logs
   [
     {:ok, %EventLog{id: "updated-uuid", ...}},
@@ -497,12 +497,12 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   }
   ```
   """
-  @spec update_subsequent_event_log_snapshots(EventLog.t()) :: {
+  @spec update_subsequent_snapshots(EventLog.t()) :: {
           [{:ok, EventLog.t()} | {:error, any()}],
           GameState.t()
         }
-  def update_subsequent_event_log_snapshots(event_log) do
-    first_prior_event_log = get_pior_event_log(event_log)
+  def update_subsequent_snapshots(event_log) do
+    first_prior_event_log = get_pior(event_log)
 
     current_and_subsequent_event_logs =
       get_all_by_game_id(event_log.game_id, with_snapshot: true)
@@ -513,7 +513,7 @@ defmodule GoChampsScoreboard.Games.EventLogs do
       first_prior_event_log.snapshot.state,
       fn event_log, prior_game_state_snapshot ->
         updated_game_state_snapshot =
-          apply_event_log_to_game_state(event_log, prior_game_state_snapshot)
+          apply_to_game_state(event_log, prior_game_state_snapshot)
 
         json_state =
           updated_game_state_snapshot
@@ -571,7 +571,7 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   @spec reduce_event_logs_to_game_state([EventLog.t()], GameState.t()) :: [EventLog.t()]
   def reduce_event_logs_to_game_state(event_logs, game_state) do
     Enum.reduce(event_logs, game_state, fn event_log, acc ->
-      apply_event_log_to_game_state(event_log, acc)
+      apply_to_game_state(event_log, acc)
     end)
   end
 
@@ -590,13 +590,13 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   ```
   iex> event_log = %EventLog{key: "update_player_stat", payload: %{"operation" => "increment", "player_id" => 1}}
   iex> game_state = %GameState{players: [%{id: 1, stats: %{points: 0}}, %{id: 2, stats: %{points: 0}}]}
-  iex> updated_game_state = apply_event_log_to_game_state(event_log, game_state)
+  iex> updated_game_state = apply_to_game_state(event_log, game_state)
   iex> updated_game_state.players
   [%{id: 1, stats: %{points: 1}}, %{id: 2, stats: %{points: 0}}]
   ```
   """
-  @spec apply_event_log_to_game_state(EventLog.t(), GameState.t()) :: GameState.t()
-  def apply_event_log_to_game_state(event_log, game_state) do
+  @spec apply_to_game_state(EventLog.t(), GameState.t()) :: GameState.t()
+  def apply_to_game_state(event_log, game_state) do
     case ValidatorCreator.create(
            event_log.key,
            event_log.game_id,
