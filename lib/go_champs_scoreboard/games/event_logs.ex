@@ -105,21 +105,6 @@ defmodule GoChampsScoreboard.Games.EventLogs do
     end)
   end
 
-  # @spec update_payload(Ecto.UUID.t(), map()) :: {:ok, EventLog.t()} | {:error, any()}
-  # def update_payload(id, new_payload) do
-  #   event_log = get(id)
-
-  #   case event_log do
-  #     nil ->
-  #       {:error, :not_found}
-
-  #     _ ->
-  #       event_log
-  #       |> EventLog.changeset(%{payload: new_payload})
-  #       |> Repo.update()
-  #   end
-  # end
-
   @spec get(Ecto.UUID.t(), Keyword.t()) :: EventLog.t() | nil
   def get(id, opts \\ []) do
     with_snapshot? = Keyword.get(opts, :with_snapshot, false)
@@ -403,10 +388,82 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   ```
   """
   @spec subsequent_event_logs([EventLog.t()], EventLog.t()) :: [EventLog.t()]
+  def subsequent_event_logs(all_event_logs, nil) do
+    all_event_logs
+  end
+
   def subsequent_event_logs(all_event_logs, event_log) do
     event_log_index = Enum.find_index(all_event_logs, fn el -> el.id == event_log.id end)
 
     Enum.slice(all_event_logs, (event_log_index + 1)..Enum.count(all_event_logs))
+  end
+
+  @doc """
+  Updates the payload of a single event log.
+  This function updates the payload of the specified event log in the database.
+  It also updates the game state snapshot for all subsequent event logs.
+  ## Parameters
+  - `id`: The ID of the event log to be updated.
+  - `new_payload`: The new payload to be set for the event log.
+  ## Returns
+  - `{:ok, EventLog.t()}` if the update was successful.
+  - `{:error, any()}` if there was an error during the update.
+  ## Example
+  ```
+  iex> event_log = %EventLog{
+    id: "some-uuid",
+    game_id: "game-id",
+    key: "event_key",
+    payload: %{"key" => "value"},
+    timestamp: ~N[2023-10-01 12:00:00],
+    game_clock_time: 120,
+    game_clock_period: 1
+  }
+  iex> new_payload = %{"new_key" => "new_value"}
+  iex> {:ok, updated_event_log} = update_payload(event_log.id, new_payload)
+  iex> updated_event_log
+  %EventLog{
+    id: "some-uuid",
+    game_id: "game-id",
+    key: "event_key",
+    payload: %{"new_key" => "new_value"},
+    timestamp: ~N[2023-10-01 12:00:00],
+    game_clock_time: 120,
+    game_clock_period: 1
+  }
+  ```
+  """
+  @spec update_payload(Ecto.UUID.t(), map()) :: {:ok, EventLog.t()} | {:error, any()}
+  def update_payload(id, new_payload) do
+    event_log = get(id)
+
+    case event_log do
+      nil ->
+        {:error, :not_found}
+
+      _ ->
+        case get_pior(event_log) do
+          nil ->
+            {:error, :cannot_update_first_event_log}
+
+          _prior_event_log ->
+            case event_log
+                 |> EventLog.changeset(%{payload: new_payload})
+                 |> Repo.update() do
+              {:ok, updated_event_log} ->
+                case update_subsequent_snapshots(updated_event_log) do
+                  {:error, reason} ->
+                    {:error, reason}
+
+                  {_impacted_event_logs, _last_snapshot} ->
+                    {:ok, updated_event_log}
+                end
+
+              {:error, reason} ->
+                Repo.rollback(reason)
+            end
+        end
+    end
   end
 
   @doc """
@@ -502,39 +559,44 @@ defmodule GoChampsScoreboard.Games.EventLogs do
           GameState.t()
         }
   def update_subsequent_snapshots(event_log) do
-    first_prior_event_log = get_pior(event_log)
+    case get_pior(event_log) do
+      nil ->
+        {:error, :first_event_log}
 
-    current_and_subsequent_event_logs =
-      get_all_by_game_id(event_log.game_id, with_snapshot: true)
-      |> subsequent_event_logs(first_prior_event_log)
+      first_prior_event_log ->
+        # Get all event logs for the game
+        current_and_subsequent_event_logs =
+          get_all_by_game_id(event_log.game_id, with_snapshot: true)
+          |> subsequent_event_logs(first_prior_event_log)
 
-    Enum.map_reduce(
-      current_and_subsequent_event_logs,
-      first_prior_event_log.snapshot.state,
-      fn event_log, prior_game_state_snapshot ->
-        updated_game_state_snapshot =
-          apply_to_game_state(event_log, prior_game_state_snapshot)
+        Enum.map_reduce(
+          current_and_subsequent_event_logs,
+          first_prior_event_log.snapshot.state,
+          fn event_log, prior_game_state_snapshot ->
+            updated_game_state_snapshot =
+              apply_to_game_state(event_log, prior_game_state_snapshot)
 
-        json_state =
-          updated_game_state_snapshot
-          |> Poison.encode!()
-          |> Poison.decode!()
+            json_state =
+              updated_game_state_snapshot
+              |> Poison.encode!()
+              |> Poison.decode!()
 
-        snapshot_changeset =
-          event_log.snapshot
-          |> GoChampsScoreboard.Events.GameSnapshot.changeset(%{
-            state: json_state
-          })
+            snapshot_changeset =
+              event_log.snapshot
+              |> GoChampsScoreboard.Events.GameSnapshot.changeset(%{
+                state: json_state
+              })
 
-        case Repo.update(snapshot_changeset) do
-          {:ok, _snapshot} ->
-            {{:ok, get(event_log.id, with_snapshot: true)}, updated_game_state_snapshot}
+            case Repo.update(snapshot_changeset) do
+              {:ok, _snapshot} ->
+                {{:ok, get(event_log.id, with_snapshot: true)}, updated_game_state_snapshot}
 
-          {:error, reason} ->
-            Repo.rollback(reason)
-        end
-      end
-    )
+              {:error, reason} ->
+                Repo.rollback(reason)
+            end
+          end
+        )
+    end
   end
 
   @doc """
