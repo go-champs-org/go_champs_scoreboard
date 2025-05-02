@@ -27,25 +27,6 @@ defmodule GoChampsScoreboard.Games.EventLogs do
     end
   end
 
-  # Fetch the event log or return an error
-  defp fetch_event_log(id) do
-    case get(id) do
-      nil -> {:error, :not_found}
-      event_log -> {:ok, event_log}
-    end
-  end
-
-  # Validate that we're not trying to delete the first event
-  defp validate_not_first_event(event_log) do
-    first_event_log = get_first_created_by_game_id(event_log.game_id)
-
-    if event_log.id == first_event_log.id do
-      {:error, :cannot_delete_first_event_log}
-    else
-      :ok
-    end
-  end
-
   # Get the next event log if it exists
   defp get_next_if_exists(event_log) do
     # We use {:ok, nil} to indicate no next event but still success
@@ -435,35 +416,47 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   """
   @spec update_payload(Ecto.UUID.t(), map()) :: {:ok, EventLog.t()} | {:error, any()}
   def update_payload(id, new_payload) do
-    event_log = get(id)
+    with {:ok, event_log} <- fetch_event_log(id),
+         :ok <- validate_not_first_event(event_log),
+         {:ok, updated_event_log} <- do_update_payload(event_log, new_payload) do
+      # Call update_subsequent_snapshots but ignore its result
+      # We only care that it completes successfully
+      case update_subsequent_snapshots(updated_event_log) do
+        {results, _final_state} when is_list(results) ->
+          # Check if any update failed
+          if Enum.any?(results, fn
+               {:error, _} -> true
+               _ -> false
+             end) do
+            {:error, :snapshot_update_failed}
+          else
+            {:ok, updated_event_log}
+          end
 
-    case event_log do
-      nil ->
-        {:error, :not_found}
-
-      _ ->
-        case get_pior(event_log) do
-          nil ->
-            {:error, :cannot_update_first_event_log}
-
-          _prior_event_log ->
-            case event_log
-                 |> EventLog.changeset(%{payload: new_payload})
-                 |> Repo.update() do
-              {:ok, updated_event_log} ->
-                case update_subsequent_snapshots(updated_event_log) do
-                  {:error, reason} ->
-                    {:error, reason}
-
-                  {_impacted_event_logs, _last_snapshot} ->
-                    {:ok, updated_event_log}
-                end
-
-              {:error, reason} ->
-                Repo.rollback(reason)
-            end
-        end
+        {:error, reason} ->
+          {:error, reason}
+      end
     end
+  end
+
+  # Helper to validate it's not the first event
+  defp validate_not_first_event(event_log) do
+    case get_pior(event_log) do
+      nil -> {:error, :cannot_update_first_event_log}
+      _prior -> :ok
+    end
+  end
+
+  # Perform the actual payload update
+  defp do_update_payload(event_log, new_payload) do
+    Repo.transaction(fn ->
+      case event_log
+           |> EventLog.changeset(%{payload: new_payload})
+           |> Repo.update() do
+        {:ok, updated} -> updated
+        {:error, reason} -> Repo.rollback(reason)
+      end
+    end)
   end
 
   @doc """
@@ -673,6 +666,14 @@ defmodule GoChampsScoreboard.Games.EventLogs do
       {:error, reason} ->
         IO.puts("Error creating event: #{reason}")
         game_state
+    end
+  end
+
+  # Fetch the event log or return an error
+  defp fetch_event_log(id) do
+    case get(id) do
+      nil -> {:error, :not_found}
+      event_log -> {:ok, event_log}
     end
   end
 

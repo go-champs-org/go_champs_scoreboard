@@ -170,7 +170,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
 
       {:ok, event_log} = EventLogs.persist(event, game_state)
 
-      assert EventLogs.delete(event_log.id) == {:error, :cannot_delete_first_event_log}
+      assert EventLogs.delete(event_log.id) == {:error, :cannot_update_first_event_log}
     end
   end
 
