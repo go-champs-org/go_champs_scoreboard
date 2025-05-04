@@ -1040,6 +1040,46 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       assert EventLogs.update_payload(event_log.id, new_payload) ==
                {:error, :cannot_update_first_event_log}
     end
+
+    test "returns an error if give payload is not valid" do
+      game_state = basketball_game_state_fixture()
+
+      payload = %{
+        "operation" => "increment",
+        "team-type" => "home",
+        "player-id" => "123",
+        "stat-id" => "field_goals_made"
+      }
+
+      event1 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          10,
+          1,
+          payload
+        )
+
+      event2 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          9,
+          1,
+          payload
+        )
+
+      {:ok, _event_log1} = EventLogs.persist(event1, game_state)
+      {:ok, event_log2} = EventLogs.persist(event2, game_state)
+
+      new_payload = %{
+        "operation" => nil,
+        "team-type" => nil,
+        "stat-id" => nil,
+        "player-id" => nil
+      }
+
+      assert EventLogs.update_payload(event_log2.id, new_payload) ==
+               {:error, :invalid_payload}
+    end
   end
 
   describe "update_single_snapshot/2" do

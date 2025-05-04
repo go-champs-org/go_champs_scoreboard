@@ -21,4 +21,26 @@ defmodule GoChampsScoreboardWeb.FallbackController do
     |> put_view(html: GoChampsScoreboardWeb.ErrorHTML, json: GoChampsScoreboardWeb.ErrorJSON)
     |> render(:"404")
   end
+
+  # This clause handles errors returned by Ecto's when event update is the first of a game.
+  def call(conn, {:error, :cannot_update_first_event_log}) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> json(%{
+      errors: %{
+        detail: "Cannot update first event log"
+      }
+    })
+  end
+
+  # This clause handles errors when payload is invalid.
+  def call(conn, {:error, :invalid_payload}) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> json(%{
+      errors: %{
+        detail: "Invalid payload"
+      }
+    })
+  end
 end

@@ -417,6 +417,7 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   @spec update_payload(Ecto.UUID.t(), map()) :: {:ok, EventLog.t()} | {:error, any()}
   def update_payload(id, new_payload) do
     with {:ok, event_log} <- fetch_event_log(id),
+         :ok <- validate_payload(new_payload),
          :ok <- validate_not_first_event(event_log),
          {:ok, updated_event_log} <- do_update_payload(event_log, new_payload) do
       # Call update_subsequent_snapshots but ignore its result
@@ -439,11 +440,23 @@ defmodule GoChampsScoreboard.Games.EventLogs do
     end
   end
 
+  defp validate_payload(payload) do
+    # Check if the payload is a map and if values are not nil
+    if is_map(payload) and Enum.all?(payload, fn {_key, value} -> value != nil end) do
+      :ok
+    else
+      {:error, :invalid_payload}
+    end
+  end
+
   # Helper to validate it's not the first event
   defp validate_not_first_event(event_log) do
     case get_pior(event_log) do
-      nil -> {:error, :cannot_update_first_event_log}
-      _prior -> :ok
+      nil ->
+        {:error, :cannot_update_first_event_log}
+
+      _prior ->
+        :ok
     end
   end
 

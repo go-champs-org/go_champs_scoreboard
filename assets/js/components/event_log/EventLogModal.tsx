@@ -30,7 +30,7 @@ function EventLogModal({
         <table className="table is-striped is-fullwidth">
           <thead>
             <tr>
-              <th>Period</th>
+              <th>Q</th>
               <th>Time</th>
               <th>Key</th>
             </tr>

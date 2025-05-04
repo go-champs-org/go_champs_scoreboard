@@ -49,7 +49,7 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
             Box score
           </button>
         </p>
-        <p>
+        <p className="level-item">
           <button
             className="button is-info"
             onClick={() => setShowEditPlayersModal(true)}
@@ -58,7 +58,7 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
           </button>
         </p>
         <FeatureFlag name="display_event_logs_modal">
-          <p>
+          <p className="level-item">
             <button
               className="button is-info"
               onClick={() => setShowEventLogModal(true)}
