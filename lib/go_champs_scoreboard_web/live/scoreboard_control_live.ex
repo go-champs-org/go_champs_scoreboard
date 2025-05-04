@@ -1,4 +1,5 @@
 defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
+  alias GoChampsScoreboard.Infrastructure.FeatureFlags
   alias GoChampsScoreboard.Events.ValidatorCreator
   alias GoChampsScoreboard.Games.Games
   alias GoChampsScoreboard.Games.Messages.PubSub
@@ -14,6 +15,7 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
     {:ok,
      socket
      |> assign(:api_token, api_token)
+     |> assign(:feature_flags, FeatureFlags.all_flags())
      |> assign_async(:game_state, fn ->
        {:ok, %{game_state: Games.find_or_bootstrap(game_id, api_token)}}
      end)}

@@ -6,6 +6,8 @@ import BoxScore from './BoxScore';
 import EditPlayersModal from './Players/EditPlayersModal';
 import useConnectionState from '../../shared/useConnectionState';
 import { OnlineIcon, OfflineIcon } from '../../shared/ConnectionStatusesIcon';
+import EventLogModal from '../event_log/EventLogModal';
+import { FeatureFlag } from '../../shared/FeatureFlags';
 
 interface TopLevelProps {
   game_state: GameState;
@@ -20,6 +22,7 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
   const onStartLive = () => {
     pushEvent('start-game-live-mode', {});
   };
+  const [showEventLogModal, setShowEventLogModal] = React.useState(false);
   const onEndLive = () => {
     const startedAt = new Date(game_state.live_state.started_at); // Parse the UTC date
     const now = new Date(); // Current local time
@@ -54,6 +57,16 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
             Edit players
           </button>
         </p>
+        <FeatureFlag name="display_event_logs_modal">
+          <p>
+            <button
+              className="button is-info"
+              onClick={() => setShowEventLogModal(true)}
+            >
+              Event Logs
+            </button>
+          </p>
+        </FeatureFlag>
         <Modal
           title="Box Score"
           onClose={() => setShowBoxScoreModal(false)}
@@ -67,6 +80,12 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
           showModal={showEditPlayersModal}
           onCloseModal={() => setShowEditPlayersModal(false)}
           pushEvent={pushEvent}
+        />
+        <EventLogModal
+          game_state={game_state}
+          onCloseModal={() => setShowEventLogModal(false)}
+          pushEvent={pushEvent}
+          showModal={showEventLogModal}
         />
         <Modal
           title="Are you sure?"

@@ -1,3 +1,16 @@
+export type ApiResponse<T> = {
+  data: T;
+};
+
+export interface EventLog {
+  id: string;
+  key: string;
+  timestamp: string;
+  payload: object;
+  game_clock_time: number;
+  game_clock_period: number;
+}
+
 export interface PlayerState {
   state:
     | 'playing'
@@ -57,12 +70,16 @@ export const DEFAULT_GAME_STATE = {
     players: [],
     total_player_stats: {},
     stats_values: {},
+    tri_code: '',
+    logo_url: '',
   },
   home_team: {
     name: '',
     players: [],
     total_player_stats: {},
     stats_values: {},
+    tri_code: '',
+    logo_url: '',
   },
   sport_id: '',
   clock_state: {
@@ -73,6 +90,8 @@ export const DEFAULT_GAME_STATE = {
   },
   live_state: {
     state: 'not_started',
+    started_at: '',
+    ended_at: '',
   },
   view_settings_state: {
     view: 'basketball-medium',
