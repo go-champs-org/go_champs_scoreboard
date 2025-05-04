@@ -6,8 +6,15 @@ defmodule GoChampsScoreboardWeb.EventLogController do
 
   action_fallback GoChampsScoreboardWeb.FallbackController
 
-  def index(conn, %{"game_id" => game_id}) do
-    event_logs = EventLogs.get_all_by_game_id(game_id)
+  def index(conn, params) do
+    %{"game_id" => game_id} = params
+
+    filters =
+      params
+      |> Enum.filter(fn {k, _v} -> k != "game_id" end)
+      |> Enum.map(fn {k, v} -> {String.to_atom(k), v} end)
+
+    event_logs = EventLogs.get_all_by_game_id(game_id, filters)
     render(conn, :index, event_logs: event_logs)
   end
 
