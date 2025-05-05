@@ -9,25 +9,6 @@ defmodule GoChampsScoreboard.EventsFixtures do
   import GoChampsScoreboard.GameStateFixtures
 
   @doc """
-  Generate a event_log.
-  """
-  def event_log_fixture(attrs \\ %{}) do
-    {:ok, event_log} =
-      attrs
-      |> Enum.into(%{
-        game_id: "7488a646-e31f-11e4-aace-600308960662",
-        key: "some key",
-        payload: %{},
-        timestamp: ~U[2025-04-21 00:39:00.000000Z],
-        game_clock_time: 10,
-        game_clock_period: 1
-      })
-      |> GoChampsScoreboard.Events.create_event_log()
-
-    event_log
-  end
-
-  @doc """
   Generate a event_log with a snapshot.
   """
   def event_log_with_snapshot_fixture(_attrs \\ %{}) do
@@ -84,5 +65,170 @@ defmodule GoChampsScoreboard.EventsFixtures do
       EventLogs.persist(update_player_stat_event, game_state_for_update_player_stat_event)
 
     event_log
+  end
+
+  def game_full_event_log_fixture() do
+    game_state = game_state_with_players_fixture()
+
+    start_live_event =
+      GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+        game_state.id,
+        10,
+        1,
+        %{}
+      )
+
+    # Event free throw made
+    payload_1 = %{
+      "operation" => "increment",
+      "team-type" => "home",
+      "player-id" => "123",
+      "stat-id" => "free_throws_made"
+    }
+
+    # Event field goal made
+    payload_2 = %{
+      "operation" => "increment",
+      "team-type" => "home",
+      "player-id" => "123",
+      "stat-id" => "field_goals_made"
+    }
+
+    # Event three point field goal made
+    payload_3 = %{
+      "operation" => "increment",
+      "team-type" => "home",
+      "player-id" => "123",
+      "stat-id" => "three_point_field_goals_made"
+    }
+
+    update_player_stat_event_1 =
+      GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+        game_state.id,
+        9,
+        1,
+        payload_1
+      )
+
+    update_player_stat_event_2 =
+      GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+        game_state.id,
+        8,
+        1,
+        payload_2
+      )
+
+    update_player_stat_event_3 =
+      GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+        game_state.id,
+        7,
+        1,
+        payload_3
+      )
+
+    update_player_stat_event_4 =
+      GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+        game_state.id,
+        6,
+        2,
+        payload_3
+      )
+
+    update_player_stat_event_5 =
+      GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+        game_state.id,
+        5,
+        2,
+        payload_2
+      )
+
+    update_player_stat_event_6 =
+      GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+        game_state.id,
+        4,
+        2,
+        payload_1
+      )
+
+    update_player_stat_event_7 =
+      GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+        game_state.id,
+        3,
+        3,
+        payload_1
+      )
+
+    update_player_stat_event_8 =
+      GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+        game_state.id,
+        2,
+        3,
+        payload_2
+      )
+
+    update_player_stat_event_9 =
+      GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+        game_state.id,
+        1,
+        3,
+        payload_3
+      )
+
+    update_player_stat_event_10 =
+      GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+        game_state.id,
+        9,
+        4,
+        payload_3
+      )
+
+    update_player_stat_event_11 =
+      GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+        game_state.id,
+        8,
+        4,
+        payload_2
+      )
+
+    update_player_stat_event_12 =
+      GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+        game_state.id,
+        7,
+        4,
+        payload_1
+      )
+
+    end_live_event =
+      GoChampsScoreboard.Events.Definitions.EndGameLiveModeDefinition.create(
+        game_state.id,
+        0,
+        4,
+        %{}
+      )
+
+    all_events = [
+      start_live_event,
+      update_player_stat_event_1,
+      update_player_stat_event_2,
+      update_player_stat_event_3,
+      update_player_stat_event_4,
+      update_player_stat_event_5,
+      update_player_stat_event_6,
+      update_player_stat_event_7,
+      update_player_stat_event_8,
+      update_player_stat_event_9,
+      update_player_stat_event_10,
+      update_player_stat_event_11,
+      update_player_stat_event_12,
+      end_live_event
+    ]
+
+    Enum.reduce(all_events, game_state, fn event, acc ->
+      reacted_game = Handler.handle(game_state, event)
+
+      {:ok, _event_log} = EventLogs.persist(event, acc)
+
+      reacted_game
+    end)
   end
 end

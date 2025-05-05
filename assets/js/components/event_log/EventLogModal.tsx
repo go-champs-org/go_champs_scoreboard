@@ -2,7 +2,7 @@ import React from 'react';
 
 import Modal from '../Modal';
 import { GameState } from '../../types';
-import useEventLogs from '../../features/event_logs/useEventLogs';
+import useUpdatePlayerStatEventLogs from '../../features/event_logs/useEventLogs';
 
 interface EventLogModalProps {
   game_state: GameState;
@@ -18,7 +18,7 @@ function EventLogModal({
   pushEvent,
 }: EventLogModalProps) {
   const gameId = game_state.id;
-  const eventLogs = useEventLogs(gameId);
+  const eventLogs = useUpdatePlayerStatEventLogs(gameId);
   return (
     <Modal
       title="Event logs"
@@ -32,7 +32,6 @@ function EventLogModal({
             <tr>
               <th>Q</th>
               <th>Time</th>
-              <th>Key</th>
             </tr>
           </thead>
           <tbody>
@@ -40,7 +39,6 @@ function EventLogModal({
               <tr key={eventLog.id}>
                 <td>{eventLog.game_clock_period}</td>
                 <td>{eventLog.game_clock_time}</td>
-                <td>{eventLog.key}</td>
               </tr>
             ))}
           </tbody>

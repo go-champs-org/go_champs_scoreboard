@@ -64,9 +64,11 @@ defmodule GoChampsScoreboard.GameStateFixtures do
       %{
         id: "123",
         stats_values: %{
-          "field_goals_made" => 1,
-          "points" => 2,
-          "rebounds_defensive" => 0
+          "field_goals_made" => 0,
+          "free_throws_made" => 0,
+          "points" => 0,
+          "rebounds_defensive" => 0,
+          "three_point_field_goals_made" => 0
         }
       }
     ]

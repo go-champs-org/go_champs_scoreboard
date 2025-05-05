@@ -2,13 +2,15 @@ import { useEffect, useState } from 'react';
 import { EventLog } from '../../types';
 import eventLogsHttpClient from './eventLogsHttpClient';
 
-function useEventLogs(gameId: string) {
+function useUpdatePlayerStatEventLogs(gameId: string) {
   const [eventLogs, setEventLogs] = useState<EventLog[]>([]);
 
   useEffect(() => {
     const fetchEventLogs = async () => {
       try {
-        const response = await eventLogsHttpClient.getEventLogs(gameId);
+        const response = await eventLogsHttpClient.getEventLogs(gameId, {
+          key: 'update-player-stat',
+        });
         setEventLogs(response);
       } catch (error) {
         console.error('Error fetching event logs:', error);
@@ -21,4 +23,4 @@ function useEventLogs(gameId: string) {
   return eventLogs;
 }
 
-export default useEventLogs;
+export default useUpdatePlayerStatEventLogs;
