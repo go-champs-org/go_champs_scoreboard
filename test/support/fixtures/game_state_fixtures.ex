@@ -122,7 +122,11 @@ defmodule GoChampsScoreboard.GameStateFixtures do
       home_players: [
         %{
           id: "123",
+          name: "Player 1",
+          number: 12,
           stats_values: %{
+            "free_throws_made" => 0,
+            "three_point_field_goals_made" => 0,
             "field_goals_made" => 0,
             "points" => 0,
             "rebounds_defensive" => 0
@@ -132,10 +136,14 @@ defmodule GoChampsScoreboard.GameStateFixtures do
       away_players: [
         %{
           id: "456",
+          name: "Player 2",
+          number: 23,
           stats_values: %{
-            "field_goals_made" => 10,
-            "points" => 10,
-            "rebounds_defensive" => 10
+            "free_throws_made" => 0,
+            "three_point_field_goals_made" => 0,
+            "field_goals_made" => 0,
+            "points" => 0,
+            "rebounds_defensive" => 0
           }
         }
       ]
