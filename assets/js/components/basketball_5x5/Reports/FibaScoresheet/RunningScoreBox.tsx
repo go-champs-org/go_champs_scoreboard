@@ -72,7 +72,9 @@ function ScoreMark({
           styles.runningScore.columnsContainer.column.scoreMark.playerContainer
         }
       >
-        {runningScore[number] && <Text>{runningScore[number].player}</Text>}
+        {runningScore[number] && (
+          <Text>{runningScore[number].player_number}</Text>
+        )}
       </View>
       <View
         style={
@@ -90,11 +92,11 @@ interface RenderRunningScore {
 }
 
 function ScoreList({
-  data,
+  runningScore,
   firstNumber,
   lastNumber,
 }: {
-  data: RenderRunningScore;
+  runningScore: RenderRunningScore;
   firstNumber: number;
   lastNumber: number;
 }) {
@@ -105,7 +107,7 @@ function ScoreList({
   return (
     <>
       {scoreList.map((number) => (
-        <ScoreMark key={number} number={number} runningScore={data} />
+        <ScoreMark key={number} number={number} runningScore={runningScore} />
       ))}
     </>
   );
@@ -124,14 +126,14 @@ function generateRunningScoreData(
 }
 
 export default function RunningScoreBox({
-  aTeamRunnigScore,
-  bTeamRunnigScore,
+  aTeamRunningScore,
+  bTeamRunningScore,
 }: {
-  aTeamRunnigScore: RunningScore;
-  bTeamRunnigScore: RunningScore;
+  aTeamRunningScore: RunningScore;
+  bTeamRunningScore: RunningScore;
 }) {
-  const aTeamRunningScore = generateRunningScoreData(aTeamRunnigScore);
-  const bTeamRunningScore = generateRunningScoreData(bTeamRunnigScore);
+  const aTeamFullRunningScore = generateRunningScoreData(aTeamRunningScore);
+  const bTeamFullRunningScore = generateRunningScoreData(bTeamRunningScore);
   return (
     <View style={styles.runningScore}>
       <View style={styles.runningScore.header}>
@@ -142,20 +144,28 @@ export default function RunningScoreBox({
           <View style={styles.runningScore.columnsContainer.column.team}>
             <Text>A</Text>
           </View>
-          <ScoreList data={aTeamRunningScore} firstNumber={1} lastNumber={40} />
+          <ScoreList
+            runningScore={aTeamFullRunningScore}
+            firstNumber={1}
+            lastNumber={40}
+          />
         </View>
         <View style={styles.runningScore.columnsContainer.column}>
           <View style={styles.runningScore.columnsContainer.column.team}>
             <Text>B</Text>
           </View>
-          <ScoreList data={bTeamRunningScore} firstNumber={1} lastNumber={40} />
+          <ScoreList
+            runningScore={bTeamFullRunningScore}
+            firstNumber={1}
+            lastNumber={40}
+          />
         </View>
         <View style={styles.runningScore.columnsContainer.column}>
           <View style={styles.runningScore.columnsContainer.column.team}>
             <Text>A</Text>
           </View>
           <ScoreList
-            data={aTeamRunningScore}
+            runningScore={aTeamFullRunningScore}
             firstNumber={41}
             lastNumber={80}
           />
@@ -165,7 +175,7 @@ export default function RunningScoreBox({
             <Text>B</Text>
           </View>
           <ScoreList
-            data={bTeamRunningScore}
+            runningScore={bTeamFullRunningScore}
             firstNumber={41}
             lastNumber={80}
           />
@@ -175,7 +185,7 @@ export default function RunningScoreBox({
             <Text>A</Text>
           </View>
           <ScoreList
-            data={aTeamRunningScore}
+            runningScore={aTeamFullRunningScore}
             firstNumber={81}
             lastNumber={120}
           />
@@ -185,7 +195,7 @@ export default function RunningScoreBox({
             <Text>B</Text>
           </View>
           <ScoreList
-            data={bTeamRunningScore}
+            runningScore={bTeamFullRunningScore}
             firstNumber={81}
             lastNumber={120}
           />
@@ -195,7 +205,7 @@ export default function RunningScoreBox({
             <Text>A</Text>
           </View>
           <ScoreList
-            data={aTeamRunningScore}
+            runningScore={aTeamFullRunningScore}
             firstNumber={121}
             lastNumber={160}
           />
@@ -205,7 +215,7 @@ export default function RunningScoreBox({
             <Text>B</Text>
           </View>
           <ScoreList
-            data={bTeamRunningScore}
+            runningScore={bTeamFullRunningScore}
             firstNumber={121}
             lastNumber={160}
           />

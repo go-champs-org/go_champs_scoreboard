@@ -21,7 +21,16 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
           %FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: []},
           %FibaScoresheet.Player{id: "456", name: "Player 2", number: 23, fouls: []}
         ],
-        coaches: [],
+        coach: %FibaScoresheet.Coach{
+          id: "coach-id",
+          name: "First coach",
+          fouls: []
+        },
+        assistant_coach: %FibaScoresheet.Coach{
+          id: "ass-coach",
+          name: "Ass Coach",
+          fouls: []
+        },
         all_fouls: [],
         running_score: %{},
         score: 0
@@ -36,7 +45,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       team = %FibaScoresheet.Team{
         name: "Some team",
         players: [],
-        coaches: [],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
         all_fouls: [],
         running_score: %{},
         score: 0
@@ -59,7 +69,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       team = %FibaScoresheet.Team{
         name: "Some team",
         players: [],
-        coaches: [],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
         all_fouls: [],
         running_score: %{
           2 => %FibaScoresheet.PointScore{
@@ -88,7 +99,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       team = %FibaScoresheet.Team{
         name: "Some team",
         players: [],
-        coaches: [],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
         all_fouls: [],
         running_score: %{
           2 => %FibaScoresheet.PointScore{

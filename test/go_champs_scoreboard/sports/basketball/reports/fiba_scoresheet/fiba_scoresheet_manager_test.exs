@@ -29,7 +29,12 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
         header: %FibaScoresheet.Header{},
         team_a: %FibaScoresheet.Team{
           name: "Some home team",
-          coaches: [],
+          coach: %FibaScoresheet.Coach{id: "coach-id", name: "First coach", fouls: []},
+          assistant_coach: %FibaScoresheet.Coach{
+            id: "ass-coach",
+            name: "Ass Coach",
+            fouls: []
+          },
           players: [%FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: []}],
           all_fouls: [],
           running_score: %{},
@@ -37,7 +42,12 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
         },
         team_b: %FibaScoresheet.Team{
           name: "Some away team",
-          coaches: [],
+          coach: %FibaScoresheet.Coach{id: "coach-id", name: "First coach", fouls: []},
+          assistant_coach: %FibaScoresheet.Coach{
+            fouls: [],
+            id: "ass-coach",
+            name: "Ass Coach"
+          },
           players: [%FibaScoresheet.Player{id: "456", name: "Player 2", number: 23, fouls: []}],
           all_fouls: [],
           running_score: %{},

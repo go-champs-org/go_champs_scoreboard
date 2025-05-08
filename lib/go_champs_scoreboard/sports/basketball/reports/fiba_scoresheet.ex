@@ -96,7 +96,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
     @type t :: %__MODULE__{
             name: String.t(),
             players: list(Player.t()),
-            coaches: list(Coach.t()),
+            coach: Coach.t(),
+            assistant_coach: Coach.t(),
             all_fouls: list(Foul.t()),
             running_score: %{Integer.t() => PointScore.t()},
             score: integer()
@@ -105,7 +106,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
     defstruct [
       :name,
       :players,
-      :coaches,
+      :coach,
+      :assistant_coach,
       :all_fouls,
       :running_score,
       :score

@@ -345,7 +345,7 @@ export default function TeamBox({ type, team }: TeamProps) {
             <Text>Ass. Técnico</Text>
           </View>
           <View style={styles.teamContainer.table.coachRow.name}>
-            <Text>{team.assistantCoach.name}</Text>
+            <Text>{team.assistant_coach.name}</Text>
           </View>
           <View style={styles.teamContainer.table.coachRow.columnFouls}>
             <View

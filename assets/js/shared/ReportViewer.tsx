@@ -1,11 +1,14 @@
 import React from 'react';
 import { PDFViewer } from '@react-pdf/renderer';
-import FibaScoresheet from '../components/basketball_5x5/Reports/FibaScoresheet';
+import FibaScoresheet, {
+  FibaScoresheetData,
+} from '../components/basketball_5x5/Reports/FibaScoresheet';
 
-function ReportViewer() {
+function ReportViewer({ report_data }: { report_data: string }) {
+  const scoresheetData = JSON.parse(report_data) as FibaScoresheetData;
   return (
     <PDFViewer width="100%" height="100%">
-      <FibaScoresheet />
+      <FibaScoresheet scoresheetData={scoresheetData} />
     </PDFViewer>
   );
 }

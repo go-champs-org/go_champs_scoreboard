@@ -14,7 +14,16 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
     %FibaScoresheet.Team{
       name: team_state.name,
       players: Enum.map(team_state.players, &bootstrap_player/1),
-      coaches: [],
+      coach: %FibaScoresheet.Coach{
+        id: "coach-id",
+        name: "First coach",
+        fouls: []
+      },
+      assistant_coach: %FibaScoresheet.Coach{
+        id: "ass-coach",
+        name: "Ass Coach",
+        fouls: []
+      },
       all_fouls: [],
       running_score: %{},
       score: 0
