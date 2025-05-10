@@ -35,13 +35,15 @@ defmodule GoChampsScoreboard.FibaScoresheetFixtures do
         name: team_a_name,
         running_score: %{},
         players: team_a_players,
-        score: 0
+        score: 0,
+        all_fouls: []
       },
       team_b: %FibaScoresheet.Team{
         name: team_b_name,
         running_score: %{},
         players: team_b_players,
-        score: 0
+        score: 0,
+        all_fouls: []
       }
     }
   end

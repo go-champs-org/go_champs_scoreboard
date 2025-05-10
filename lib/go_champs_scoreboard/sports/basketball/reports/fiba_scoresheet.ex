@@ -4,15 +4,38 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
     Foul struct for FIBA scoresheet.
     """
 
+    # Define valid foul types
+    # Personal, Technical, Anti Sportsmanship (U), Disqualifying, Disqualifying Fighting (F), Technical due other persons (B)
+    @valid_fouls_types ["P", "T", "U", "D", "F", "B"]
+
+    @valid_extra_actions ["1", "2", "3", "C"]
+
     @type t :: %__MODULE__{
             type: String.t(),
-            quarter: Integer.t()
+            period: Integer.t(),
+            extra_action: String.t()
           }
 
     defstruct [
       :type,
-      :quarter
+      :period,
+      :extra_action
     ]
+
+    @doc """
+    Creates a new PointScore struct with validation
+    """
+    def new(attrs) do
+      type = Map.get(attrs, :type)
+      extra_action = Map.get(attrs, :extra_action)
+
+      if type in @valid_fouls_types and extra_action in @valid_extra_actions do
+        struct(__MODULE__, attrs)
+      else
+        {:error,
+         "Invalid foul type: #{type}. Must be one of: #{Enum.join(@valid_fouls_types, ", ")}"}
+      end
+    end
   end
 
   defmodule Player do
@@ -64,13 +87,15 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
     @type t :: %__MODULE__{
             type: String.t(),
             player_number: Integer.t(),
-            is_last_of_quarter: boolean()
+            period: Integer.t(),
+            is_last_of_period: boolean()
           }
 
     defstruct [
       :type,
       :player_number,
-      :is_last_of_quarter
+      :period,
+      :is_last_of_period
     ]
 
     @doc """

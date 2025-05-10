@@ -125,6 +125,7 @@ defmodule GoChampsScoreboard.GameStateFixtures do
           name: "Player 1",
           number: 12,
           stats_values: %{
+            "fouls_personal" => 0,
             "free_throws_made" => 0,
             "three_point_field_goals_made" => 0,
             "field_goals_made" => 0,
@@ -139,6 +140,7 @@ defmodule GoChampsScoreboard.GameStateFixtures do
           name: "Player 2",
           number: 23,
           stats_values: %{
+            "fouls_personal" => 0,
             "free_throws_made" => 0,
             "three_point_field_goals_made" => 0,
             "field_goals_made" => 0,

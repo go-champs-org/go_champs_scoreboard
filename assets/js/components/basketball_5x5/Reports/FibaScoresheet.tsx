@@ -30,6 +30,7 @@ export interface Timeout {
 export interface ScoreMark {
   type: 'FT' | '2PT' | '3PT';
   player_number: number;
+  period: number;
   is_end_of_quarter: boolean;
 }
 
@@ -132,10 +133,10 @@ function Period({
 }: Period) {
   const quarterStyle = isQuarterCentered
     ? {
-        ...styles.periods.period.quarter,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }
+      ...styles.periods.period.quarter,
+      justifyContent: 'center',
+      alignItems: 'center',
+    }
     : styles.periods.period.quarter;
   return (
     <View style={styles.periods.period}>

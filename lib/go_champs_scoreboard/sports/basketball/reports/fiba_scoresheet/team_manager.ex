@@ -3,6 +3,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
   Handles the construction of team data structures for FIBA scoresheet.
   """
 
+  alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.PlayerManager
   alias GoChampsScoreboard.Games.Models.TeamState
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet
 
@@ -56,5 +57,34 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
     running_score = Map.put(team.running_score, score, point_score)
 
     %{team | running_score: running_score, score: score}
+  end
+
+  @doc """
+  Update player fouls and team fouls for a team.
+  """
+  @spec add_player_foul(FibaScoresheet.Team.t(), String.t(), FibaScoresheet.Foul.t()) ::
+          FibaScoresheet.Team.t()
+  def add_player_foul(team, player_id, foul) do
+    player =
+      team
+      |> PlayerManager.find_player(player_id)
+
+    updated_player = %FibaScoresheet.Player{
+      player
+      | fouls: [foul | player.fouls]
+    }
+
+    updated_team = %FibaScoresheet.Team{
+      team
+      | players:
+          List.replace_at(
+            team.players,
+            Enum.find_index(team.players, fn p -> p.id == player_id end),
+            updated_player
+          ),
+        all_fouls: [foul | team.all_fouls]
+    }
+
+    updated_team
   end
 end

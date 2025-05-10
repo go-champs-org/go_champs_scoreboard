@@ -44,7 +44,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
         1 => %FibaScoresheet.PointScore{
           type: "FT",
           player_number: 12,
-          is_last_of_quarter: false
+          period: game_state.clock_state.period,
+          is_last_of_period: false
         }
       }
 
@@ -86,7 +87,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
         2 => %FibaScoresheet.PointScore{
           type: "2PT",
           player_number: 23,
-          is_last_of_quarter: false
+          period: game_state.clock_state.period,
+          is_last_of_period: false
         }
       }
 
@@ -128,12 +130,57 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
         3 => %FibaScoresheet.PointScore{
           type: "3PT",
           player_number: 23,
-          is_last_of_quarter: false
+          period: game_state.clock_state.period,
+          is_last_of_period: false
         }
       }
 
       assert result_scoresheet.team_b.running_score == expected_running_score
       assert result_scoresheet.team_b.score == 3
+    end
+
+    test "returns a fiba scoresheet data player fouls when event log payload with fouls_personal operation is increment and team-type is away" do
+      game_state = basketball_game_state_fixture()
+
+      event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          game_state.clock_state.time,
+          game_state.clock_state.period,
+          %{
+            "operation" => "increment",
+            "team-type" => "away",
+            "player-id" => "456",
+            "stat-id" => "fouls_personal"
+          }
+        )
+
+      updated_game_state = GoChampsScoreboard.Events.Handler.handle(game_state, event)
+
+      {:ok, event_log} = EventLogs.persist(event, updated_game_state)
+
+      team_b_players = [
+        %FibaScoresheet.Player{id: "456", name: "Player 2", number: 23, fouls: []}
+      ]
+
+      fiba_scoresheet =
+        fiba_scoresheet_fixture(game_id: event_log.game_id, team_b_players: team_b_players)
+
+      result_scoresheet =
+        UpdatePlayerStatProcessor.process(event_log, fiba_scoresheet)
+
+      expected_fouls = [
+        %FibaScoresheet.Foul{
+          type: "P",
+          extra_action: nil,
+          period: game_state.clock_state.period
+        }
+      ]
+
+      [player] = result_scoresheet.team_b.players
+
+      assert player.fouls == expected_fouls
+      assert result_scoresheet.team_b.all_fouls == expected_fouls
     end
   end
 end

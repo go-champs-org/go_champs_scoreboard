@@ -6,7 +6,6 @@ defmodule GoChampsScoreboardWeb.ScoreboardReportViewers do
     report_data =
       case GoChampsScoreboard.Reports.fetch_report_data("fiba-scoresheet", game_id) do
         {:ok, data} -> data
-        {:error, reason} -> Logger.error("Failed to fetch report data: #{reason}")
       end
 
     {:ok,
