@@ -83,6 +83,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
     foul_type =
       case stat_id do
         "fouls_personal" -> "P"
+        "fouls_technical" -> "T"
       end
 
     foul = %FibaScoresheet.Foul{

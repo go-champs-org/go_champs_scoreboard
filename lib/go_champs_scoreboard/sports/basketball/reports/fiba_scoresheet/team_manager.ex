@@ -14,7 +14,10 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
   def bootstrap(team_state) do
     %FibaScoresheet.Team{
       name: team_state.name,
-      players: Enum.map(team_state.players, &bootstrap_player/1),
+      players:
+        team_state.players
+        |> Enum.filter(fn player -> player.state != :not_available end)
+        |> Enum.map(&bootstrap_player/1),
       coach: %FibaScoresheet.Coach{
         id: "coach-id",
         name: "First coach",

@@ -227,20 +227,21 @@ export interface TeamProps {
 export default function TeamBox({ type, team }: TeamProps) {
   const renderPlayers = Array.from({ length: 12 }).map((_, index) => {
     const teamPlayer = team.players[index] || null;
+    const fouls = Array.from({ length: 5 }).fill({});
     if (teamPlayer) {
       return {
         name: teamPlayer.name,
         number: teamPlayer.number,
-        fouls: teamPlayer.fouls.map((foul) => ({
-          type: foul.type,
-          period: foul.period,
+        fouls: fouls.map((_, index) => ({
+          type: teamPlayer.fouls[index]?.type || '',
+          period: teamPlayer.fouls[index]?.period || 0,
         })),
       };
     }
     return {
       name: '',
       number: null,
-      fouls: [],
+      fouls,
     };
   });
 
@@ -303,21 +304,15 @@ export default function TeamBox({ type, team }: TeamProps) {
               <Text style={styles.teamContainer.table.content}>X</Text>
             </View>
             <View style={styles.teamContainer.table.row.columnFouls}>
-              <View
-                style={styles.teamContainer.table.row.columnFouls.fouls}
-              ></View>
-              <View
-                style={styles.teamContainer.table.row.columnFouls.fouls}
-              ></View>
-              <View
-                style={styles.teamContainer.table.row.columnFouls.fouls}
-              ></View>
-              <View
-                style={styles.teamContainer.table.row.columnFouls.fouls}
-              ></View>
-              <View
-                style={styles.teamContainer.table.row.columnFouls.fouls}
-              ></View>
+              {player.fouls.map((foul, index) => (
+                <View
+                  style={styles.teamContainer.table.row.columnFouls.fouls}
+                >
+                  <Text key={index} style={styles.teamContainer.table.content}>
+                    {foul.type}
+                  </Text>
+                </View>
+              ))}
             </View>
           </View>
         ))}

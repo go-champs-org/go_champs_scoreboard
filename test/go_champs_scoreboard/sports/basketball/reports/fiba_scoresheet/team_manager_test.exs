@@ -10,8 +10,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       team_state = %{
         name: "Some team",
         players: [
-          %{id: "123", name: "Player 1", number: 12},
-          %{id: "456", name: "Player 2", number: 23}
+          %{id: "123", name: "Player 1", number: 12, state: :available},
+          %{id: "456", name: "Player 2", number: 23, state: :available}
         ]
       }
 
@@ -20,6 +20,38 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
         players: [
           %FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: []},
           %FibaScoresheet.Player{id: "456", name: "Player 2", number: 23, fouls: []}
+        ],
+        coach: %FibaScoresheet.Coach{
+          id: "coach-id",
+          name: "First coach",
+          fouls: []
+        },
+        assistant_coach: %FibaScoresheet.Coach{
+          id: "ass-coach",
+          name: "Ass Coach",
+          fouls: []
+        },
+        all_fouls: [],
+        running_score: %{},
+        score: 0
+      }
+
+      assert expected == TeamManager.bootstrap(team_state)
+    end
+
+    test "returns a FibaScoresheet.Team struct ignoring not_available players" do
+      team_state = %{
+        name: "Some team",
+        players: [
+          %{id: "123", name: "Player 1", number: 12, state: :available},
+          %{id: "456", name: "Player 2", number: 23, state: :not_available}
+        ]
+      }
+
+      expected = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [
+          %FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: []}
         ],
         coach: %FibaScoresheet.Coach{
           id: "coach-id",

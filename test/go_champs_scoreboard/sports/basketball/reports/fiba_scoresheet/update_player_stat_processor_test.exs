@@ -182,5 +182,49 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
       assert player.fouls == expected_fouls
       assert result_scoresheet.team_b.all_fouls == expected_fouls
     end
+
+    test "returns a fiba scoresheet data player fouls when event log payload with fouls_technical operation is increment and team-type is home" do
+      game_state = basketball_game_state_fixture()
+
+      event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          game_state.clock_state.time,
+          game_state.clock_state.period,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => "123",
+            "stat-id" => "fouls_technical"
+          }
+        )
+
+      updated_game_state = GoChampsScoreboard.Events.Handler.handle(game_state, event)
+
+      {:ok, event_log} = EventLogs.persist(event, updated_game_state)
+
+      team_a_players = [
+        %FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: []}
+      ]
+
+      fiba_scoresheet =
+        fiba_scoresheet_fixture(game_id: event_log.game_id, team_a_players: team_a_players)
+
+      result_scoresheet =
+        UpdatePlayerStatProcessor.process(event_log, fiba_scoresheet)
+
+      expected_fouls = [
+        %FibaScoresheet.Foul{
+          type: "T",
+          extra_action: nil,
+          period: game_state.clock_state.period
+        }
+      ]
+
+      [player] = result_scoresheet.team_a.players
+
+      assert player.fouls == expected_fouls
+      assert result_scoresheet.team_a.all_fouls == expected_fouls
+    end
   end
 end
