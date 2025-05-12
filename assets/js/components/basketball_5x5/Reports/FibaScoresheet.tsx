@@ -20,6 +20,9 @@ export interface Player {
   name: string;
   number: number;
   fouls: PlayerFoul[];
+  has_started: boolean;
+  has_played: boolean;
+  is_captain: boolean;
 }
 
 export interface Timeout {
@@ -29,8 +32,9 @@ export interface Timeout {
 
 export interface ScoreMark {
   type: 'FT' | '2PT' | '3PT';
-  player: number;
-  isEndOfQuarter: boolean;
+  player_number: number;
+  period: number;
+  is_end_of_quarter: boolean;
 }
 
 export interface RunningScore {
@@ -41,9 +45,10 @@ export interface Team {
   name: string;
   players: Player[];
   timeouts: Timeout[];
-  runningScore: RunningScore;
+  running_score: RunningScore;
   coach: Coach;
-  assistantCoach: Coach;
+  assistant_coach: Coach;
+  all_fouls: PlayerFoul[];
 }
 
 const styles = StyleSheet.create({
@@ -315,17 +320,17 @@ const MOCK_DATA: {
     ],
     timeouts: [],
     runningScore: {
-      1: { type: 'FT', player: 23, isEndOfQuarter: false },
-      3: { type: '2PT', player: 3, isEndOfQuarter: false },
-      6: { type: '3PT', player: 0, isEndOfQuarter: false },
-      7: { type: 'FT', player: 23, isEndOfQuarter: true },
-      9: { type: '2PT', player: 3, isEndOfQuarter: false },
+      1: { type: 'FT', player: 23, is_end_of_quarter: false },
+      3: { type: '2PT', player: 3, is_end_of_quarter: false },
+      6: { type: '3PT', player: 0, is_end_of_quarter: false },
+      7: { type: 'FT', player: 23, is_end_of_quarter: true },
+      9: { type: '2PT', player: 3, is_end_of_quarter: false },
     },
     coach: {
       name: 'Frank Vogel asd asd qwe aszd ads xcv cxv adsf asd qweq wadsa cxv edwferw',
       fouls: [],
     },
-    assistantCoach: {
+    assistant_coach: {
       name: 'Jason Kidd',
       fouls: [],
     },
@@ -339,32 +344,33 @@ const MOCK_DATA: {
     ],
     timeouts: [],
     runningScore: {
-      2: { type: 'FT', player: 30, isEndOfQuarter: false },
-      4: { type: '2PT', player: 11, isEndOfQuarter: false },
-      5: { type: '3PT', player: 23, isEndOfQuarter: false },
-      8: { type: 'FT', player: 30, isEndOfQuarter: true },
-      10: { type: '2PT', player: 11, isEndOfQuarter: false },
+      2: { type: 'FT', player: 30, is_end_of_quarter: false },
+      4: { type: '2PT', player: 11, is_end_of_quarter: false },
+      5: { type: '3PT', player: 23, is_end_of_quarter: false },
+      8: { type: 'FT', player: 30, is_end_of_quarter: true },
+      10: { type: '2PT', player: 11, is_end_of_quarter: false },
     },
     coach: {
       name: 'Steve Kerr',
       fouls: [],
     },
-    assistantCoach: {
+    assistant_coach: {
       name: 'Mike Brown',
       fouls: [],
     },
   },
 };
 
-interface FibaScoresheetProps {
-  scoresheetData: {
-    aTeam: Team;
-    bTeam: Team;
-  };
+export interface FibaScoresheetData {
+  team_a: Team;
+  team_b: Team;
 }
 
-function FibaScoresheet() {
-  const scoresheetData = MOCK_DATA;
+interface FibaScoresheetProps {
+  scoresheetData: FibaScoresheetData;
+}
+
+function FibaScoresheet({ scoresheetData }: FibaScoresheetProps) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -379,8 +385,8 @@ function FibaScoresheet() {
             <View
               style={styles.main.teamsAndRunningScoreContainer.containerLeft}
             >
-              <TeamBox type="A" team={scoresheetData.aTeam} />
-              <TeamBox type="B" team={scoresheetData.bTeam} />
+              <TeamBox type="A" team={scoresheetData.team_a} />
+              <TeamBox type="B" team={scoresheetData.team_b} />
               <OfficialsBox />
               <FiscalsBox />
             </View>
@@ -388,8 +394,8 @@ function FibaScoresheet() {
               style={styles.main.teamsAndRunningScoreContainer.containerRight}
             >
               <RunningScoreBox
-                aTeamRunnigScore={scoresheetData.aTeam.runningScore}
-                bTeamRunnigScore={scoresheetData.bTeam.runningScore}
+                aTeamRunningScore={scoresheetData.team_a.running_score}
+                bTeamRunningScore={scoresheetData.team_b.running_score}
               />
               <Periods />
               <EndResults />

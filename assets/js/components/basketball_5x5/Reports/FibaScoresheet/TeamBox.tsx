@@ -53,6 +53,13 @@ const styles = StyleSheet.create({
         box: {
           padding: '1px 3px',
           border: '1px solid #000',
+          position: 'relative',
+          x: {
+            position: 'absolute',
+            top: '-2px',
+            left: '1px',
+            fontSize: '14px',
+          },
         },
       },
     },
@@ -61,11 +68,21 @@ const styles = StyleSheet.create({
         margin: '2px',
         maxLines: 1,
       },
+      contentWithCircle: {
+        border: '1px solid #000',
+        borderRadius: '50px',
+        paddingLeft: '3px',
+        paddingRight: '2px',
+        paddingTop: '1px',
+        margin: '1px',
+        maxLines: 1,
+      },
       row: {
         display: 'flex',
         flexDirection: 'row',
         flex: '1 1 auto',
         borderBottom: '1px solid #000',
+        minHeight: '14px',
         column: {
           flex: '1 1',
           display: 'flex',
@@ -149,6 +166,7 @@ const styles = StyleSheet.create({
 });
 
 function PeriodFouls({ period, team }: { period: number; team: Team }) {
+  const periodFouls = team.all_fouls.filter((foul) => foul.period === period);
   return (
     <View style={styles.teamContainer.teamFoulBoxes}>
       <View style={styles.teamContainer.teamFoulBoxes.periodContainer}>
@@ -160,15 +178,35 @@ function PeriodFouls({ period, team }: { period: number; team: Team }) {
       <View style={styles.teamContainer.teamFoulBoxes.fouls}>
         <View style={styles.teamContainer.teamFoulBoxes.fouls.box}>
           <Text>1</Text>
+          {periodFouls.length >= 1 && (
+            <Text style={styles.teamContainer.teamFoulBoxes.fouls.box.x}>
+              X
+            </Text>
+          )}
         </View>
         <View style={styles.teamContainer.teamFoulBoxes.fouls.box}>
           <Text>2</Text>
+          {periodFouls.length >= 2 && (
+            <Text style={styles.teamContainer.teamFoulBoxes.fouls.box.x}>
+              X
+            </Text>
+          )}
         </View>
         <View style={styles.teamContainer.teamFoulBoxes.fouls.box}>
           <Text>3</Text>
+          {periodFouls.length >= 3 && (
+            <Text style={styles.teamContainer.teamFoulBoxes.fouls.box.x}>
+              X
+            </Text>
+          )}
         </View>
         <View style={styles.teamContainer.teamFoulBoxes.fouls.box}>
           <Text>4</Text>
+          {periodFouls.length >= 4 && (
+            <Text style={styles.teamContainer.teamFoulBoxes.fouls.box.x}>
+              X
+            </Text>
+          )}
         </View>
       </View>
     </View>
@@ -227,20 +265,27 @@ export interface TeamProps {
 export default function TeamBox({ type, team }: TeamProps) {
   const renderPlayers = Array.from({ length: 12 }).map((_, index) => {
     const teamPlayer = team.players[index] || null;
+    const fouls = Array.from({ length: 5 }).fill({});
     if (teamPlayer) {
       return {
         name: teamPlayer.name,
         number: teamPlayer.number,
-        fouls: teamPlayer.fouls.map((foul) => ({
-          type: foul.type,
-          period: foul.period,
+        fouls: fouls.map((_, index) => ({
+          type: teamPlayer.fouls[index]?.type || '',
+          period: teamPlayer.fouls[index]?.period || 0,
         })),
+        has_started: teamPlayer.has_started,
+        has_played: teamPlayer.has_played,
+        is_captain: teamPlayer.is_captain,
       };
     }
     return {
       name: '',
       number: null,
-      fouls: [],
+      fouls,
+      has_started: false,
+      has_played: false,
+      is_captain: false,
     };
   });
 
@@ -300,24 +345,28 @@ export default function TeamBox({ type, team }: TeamProps) {
               </Text>
             </View>
             <View style={styles.teamContainer.table.row.columnBox}>
-              <Text style={styles.teamContainer.table.content}>X</Text>
+              {player.has_played ? (
+                <Text
+                  style={
+                    player.has_started
+                      ? styles.teamContainer.table.contentWithCircle
+                      : styles.teamContainer.table.content
+                  }
+                >
+                  X
+                </Text>
+              ) : (
+                <></>
+              )}
             </View>
             <View style={styles.teamContainer.table.row.columnFouls}>
-              <View
-                style={styles.teamContainer.table.row.columnFouls.fouls}
-              ></View>
-              <View
-                style={styles.teamContainer.table.row.columnFouls.fouls}
-              ></View>
-              <View
-                style={styles.teamContainer.table.row.columnFouls.fouls}
-              ></View>
-              <View
-                style={styles.teamContainer.table.row.columnFouls.fouls}
-              ></View>
-              <View
-                style={styles.teamContainer.table.row.columnFouls.fouls}
-              ></View>
+              {player.fouls.map((foul, index) => (
+                <View style={styles.teamContainer.table.row.columnFouls.fouls}>
+                  <Text key={index} style={styles.teamContainer.table.content}>
+                    {foul.type}
+                  </Text>
+                </View>
+              ))}
             </View>
           </View>
         ))}
@@ -345,7 +394,7 @@ export default function TeamBox({ type, team }: TeamProps) {
             <Text>Ass. Técnico</Text>
           </View>
           <View style={styles.teamContainer.table.coachRow.name}>
-            <Text>{team.assistantCoach.name}</Text>
+            <Text>{team.assistant_coach.name}</Text>
           </View>
           <View style={styles.teamContainer.table.coachRow.columnFouls}>
             <View

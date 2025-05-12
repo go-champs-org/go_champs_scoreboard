@@ -41,7 +41,7 @@ defmodule GoChampsScoreboard.Games.EventLogs do
     end
   end
 
-  @spec persist(Event.t(), GameState.t()) :: :ok | {:error, any()}
+  @spec persist(Event.t(), GameState.t()) :: {:ok, EventLog.t()} | {:error, any()}
   def persist(event, game_state) do
     Repo.transaction(fn ->
       # First, create a new event log

@@ -1,4 +1,5 @@
 defmodule GoChampsScoreboard.GameStateFixtures do
+  alias GoChampsScoreboard.Games.Models.PlayerState
   alias GoChampsScoreboard.Games.Models.{GameState, TeamState, GameClockState, LiveState}
 
   @doc """
@@ -120,23 +121,58 @@ defmodule GoChampsScoreboard.GameStateFixtures do
       game_id: Keyword.get(opts, :game_id, Ecto.UUID.generate()),
       sport_id: "basketball",
       home_players: [
-        %{
+        %PlayerState{
           id: "123",
+          name: "Player 1",
+          number: 12,
           stats_values: %{
+            "fouls_personal" => 0,
+            "fouls_technical" => 0,
+            "free_throws_made" => 0,
+            "three_point_field_goals_made" => 0,
             "field_goals_made" => 0,
             "points" => 0,
-            "rebounds_defensive" => 0
-          }
+            "rebounds_defensive" => 0,
+            "game_played" => 0,
+            "game_started" => 0
+          },
+          state: :available
+        },
+        %PlayerState{
+          id: "124",
+          name: "Player 2",
+          number: 23,
+          stats_values: %{
+            "fouls_personal" => 0,
+            "fouls_technical" => 0,
+            "free_throws_made" => 0,
+            "three_point_field_goals_made" => 0,
+            "field_goals_made" => 0,
+            "points" => 0,
+            "rebounds_defensive" => 0,
+            "game_played" => 0,
+            "game_started" => 0
+          },
+          state: :available
         }
       ],
       away_players: [
-        %{
+        %PlayerState{
           id: "456",
+          name: "Player 2",
+          number: 23,
           stats_values: %{
-            "field_goals_made" => 10,
-            "points" => 10,
-            "rebounds_defensive" => 10
-          }
+            "fouls_personal" => 0,
+            "fouls_technical" => 0,
+            "free_throws_made" => 0,
+            "three_point_field_goals_made" => 0,
+            "field_goals_made" => 0,
+            "points" => 0,
+            "rebounds_defensive" => 0,
+            "game_played" => 0,
+            "game_started" => 0
+          },
+          state: :available
         }
       ]
     )

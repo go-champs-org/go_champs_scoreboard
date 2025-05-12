@@ -4,6 +4,7 @@ defmodule GoChampsScoreboard.EventsFixtures do
   entities via the `GoChampsScoreboard.Events` context.
   """
 
+  alias GoChampsScoreboard.Games.Models.PlayerState
   alias GoChampsScoreboard.Events.Handler
   alias GoChampsScoreboard.Games.EventLogs
   import GoChampsScoreboard.GameStateFixtures
@@ -68,7 +69,36 @@ defmodule GoChampsScoreboard.EventsFixtures do
   end
 
   def game_full_event_log_fixture() do
-    game_state = game_state_with_players_fixture()
+    home_players = [
+      %PlayerState{
+        id: "123",
+        stats_values: %{
+          "field_goals_made" => 0,
+          "free_throws_made" => 0,
+          "three_point_field_goals_made" => 0
+        },
+        name: "Home Player 12",
+        number: 12,
+        state: :available
+      }
+    ]
+
+    away_players = [
+      %PlayerState{
+        id: "456",
+        stats_values: %{
+          "field_goals_made" => 0,
+          "free_throws_made" => 0,
+          "three_point_field_goals_made" => 0
+        },
+        name: "Away Player 22",
+        number: 22,
+        state: :available
+      }
+    ]
+
+    game_state =
+      game_state_with_players_fixture(home_players: home_players, away_players: away_players)
 
     start_live_event =
       GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(

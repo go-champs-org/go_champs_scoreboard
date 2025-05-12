@@ -1307,7 +1307,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       }
 
       payload2 = %{
-        "operation" => "decrement",
+        "operation" => "increment",
         "team-type" => "away",
         "player-id" => "456",
         "stat-id" => "rebounds_defensive"
@@ -1379,7 +1379,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
         |> Map.get(:stats_values)
         |> Map.get("rebounds_defensive")
 
-      assert updated_player_rebounds == original_player_rebounds - 1
+      assert updated_player_rebounds == original_player_rebounds + 1
     end
   end
 
