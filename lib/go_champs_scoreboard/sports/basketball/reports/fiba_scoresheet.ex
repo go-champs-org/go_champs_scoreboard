@@ -47,14 +47,20 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
             id: String.t(),
             name: String.t(),
             number: String.t(),
-            fouls: list(Foul.t())
+            fouls: list(Foul.t()),
+            has_started: boolean(),
+            has_played: boolean(),
+            is_captain: boolean()
           }
 
     defstruct [
       :id,
       :name,
       :number,
-      :fouls
+      :fouls,
+      :has_started,
+      :has_played,
+      :is_captain
     ]
   end
 

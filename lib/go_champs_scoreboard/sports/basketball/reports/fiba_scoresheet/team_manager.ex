@@ -39,7 +39,10 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       id: player.id,
       name: player.name,
       number: player.number,
-      fouls: []
+      fouls: [],
+      is_captain: nil,
+      has_played: nil,
+      has_started: nil
     }
   end
 
@@ -89,5 +92,23 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
     }
 
     updated_team
+  end
+
+  @doc """
+  Updates a player in the team.
+  """
+  @spec update_player(FibaScoresheet.Player.t(), FibaScoresheet.Team.t()) ::
+          FibaScoresheet.Team.t()
+  def update_player(player, team) do
+    updated_players =
+      Enum.map(team.players, fn p ->
+        if p.id == player.id do
+          player
+        else
+          p
+        end
+      end)
+
+    %FibaScoresheet.Team{team | players: updated_players}
   end
 end

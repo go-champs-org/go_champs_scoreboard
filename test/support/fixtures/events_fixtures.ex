@@ -78,7 +78,8 @@ defmodule GoChampsScoreboard.EventsFixtures do
           "three_point_field_goals_made" => 0
         },
         name: "Home Player 12",
-        number: 12
+        number: 12,
+        state: :available
       }
     ]
 
@@ -91,7 +92,8 @@ defmodule GoChampsScoreboard.EventsFixtures do
           "three_point_field_goals_made" => 0
         },
         name: "Away Player 22",
-        number: 22
+        number: 22,
+        state: :available
       }
     ]
 

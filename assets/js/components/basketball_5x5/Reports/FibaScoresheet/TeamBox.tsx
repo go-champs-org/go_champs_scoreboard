@@ -61,11 +61,21 @@ const styles = StyleSheet.create({
         margin: '2px',
         maxLines: 1,
       },
+      contentWithCircle: {
+        border: '1px solid #000',
+        borderRadius: '50px',
+        paddingLeft: '3px',
+        paddingRight: '2px',
+        paddingTop: '1px',
+        margin: '1px',
+        maxLines: 1,
+      },
       row: {
         display: 'flex',
         flexDirection: 'row',
         flex: '1 1 auto',
         borderBottom: '1px solid #000',
+        minHeight: '14px',
         column: {
           flex: '1 1',
           display: 'flex',
@@ -236,12 +246,18 @@ export default function TeamBox({ type, team }: TeamProps) {
           type: teamPlayer.fouls[index]?.type || '',
           period: teamPlayer.fouls[index]?.period || 0,
         })),
+        has_started: teamPlayer.has_started,
+        has_played: teamPlayer.has_played,
+        is_captain: teamPlayer.is_captain,
       };
     }
     return {
       name: '',
       number: null,
       fouls,
+      has_started: false,
+      has_played: false,
+      is_captain: false,
     };
   });
 
@@ -301,7 +317,11 @@ export default function TeamBox({ type, team }: TeamProps) {
               </Text>
             </View>
             <View style={styles.teamContainer.table.row.columnBox}>
-              <Text style={styles.teamContainer.table.content}>X</Text>
+              {player.has_played ? (
+                <Text style={player.has_started ? styles.teamContainer.table.contentWithCircle : styles.teamContainer.table.content}>
+                  X
+                </Text>
+              ) : <></>}
             </View>
             <View style={styles.teamContainer.table.row.columnFouls}>
               {player.fouls.map((foul, index) => (

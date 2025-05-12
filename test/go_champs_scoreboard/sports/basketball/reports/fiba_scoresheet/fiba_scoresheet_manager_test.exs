@@ -35,7 +35,26 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
             name: "Ass Coach",
             fouls: []
           },
-          players: [%FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: []}],
+          players: [
+            %FibaScoresheet.Player{
+              id: "123",
+              name: "Player 1",
+              number: 12,
+              fouls: [],
+              is_captain: nil,
+              has_played: nil,
+              has_started: nil
+            },
+            %FibaScoresheet.Player{
+              id: "124",
+              name: "Player 2",
+              number: 23,
+              fouls: [],
+              is_captain: nil,
+              has_played: nil,
+              has_started: nil
+            }
+          ],
           all_fouls: [],
           running_score: %{},
           score: 0

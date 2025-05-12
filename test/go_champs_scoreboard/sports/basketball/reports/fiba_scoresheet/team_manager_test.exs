@@ -182,4 +182,54 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       assert updated_team.all_fouls == [foul]
     end
   end
+
+  describe "update_player/2" do
+    test "updates the player in the team" do
+      player = %FibaScoresheet.Player{
+        id: "123",
+        name: "Player 1",
+        number: 12,
+        fouls: []
+      }
+
+      updated_player = %FibaScoresheet.Player{
+        id: "123",
+        name: "Updated Player",
+        number: 12,
+        fouls: []
+      }
+
+      team = %FibaScoresheet.Team{
+        players: [player]
+      }
+
+      result = TeamManager.update_player(updated_player, team)
+
+      assert Enum.any?(result.players, fn p -> p.name == "Updated Player" end)
+    end
+
+    test "does not update the team when player id is not found" do
+      player = %FibaScoresheet.Player{
+        id: "123",
+        name: "Player 1",
+        number: 12,
+        fouls: []
+      }
+
+      updated_player = %FibaScoresheet.Player{
+        id: "456",
+        name: "Updated Player",
+        number: 12,
+        fouls: []
+      }
+
+      team = %FibaScoresheet.Team{
+        players: [player]
+      }
+
+      result = TeamManager.update_player(updated_player, team)
+
+      assert Enum.any?(result.players, fn p -> p.name == "Player 1" end)
+    end
+  end
 end

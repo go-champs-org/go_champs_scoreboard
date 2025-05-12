@@ -20,6 +20,9 @@ export interface Player {
   name: string;
   number: number;
   fouls: PlayerFoul[];
+  has_started: boolean;
+  has_played: boolean;
+  is_captain: boolean;
 }
 
 export interface Timeout {
