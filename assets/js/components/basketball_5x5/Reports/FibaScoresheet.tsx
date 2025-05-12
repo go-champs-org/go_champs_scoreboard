@@ -48,6 +48,7 @@ export interface Team {
   running_score: RunningScore;
   coach: Coach;
   assistant_coach: Coach;
+  all_fouls: PlayerFoul[];
 }
 
 const styles = StyleSheet.create({
@@ -136,10 +137,10 @@ function Period({
 }: Period) {
   const quarterStyle = isQuarterCentered
     ? {
-      ...styles.periods.period.quarter,
-      justifyContent: 'center',
-      alignItems: 'center',
-    }
+        ...styles.periods.period.quarter,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }
     : styles.periods.period.quarter;
   return (
     <View style={styles.periods.period}>

@@ -53,6 +53,13 @@ const styles = StyleSheet.create({
         box: {
           padding: '1px 3px',
           border: '1px solid #000',
+          position: 'relative',
+          x: {
+            position: 'absolute',
+            top: '-2px',
+            left: '1px',
+            fontSize: '14px',
+          },
         },
       },
     },
@@ -159,6 +166,7 @@ const styles = StyleSheet.create({
 });
 
 function PeriodFouls({ period, team }: { period: number; team: Team }) {
+  const periodFouls = team.all_fouls.filter((foul) => foul.period === period);
   return (
     <View style={styles.teamContainer.teamFoulBoxes}>
       <View style={styles.teamContainer.teamFoulBoxes.periodContainer}>
@@ -170,15 +178,35 @@ function PeriodFouls({ period, team }: { period: number; team: Team }) {
       <View style={styles.teamContainer.teamFoulBoxes.fouls}>
         <View style={styles.teamContainer.teamFoulBoxes.fouls.box}>
           <Text>1</Text>
+          {periodFouls.length >= 1 && (
+            <Text style={styles.teamContainer.teamFoulBoxes.fouls.box.x}>
+              X
+            </Text>
+          )}
         </View>
         <View style={styles.teamContainer.teamFoulBoxes.fouls.box}>
           <Text>2</Text>
+          {periodFouls.length >= 2 && (
+            <Text style={styles.teamContainer.teamFoulBoxes.fouls.box.x}>
+              X
+            </Text>
+          )}
         </View>
         <View style={styles.teamContainer.teamFoulBoxes.fouls.box}>
           <Text>3</Text>
+          {periodFouls.length >= 3 && (
+            <Text style={styles.teamContainer.teamFoulBoxes.fouls.box.x}>
+              X
+            </Text>
+          )}
         </View>
         <View style={styles.teamContainer.teamFoulBoxes.fouls.box}>
           <Text>4</Text>
+          {periodFouls.length >= 4 && (
+            <Text style={styles.teamContainer.teamFoulBoxes.fouls.box.x}>
+              X
+            </Text>
+          )}
         </View>
       </View>
     </View>
@@ -318,16 +346,22 @@ export default function TeamBox({ type, team }: TeamProps) {
             </View>
             <View style={styles.teamContainer.table.row.columnBox}>
               {player.has_played ? (
-                <Text style={player.has_started ? styles.teamContainer.table.contentWithCircle : styles.teamContainer.table.content}>
+                <Text
+                  style={
+                    player.has_started
+                      ? styles.teamContainer.table.contentWithCircle
+                      : styles.teamContainer.table.content
+                  }
+                >
                   X
                 </Text>
-              ) : <></>}
+              ) : (
+                <></>
+              )}
             </View>
             <View style={styles.teamContainer.table.row.columnFouls}>
               {player.fouls.map((foul, index) => (
-                <View
-                  style={styles.teamContainer.table.row.columnFouls.fouls}
-                >
+                <View style={styles.teamContainer.table.row.columnFouls.fouls}>
                   <Text key={index} style={styles.teamContainer.table.content}>
                     {foul.type}
                   </Text>
