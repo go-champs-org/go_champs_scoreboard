@@ -1,6 +1,7 @@
 import React from 'react';
 import { GameClockState, LiveState } from '../../types';
 import { invokeButtonClickRef } from '../../shared/invokeButtonClick';
+import { FeatureFlag } from '../../shared/FeatureFlags';
 
 interface ClockControlsProps {
   clock_state: GameClockState;
@@ -80,30 +81,76 @@ function ClockControls({
     return () => document.removeEventListener('keydown', listener);
   }, [buttonPauseStart, clock_state]);
 
+  const TimeoutControls = () => (
+    <>
+      <div className="column is-3">
+        <button
+          className="button"
+          onClick={() =>
+            pushEvent('update-team-stat', {
+              ['stat-id']: 'timeouts',
+              ['team-type']: 'home',
+              operation: 'increment',
+            })
+          }
+          disabled={clockButtonsDisabled}
+        >
+          {'Timeout'}
+        </button>
+      </div>
+      <div className="column is-6">
+        <span className="chip-label">{clock_state.period}</span>
+      </div>
+      <div className="column is-3">
+        <button
+          className="button"
+          onClick={() =>
+            pushEvent('update-team-stat', {
+              ['stat-id']: 'timeouts',
+              ['team-type']: 'away',
+              operation: 'increment',
+            })
+          }
+          disabled={clockButtonsDisabled}
+        >
+          {'Timeout'}
+        </button>
+      </div>
+    </>
+  );
+
+  const PeriodControls = () => (
+    <>
+      <div className="column is-2">
+        <button
+          className="button is-info"
+          onClick={onPeriodDecrement}
+          disabled={clockButtonsDisabled}
+        >
+          {'<'}
+        </button>
+      </div>
+      <div className="column is-8">
+        <span className="chip-label">{clock_state.period}</span>
+      </div>
+      <div className="column is-2">
+        <button
+          className="button is-info"
+          onClick={onPeriodIncrement}
+          disabled={clockButtonsDisabled}
+        >
+          {'>'}
+        </button>
+      </div>
+    </>
+  );
+
   return (
     <div className="controls">
       <div className="columns is-multiline">
-        <div className="column is-2">
-          <button
-            className="button is-info"
-            onClick={onPeriodDecrement}
-            disabled={clockButtonsDisabled}
-          >
-            {'<'}
-          </button>
-        </div>
-        <div className="column is-8">
-          <span className="chip-label">{clock_state.period}</span>
-        </div>
-        <div className="column is-2">
-          <button
-            className="button is-info"
-            onClick={onPeriodIncrement}
-            disabled={clockButtonsDisabled}
-          >
-            {'>'}
-          </button>
-        </div>
+        <FeatureFlag name="show_timeout_buttons" fallback={<PeriodControls />}>
+          <TimeoutControls />
+        </FeatureFlag>
 
         <div className="column is-2">
           <button

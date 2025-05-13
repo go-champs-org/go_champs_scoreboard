@@ -17,15 +17,18 @@ defmodule GoChampsScoreboard.Games.Models.TeamState do
         name,
         players \\ [],
         total_player_stats \\ %{},
-        stats_values \\ Basketball.bootstrap_team_stats(),
+        stats_values \\ nil,
         tri_code \\ "",
         logo_url \\ ""
       ) do
+    final_stats_values =
+      if is_nil(stats_values), do: Basketball.bootstrap_team_stats(), else: stats_values
+
     %__MODULE__{
       name: name,
       players: players,
       total_player_stats: total_player_stats,
-      stats_values: stats_values,
+      stats_values: final_stats_values,
       tri_code: tri_code,
       logo_url: logo_url
     }

@@ -8,7 +8,8 @@ defmodule GoChampsScoreboard.Infrastructure.FeatureFlags do
 
   # Define default flags - these can also be loaded from a config or database
   @flags %{
-    "display_event_logs_modal" => true
+    "display_event_logs_modal" => true,
+    "show_timeout_buttons" => true
   }
 
   @doc """
