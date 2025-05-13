@@ -56,6 +56,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
             }
           ],
           all_fouls: [],
+          timeouts: [],
           running_score: %{},
           score: 0
         },
@@ -69,6 +70,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
           },
           players: [%FibaScoresheet.Player{id: "456", name: "Player 2", number: 23, fouls: []}],
           all_fouls: [],
+          timeouts: [],
           running_score: %{},
           score: 0
         }

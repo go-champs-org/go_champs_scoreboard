@@ -29,6 +29,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
         fouls: []
       },
       all_fouls: [],
+      timeouts: [],
       running_score: %{},
       score: 0
     }
@@ -110,5 +111,15 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       end)
 
     %FibaScoresheet.Team{team | players: updated_players}
+  end
+
+  @doc """
+  Adds a timeout to the team's timeouts list.
+  """
+  @spec add_timeout(FibaScoresheet.Team.t(), FibaScoresheet.Timeout.t()) ::
+          FibaScoresheet.Team.t()
+  def add_timeout(team, timeout) do
+    updated_timeouts = [timeout | team.timeouts]
+    %FibaScoresheet.Team{team | timeouts: updated_timeouts}
   end
 end

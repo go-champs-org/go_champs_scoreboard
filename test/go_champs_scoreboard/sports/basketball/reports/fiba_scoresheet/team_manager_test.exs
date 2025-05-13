@@ -32,6 +32,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
           fouls: []
         },
         all_fouls: [],
+        timeouts: [],
         running_score: %{},
         score: 0
       }
@@ -64,6 +65,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
           fouls: []
         },
         all_fouls: [],
+        timeouts: [],
         running_score: %{},
         score: 0
       }
@@ -180,6 +182,29 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       player = Enum.find(updated_team.players, fn p -> p.id == "123" end)
       assert player.fouls == [foul]
       assert updated_team.all_fouls == [foul]
+    end
+  end
+
+  describe "add_timeout/2" do
+    test "adds a timeout to the team's timeouts list" do
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [],
+        running_score: %{},
+        score: 0,
+        timeouts: []
+      }
+
+      timeout = %FibaScoresheet.Timeout{
+        period: 1,
+        minute: 0
+      }
+
+      updated_team = TeamManager.add_timeout(team, timeout)
+      assert updated_team.timeouts == [timeout]
     end
   end
 

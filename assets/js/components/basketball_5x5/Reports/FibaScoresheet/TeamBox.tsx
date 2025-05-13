@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, StyleSheet } from '@react-pdf/renderer';
-import { Team } from '../FibaScoresheet';
+import { Team, Timeout } from '../FibaScoresheet';
 
 const styles = StyleSheet.create({
   teamContainer: {
@@ -161,6 +161,9 @@ const styles = StyleSheet.create({
       width: '13px',
       height: '13px',
       border: '1px solid #000',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
   },
 });
@@ -236,23 +239,44 @@ function TeamFouls({ team }: { team: Team }) {
   );
 }
 
-function Timeouts() {
+function TimeoutBoxList({
+  timeouts,
+  numberOfBoxes,
+}: {
+  timeouts: Timeout[];
+  numberOfBoxes: number;
+}) {
+  const renderTimeouts = Array.from({ length: numberOfBoxes }).map(
+    (_, index) => timeouts[index] || null,
+  );
+
+  return (
+    <View style={styles.teamContainer.header.row}>
+      {renderTimeouts.map((timeout, index) => (
+        <View key={index} style={styles.teamContainer.square}>
+          {timeout && <Text>{timeout.minute}</Text>}
+        </View>
+      ))}
+    </View>
+  );
+}
+
+function Timeouts({ team }: { team: Team }) {
+  const firstHalfTimeouts = team.timeouts.filter(
+    (timeout) => timeout.period === 1 || timeout.period === 2,
+  );
+  const secondHalfTimeouts = team.timeouts.filter(
+    (timeout) => timeout.period === 3 || timeout.period === 4,
+  );
+  const overtimeTimeouts = team.timeouts.filter(
+    (timeout) => timeout.period >= 5,
+  );
+
   return (
     <View>
-      <View style={styles.teamContainer.header.row}>
-        <View style={styles.teamContainer.square}></View>
-        <View style={styles.teamContainer.square}></View>
-      </View>
-      <View style={styles.teamContainer.header.row}>
-        <View style={styles.teamContainer.square}></View>
-        <View style={styles.teamContainer.square}></View>
-        <View style={styles.teamContainer.square}></View>
-      </View>
-      <View style={styles.teamContainer.header.row}>
-        <View style={styles.teamContainer.square}></View>
-        <View style={styles.teamContainer.square}></View>
-        <View style={styles.teamContainer.square}></View>
-      </View>
+      <TimeoutBoxList timeouts={firstHalfTimeouts} numberOfBoxes={2} />
+      <TimeoutBoxList timeouts={secondHalfTimeouts} numberOfBoxes={3} />
+      <TimeoutBoxList timeouts={overtimeTimeouts} numberOfBoxes={3} />
     </View>
   );
 }
@@ -301,7 +325,7 @@ export default function TeamBox({ type, team }: TeamProps) {
         <View style={styles.teamContainer.header.row}>
           <View style={styles.teamContainer.header.row.column}>
             <Text>Tempos Debitados</Text>
-            <Timeouts />
+            <Timeouts team={team} />
           </View>
           <View style={styles.teamContainer.header.row.column}>
             <Text>Faltas de Equipe </Text>
