@@ -1,9 +1,11 @@
 import React from 'react';
-import { GameClockState, LiveState } from '../../types';
+import { GameClockState, LiveState, TeamState } from '../../types';
 import { invokeButtonClickRef } from '../../shared/invokeButtonClick';
 import { FeatureFlag } from '../../shared/FeatureFlags';
 
 interface ClockControlsProps {
+  away_team: TeamState;
+  home_team: TeamState;
   clock_state: GameClockState;
   live_state: LiveState;
   pushEvent: (event: string, payload: any) => void;
@@ -18,12 +20,19 @@ function formatTime(time: number) {
 }
 
 function ClockControls({
+  away_team,
+  home_team,
   clock_state,
   live_state,
   pushEvent,
 }: ClockControlsProps) {
   const buttonPauseStart = React.useRef<HTMLButtonElement>(null);
   const clockButtonsDisabled = live_state?.state !== 'in_progress';
+  const isGameTied =
+    away_team.total_player_stats['points'] ===
+    home_team.total_player_stats['points'];
+  const endQuarterButtonDisabled =
+    clock_state.period >= 4 ? !isGameTied : false;
   const onPauseStartClock = () => {
     if (clock_state.state === 'running') {
       pushEvent('update-clock-state', { state: 'paused' });
@@ -165,6 +174,7 @@ function ClockControls({
             <button
               className="button is-warning is-fullwidth"
               onClick={onEndQuarter}
+              disabled={endQuarterButtonDisabled}
             >
               End quarter
             </button>

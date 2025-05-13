@@ -49,6 +49,8 @@ function TopControls({ game_state, pushEvent }: TopControlsProps) {
 
       <div className="column is-4">
         <ClockControls
+          home_team={game_state.home_team}
+          away_team={game_state.away_team}
           clock_state={game_state.clock_state}
           live_state={game_state.live_state}
           pushEvent={pushEvent}
