@@ -120,6 +120,7 @@ defmodule GoChampsScoreboard.GameStateFixtures do
     game_state_with_players_fixture(
       game_id: Keyword.get(opts, :game_id, Ecto.UUID.generate()),
       sport_id: "basketball",
+      clock_state: Keyword.get(opts, :clock_state, GameClockState.new()),
       home_players: [
         %PlayerState{
           id: "123",

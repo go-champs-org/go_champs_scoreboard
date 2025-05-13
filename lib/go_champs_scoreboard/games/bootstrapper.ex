@@ -8,6 +8,7 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
   alias GoChampsScoreboard.Games.Models.ViewSettingsState
 
   @mock_initial_period_time 600
+  @mock_initial_extra_period_time 300
 
   @spec bootstrap() :: GameState.t()
   def bootstrap() do
@@ -36,7 +37,12 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
 
     game_id = Map.get(game_response, "id", game_state.id)
 
-    clock_state = GameClockState.new(@mock_initial_period_time, @mock_initial_period_time)
+    clock_state =
+      GameClockState.new(
+        @mock_initial_period_time,
+        @mock_initial_extra_period_time,
+        @mock_initial_period_time
+      )
 
     live_state = map_live_state(game_response["live_state"])
 

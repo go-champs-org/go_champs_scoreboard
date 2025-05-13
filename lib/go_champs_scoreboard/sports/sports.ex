@@ -28,6 +28,13 @@ defmodule GoChampsScoreboard.Sports.Sports do
     Basketball.PlayerClock.player_tick(player, game_clock_state)
   end
 
+  @spec next_period(String.t(), GameClockState.t()) :: GameClockState.t()
+  def next_period("basketball", game_clock_state) do
+    Basketball.GameClock.next_period(game_clock_state)
+  end
+
+  def next_period(_, game_clock_state), do: game_clock_state
+
   @spec event_logs_order_by(String.t(), Ecto.Query.t()) :: Ecto.Query.t()
   def event_logs_order_by("basketball", query) do
     Basketball.EventLogsOperations.order_by(query)
