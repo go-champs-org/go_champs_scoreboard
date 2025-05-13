@@ -31,18 +31,6 @@ function ClockControls({
       pushEvent('update-clock-state', { state: 'running' });
     }
   };
-  const onPeriodIncrement = () => {
-    pushEvent('update-clock-time-and-period', {
-      property: 'period',
-      operation: 'increment',
-    });
-  };
-  const onPeriodDecrement = () => {
-    pushEvent('update-clock-time-and-period', {
-      property: 'period',
-      operation: 'decrement',
-    });
-  };
   const onTimeIncrement = () => {
     pushEvent('update-clock-time-and-period', {
       property: 'time',
@@ -68,6 +56,10 @@ function ClockControls({
     });
   };
 
+  const onEndQuarter = () => {
+    pushEvent('end-period', {});
+  };
+
   React.useEffect(() => {
     const listener = (event: KeyboardEvent) => {
       const { key } = event;
@@ -83,9 +75,9 @@ function ClockControls({
 
   const TimeoutControls = () => (
     <>
-      <div className="column is-3">
+      <div className="column is-4">
         <button
-          className="button"
+          className="button is-info"
           onClick={() =>
             pushEvent('update-team-stat', {
               ['stat-id']: 'timeouts',
@@ -98,12 +90,12 @@ function ClockControls({
           {'Timeout'}
         </button>
       </div>
-      <div className="column is-6">
+      <div className="column is-4">
         <span className="chip-label">{clock_state.period}</span>
       </div>
-      <div className="column is-3">
+      <div className="column is-4">
         <button
-          className="button"
+          className="button is-info"
           onClick={() =>
             pushEvent('update-team-stat', {
               ['stat-id']: 'timeouts',
@@ -119,38 +111,10 @@ function ClockControls({
     </>
   );
 
-  const PeriodControls = () => (
-    <>
-      <div className="column is-2">
-        <button
-          className="button is-info"
-          onClick={onPeriodDecrement}
-          disabled={clockButtonsDisabled}
-        >
-          {'<'}
-        </button>
-      </div>
-      <div className="column is-8">
-        <span className="chip-label">{clock_state.period}</span>
-      </div>
-      <div className="column is-2">
-        <button
-          className="button is-info"
-          onClick={onPeriodIncrement}
-          disabled={clockButtonsDisabled}
-        >
-          {'>'}
-        </button>
-      </div>
-    </>
-  );
-
   return (
     <div className="controls">
       <div className="columns is-multiline">
-        <FeatureFlag name="show_timeout_buttons" fallback={<PeriodControls />}>
-          <TimeoutControls />
-        </FeatureFlag>
+        <TimeoutControls />
 
         <div className="column is-2">
           <button
@@ -197,15 +161,24 @@ function ClockControls({
         </div>
 
         <div className="column is-12">
-          <button
-            ref={buttonPauseStart}
-            className="button is-info is-fullwidth"
-            onClick={onPauseStartClock}
-            disabled={clockButtonsDisabled}
-          >
-            <span className="shortcut">ESPACE</span>
-            {clock_state.state === 'running' ? 'Pause' : 'Start'}
-          </button>
+          {clock_state.time === 0 ? (
+            <button
+              className="button is-warning is-fullwidth"
+              onClick={onEndQuarter}
+            >
+              End quarter
+            </button>
+          ) : (
+            <button
+              ref={buttonPauseStart}
+              className="button is-info is-fullwidth"
+              onClick={onPauseStartClock}
+              disabled={clockButtonsDisabled}
+            >
+              <span className="shortcut">ESPACE</span>
+              {clock_state.state === 'running' ? 'Pause' : 'Start'}
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -112,6 +112,15 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
     {:noreply, socket}
   end
 
+  def handle_event("end-period", _, socket) do
+    {:ok, event} =
+      ValidatorCreator.validate_and_create("end-period", socket.assigns.game_state.result.id)
+
+    {:noreply,
+     event
+     |> react_and_update_game_state(socket.assigns.game_state.result.id, socket)}
+  end
+
   @spec handle_info({:game_reacted_to_event, any()}, any()) :: {:noreply, any()}
   def handle_info({:game_reacted_to_event, %{game_state: game_state}}, socket) do
     updated_socket =
