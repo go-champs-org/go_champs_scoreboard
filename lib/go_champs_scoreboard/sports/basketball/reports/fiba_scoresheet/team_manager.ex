@@ -122,4 +122,20 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
     updated_timeouts = [timeout | team.timeouts]
     %FibaScoresheet.Team{team | timeouts: updated_timeouts}
   end
+
+  @doc """
+  Mark current running score as last of period.
+  """
+  @spec mark_score_as_last_of_period(FibaScoresheet.Team.t()) :: FibaScoresheet.Team.t()
+  def mark_score_as_last_of_period(team) do
+    current_score = team.score
+
+    updated_running_score =
+      Map.put(team.running_score, current_score, %{
+        team.running_score[current_score]
+        | is_last_of_period: true
+      })
+
+    %FibaScoresheet.Team{team | running_score: updated_running_score}
+  end
 end

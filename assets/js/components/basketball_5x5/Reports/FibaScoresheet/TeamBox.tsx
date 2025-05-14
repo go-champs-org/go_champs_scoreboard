@@ -385,8 +385,11 @@ export default function TeamBox({ type, team }: TeamProps) {
             </View>
             <View style={styles.teamContainer.table.row.columnFouls}>
               {player.fouls.map((foul, index) => (
-                <View style={styles.teamContainer.table.row.columnFouls.fouls}>
-                  <Text key={index} style={styles.teamContainer.table.content}>
+                <View
+                  key={index}
+                  style={styles.teamContainer.table.row.columnFouls.fouls}
+                >
+                  <Text style={styles.teamContainer.table.content}>
                     {foul.type}
                   </Text>
                 </View>

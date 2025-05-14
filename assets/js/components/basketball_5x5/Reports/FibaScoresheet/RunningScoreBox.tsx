@@ -38,6 +38,15 @@ const styles = StyleSheet.create({
           borderBottom: '1px solid #000',
           fontSize: '8px',
           height: '100%',
+          position: 'relative',
+          endPeriodLine: {
+            position: 'absolute',
+            bottom: '-2px',
+            left: '0',
+            width: '100%',
+            height: '2px',
+            backgroundColor: '#FF0000',
+          },
           playerContainer: {
             flex: '1 1 50%',
             display: 'flex',
@@ -83,6 +92,13 @@ function ScoreMark({
       >
         <Text>{number}</Text>
       </View>
+      {runningScore[number] && runningScore[number].is_last_of_period && (
+        <View
+          style={
+            styles.runningScore.columnsContainer.column.scoreMark.endPeriodLine
+          }
+        ></View>
+      )}
     </View>
   );
 }

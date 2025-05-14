@@ -34,7 +34,7 @@ export interface ScoreMark {
   type: 'FT' | '2PT' | '3PT';
   player_number: number;
   period: number;
-  is_end_of_quarter: boolean;
+  is_last_of_period: boolean;
 }
 
 export interface RunningScore {
@@ -320,11 +320,11 @@ const MOCK_DATA: {
     ],
     timeouts: [],
     runningScore: {
-      1: { type: 'FT', player: 23, is_end_of_quarter: false },
-      3: { type: '2PT', player: 3, is_end_of_quarter: false },
-      6: { type: '3PT', player: 0, is_end_of_quarter: false },
-      7: { type: 'FT', player: 23, is_end_of_quarter: true },
-      9: { type: '2PT', player: 3, is_end_of_quarter: false },
+      1: { type: 'FT', player: 23, is_last_of_period: false },
+      3: { type: '2PT', player: 3, is_last_of_period: false },
+      6: { type: '3PT', player: 0, is_last_of_period: false },
+      7: { type: 'FT', player: 23, is_last_of_period: true },
+      9: { type: '2PT', player: 3, is_last_of_period: false },
     },
     coach: {
       name: 'Frank Vogel asd asd qwe aszd ads xcv cxv adsf asd qweq wadsa cxv edwferw',
@@ -344,11 +344,11 @@ const MOCK_DATA: {
     ],
     timeouts: [],
     runningScore: {
-      2: { type: 'FT', player: 30, is_end_of_quarter: false },
-      4: { type: '2PT', player: 11, is_end_of_quarter: false },
-      5: { type: '3PT', player: 23, is_end_of_quarter: false },
-      8: { type: 'FT', player: 30, is_end_of_quarter: true },
-      10: { type: '2PT', player: 11, is_end_of_quarter: false },
+      2: { type: 'FT', player: 30, is_last_of_period: false },
+      4: { type: '2PT', player: 11, is_last_of_period: false },
+      5: { type: '3PT', player: 23, is_last_of_period: false },
+      8: { type: 'FT', player: 30, is_last_of_period: true },
+      10: { type: '2PT', player: 11, is_last_of_period: false },
     },
     coach: {
       name: 'Steve Kerr',

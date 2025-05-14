@@ -257,4 +257,28 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       assert Enum.any?(result.players, fn p -> p.name == "Player 1" end)
     end
   end
+
+  describe "mark_score_as_last_of_period/1" do
+    test "marks the score as last of period if found" do
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [],
+        running_score: %{
+          2 => %FibaScoresheet.PointScore{
+            player_number: 20,
+            type: "2PT",
+            is_last_of_period: false
+          }
+        },
+        score: 2
+      }
+
+      updated_team = TeamManager.mark_score_as_last_of_period(team)
+
+      assert updated_team.running_score[2].is_last_of_period == true
+    end
+  end
 end

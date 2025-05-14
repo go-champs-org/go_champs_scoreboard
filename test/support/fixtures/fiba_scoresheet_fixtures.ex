@@ -23,8 +23,10 @@ defmodule GoChampsScoreboard.FibaScoresheetFixtures do
     game_id = Keyword.get(opts, :game_id, Ecto.UUID.generate())
     tournament_name = Keyword.get(opts, :tournament_name, "Some Tournament")
     team_a_name = Keyword.get(opts, :team_a_name, "Team A")
+    team_a_running_score = Keyword.get(opts, :team_a_running_score, %{})
     team_a_players = Keyword.get(opts, :team_a_players, [])
     team_b_name = Keyword.get(opts, :team_b_name, "Team B")
+    team_b_running_score = Keyword.get(opts, :team_b_running_score, %{})
     team_b_players = Keyword.get(opts, :team_b_players, [])
 
     %FibaScoresheet{
@@ -33,7 +35,7 @@ defmodule GoChampsScoreboard.FibaScoresheetFixtures do
       header: %FibaScoresheet.Header{},
       team_a: %FibaScoresheet.Team{
         name: team_a_name,
-        running_score: %{},
+        running_score: team_a_running_score,
         players: team_a_players,
         score: 0,
         all_fouls: [],
@@ -41,7 +43,7 @@ defmodule GoChampsScoreboard.FibaScoresheetFixtures do
       },
       team_b: %FibaScoresheet.Team{
         name: team_b_name,
-        running_score: %{},
+        running_score: team_b_running_score,
         players: team_b_players,
         score: 0,
         all_fouls: [],
