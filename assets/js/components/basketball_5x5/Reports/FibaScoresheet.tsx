@@ -48,6 +48,7 @@ export interface Team {
   running_score: RunningScore;
   coach: Coach;
   assistant_coach: Coach;
+  score: number;
   all_fouls: PlayerFoul[];
 }
 
@@ -230,12 +231,17 @@ function Periods() {
   );
 }
 
-function EndResults() {
+function EndResults({ teamA, teamB }: { teamA: Team; teamB: Team }) {
+  const winnerTeam = teamA.score > teamB.score ? teamA : teamB;
   return (
     <View style={styles.periods}>
       <View style={styles.periods.row}>
         <View style={styles.periods.row.column}>
-          <Period period="Resultado final" teamAScore={50} teamBScore={54} />
+          <Period
+            period="Resultado final"
+            teamAScore={teamA.score}
+            teamBScore={teamB.score}
+          />
         </View>
         <View style={styles.periods.row.column}></View>
       </View>
@@ -246,7 +252,7 @@ function EndResults() {
               <Text>Equipe vencedora</Text>
             </View>
             <View style={styles.periods.period.score}>
-              <Text>LA Lakers</Text>
+              <Text>{winnerTeam.name}</Text>
             </View>
           </View>
         </View>
@@ -398,7 +404,10 @@ function FibaScoresheet({ scoresheetData }: FibaScoresheetProps) {
                 bTeamRunningScore={scoresheetData.team_b.running_score}
               />
               <Periods />
-              <EndResults />
+              <EndResults
+                teamA={scoresheetData.team_a}
+                teamB={scoresheetData.team_b}
+              />
               <Protest />
               <EndGame />
             </View>
