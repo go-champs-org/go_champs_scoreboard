@@ -158,45 +158,45 @@ function Period({
   );
 }
 
-function Periods() {
-  const PERIOD_DATA = {
-    1: {
-      teamA: 10,
-      teamB: 20,
+function generateTeamPeriodsScores(team: Team) {
+  const lastPointScorePerPeriod = Object.entries(team.running_score).reduce(
+    (acc, [keyAsScore, value]) => {
+      if (value.period <= 4 && value.is_last_of_period) {
+        acc[value.period] = keyAsScore;
+      }
+      return acc;
     },
-    2: {
-      teamA: 20,
-      teamB: 24,
-    },
-    3: {
-      teamA: 30,
-      teamB: 34,
-    },
-    4: {
-      teamA: 40,
-      teamB: 44,
-    },
-    5: {
-      teamA: 50,
-      teamB: 54,
-    },
+    {},
+  );
+
+  return {
+    1: lastPointScorePerPeriod[1] || 0,
+    2: (lastPointScorePerPeriod[2] || 0) - (lastPointScorePerPeriod[1] || 0),
+    3: (lastPointScorePerPeriod[3] || 0) - (lastPointScorePerPeriod[2] || 0),
+    4: (lastPointScorePerPeriod[4] || 0) - (lastPointScorePerPeriod[3] || 0),
+    5: (team.score || 0) - (lastPointScorePerPeriod[4] || 0),
   };
+}
+
+function Periods({ teamA, teamB }: { teamA: Team; teamB: Team }) {
+  const teamAPeriodsScores = generateTeamPeriodsScores(teamA);
+  const teamBPeriodsScores = generateTeamPeriodsScores(teamB);
   return (
     <View style={styles.periods}>
       <View style={styles.periods.row}>
         <View style={styles.periods.row.column}>
           <Period
             period="Quarto 1"
-            teamAScore={PERIOD_DATA[1].teamA}
-            teamBScore={PERIOD_DATA[1].teamB}
+            teamAScore={teamAPeriodsScores[1]}
+            teamBScore={teamBPeriodsScores[1]}
           />
         </View>
         <View style={styles.periods.row.column}>
           <Period
             period="2"
             isQuarterCentered
-            teamAScore={PERIOD_DATA[2].teamA}
-            teamBScore={PERIOD_DATA[2].teamB}
+            teamAScore={teamAPeriodsScores[2]}
+            teamBScore={teamBPeriodsScores[2]}
           />
         </View>
       </View>
@@ -204,16 +204,16 @@ function Periods() {
         <View style={styles.periods.row.column}>
           <Period
             period="Quarto 3"
-            teamAScore={PERIOD_DATA[3].teamA}
-            teamBScore={PERIOD_DATA[3].teamB}
+            teamAScore={teamAPeriodsScores[3]}
+            teamBScore={teamBPeriodsScores[3]}
           />
         </View>
         <View style={styles.periods.row.column}>
           <Period
             period="4"
             isQuarterCentered
-            teamAScore={PERIOD_DATA[4].teamA}
-            teamBScore={PERIOD_DATA[4].teamB}
+            teamAScore={teamAPeriodsScores[4]}
+            teamBScore={teamBPeriodsScores[4]}
           />
         </View>
       </View>
@@ -221,8 +221,8 @@ function Periods() {
         <View style={styles.periods.row.column}>
           <Period
             period="Quarto extras"
-            teamAScore={PERIOD_DATA[5].teamA}
-            teamBScore={PERIOD_DATA[5].teamB}
+            teamAScore={teamAPeriodsScores[5]}
+            teamBScore={teamBPeriodsScores[5]}
           />
         </View>
         <View style={styles.periods.row.column}></View>
@@ -403,7 +403,10 @@ function FibaScoresheet({ scoresheetData }: FibaScoresheetProps) {
                 aTeamRunningScore={scoresheetData.team_a.running_score}
                 bTeamRunningScore={scoresheetData.team_b.running_score}
               />
-              <Periods />
+              <Periods
+                teamA={scoresheetData.team_a}
+                teamB={scoresheetData.team_b}
+              />
               <EndResults
                 teamA={scoresheetData.team_a}
                 teamB={scoresheetData.team_b}
