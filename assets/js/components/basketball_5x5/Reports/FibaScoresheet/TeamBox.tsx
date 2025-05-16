@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, View, StyleSheet } from '@react-pdf/renderer';
 import { Team, Timeout } from '../FibaScoresheet';
+import { textPeriodColor } from './styles';
 
 const styles = StyleSheet.create({
   teamContainer: {
@@ -182,7 +183,12 @@ function PeriodFouls({ period, team }: { period: number; team: Team }) {
         <View style={styles.teamContainer.teamFoulBoxes.fouls.box}>
           <Text>1</Text>
           {periodFouls.length >= 1 && (
-            <Text style={styles.teamContainer.teamFoulBoxes.fouls.box.x}>
+            <Text
+              style={{
+                ...styles.teamContainer.teamFoulBoxes.fouls.box.x,
+                ...textPeriodColor(period),
+              }}
+            >
               X
             </Text>
           )}
@@ -190,7 +196,12 @@ function PeriodFouls({ period, team }: { period: number; team: Team }) {
         <View style={styles.teamContainer.teamFoulBoxes.fouls.box}>
           <Text>2</Text>
           {periodFouls.length >= 2 && (
-            <Text style={styles.teamContainer.teamFoulBoxes.fouls.box.x}>
+            <Text
+              style={{
+                ...styles.teamContainer.teamFoulBoxes.fouls.box.x,
+                ...textPeriodColor(period),
+              }}
+            >
               X
             </Text>
           )}
@@ -198,7 +209,12 @@ function PeriodFouls({ period, team }: { period: number; team: Team }) {
         <View style={styles.teamContainer.teamFoulBoxes.fouls.box}>
           <Text>3</Text>
           {periodFouls.length >= 3 && (
-            <Text style={styles.teamContainer.teamFoulBoxes.fouls.box.x}>
+            <Text
+              style={{
+                ...styles.teamContainer.teamFoulBoxes.fouls.box.x,
+                ...textPeriodColor(period),
+              }}
+            >
               X
             </Text>
           )}
@@ -206,7 +222,12 @@ function PeriodFouls({ period, team }: { period: number; team: Team }) {
         <View style={styles.teamContainer.teamFoulBoxes.fouls.box}>
           <Text>4</Text>
           {periodFouls.length >= 4 && (
-            <Text style={styles.teamContainer.teamFoulBoxes.fouls.box.x}>
+            <Text
+              style={{
+                ...styles.teamContainer.teamFoulBoxes.fouls.box.x,
+                ...textPeriodColor(period),
+              }}
+            >
               X
             </Text>
           )}
@@ -254,7 +275,11 @@ function TimeoutBoxList({
     <View style={styles.teamContainer.header.row}>
       {renderTimeouts.map((timeout, index) => (
         <View key={index} style={styles.teamContainer.square}>
-          {timeout && <Text>{timeout.minute}</Text>}
+          {timeout && (
+            <Text style={textPeriodColor(timeout.period)}>
+              {timeout.minute}
+            </Text>
+          )}
         </View>
       ))}
     </View>

@@ -368,6 +368,7 @@ const MOCK_DATA: {
 };
 
 export interface FibaScoresheetData {
+  game_id: string;
   team_a: Team;
   team_b: Team;
 }
@@ -385,7 +386,7 @@ function FibaScoresheet({ scoresheetData }: FibaScoresheetProps) {
         </View>
         <View style={styles.main}>
           <View style={styles.main.header}>
-            <HeaderBox />
+            <HeaderBox scoresheetData={scoresheetData} />
           </View>
           <View style={styles.main.teamsAndRunningScoreContainer}>
             <View

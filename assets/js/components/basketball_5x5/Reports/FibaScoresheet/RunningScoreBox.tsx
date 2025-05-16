@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, View, StyleSheet } from '@react-pdf/renderer';
 import { RunningScore, ScoreMark } from '../FibaScoresheet';
+import { textPeriodColor } from './styles';
 
 const styles = StyleSheet.create({
   runningScore: {
@@ -82,7 +83,9 @@ function ScoreMark({
         }
       >
         {runningScore[number] && (
-          <Text>{runningScore[number].player_number}</Text>
+          <Text style={textPeriodColor(runningScore[number].period)}>
+            {runningScore[number].player_number}
+          </Text>
         )}
       </View>
       <View

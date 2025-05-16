@@ -100,7 +100,7 @@ function ClockControls({
       <div className="columns is-multiline">
         <div className="column is-4">
           <TimeoutButton
-            teamType="home"
+            teamType="away"
             disabled={clockButtonsDisabled}
             pushEvent={pushEvent}
           />
@@ -112,7 +112,7 @@ function ClockControls({
 
         <div className="column is-4">
           <TimeoutButton
-            teamType="away"
+            teamType="home"
             disabled={clockButtonsDisabled}
             pushEvent={pushEvent}
           />

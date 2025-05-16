@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text, View, StyleSheet } from '@react-pdf/renderer';
+import { FibaScoresheetData } from '../FibaScoresheet';
 
 const styles = StyleSheet.create({
   headerBox: {
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function HeaderBox() {
+function HeaderBox({ scoresheetData }: { scoresheetData: FibaScoresheetData }) {
   return (
     <View style={styles.headerBox}>
       <View style={styles.headerBox.row}>
@@ -69,7 +70,7 @@ function HeaderBox() {
             <Text>Jogo Id</Text>
           </View>
           <View style={styles.headerBox.row.column.value}>
-            <Text>550e8400-e29b-41d4-a716-446655440000</Text>
+            <Text>{scoresheetData.game_id}</Text>
           </View>
         </View>
       </View>
