@@ -1,5 +1,14 @@
-export const textPeriodColor = (period: number) => {
+export const BLUE = '#3185FC';
+export const RED = '#A4031F';
+
+export const textColorForPeriod = (period: number) => {
   return {
-    color: period === 1 || period === 3 ? '#A4031F' : '#3185FC',
+    color: period === 1 || period === 3 ? RED : BLUE,
+  };
+};
+
+export const backgroundColorForPeriod = (period: number) => {
+  return {
+    backgroundColor: period === 1 || period === 3 ? RED : BLUE,
   };
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, StyleSheet } from '@react-pdf/renderer';
 import { RunningScore, ScoreMark } from '../FibaScoresheet';
-import { textPeriodColor } from './styles';
+import { backgroundColorForPeriod, textColorForPeriod } from './styles';
 
 const styles = StyleSheet.create({
   runningScore: {
@@ -46,7 +46,6 @@ const styles = StyleSheet.create({
             left: '0',
             width: '100%',
             height: '2px',
-            backgroundColor: '#FF0000',
           },
           playerContainer: {
             flex: '1 1 50%',
@@ -83,7 +82,7 @@ function ScoreMark({
         }
       >
         {runningScore[number] && (
-          <Text style={textPeriodColor(runningScore[number].period)}>
+          <Text style={textColorForPeriod(runningScore[number].period)}>
             {runningScore[number].player_number}
           </Text>
         )}
@@ -97,9 +96,11 @@ function ScoreMark({
       </View>
       {runningScore[number] && runningScore[number].is_last_of_period && (
         <View
-          style={
-            styles.runningScore.columnsContainer.column.scoreMark.endPeriodLine
-          }
+          style={{
+            ...styles.runningScore.columnsContainer.column.scoreMark
+              .endPeriodLine,
+            ...backgroundColorForPeriod(runningScore[number].period),
+          }}
         ></View>
       )}
     </View>

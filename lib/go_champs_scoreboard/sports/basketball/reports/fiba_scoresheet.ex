@@ -50,6 +50,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
             fouls: list(Foul.t()),
             has_started: boolean(),
             has_played: boolean(),
+            first_played_period: integer(),
             is_captain: boolean()
           }
 
@@ -60,6 +61,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
       :fouls,
       :has_started,
       :has_played,
+      :first_played_period,
       :is_captain
     ]
   end

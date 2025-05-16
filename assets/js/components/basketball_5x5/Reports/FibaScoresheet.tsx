@@ -5,6 +5,7 @@ import TeamBox from './FibaScoresheet/TeamBox';
 import OfficialsBox from './FibaScoresheet/OfficialsBox';
 import FiscalsBox from './FibaScoresheet/FiscalsBox';
 import HeaderBox from './FibaScoresheet/HeaderBox';
+import { textColorForPeriod } from './FibaScoresheet/styles';
 
 export interface PlayerFoul {
   type: 'P' | 'P1' | 'P2' | 'T';
@@ -23,6 +24,7 @@ export interface Player {
   has_started: boolean;
   has_played: boolean;
   is_captain: boolean;
+  first_played_period: number;
 }
 
 export interface Timeout {
@@ -125,13 +127,15 @@ const styles = StyleSheet.create({
 
 interface Period {
   isQuarterCentered?: boolean;
-  period: string;
+  period: number;
+  periodLabel: string;
   teamAScore: number;
   teamBScore: number;
 }
 
 function Period({
   period,
+  periodLabel,
   teamAScore,
   teamBScore,
   isQuarterCentered = false,
@@ -146,13 +150,17 @@ function Period({
   return (
     <View style={styles.periods.period}>
       <View style={quarterStyle}>
-        <Text>{period}</Text>
+        <Text>{periodLabel}</Text>
       </View>
       <View style={styles.periods.period.score}>
         <Text>A</Text>
-        <Text>{teamAScore}</Text>
+        <Text style={textColorForPeriod(period)}>
+          {teamAScore ? teamAScore : '-'}
+        </Text>
         <Text>B</Text>
-        <Text>{teamBScore}</Text>
+        <Text style={textColorForPeriod(period)}>
+          {teamBScore ? teamBScore : '-'}
+        </Text>
       </View>
     </View>
   );
@@ -186,14 +194,16 @@ function Periods({ teamA, teamB }: { teamA: Team; teamB: Team }) {
       <View style={styles.periods.row}>
         <View style={styles.periods.row.column}>
           <Period
-            period="Quarto 1"
+            period={1}
+            periodLabel="Quarto 1"
             teamAScore={teamAPeriodsScores[1]}
             teamBScore={teamBPeriodsScores[1]}
           />
         </View>
         <View style={styles.periods.row.column}>
           <Period
-            period="2"
+            period={2}
+            periodLabel="2"
             isQuarterCentered
             teamAScore={teamAPeriodsScores[2]}
             teamBScore={teamBPeriodsScores[2]}
@@ -203,14 +213,16 @@ function Periods({ teamA, teamB }: { teamA: Team; teamB: Team }) {
       <View style={styles.periods.row}>
         <View style={styles.periods.row.column}>
           <Period
-            period="Quarto 3"
+            period={3}
+            periodLabel="Quarto 3"
             teamAScore={teamAPeriodsScores[3]}
             teamBScore={teamBPeriodsScores[3]}
           />
         </View>
         <View style={styles.periods.row.column}>
           <Period
-            period="4"
+            period={4}
+            periodLabel="4"
             isQuarterCentered
             teamAScore={teamAPeriodsScores[4]}
             teamBScore={teamBPeriodsScores[4]}
@@ -220,7 +232,8 @@ function Periods({ teamA, teamB }: { teamA: Team; teamB: Team }) {
       <View style={styles.periods.row}>
         <View style={styles.periods.row.column}>
           <Period
-            period="Quarto extras"
+            period={5}
+            periodLabel="Quarto extras"
             teamAScore={teamAPeriodsScores[5]}
             teamBScore={teamBPeriodsScores[5]}
           />
@@ -238,7 +251,8 @@ function EndResults({ teamA, teamB }: { teamA: Team; teamB: Team }) {
       <View style={styles.periods.row}>
         <View style={styles.periods.row.column}>
           <Period
-            period="Resultado final"
+            periodLabel="Resultado final"
+            period={5}
             teamAScore={teamA.score}
             teamBScore={teamB.score}
           />
@@ -308,64 +322,6 @@ function EndGame() {
     </View>
   );
 }
-
-const MOCK_DATA: {
-  aTeam: Team;
-  bTeam: Team;
-} = {
-  aTeam: {
-    name: 'LA Lakers',
-    players: [
-      {
-        name: 'LeBron James asd asdas dc adsasdawqeqweqwed asd asd asd as',
-        number: 23,
-        fouls: [],
-      },
-      { name: 'Anthony Davis', number: 3, fouls: [] },
-      { name: 'Russell Westbrook', number: 0, fouls: [] },
-    ],
-    timeouts: [],
-    runningScore: {
-      1: { type: 'FT', player: 23, is_last_of_period: false },
-      3: { type: '2PT', player: 3, is_last_of_period: false },
-      6: { type: '3PT', player: 0, is_last_of_period: false },
-      7: { type: 'FT', player: 23, is_last_of_period: true },
-      9: { type: '2PT', player: 3, is_last_of_period: false },
-    },
-    coach: {
-      name: 'Frank Vogel asd asd qwe aszd ads xcv cxv adsf asd qweq wadsa cxv edwferw',
-      fouls: [],
-    },
-    assistant_coach: {
-      name: 'Jason Kidd',
-      fouls: [],
-    },
-  },
-  bTeam: {
-    name: 'Golden State Warriors as dasd asd asd asd asd qewqeqweqw asqweqwqwe qweqdasd',
-    players: [
-      { name: 'Stephen Curry', number: 30, fouls: [] },
-      { name: 'Klay Thompson', number: 11, fouls: [] },
-      { name: 'Draymond Green', number: 23, fouls: [] },
-    ],
-    timeouts: [],
-    runningScore: {
-      2: { type: 'FT', player: 30, is_last_of_period: false },
-      4: { type: '2PT', player: 11, is_last_of_period: false },
-      5: { type: '3PT', player: 23, is_last_of_period: false },
-      8: { type: 'FT', player: 30, is_last_of_period: true },
-      10: { type: '2PT', player: 11, is_last_of_period: false },
-    },
-    coach: {
-      name: 'Steve Kerr',
-      fouls: [],
-    },
-    assistant_coach: {
-      name: 'Mike Brown',
-      fouls: [],
-    },
-  },
-};
 
 export interface FibaScoresheetData {
   game_id: string;

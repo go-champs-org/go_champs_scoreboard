@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, StyleSheet } from '@react-pdf/renderer';
 import { Team, Timeout } from '../FibaScoresheet';
-import { textPeriodColor } from './styles';
+import { textColorForPeriod, RED, BLUE } from './styles';
 
 const styles = StyleSheet.create({
   teamContainer: {
@@ -70,8 +70,9 @@ const styles = StyleSheet.create({
         maxLines: 1,
       },
       contentWithCircle: {
-        border: '1px solid #000',
+        border: `1px solid ${RED}`,
         borderRadius: '50px',
+        color: BLUE,
         paddingLeft: '3px',
         paddingRight: '2px',
         paddingTop: '1px',
@@ -115,7 +116,6 @@ const styles = StyleSheet.create({
             alignItems: 'center',
             width: '15px',
             height: '100%',
-            // borderRight: '1px solid #000',
             border: '1px solid #000',
           },
         },
@@ -186,7 +186,7 @@ function PeriodFouls({ period, team }: { period: number; team: Team }) {
             <Text
               style={{
                 ...styles.teamContainer.teamFoulBoxes.fouls.box.x,
-                ...textPeriodColor(period),
+                ...textColorForPeriod(period),
               }}
             >
               X
@@ -199,7 +199,7 @@ function PeriodFouls({ period, team }: { period: number; team: Team }) {
             <Text
               style={{
                 ...styles.teamContainer.teamFoulBoxes.fouls.box.x,
-                ...textPeriodColor(period),
+                ...textColorForPeriod(period),
               }}
             >
               X
@@ -212,7 +212,7 @@ function PeriodFouls({ period, team }: { period: number; team: Team }) {
             <Text
               style={{
                 ...styles.teamContainer.teamFoulBoxes.fouls.box.x,
-                ...textPeriodColor(period),
+                ...textColorForPeriod(period),
               }}
             >
               X
@@ -225,7 +225,7 @@ function PeriodFouls({ period, team }: { period: number; team: Team }) {
             <Text
               style={{
                 ...styles.teamContainer.teamFoulBoxes.fouls.box.x,
-                ...textPeriodColor(period),
+                ...textColorForPeriod(period),
               }}
             >
               X
@@ -276,7 +276,7 @@ function TimeoutBoxList({
       {renderTimeouts.map((timeout, index) => (
         <View key={index} style={styles.teamContainer.square}>
           {timeout && (
-            <Text style={textPeriodColor(timeout.period)}>
+            <Text style={textColorForPeriod(timeout.period)}>
               {timeout.minute}
             </Text>
           )}
@@ -324,6 +324,7 @@ export default function TeamBox({ type, team }: TeamProps) {
           period: teamPlayer.fouls[index]?.period || 0,
         })),
         has_started: teamPlayer.has_started,
+        first_played_period: teamPlayer.first_played_period,
         has_played: teamPlayer.has_played,
         is_captain: teamPlayer.is_captain,
       };
@@ -335,6 +336,7 @@ export default function TeamBox({ type, team }: TeamProps) {
       has_started: false,
       has_played: false,
       is_captain: false,
+      first_played_period: 0,
     };
   });
 
@@ -399,7 +401,10 @@ export default function TeamBox({ type, team }: TeamProps) {
                   style={
                     player.has_started
                       ? styles.teamContainer.table.contentWithCircle
-                      : styles.teamContainer.table.content
+                      : {
+                          ...styles.teamContainer.table.content,
+                          ...textColorForPeriod(player.first_played_period),
+                        }
                   }
                 >
                   X
@@ -414,7 +419,12 @@ export default function TeamBox({ type, team }: TeamProps) {
                   key={index}
                   style={styles.teamContainer.table.row.columnFouls.fouls}
                 >
-                  <Text style={styles.teamContainer.table.content}>
+                  <Text
+                    style={{
+                      ...styles.teamContainer.table.content,
+                      ...textColorForPeriod(foul.period),
+                    }}
+                  >
                     {foul.type}
                   </Text>
                 </View>
