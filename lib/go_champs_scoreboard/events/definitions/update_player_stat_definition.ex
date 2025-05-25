@@ -69,5 +69,5 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition do
 
   @impl true
   @spec stream_config() :: StreamConfig.t()
-  def stream_config, do: StreamConfig.new(true, :generic_game_event_player_stat_builder)
+  def stream_config, do: StreamConfig.new()
 end
