@@ -72,30 +72,30 @@ defmodule GoChampsScoreboard.Infrastructure.RabbitMQ do
     AMQP.Queue.declare(chan, @queue_dead_letter, durable: true)
 
     AMQP.Queue.declare(chan, @queue_game_events,
-      durable: true,
-      arguments: [
-        {"dead-letter-exchange", :longstr, @dead_letter_exchange},
-        {"dead-letter-routing-key", :longstr, @queue_dead_letter},
-        {"delivery-limit", :signedint, 5}
-      ]
+      durable: true
+      # arguments: [
+      #   {"dead-letter-exchange", :longstr, @dead_letter_exchange},
+      #   {"dead-letter-routing-key", :longstr, @queue_dead_letter},
+      #   {"delivery-limit", :signedint, 5}
+      # ]
     )
 
     AMQP.Queue.declare(chan, @queue_live_mode,
-      durable: true,
-      arguments: [
-        {"dead-letter-exchange", :longstr, @dead_letter_exchange},
-        {"dead-letter-routing-key", :longstr, @queue_dead_letter},
-        {"delivery-limit", :signedint, 5}
-      ]
+      durable: true
+      # arguments: [
+      #   {"dead-letter-exchange", :longstr, @dead_letter_exchange},
+      #   {"dead-letter-routing-key", :longstr, @queue_dead_letter},
+      #   {"delivery-limit", :signedint, 5}
+      # ]
     )
 
     AMQP.Queue.declare(chan, @queue_stats,
-      durable: true,
-      arguments: [
-        {"dead-letter-exchange", :longstr, @dead_letter_exchange},
-        {"dead-letter-routing-key", :longstr, @queue_dead_letter},
-        {"delivery-limit", :signedint, 5}
-      ]
+      durable: true
+      # arguments: [
+      #   {"dead-letter-exchange", :longstr, @dead_letter_exchange},
+      #   {"dead-letter-routing-key", :longstr, @queue_dead_letter},
+      #   {"delivery-limit", :signedint, 5}
+      # ]
     )
 
     # Bind queues to exchanges with routing keys
