@@ -33,11 +33,11 @@ config :go_champs_scoreboard, :http_client,
   url: System.get_env("GO_CHAMPS_API_URL") || "https://go-champs-api-staging.herokuapp.com/"
 
 config :go_champs_scoreboard, GoChampsScoreboard.Infrastructure.RabbitMQ,
-  host: System.get_env("RABBIT_MQ_HOST") || "moose-01.rmq.cloudamqp.com",
+  host: System.get_env("RABBIT_MQ_HOST") || "shared-rabbitmq",
   port: System.get_env("RABBIT_MQ_PORT") || 5672,
-  username: System.get_env("RABBIT_MQ_USERNAME") || "viezbksg",
-  password: System.get_env("RABBIT_MQ_PASSWORD") || "lgwUC_UNeUXz-FyHEM9vcl9ItOvLx_47",
-  virtual_host: System.get_env("RABBIT_MQ_VHOST") || "viezbksg"
+  username: System.get_env("RABBIT_MQ_USERNAME") || "local_user",
+  password: System.get_env("RABBIT_MQ_PASSWORD") || "local_pass",
+  virtual_host: System.get_env("RABBIT_MQ_VHOST") || "/"
 
 # Configures the mailer
 #

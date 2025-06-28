@@ -1,4 +1,7 @@
-version: '3'
+networks:
+  shared-network:
+    name: go-champs-shared-network
+    external: true
 
 services:
   app:
@@ -16,9 +19,14 @@ services:
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
 
-    # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
-    network_mode: service:db
+    # Connect to both networks to access db and shared RabbitMQ
+    networks:
+      - default
+      - shared-network
 
+    # Expose ports for the Phoenix app
+    ports:
+      - "4000:4000"
     # Uncomment the next line to use a non-root user for all processes.
     # user: node
 
@@ -34,7 +42,8 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
       POSTGRES_DB: go_champs_scoreboard_dev
-
+    ports:
+      - "5432:5432"
     # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward MongoDB locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
   redis:
