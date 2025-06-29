@@ -8,7 +8,7 @@ import Config
 config :go_champs_scoreboard, GoChampsScoreboard.Repo,
   username: System.get_env("DATABASE_USERNAME") || "postgres",
   password: System.get_env("DATABASE_PASSWORD") || "postgres",
-  hostname: System.get_env("DATABASE_HOST") || "localhost",
+  hostname: System.get_env("DATABASE_HOST") || "scoreboard-db",
   port: System.get_env("DATABASE_PORT") || "5432",
   database: "go_champs_scoreboard_test",
   pool: Ecto.Adapters.SQL.Sandbox,

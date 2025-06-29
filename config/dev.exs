@@ -2,9 +2,10 @@ import Config
 
 # Configure your database
 config :go_champs_scoreboard, GoChampsScoreboard.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "db",
+  username: System.get_env("DATABASE_USERNAME") || "postgres",
+  password: System.get_env("DATABASE_PASSWORD") || "postgres",
+  hostname: System.get_env("DATABASE_HOST") || "scoreboard-db",
+  port: System.get_env("DATABASE_PORT") || "5432",
   database: "go_champs_scoreboard_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
