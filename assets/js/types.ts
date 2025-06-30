@@ -11,6 +11,14 @@ export interface EventLog {
   game_clock_period: number;
 }
 
+export interface CoachState {
+  id: string;
+  name: string;
+  type: 'head_coach' | 'assistant_coach';
+  stats_values: { [key: string]: number };
+  state: 'available' | 'not_available';
+}
+
 export interface PlayerState {
   state:
     | 'playing'
@@ -32,6 +40,7 @@ export interface TeamState {
   stats_values: { [key: string]: number };
   tri_code: string;
   logo_url: string;
+  coaches: CoachState[];
 }
 
 export interface GameClockState {

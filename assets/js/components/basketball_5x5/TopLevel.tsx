@@ -4,6 +4,7 @@ import { GameState } from '../../types';
 import Modal from '../Modal';
 import BoxScore from './BoxScore';
 import EditPlayersModal from './Players/EditPlayersModal';
+import EditCoachesModal from './Coaches/EditCoachesModal';
 import useConnectionState from '../../shared/useConnectionState';
 import { OnlineIcon, OfflineIcon } from '../../shared/ConnectionStatusesIcon';
 import EventLogModal from '../event_log/EventLogModal';
@@ -17,6 +18,7 @@ interface TopLevelProps {
 function TopLevel({ game_state, pushEvent }: TopLevelProps) {
   const [showBoxScoreModal, setShowBoxScoreModal] = React.useState(false);
   const [showEditPlayersModal, setShowEditPlayersModal] = React.useState(false);
+  const [showEditCoachesModal, setShowEditCoachesModal] = React.useState(false);
   const [showEndLiveWarningModal, setShowEndLiveWarningModal] =
     React.useState(false);
   const onStartLive = () => {
@@ -57,6 +59,14 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
             Edit players
           </button>
         </p>
+        <p className="level-item">
+          <button
+            className="button is-info"
+            onClick={() => setShowEditCoachesModal(true)}
+          >
+            Edit coaches
+          </button>
+        </p>
         <FeatureFlag name="display_event_logs_modal">
           <p className="level-item">
             <button
@@ -79,6 +89,12 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
           game_state={game_state}
           showModal={showEditPlayersModal}
           onCloseModal={() => setShowEditPlayersModal(false)}
+          pushEvent={pushEvent}
+        />
+        <EditCoachesModal
+          game_state={game_state}
+          showModal={showEditCoachesModal}
+          onCloseModal={() => setShowEditCoachesModal(false)}
           pushEvent={pushEvent}
         />
         <EventLogModal
