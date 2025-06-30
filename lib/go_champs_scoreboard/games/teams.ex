@@ -1,9 +1,26 @@
 defmodule GoChampsScoreboard.Games.Teams do
+  alias GoChampsScoreboard.Games.Models.CoachState
   alias GoChampsScoreboard.Games.Models.GameState
   alias GoChampsScoreboard.Games.Models.PlayerState
   alias GoChampsScoreboard.Games.Models.TeamState
   alias GoChampsScoreboard.Statistics.Operations
   alias GoChampsScoreboard.Statistics.Models.Stat
+
+  @spec add_coach(GameState.t(), String.t(), CoachState.t()) :: GameState.t()
+  def add_coach(game_state, team_type, coach) do
+    case team_type do
+      "home" ->
+        game_state
+        |> Map.update!(:home_team, fn team -> add_coach_to_team(team, coach) end)
+
+      "away" ->
+        game_state
+        |> Map.update!(:away_team, fn team -> add_coach_to_team(team, coach) end)
+
+      _ ->
+        raise RuntimeError, message: "Invalid team type"
+    end
+  end
 
   @spec add_player(GameState.t(), String.t(), PlayerState.t()) :: GameState.t()
   def add_player(game_state, team_type, player) do
@@ -19,6 +36,12 @@ defmodule GoChampsScoreboard.Games.Teams do
       _ ->
         raise RuntimeError, message: "Invalid team type"
     end
+  end
+
+  @spec add_coach_to_team(TeamState.t(), CoachState.t()) :: TeamState.t()
+  def add_coach_to_team(team, coach) do
+    team
+    |> Map.update!(:coaches, fn coaches -> [coach | coaches] end)
   end
 
   @spec add_player_to_team(TeamState.t(), PlayerState.t()) :: TeamState.t()

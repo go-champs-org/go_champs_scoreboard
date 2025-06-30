@@ -65,7 +65,7 @@ function AddCoachRow({
           )}
         />
       </td>
-      {/* <td>
+      <td>
         <button
           className="button is-small is-success"
           onClick={onConfirmClick}
@@ -73,7 +73,7 @@ function AddCoachRow({
         >
           &#10003;
         </button>
-      </td> */}
+      </td>
       <td>
         <button className="button is-small is-danger" onClick={onCancelClick}>
           &#10008;

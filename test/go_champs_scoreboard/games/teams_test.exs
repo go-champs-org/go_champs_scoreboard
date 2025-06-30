@@ -1,11 +1,68 @@
 defmodule GoChampsScoreboard.Games.TeamsTest do
   use ExUnit.Case
 
+  alias GoChampsScoreboard.Games.Models.CoachState
   alias GoChampsScoreboard.Games.Models.GameState
   alias GoChampsScoreboard.Games.Models.PlayerState
   alias GoChampsScoreboard.Games.Models.TeamState
   alias GoChampsScoreboard.Games.Teams
   alias GoChampsScoreboard.Statistics.Models.Stat
+
+  describe "add_coach" do
+    test "adds a coach to the given team" do
+      game_state = %GameState{
+        home_team: %TeamState{
+          name: "Brazil",
+          coaches: []
+        }
+      }
+
+      coach = %CoachState{
+        id: 1,
+        name: "Tite",
+        type: :head_coach
+      }
+
+      assert %GameState{
+               home_team: %TeamState{
+                 name: "Brazil",
+                 coaches: [
+                   %CoachState{
+                     id: 1,
+                     name: "Tite",
+                     type: :head_coach
+                   }
+                 ]
+               }
+             } == Teams.add_coach(game_state, "home", coach)
+    end
+  end
+
+  describe "add_coach_to_team" do
+    test "adds a coach to the given team" do
+      team = %TeamState{
+        name: "Brazil",
+        coaches: []
+      }
+
+      coach = %CoachState{
+        id: 1,
+        name: "Tite",
+        type: :head_coach
+      }
+
+      assert %TeamState{
+               name: "Brazil",
+               coaches: [
+                 %CoachState{
+                   id: 1,
+                   name: "Tite",
+                   type: :head_coach
+                 }
+               ]
+             } == Teams.add_coach_to_team(team, coach)
+    end
+  end
 
   describe "add_player" do
     test "adds a player to the given team" do
