@@ -97,6 +97,63 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
         "live_state" => "ended"
       }
     }
+    @response_body_with_coaches %{
+      "data" => %{
+        "id" => "game-id",
+        "away_team" => %{
+          "name" => "Team A",
+          "tri_code" => "ABC",
+          "logo_url" => "https://example.com/logo.png",
+          "players" => [
+            %{
+              "id" => "player-1",
+              "name" => "Player 1",
+              "shirt_name" => "P 1",
+              "shirt_number" => "1"
+            }
+          ],
+          "coaches" => [
+            %{
+              "id" => "coach-1",
+              "name" => "Coach 1",
+              "type" => "head_coach",
+              "state" => "available"
+            },
+            %{
+              "id" => "coach-2",
+              "name" => "Coach 2",
+              "type" => "assistant_coach"
+            }
+          ]
+        },
+        "home_team" => %{
+          "name" => "Team B",
+          "players" => [
+            %{
+              "id" => "player-2",
+              "name" => "Player 2",
+              "shirt_name" => "P 2",
+              "shirt_number" => "2"
+            }
+          ],
+          "coaches" => [
+            %{
+              "id" => "coach-3",
+              "name" => "Coach 3",
+              "type" => "head_coach",
+              "state" => "not_available"
+            },
+            %{
+              "id" => "coach-4",
+              "name" => "Coach 4",
+              "type" => "assistant_coach",
+              "state" => "available"
+            }
+          ]
+        },
+        "live_state" => "ended"
+      }
+    }
     @response_setting_body %{
       "data" => %{
         "view" => "basketball-basic"
@@ -214,6 +271,56 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
 
       assert game.sport_id == "basketball"
       assert game.view_settings_state.view == "basketball-basic"
+    end
+
+    test "maps game and team coaches" do
+      expect(@http_client, :get, fn url, headers ->
+        assert url =~ "game-id"
+        assert headers == [{"Authorization", "Bearer token"}]
+
+        {:ok,
+         %HTTPoison.Response{
+           body: @response_body_with_coaches |> Poison.encode!(),
+           status_code: 200
+         }}
+      end)
+
+      expect(@http_client, :get, fn url ->
+        assert url =~ "game-id/scoreboard-setting"
+
+        {:ok, %HTTPoison.Response{body: %{"data" => nil} |> Poison.encode!(), status_code: 200}}
+      end)
+
+      game =
+        Bootstrapper.bootstrap_from_go_champs(
+          GoChampsScoreboard.Games.Bootstrapper.bootstrap(),
+          "game-id",
+          "token"
+        )
+
+      [coach_1, coach_2] = game.away_team.coaches
+      assert coach_1.id == "coach-1"
+      assert coach_1.name == "Coach 1"
+      assert coach_1.type == :head_coach
+      assert coach_1.state == :available
+      assert coach_1.stats_values == %{}
+      assert coach_2.id == "coach-2"
+      assert coach_2.name == "Coach 2"
+      assert coach_2.type == :assistant_coach
+      assert coach_2.state == :available
+      assert coach_2.stats_values == %{}
+
+      [coach_3, coach_4] = game.home_team.coaches
+      assert coach_3.id == "coach-3"
+      assert coach_3.name == "Coach 3"
+      assert coach_3.type == :head_coach
+      assert coach_3.state == :not_available
+      assert coach_3.stats_values == %{}
+      assert coach_4.id == "coach-4"
+      assert coach_4.name == "Coach 4"
+      assert coach_4.type == :assistant_coach
+      assert coach_4.state == :available
+      assert coach_4.stats_values == %{}
     end
   end
 end

@@ -1,6 +1,7 @@
 defmodule GoChampsScoreboard.Games.Bootstrapper do
   alias GoChampsScoreboard.Games.Models.LiveState
   alias GoChampsScoreboard.ApiClient
+  alias GoChampsScoreboard.Games.Models.CoachState
   alias GoChampsScoreboard.Games.Models.GameClockState
   alias GoChampsScoreboard.Games.Models.GameState
   alias GoChampsScoreboard.Games.Models.PlayerState
@@ -64,6 +65,7 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
     logo_url = Map.get(team, "logo_url", "")
     tri_code = Map.get(team, "tri_code", "")
     players = map_team_players_to_players(team)
+    coaches = map_team_coaches_to_coaches(team)
 
     TeamState.new(
       name,
@@ -71,7 +73,8 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
       %{},
       nil,
       tri_code,
-      logo_url
+      logo_url,
+      coaches
     )
   end
 
@@ -86,6 +89,24 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
         |> String.to_atom()
 
       PlayerState.new(player["id"], name, player["shirt_number"], state)
+    end)
+  end
+
+  defp map_team_coaches_to_coaches(team) do
+    team_coaches = Map.get(team, "coaches", [])
+
+    Enum.map(team_coaches, fn coach ->
+      name = Map.get(coach, "name", "No name")
+      type = Map.get(coach, "type", "head_coach") |> String.to_atom()
+      state = Map.get(coach, "state", "available") |> String.to_atom()
+
+      CoachState.new(
+        coach["id"],
+        name,
+        type,
+        state,
+        %{}
+      )
     end)
   end
 
