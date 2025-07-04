@@ -1,6 +1,7 @@
 defmodule GoChampsScoreboard.Games.Models.GameState do
   alias GoChampsScoreboard.Games.Models.TeamState
   alias GoChampsScoreboard.Games.Models.PlayerState
+  alias GoChampsScoreboard.Games.Models.CoachState
   alias GoChampsScoreboard.Games.Models.GameClockState
   alias GoChampsScoreboard.Games.Models.LiveState
   alias GoChampsScoreboard.Games.Models.ViewSettingsState
@@ -58,9 +59,11 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
     Poison.decode!(curr_game_json,
       as: %__MODULE__{
         away_team: %TeamState{
+          coaches: [%CoachState{}],
           players: [%PlayerState{}]
         },
         home_team: %TeamState{
+          coaches: [%CoachState{}],
           players: [%PlayerState{}]
         },
         clock_state: %GameClockState{},

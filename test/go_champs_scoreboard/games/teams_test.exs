@@ -166,6 +166,32 @@ defmodule GoChampsScoreboard.Games.TeamsTest do
     end
   end
 
+  describe "find_coach" do
+    test "returns the coach with the given team type and coach id" do
+      game_state = %GameState{
+        home_team: %TeamState{
+          coaches: [
+            %CoachState{
+              id: 2,
+              name: "Doc Rivers",
+              stats_values: %{
+                "fouls" => 2
+              }
+            }
+          ]
+        }
+      }
+
+      assert %CoachState{
+               id: 2,
+               name: "Doc Rivers",
+               stats_values: %{
+                 "fouls" => 2
+               }
+             } == Teams.find_coach(game_state, "home", 2)
+    end
+  end
+
   describe "find_player" do
     test "returns the player with the given team type and player id" do
       game_state = %GameState{
@@ -352,6 +378,80 @@ defmodule GoChampsScoreboard.Games.TeamsTest do
                  }
                ]
              } == Teams.update_player_in_team(team, player)
+    end
+  end
+
+  describe "update_coach_in_team" do
+    test "updates the coach in the given team" do
+      team = %TeamState{
+        name: "Brazil",
+        coaches: [
+          %CoachState{
+            id: 1,
+            name: "Tite",
+            type: :head_coach
+          }
+        ]
+      }
+
+      coach = %CoachState{
+        id: 1,
+        name: "Tite Updated",
+        type: :assitant_coach
+      }
+
+      assert %TeamState{
+               name: "Brazil",
+               coaches: [
+                 %CoachState{
+                   id: 1,
+                   name: "Tite Updated",
+                   type: :assitant_coach
+                 }
+               ]
+             } == Teams.update_coach_in_team(team, coach)
+    end
+  end
+
+  describe "remove_coach" do
+    test "removes the coach with the given team type and coach id" do
+      game_state = %GameState{
+        home_team: %TeamState{
+          coaches: [
+            %CoachState{
+              id: 1,
+              name: "Tite",
+              type: :head_coach
+            }
+          ]
+        }
+      }
+
+      assert %GameState{
+               home_team: %TeamState{
+                 coaches: []
+               }
+             } == Teams.remove_coach(game_state, "home", 1)
+    end
+  end
+
+  describe "remove_coach_in_team" do
+    test "removes the coach from the given team and coach id" do
+      team = %TeamState{
+        name: "Brazil",
+        coaches: [
+          %CoachState{
+            id: 1,
+            name: "Doc Rivers",
+            type: :head_coach
+          }
+        ]
+      }
+
+      assert %TeamState{
+               name: "Brazil",
+               coaches: []
+             } == Teams.remove_coach_in_team(team, 1)
     end
   end
 

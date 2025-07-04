@@ -50,6 +50,13 @@ defmodule GoChampsScoreboard.Games.Teams do
     |> Map.update!(:players, fn players -> [player | players] end)
   end
 
+  @spec find_coach(GameState.t(), String.t(), String.t()) :: CoachState.t()
+  def find_coach(game_state, team_type, coach_id) do
+    find_team(game_state, team_type)
+    |> Map.get(:coaches)
+    |> Enum.find(fn coach -> coach.id == coach_id end)
+  end
+
   @spec find_player(GameState.t(), String.t(), String.t()) :: PlayerState.t()
   def find_player(game_state, team_type, player_id) do
     find_team(game_state, team_type)
@@ -71,11 +78,31 @@ defmodule GoChampsScoreboard.Games.Teams do
     end
   end
 
-  @spec update_player_in_team(TeamState.t(), PlayerState.t()) :: TeamState.t()
-  def update_player_in_team(team, player) do
+  @spec remove_coach(GameState.t(), String.t(), String.t()) :: GameState.t()
+  def remove_coach(game_state, team_type, coach_id) do
+    case team_type do
+      "home" ->
+        game_state
+        |> Map.update!(:home_team, fn team -> remove_coach_in_team(team, coach_id) end)
+
+      "away" ->
+        game_state
+        |> Map.update!(:away_team, fn team -> remove_coach_in_team(team, coach_id) end)
+
+      _ ->
+        raise RuntimeError, message: "Invalid team type"
+    end
+  end
+
+  @spec remove_coach_in_team(TeamState.t(), String.t()) :: CoachState.t()
+  def remove_coach_in_team(team, coach_id) do
+    IO.inspect(team.coaches, label: "Removing coach from team")
+    IO.inspect("heyyy")
+    IO.inspect(coach_id, label: "Coach ID to remove")
+
     team
-    |> Map.update!(:players, fn players ->
-      Enum.map(players, fn p -> if p.id == player.id, do: player, else: p end)
+    |> Map.update!(:coaches, fn coaches ->
+      Enum.reject(coaches, fn coach -> coach.id == coach_id end)
     end)
   end
 
@@ -123,6 +150,22 @@ defmodule GoChampsScoreboard.Games.Teams do
 
     team_state
     |> update_stats_values(team_stat, new_stat_value)
+  end
+
+  @spec update_coach_in_team(TeamState.t(), CoachState.t()) :: TeamState.t()
+  def update_coach_in_team(team, coach) do
+    team
+    |> Map.update!(:coaches, fn coaches ->
+      Enum.map(coaches, fn c -> if c.id == coach.id, do: coach, else: c end)
+    end)
+  end
+
+  @spec update_player_in_team(TeamState.t(), PlayerState.t()) :: TeamState.t()
+  def update_player_in_team(team, player) do
+    team
+    |> Map.update!(:players, fn players ->
+      Enum.map(players, fn p -> if p.id == player.id, do: player, else: p end)
+    end)
   end
 
   @spec update_calculated_stats_values(TeamState.t(), [Stat.t()]) :: TeamState.t()

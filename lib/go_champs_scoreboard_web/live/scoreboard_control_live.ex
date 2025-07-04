@@ -39,6 +39,15 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
      |> react_and_update_game_state(game_id, socket)}
   end
 
+  def handle_event("update-coach-in-team", params, socket) do
+    game_id = socket.assigns.game_state.result.id
+    {:ok, event} = ValidatorCreator.validate_and_create("update-coach-in-team", game_id, params)
+
+    {:noreply,
+     event
+     |> react_and_update_game_state(game_id, socket)}
+  end
+
   def handle_event("update-player-in-team", params, socket) do
     game_id = socket.assigns.game_state.result.id
     {:ok, event} = ValidatorCreator.validate_and_create("update-player-in-team", game_id, params)
@@ -69,6 +78,15 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
   def handle_event("add-player-to-team", params, socket) do
     game_id = socket.assigns.game_state.result.id
     {:ok, event} = ValidatorCreator.validate_and_create("add-player-to-team", game_id, params)
+
+    {:noreply,
+     event
+     |> react_and_update_game_state(game_id, socket)}
+  end
+
+  def handle_event("remove-coach-in-team", params, socket) do
+    game_id = socket.assigns.game_state.result.id
+    {:ok, event} = ValidatorCreator.validate_and_create("remove-coach-in-team", game_id, params)
 
     {:noreply,
      event

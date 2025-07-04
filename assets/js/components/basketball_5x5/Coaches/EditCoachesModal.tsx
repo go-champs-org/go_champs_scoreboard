@@ -2,6 +2,7 @@ import React from 'react';
 import { GameState, TeamState, TeamType } from '../../../types';
 import Modal from '../../Modal';
 import AddCoachRow from './AddCoachRow';
+import EditCoachRow from './EditCoachRow';
 
 interface CoachesTableProps {
   team: TeamState;
@@ -26,6 +27,7 @@ function CoachesTable({
             <tr>
               <th style={{ minWidth: '140px', maxWidth: '140px' }}>Name</th>
               <th style={{ minWidth: '140px', maxWidth: '140px' }}>Type</th>
+              <th style={{ minWidth: '50px', maxWidth: '50px' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -36,11 +38,13 @@ function CoachesTable({
                 onConfirmAction={() => setShowAddCoachRow(false)}
               />
             )}
-            {team.coaches.map((coach, index) => (
-              <tr key={index}>
-                <td>{coach.name}</td>
-                <td>{coach.type}</td>
-              </tr>
+            {team.coaches.map((coach) => (
+              <EditCoachRow
+                key={coach.id}
+                coach={coach}
+                teamType={teamType}
+                pushEvent={pushEvent}
+              />
             ))}
           </tbody>
         </table>
