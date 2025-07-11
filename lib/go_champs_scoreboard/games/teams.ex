@@ -96,10 +96,6 @@ defmodule GoChampsScoreboard.Games.Teams do
 
   @spec remove_coach_in_team(TeamState.t(), String.t()) :: CoachState.t()
   def remove_coach_in_team(team, coach_id) do
-    IO.inspect(team.coaches, label: "Removing coach from team")
-    IO.inspect("heyyy")
-    IO.inspect(coach_id, label: "Coach ID to remove")
-
     team
     |> Map.update!(:coaches, fn coaches ->
       Enum.reject(coaches, fn coach -> coach.id == coach_id end)

@@ -1,4 +1,5 @@
 defmodule GoChampsScoreboard.GameStateFixtures do
+  alias GoChampsScoreboard.Games.Models.CoachState
   alias GoChampsScoreboard.Games.Models.PlayerState
   alias GoChampsScoreboard.Games.Models.{GameState, TeamState, GameClockState, LiveState}
 
@@ -81,13 +82,18 @@ defmodule GoChampsScoreboard.GameStateFixtures do
     home_players = Keyword.get(opts, :home_players, default_home_players)
     away_players = Keyword.get(opts, :away_players, default_away_players)
 
+    home_coaches = Keyword.get(opts, :home_coaches, [])
+    away_coaches = Keyword.get(opts, :away_coaches, [])
+
     # Create base teams
     home_team = TeamState.new(home_team_name)
     away_team = TeamState.new(away_team_name)
 
     # Add players and calculate team totals
     home_team = add_players_to_team(home_team, home_players)
+    home_team = add_coaches_to_team(home_team, home_coaches)
     away_team = add_players_to_team(away_team, away_players)
+    away_team = add_coaches_to_team(away_team, away_coaches)
 
     clock_state = Keyword.get(opts, :clock_state, GameClockState.new())
     live_state = Keyword.get(opts, :live_state, LiveState.new())
@@ -111,6 +117,20 @@ defmodule GoChampsScoreboard.GameStateFixtures do
     team
     |> Map.put(:players, players)
     |> Map.put(:total_player_stats, total_player_stats)
+  end
+
+  defp add_coaches_to_team(team, coaches) do
+    # Update team with coaches
+    updated_coaches =
+      Enum.map(coaches, fn coach ->
+        %{
+          id: Map.get(coach, :id, ""),
+          name: Map.get(coach, :name, ""),
+          type: Map.get(coach, :type, :head_coach)
+        }
+      end)
+
+    Map.put(team, :coaches, updated_coaches)
   end
 
   @doc """
@@ -157,6 +177,18 @@ defmodule GoChampsScoreboard.GameStateFixtures do
           state: :available
         }
       ],
+      home_coaches: [
+        %CoachState{
+          id: "coach-id",
+          name: "First coach",
+          type: :head_coach
+        },
+        %CoachState{
+          id: "assistant-coach-id",
+          name: "Assistant coach",
+          type: :assistant_coach
+        }
+      ],
       away_players: [
         %PlayerState{
           id: "456",
@@ -174,6 +206,18 @@ defmodule GoChampsScoreboard.GameStateFixtures do
             "game_started" => 0
           },
           state: :available
+        }
+      ],
+      away_coaches: [
+        %CoachState{
+          id: "away-coach-id",
+          name: "Away coach",
+          type: :head_coach
+        },
+        %CoachState{
+          id: "away-assistant-coach-id",
+          name: "Away assistant coach",
+          type: :assistant_coach
         }
       ]
     )

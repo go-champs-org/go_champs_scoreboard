@@ -18,16 +18,14 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
         team_state.players
         |> Enum.filter(fn player -> player.state != :not_available end)
         |> Enum.map(&bootstrap_player/1),
-      coach: %FibaScoresheet.Coach{
-        id: "coach-id",
-        name: "First coach",
-        fouls: []
-      },
-      assistant_coach: %FibaScoresheet.Coach{
-        id: "ass-coach",
-        name: "Ass Coach",
-        fouls: []
-      },
+      coach:
+        Map.get(team_state, :coaches, [])
+        |> Enum.find(fn coach -> coach.type == :head_coach end)
+        |> bootstrap_coach(),
+      assistant_coach:
+        Map.get(team_state, :coaches, [])
+        |> Enum.find(fn coach -> coach.type == :assistant_coach end)
+        |> bootstrap_coach(),
       all_fouls: [],
       timeouts: [],
       running_score: %{},
@@ -44,6 +42,22 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       is_captain: nil,
       has_played: nil,
       has_started: nil
+    }
+  end
+
+  defp bootstrap_coach(nil) do
+    %FibaScoresheet.Coach{
+      id: "",
+      name: "",
+      fouls: []
+    }
+  end
+
+  defp bootstrap_coach(coach) do
+    %FibaScoresheet.Coach{
+      id: Map.get(coach, :id, ""),
+      name: Map.get(coach, :name, ""),
+      fouls: []
     }
   end
 

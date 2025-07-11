@@ -2,6 +2,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
   use ExUnit.Case
   use GoChampsScoreboard.DataCase
 
+  alias GoChampsScoreboard.Games.Models.CoachState
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManager
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet
 
@@ -22,13 +23,13 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
           %FibaScoresheet.Player{id: "456", name: "Player 2", number: 23, fouls: []}
         ],
         coach: %FibaScoresheet.Coach{
-          id: "coach-id",
-          name: "First coach",
+          id: "",
+          name: "",
           fouls: []
         },
         assistant_coach: %FibaScoresheet.Coach{
-          id: "ass-coach",
-          name: "Ass Coach",
+          id: "",
+          name: "",
           fouls: []
         },
         all_fouls: [],
@@ -55,13 +56,53 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
           %FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: []}
         ],
         coach: %FibaScoresheet.Coach{
-          id: "coach-id",
-          name: "First coach",
+          id: "",
+          name: "",
           fouls: []
         },
         assistant_coach: %FibaScoresheet.Coach{
-          id: "ass-coach",
-          name: "Ass Coach",
+          id: "",
+          name: "",
+          fouls: []
+        },
+        all_fouls: [],
+        timeouts: [],
+        running_score: %{},
+        score: 0
+      }
+
+      assert expected == TeamManager.bootstrap(team_state)
+    end
+
+    test "returns a FibaScoresheet.Team struct with a head coach" do
+      team_state = %{
+        name: "Some team",
+        players: [],
+        coaches: [
+          %CoachState{
+            id: "coach-id",
+            name: "Eric Spoltra",
+            type: :head_coach
+          },
+          %CoachState{
+            id: "assistant-coach-id",
+            name: "Pat Riley",
+            type: :assistant_coach
+          }
+        ]
+      }
+
+      expected = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [],
+        coach: %FibaScoresheet.Coach{
+          id: "coach-id",
+          name: "Eric Spoltra",
+          fouls: []
+        },
+        assistant_coach: %FibaScoresheet.Coach{
+          id: "assistant-coach-id",
+          name: "Pat Riley",
           fouls: []
         },
         all_fouls: [],
