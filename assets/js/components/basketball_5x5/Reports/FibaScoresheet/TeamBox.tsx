@@ -417,9 +417,9 @@ export default function TeamBox({ type, team }: TeamProps) {
                     player.has_started
                       ? styles.teamContainer.table.contentWithCircle
                       : {
-                        ...styles.teamContainer.table.content,
-                        ...textColorForPeriod(player.first_played_period),
-                      }
+                          ...styles.teamContainer.table.content,
+                          ...textColorForPeriod(player.first_played_period),
+                        }
                   }
                 >
                   X
