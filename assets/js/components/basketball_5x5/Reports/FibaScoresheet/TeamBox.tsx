@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, StyleSheet } from '@react-pdf/renderer';
-import { Team, Timeout } from '../FibaScoresheet';
+import { Coach, Team, Timeout } from '../FibaScoresheet';
 import { textColorForPeriod, RED, BLUE } from './styles';
 
 const styles = StyleSheet.create({
@@ -311,6 +311,18 @@ export interface TeamProps {
   team: Team;
 }
 
+function createRenderCoach(coach: Coach) {
+  const coachFouls = Array.from({ length: 3 })
+    .fill({})
+    .map((_, index) => ({
+      type: coach.fouls[index]?.type || '',
+      period: coach.fouls[index]?.period || 0,
+    }));
+  return coach
+    ? { ...coach, focus: coachFouls }
+    : { name: '', id: '', fouls: coachFouls };
+}
+
 export default function TeamBox({ type, team }: TeamProps) {
   const renderPlayers = Array.from({ length: 12 }).map((_, index) => {
     const teamPlayer = team.players[index] || null;
@@ -339,6 +351,9 @@ export default function TeamBox({ type, team }: TeamProps) {
       first_played_period: 0,
     };
   });
+
+  const renderCoach = createRenderCoach(team.coach);
+  const renderAssistantCoach = createRenderCoach(team.assistant_coach);
 
   return (
     <View style={styles.teamContainer}>
@@ -402,9 +417,9 @@ export default function TeamBox({ type, team }: TeamProps) {
                     player.has_started
                       ? styles.teamContainer.table.contentWithCircle
                       : {
-                          ...styles.teamContainer.table.content,
-                          ...textColorForPeriod(player.first_played_period),
-                        }
+                        ...styles.teamContainer.table.content,
+                        ...textColorForPeriod(player.first_played_period),
+                      }
                   }
                 >
                   X
@@ -437,18 +452,24 @@ export default function TeamBox({ type, team }: TeamProps) {
             <Text>Técnico</Text>
           </View>
           <View style={styles.teamContainer.table.coachRow.name}>
-            <Text>{team.coach.name}</Text>
+            <Text>{renderCoach.name}</Text>
           </View>
           <View style={styles.teamContainer.table.coachRow.columnFouls}>
-            <View
-              style={styles.teamContainer.table.coachRow.columnFouls.fouls}
-            ></View>
-            <View
-              style={styles.teamContainer.table.coachRow.columnFouls.fouls}
-            ></View>
-            <View
-              style={styles.teamContainer.table.coachRow.columnFouls.fouls}
-            ></View>
+            {renderCoach.fouls.map((foul, index) => (
+              <View
+                key={index}
+                style={styles.teamContainer.table.coachRow.columnFouls.fouls}
+              >
+                <Text
+                  style={{
+                    ...styles.teamContainer.table.content,
+                    ...textColorForPeriod(foul.period),
+                  }}
+                >
+                  {foul.type}
+                </Text>
+              </View>
+            ))}
           </View>
         </View>
         <View style={styles.teamContainer.table.coachRow}>
@@ -456,18 +477,24 @@ export default function TeamBox({ type, team }: TeamProps) {
             <Text>Ass. Técnico</Text>
           </View>
           <View style={styles.teamContainer.table.coachRow.name}>
-            <Text>{team.assistant_coach.name}</Text>
+            <Text>{renderAssistantCoach.name}</Text>
           </View>
           <View style={styles.teamContainer.table.coachRow.columnFouls}>
-            <View
-              style={styles.teamContainer.table.coachRow.columnFouls.fouls}
-            ></View>
-            <View
-              style={styles.teamContainer.table.coachRow.columnFouls.fouls}
-            ></View>
-            <View
-              style={styles.teamContainer.table.coachRow.columnFouls.fouls}
-            ></View>
+            {renderAssistantCoach.fouls.map((foul, index) => (
+              <View
+                key={index}
+                style={styles.teamContainer.table.coachRow.columnFouls.fouls}
+              >
+                <Text
+                  style={{
+                    ...styles.teamContainer.table.content,
+                    ...textColorForPeriod(foul.period),
+                  }}
+                >
+                  {foul.type}
+                </Text>
+              </View>
+            ))}
           </View>
         </View>
       </View>
