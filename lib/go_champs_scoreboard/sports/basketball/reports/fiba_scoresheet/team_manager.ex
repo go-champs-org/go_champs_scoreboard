@@ -19,11 +19,13 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
         |> Enum.filter(fn player -> player.state != :not_available end)
         |> Enum.map(&bootstrap_player/1),
       coach:
-        Map.get(team_state, :coaches, [])
+        (Map.get(team_state, :coaches) ||
+           [])
         |> Enum.find(fn coach -> coach.type == :head_coach end)
         |> bootstrap_coach(),
       assistant_coach:
-        Map.get(team_state, :coaches, [])
+        (Map.get(team_state, :coaches) ||
+           [])
         |> Enum.find(fn coach -> coach.type == :assistant_coach end)
         |> bootstrap_coach(),
       all_fouls: [],

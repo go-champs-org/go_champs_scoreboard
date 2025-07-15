@@ -74,7 +74,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       assert expected == TeamManager.bootstrap(team_state)
     end
 
-    test "returns a FibaScoresheet.Team struct with a head coach" do
+    test "returns a FibaScoresheet.Team struct with coaches" do
       team_state = %{
         name: "Some team",
         players: [],
@@ -103,6 +103,35 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
         assistant_coach: %FibaScoresheet.Coach{
           id: "assistant-coach-id",
           name: "Pat Riley",
+          fouls: []
+        },
+        all_fouls: [],
+        timeouts: [],
+        running_score: %{},
+        score: 0
+      }
+
+      assert expected == TeamManager.bootstrap(team_state)
+    end
+
+    test "returns a FibaScoresheet.Team struct with empty coaches when no coaches are provided" do
+      team_state = %{
+        name: "Some team",
+        players: [],
+        coaches: nil
+      }
+
+      expected = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [],
+        coach: %FibaScoresheet.Coach{
+          id: "",
+          name: "",
+          fouls: []
+        },
+        assistant_coach: %FibaScoresheet.Coach{
+          id: "",
+          name: "",
           fouls: []
         },
         all_fouls: [],

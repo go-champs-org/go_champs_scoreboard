@@ -319,7 +319,7 @@ function createRenderCoach(coach: Coach) {
       period: coach.fouls[index]?.period || 0,
     }));
   return coach
-    ? { ...coach, focus: coachFouls }
+    ? { ...coach, fouls: coachFouls }
     : { name: '', id: '', fouls: coachFouls };
 }
 
