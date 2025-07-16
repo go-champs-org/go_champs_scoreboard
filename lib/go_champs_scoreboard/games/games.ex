@@ -9,6 +9,7 @@ defmodule GoChampsScoreboard.Games.Games do
   alias GoChampsScoreboard.Games.Models.TeamState
   alias GoChampsScoreboard.Games.Messages.PubSub
   alias GoChampsScoreboard.Games.Models.GameState
+  alias GoChampsScoreboard.Games.Models.OfficialState
   alias GoChampsScoreboard.Games.Models.GameClockState
 
   @two_days_in_seconds 172_800
@@ -109,6 +110,31 @@ defmodule GoChampsScoreboard.Games.Games do
       _ ->
         raise RuntimeError, message: "Invalid team type"
     end
+  end
+
+  @spec add_official(GameState.t(), OfficialState.t()) :: GameState.t()
+  def add_official(game_state, official) do
+    %{game_state | officials: [official | game_state.officials]}
+  end
+
+  @spec remove_official(GameState.t(), String.t()) :: GameState.t()
+  def remove_official(game_state, official_id) do
+    updated_officials = Enum.reject(game_state.officials, fn o -> o.id == official_id end)
+    %{game_state | officials: updated_officials}
+  end
+
+  @spec update_official(GameState.t(), OfficialState.t()) :: GameState.t()
+  def update_official(game_state, official) do
+    updated_officials =
+      Enum.map(game_state.officials, fn o ->
+        if o.id == official.id do
+          official
+        else
+          o
+        end
+      end)
+
+    %{game_state | officials: updated_officials}
   end
 
   @spec update_clock_state(GameState.t(), GameClockState.t()) :: GameState.t()

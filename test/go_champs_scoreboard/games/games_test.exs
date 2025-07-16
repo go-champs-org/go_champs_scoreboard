@@ -2,7 +2,14 @@ defmodule GoChampsScoreboard.Games.GamesTest do
   use ExUnit.Case
   alias GoChampsScoreboard.Events.Definitions.UpdateClockStateDefinition
   alias GoChampsScoreboard.Games.Games
-  alias GoChampsScoreboard.Games.Models.{GameState, GameClockState, LiveState, TeamState}
+
+  alias GoChampsScoreboard.Games.Models.{
+    GameState,
+    GameClockState,
+    LiveState,
+    OfficialState,
+    TeamState
+  }
 
   import Mox
 
@@ -174,6 +181,68 @@ defmodule GoChampsScoreboard.Games.GamesTest do
       assert result_game_state.clock_state.time == 9
       assert result_game_state.clock_state.period == 1
       assert result_game_state.clock_state.state == :running
+    end
+  end
+
+  describe "add_official/2" do
+    test "adds an official to the game state" do
+      game_state = %GameState{
+        id: "some-game-id",
+        away_team: %TeamState{name: "Some away team"},
+        home_team: %TeamState{name: "Some home team"},
+        officials: []
+      }
+
+      official = %OfficialState{id: "some-id", type: :crew_chief, name: "John Doe"}
+
+      result_game_state = Games.add_official(game_state, official)
+
+      assert result_game_state.id == "some-game-id"
+      assert length(result_game_state.officials) == 1
+      assert result_game_state.officials |> hd() == official
+    end
+  end
+
+  describe "remove_official/2" do
+    test "removes an official from the game state" do
+      official = %OfficialState{id: "some-id", type: :crew_chief, name: "John Doe"}
+
+      game_state = %GameState{
+        id: "some-game-id",
+        away_team: %TeamState{name: "Some away team"},
+        home_team: %TeamState{name: "Some home team"},
+        officials: [official]
+      }
+
+      result_game_state = Games.remove_official(game_state, official.id)
+
+      assert result_game_state.id == "some-game-id"
+      assert length(result_game_state.officials) == 0
+    end
+  end
+
+  describe "update_official/2" do
+    test "updates an official in the game state" do
+      official = %OfficialState{id: "some-id", type: :crew_chief, name: "John Doe"}
+
+      game_state = %GameState{
+        id: "some-game-id",
+        away_team: %TeamState{name: "Some away team"},
+        home_team: %TeamState{name: "Some home team"},
+        officials: [official]
+      }
+
+      updated_official = %OfficialState{
+        id: "some-id",
+        type: :shot_clock_operator,
+        name: "Ben John"
+      }
+
+      result_game_state = Games.update_official(game_state, updated_official)
+
+      assert result_game_state.id == "some-game-id"
+      assert length(result_game_state.officials) == 1
+      assert result_game_state.officials |> hd() == updated_official
     end
   end
 
