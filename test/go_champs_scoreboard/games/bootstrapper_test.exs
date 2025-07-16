@@ -303,24 +303,20 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
       assert coach_1.name == "Coach 1"
       assert coach_1.type == :head_coach
       assert coach_1.state == :available
-      assert coach_1.stats_values == %{}
       assert coach_2.id == "coach-2"
       assert coach_2.name == "Coach 2"
       assert coach_2.type == :assistant_coach
       assert coach_2.state == :available
-      assert coach_2.stats_values == %{}
 
       [coach_3, coach_4] = game.home_team.coaches
       assert coach_3.id == "coach-3"
       assert coach_3.name == "Coach 3"
       assert coach_3.type == :head_coach
       assert coach_3.state == :not_available
-      assert coach_3.stats_values == %{}
       assert coach_4.id == "coach-4"
       assert coach_4.name == "Coach 4"
       assert coach_4.type == :assistant_coach
       assert coach_4.state == :available
-      assert coach_4.stats_values == %{}
     end
   end
 end

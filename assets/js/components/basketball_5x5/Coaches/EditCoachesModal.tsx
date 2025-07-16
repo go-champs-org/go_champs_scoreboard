@@ -27,6 +27,9 @@ function CoachesTable({
             <tr>
               <th style={{ minWidth: '140px', maxWidth: '140px' }}>Name</th>
               <th style={{ minWidth: '140px', maxWidth: '140px' }}>Type</th>
+              <th style={{ minWidth: '65px', maxWidth: '65px' }}>PF</th>
+              <th style={{ minWidth: '65px', maxWidth: '65px' }}>TF</th>
+              <th style={{ minWidth: '65px', maxWidth: '65px' }}>FF</th>
               <th style={{ minWidth: '50px', maxWidth: '50px' }}>Actions</th>
             </tr>
           </thead>

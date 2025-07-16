@@ -30,6 +30,15 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
      |> react_and_update_game_state(game_id, socket)}
   end
 
+  def handle_event("update-coach-stat", params, socket) do
+    game_id = socket.assigns.game_state.result.id
+    {:ok, event} = ValidatorCreator.validate_and_create("update-coach-stat", game_id, params)
+
+    {:noreply,
+     event
+     |> react_and_update_game_state(game_id, socket)}
+  end
+
   def handle_event("update-team-stat", params, socket) do
     game_id = socket.assigns.game_state.result.id
     {:ok, event} = ValidatorCreator.validate_and_create("update-team-stat", game_id, params)

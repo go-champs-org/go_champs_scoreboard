@@ -104,8 +104,7 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
         coach["id"],
         name,
         type,
-        state,
-        %{}
+        state
       )
     end)
   end
