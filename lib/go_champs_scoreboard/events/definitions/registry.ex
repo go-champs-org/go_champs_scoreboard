@@ -1,6 +1,6 @@
 defmodule GoChampsScoreboard.Events.Definitions.Registry do
-  alias GoChampsScoreboard.Events.Definitions.UpdateCoachInTeamDefinition
   alias GoChampsScoreboard.Events.Definitions.AddCoachToTeamDefinition
+  alias GoChampsScoreboard.Events.Definitions.AddOfficialToGameDefinition
   alias GoChampsScoreboard.Events.Definitions.AddPlayerToTeamDefinition
   alias GoChampsScoreboard.Events.Definitions.EndGameLiveModeDefinition
   alias GoChampsScoreboard.Events.Definitions.EndPeriodDefinition
@@ -12,6 +12,7 @@ defmodule GoChampsScoreboard.Events.Definitions.Registry do
   alias GoChampsScoreboard.Events.Definitions.SubstitutePlayerDefinition
   alias GoChampsScoreboard.Events.Definitions.UpdateClockStateDefinition
   alias GoChampsScoreboard.Events.Definitions.UpdateClockTimeAndPeriodDefinition
+  alias GoChampsScoreboard.Events.Definitions.UpdateCoachInTeamDefinition
   alias GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinition
   alias GoChampsScoreboard.Events.Definitions.UpdatePlayerInTeamDefinition
   alias GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition
@@ -19,6 +20,7 @@ defmodule GoChampsScoreboard.Events.Definitions.Registry do
 
   @registry %{
     AddCoachToTeamDefinition.key() => AddCoachToTeamDefinition,
+    AddOfficialToGameDefinition.key() => AddOfficialToGameDefinition,
     AddPlayerToTeamDefinition.key() => AddPlayerToTeamDefinition,
     EndGameLiveModeDefinition.key() => EndGameLiveModeDefinition,
     EndPeriodDefinition.key() => EndPeriodDefinition,
