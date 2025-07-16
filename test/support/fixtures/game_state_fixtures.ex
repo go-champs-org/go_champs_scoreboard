@@ -126,7 +126,8 @@ defmodule GoChampsScoreboard.GameStateFixtures do
         %{
           id: Map.get(coach, :id, ""),
           name: Map.get(coach, :name, ""),
-          type: Map.get(coach, :type, :head_coach)
+          type: Map.get(coach, :type, :head_coach),
+          stats_values: Map.get(coach, :stats_values, %{})
         }
       end)
 
@@ -181,12 +182,20 @@ defmodule GoChampsScoreboard.GameStateFixtures do
         %CoachState{
           id: "coach-id",
           name: "First coach",
-          type: :head_coach
+          type: :head_coach,
+          stats_values: %{
+            "fouls_personal" => 0,
+            "fouls_technical" => 0
+          }
         },
         %CoachState{
           id: "assistant-coach-id",
           name: "Assistant coach",
-          type: :assistant_coach
+          type: :assistant_coach,
+          stats_values: %{
+            "fouls_personal" => 0,
+            "fouls_technical" => 0
+          }
         }
       ],
       away_players: [
@@ -212,12 +221,20 @@ defmodule GoChampsScoreboard.GameStateFixtures do
         %CoachState{
           id: "away-coach-id",
           name: "Away coach",
-          type: :head_coach
+          type: :head_coach,
+          stats_values: %{
+            "fouls_personal" => 0,
+            "fouls_technical" => 0
+          }
         },
         %CoachState{
           id: "away-assistant-coach-id",
           name: "Away assistant coach",
-          type: :assistant_coach
+          type: :assistant_coach,
+          stats_values: %{
+            "fouls_personal" => 0,
+            "fouls_technical" => 0
+          }
         }
       ]
     )

@@ -25,9 +25,38 @@ defmodule GoChampsScoreboard.FibaScoresheetFixtures do
     team_a_name = Keyword.get(opts, :team_a_name, "Team A")
     team_a_running_score = Keyword.get(opts, :team_a_running_score, %{})
     team_a_players = Keyword.get(opts, :team_a_players, [])
+
+    team_a_coach =
+      Keyword.get(opts, :team_a_coach, %FibaScoresheet.Coach{
+        id: "home-coach-id",
+        name: "Coach 1",
+        fouls: []
+      })
+
+    team_a_assistant_coach =
+      Keyword.get(opts, :team_a_assistant_coach, %FibaScoresheet.Coach{
+        id: "home-assistant-coach-id",
+        name: "Assistant Coach 1",
+        fouls: []
+      })
+
     team_b_name = Keyword.get(opts, :team_b_name, "Team B")
     team_b_running_score = Keyword.get(opts, :team_b_running_score, %{})
     team_b_players = Keyword.get(opts, :team_b_players, [])
+
+    team_b_coach =
+      Keyword.get(opts, :team_b_coach, %FibaScoresheet.Coach{
+        id: "away-coach-id",
+        name: "Coach 2",
+        fouls: []
+      })
+
+    team_b_assistant_coach =
+      Keyword.get(opts, :team_b_assistant_coach, %FibaScoresheet.Coach{
+        id: "away-assistant-coach-id",
+        name: "Assistant Coach 2",
+        fouls: []
+      })
 
     %FibaScoresheet{
       game_id: game_id,
@@ -38,6 +67,8 @@ defmodule GoChampsScoreboard.FibaScoresheetFixtures do
         running_score: team_a_running_score,
         players: team_a_players,
         score: 0,
+        coach: team_a_coach,
+        assistant_coach: team_a_assistant_coach,
         all_fouls: [],
         timeouts: []
       },
@@ -46,6 +77,8 @@ defmodule GoChampsScoreboard.FibaScoresheetFixtures do
         running_score: team_b_running_score,
         players: team_b_players,
         score: 0,
+        coach: team_b_coach,
+        assistant_coach: team_b_assistant_coach,
         all_fouls: [],
         timeouts: []
       }

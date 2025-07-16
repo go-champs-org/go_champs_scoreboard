@@ -255,6 +255,31 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
     end
   end
 
+  describe "add_coach_foul/3" do
+    test "adds a foul to the coach's list" do
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [],
+        coach: %FibaScoresheet.Coach{id: "coach-id", name: "Coach 1", fouls: []},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [],
+        running_score: %{},
+        score: 0
+      }
+
+      foul = %FibaScoresheet.Foul{
+        type: "T",
+        period: 1,
+        extra_action: nil
+      }
+
+      updated_team = TeamManager.add_coach_foul(team, "coach-id", foul)
+      coach = updated_team.coach
+      assert coach.fouls == [foul]
+      assert updated_team.all_fouls == [foul]
+    end
+  end
+
   describe "add_timeout/2" do
     test "adds a timeout to the team's timeouts list" do
       team = %FibaScoresheet.Team{

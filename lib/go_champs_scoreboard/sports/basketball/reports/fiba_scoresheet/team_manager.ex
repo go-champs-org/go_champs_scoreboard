@@ -4,6 +4,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
   """
 
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.PlayerManager
+  alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.CoachManager
   alias GoChampsScoreboard.Games.Models.TeamState
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet
 
@@ -105,6 +106,38 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
             Enum.find_index(team.players, fn p -> p.id == player_id end),
             updated_player
           ),
+        all_fouls: [foul | team.all_fouls]
+    }
+
+    updated_team
+  end
+
+  @spec add_coach_foul(FibaScoresheet.Team.t(), String.t(), FibaScoresheet.Foul.t()) ::
+          FibaScoresheet.Team.t()
+  def add_coach_foul(team, coach_id, foul) do
+    coach =
+      team
+      |> CoachManager.find_coach(coach_id)
+
+    updated_coach = %FibaScoresheet.Coach{
+      coach
+      | fouls: [foul | coach.fouls]
+    }
+
+    updated_team = %FibaScoresheet.Team{
+      team
+      | coach:
+          if coach.id == team.coach.id do
+            updated_coach
+          else
+            team.coach
+          end,
+        assistant_coach:
+          if coach.id == team.assistant_coach.id do
+            updated_coach
+          else
+            team.assistant_coach
+          end,
         all_fouls: [foul | team.all_fouls]
     }
 

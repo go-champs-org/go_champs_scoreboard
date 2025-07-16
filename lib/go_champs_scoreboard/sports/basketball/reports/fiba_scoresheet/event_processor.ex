@@ -4,6 +4,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.EventProce
   """
 
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.EndPeriodProcessor
+  alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateCoachStatProcessor
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlayerStatProcessor
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateTeamStatProcessor
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.SubstitutePlayerProcessor
@@ -20,6 +21,10 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.EventProce
 
   def process(event_log, data) when event_log.key == "substitute-player" do
     SubstitutePlayerProcessor.process(event_log, data)
+  end
+
+  def process(event_log, data) when event_log.key == "update-coach-stat" do
+    UpdateCoachStatProcessor.process(event_log, data)
   end
 
   def process(event_log, data) when event_log.key == "update-player-stat" do
