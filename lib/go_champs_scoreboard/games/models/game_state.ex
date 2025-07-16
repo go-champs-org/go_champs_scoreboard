@@ -5,6 +5,7 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
   alias GoChampsScoreboard.Games.Models.GameClockState
   alias GoChampsScoreboard.Games.Models.LiveState
   alias GoChampsScoreboard.Games.Models.ViewSettingsState
+  alias GoChampsScoreboard.Games.Models.OfficialState
 
   @type t :: %__MODULE__{
           id: String.t(),
@@ -13,7 +14,8 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
           sport_id: String.t(),
           clock_state: GameClockState,
           live_state: LiveState,
-          view_settings_state: ViewSettingsState
+          view_settings_state: ViewSettingsState,
+          officials: [OfficialState.t()]
         }
   defstruct [
     :id,
@@ -22,7 +24,8 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
     :clock_state,
     :sport_id,
     :live_state,
-    :view_settings_state
+    :view_settings_state,
+    :officials
   ]
 
   @spec new(
@@ -32,7 +35,8 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
           GameClockState.t(),
           LiveState.t(),
           String.t(),
-          ViewSettingsState.t()
+          ViewSettingsState.t(),
+          [OfficialState.t()]
         ) :: t()
   def new(
         id,
@@ -41,7 +45,8 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
         clock_state,
         live_state,
         sport_id \\ "basketball",
-        view_settings_state \\ ViewSettingsState.new()
+        view_settings_state \\ ViewSettingsState.new(),
+        oficials \\ []
       ) do
     %__MODULE__{
       id: id,
@@ -50,7 +55,8 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
       clock_state: clock_state,
       sport_id: sport_id,
       live_state: live_state,
-      view_settings_state: view_settings_state
+      view_settings_state: view_settings_state,
+      officials: oficials
     }
   end
 
@@ -68,7 +74,8 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
         },
         clock_state: %GameClockState{},
         live_state: %LiveState{},
-        view_settings_state: %ViewSettingsState{}
+        view_settings_state: %ViewSettingsState{},
+        officials: [%OfficialState{}]
       }
     )
   end
