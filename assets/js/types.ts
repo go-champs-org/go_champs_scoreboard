@@ -50,6 +50,21 @@ export interface GameClockState {
   state: 'not_started' | 'running' | 'paused' | 'stopped';
 }
 
+export interface OfficialState {
+  id: string;
+  name: string;
+  type:
+    | 'scorer'
+    | 'assistant_scorer'
+    | 'timekeeper'
+    | 'shot_clock_operator'
+    | 'crew_chief'
+    | 'umpire_1'
+    | 'umpire_2';
+  license_number?: string;
+  federation?: string;
+}
+
 export interface LiveState {
   state: 'not_started' | 'in_progress' | 'ended';
   started_at: string;
@@ -68,6 +83,7 @@ export interface GameState {
   clock_state: GameClockState;
   live_state: LiveState;
   view_settings_state: ViewSettingsState;
+  officials: OfficialState[];
 }
 
 export type TeamType = 'home' | 'away';
@@ -81,6 +97,7 @@ export const DEFAULT_GAME_STATE = {
     stats_values: {},
     tri_code: '',
     logo_url: '',
+    coaches: [],
   },
   home_team: {
     name: '',
@@ -89,6 +106,7 @@ export const DEFAULT_GAME_STATE = {
     stats_values: {},
     tri_code: '',
     logo_url: '',
+    coaches: [],
   },
   sport_id: '',
   clock_state: {
@@ -105,4 +123,5 @@ export const DEFAULT_GAME_STATE = {
   view_settings_state: {
     view: 'basketball-medium',
   },
+  officials: [],
 } as GameState;
