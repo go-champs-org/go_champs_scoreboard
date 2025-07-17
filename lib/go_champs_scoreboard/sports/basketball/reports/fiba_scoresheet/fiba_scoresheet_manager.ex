@@ -3,6 +3,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
   FibaScoresheetManager module for FIBA scoresheet.
   """
 
+  alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.OfficialManager
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManager
   alias GoChampsScoreboard.Events.EventLog
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet
@@ -17,7 +18,15 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
       tournament_name: "",
       header: %FibaScoresheet.Header{},
       team_a: TeamManager.bootstrap(event_log.snapshot.state.home_team),
-      team_b: TeamManager.bootstrap(event_log.snapshot.state.away_team)
+      team_b: TeamManager.bootstrap(event_log.snapshot.state.away_team),
+      scorer: OfficialManager.bootstrap(event_log.snapshot.state, :scorer),
+      assistant_scorer: OfficialManager.bootstrap(event_log.snapshot.state, :assistant_scorer),
+      timekeeper: OfficialManager.bootstrap(event_log.snapshot.state, :timekeeper),
+      shot_clock_operator:
+        OfficialManager.bootstrap(event_log.snapshot.state, :shot_clock_operator),
+      crew_chief: OfficialManager.bootstrap(event_log.snapshot.state, :crew_chief),
+      umpire_1: OfficialManager.bootstrap(event_log.snapshot.state, :umpire_1),
+      umpire_2: OfficialManager.bootstrap(event_log.snapshot.state, :umpire_2)
     }
   end
 

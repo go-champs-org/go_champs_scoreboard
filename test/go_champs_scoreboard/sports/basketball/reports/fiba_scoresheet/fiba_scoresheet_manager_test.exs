@@ -73,6 +73,34 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
           timeouts: [],
           running_score: %{},
           score: 0
+        },
+        scorer: %FibaScoresheet.Official{
+          id: "scorer-official-id",
+          name: "John Scorer"
+        },
+        assistant_scorer: %FibaScoresheet.Official{
+          id: "assistant-scorer-official-id",
+          name: "Jane Assistant Scorer"
+        },
+        timekeeper: %FibaScoresheet.Official{
+          id: "timekeeper-official-id",
+          name: "Mike Timekeeper"
+        },
+        shot_clock_operator: %FibaScoresheet.Official{
+          id: "shot-clock-operator-official-id",
+          name: "Sarah Shot Clock"
+        },
+        crew_chief: %FibaScoresheet.Official{
+          id: "crew-chief-official-id",
+          name: "Robert Crew Chief"
+        },
+        umpire_1: %FibaScoresheet.Official{
+          id: "umpire-1-official-id",
+          name: "David Umpire One"
+        },
+        umpire_2: %FibaScoresheet.Official{
+          id: "umpire-2-official-id",
+          name: "Lisa Umpire Two"
         }
       }
 

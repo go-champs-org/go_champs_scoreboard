@@ -1,7 +1,15 @@
 defmodule GoChampsScoreboard.GameStateFixtures do
+  alias GoChampsScoreboard.Games.Models.ViewSettingsState
   alias GoChampsScoreboard.Games.Models.CoachState
   alias GoChampsScoreboard.Games.Models.PlayerState
-  alias GoChampsScoreboard.Games.Models.{GameState, TeamState, GameClockState, LiveState}
+
+  alias GoChampsScoreboard.Games.Models.{
+    GameState,
+    TeamState,
+    GameClockState,
+    LiveState,
+    OfficialState
+  }
 
   @doc """
   Creates a default game state fixture for testing purposes.
@@ -97,12 +105,21 @@ defmodule GoChampsScoreboard.GameStateFixtures do
 
     clock_state = Keyword.get(opts, :clock_state, GameClockState.new())
     live_state = Keyword.get(opts, :live_state, LiveState.new())
+    officials = Keyword.get(opts, :officials, [])
+    view_settings_state = Keyword.get(opts, :view_settings_state, ViewSettingsState.new())
 
     # Create the game state
-    base_state = GameState.new(game_id, away_team, home_team, clock_state, live_state)
 
-    # Add sport_id
-    Map.put(base_state, :sport_id, sport_id)
+    GameState.new(
+      game_id,
+      away_team,
+      home_team,
+      clock_state,
+      live_state,
+      sport_id,
+      view_settings_state,
+      officials
+    )
   end
 
   defp add_players_to_team(team, players) do
@@ -235,6 +252,57 @@ defmodule GoChampsScoreboard.GameStateFixtures do
             "fouls_personal" => 0,
             "fouls_technical" => 0
           }
+        }
+      ],
+      officials: [
+        %OfficialState{
+          id: "scorer-official-id",
+          name: "John Scorer",
+          type: :scorer,
+          license_number: "SC001",
+          federation: "FIBA"
+        },
+        %OfficialState{
+          id: "assistant-scorer-official-id",
+          name: "Jane Assistant Scorer",
+          type: :assistant_scorer,
+          license_number: "AS001",
+          federation: "FIBA"
+        },
+        %OfficialState{
+          id: "timekeeper-official-id",
+          name: "Mike Timekeeper",
+          type: :timekeeper,
+          license_number: "TK001",
+          federation: "NBA"
+        },
+        %OfficialState{
+          id: "shot-clock-operator-official-id",
+          name: "Sarah Shot Clock",
+          type: :shot_clock_operator,
+          license_number: "SCO001",
+          federation: "NCAA"
+        },
+        %OfficialState{
+          id: "crew-chief-official-id",
+          name: "Robert Crew Chief",
+          type: :crew_chief,
+          license_number: "CC001",
+          federation: "NBA"
+        },
+        %OfficialState{
+          id: "umpire-1-official-id",
+          name: "David Umpire One",
+          type: :umpire_1,
+          license_number: "U1001",
+          federation: "FIBA"
+        },
+        %OfficialState{
+          id: "umpire-2-official-id",
+          name: "Lisa Umpire Two",
+          type: :umpire_2,
+          license_number: "U2001",
+          federation: "FIBA"
         }
       ]
     )

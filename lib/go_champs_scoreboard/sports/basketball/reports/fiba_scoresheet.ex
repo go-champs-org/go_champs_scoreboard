@@ -84,6 +84,22 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
     ]
   end
 
+  defmodule Official do
+    @moduledoc """
+    Official struct for FIBA scoresheet.
+    """
+
+    @type t :: %__MODULE__{
+            id: String.t(),
+            name: String.t()
+          }
+
+    defstruct [
+      :id,
+      :name
+    ]
+  end
+
   defmodule PointScore do
     @moduledoc """
     PointScore struct for FIBA scoresheet.
@@ -173,19 +189,13 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
     @type t :: %__MODULE__{
             game_id: String.t(),
             location: String.t(),
-            date: String.t(),
-            crew_chief: String.t(),
-            referee_1: String.t(),
-            referee_2: String.t()
+            date: String.t()
           }
 
     defstruct [
       :game_id,
       :location,
-      :date,
-      :crew_chief,
-      :referee_1,
-      :referee_2
+      :date
     ]
   end
 
@@ -194,8 +204,28 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
           tournament_name: String.t(),
           header: Header.t(),
           team_a: Team.t(),
-          team_b: Team.t()
+          team_b: Team.t(),
+          scorer: Official.t(),
+          assistant_scorer: Official.t(),
+          timekeeper: Official.t(),
+          shot_clock_operator: Official.t(),
+          crew_chief: Official.t(),
+          umpire_1: Official.t(),
+          umpire_2: Official.t()
         }
 
-  defstruct [:game_id, :tournament_name, :header, :team_a, :team_b]
+  defstruct [
+    :game_id,
+    :tournament_name,
+    :header,
+    :team_a,
+    :team_b,
+    :scorer,
+    :assistant_scorer,
+    :timekeeper,
+    :shot_clock_operator,
+    :crew_chief,
+    :umpire_1,
+    :umpire_2
+  ]
 end
