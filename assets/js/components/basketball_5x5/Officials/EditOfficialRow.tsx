@@ -1,21 +1,13 @@
 import React from 'react';
 import { OfficialState } from '../../../types';
+import DoubleClickButton from '../../DoubleClickButton';
+import { OFFICIAL_TYPES } from './constants';
 
 interface EditOfficialRowProps {
   key: string;
   official: OfficialState;
   pushEvent: (event: string, data: any) => void;
 }
-
-const OFFICIAL_TYPES = [
-  { value: 'scorer', label: 'Scorer' },
-  { value: 'assistant_scorer', label: 'Assistant Scorer' },
-  { value: 'timekeeper', label: 'Timekeeper' },
-  { value: 'shot_clock_operator', label: 'Shot Clock Operator' },
-  { value: 'crew_chief', label: 'Crew Chief' },
-  { value: 'umpire_1', label: 'Umpire 1' },
-  { value: 'umpire_2', label: 'Umpire 2' },
-];
 
 function EditOfficialRow({ official, pushEvent }: EditOfficialRowProps) {
   const [isEditing, setIsEditing] = React.useState(false);
@@ -60,9 +52,7 @@ function EditOfficialRow({ official, pushEvent }: EditOfficialRowProps) {
   };
 
   const handleRemove = () => {
-    if (confirm(`Are you sure you want to remove ${official.name}?`)) {
-      pushEvent('remove-official-from-game', { type: official.type });
-    }
+    pushEvent('remove-official-in-game', { ['id']: official.id });
   };
 
   const getOfficialTypeLabel = (typeValue: string) => {
@@ -150,7 +140,14 @@ function EditOfficialRow({ official, pushEvent }: EditOfficialRowProps) {
       </td>
       <td>{official.license_number || '-'}</td>
       <td>{official.federation || '-'}</td>
-      <td></td>
+      <td>
+        <DoubleClickButton
+          className="button is-warning is-small"
+          onClick={handleRemove}
+        >
+          &#10008;
+        </DoubleClickButton>
+      </td>
     </tr>
   );
 }

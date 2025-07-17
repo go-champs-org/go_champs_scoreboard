@@ -5,12 +5,12 @@ defmodule GoChampsScoreboard.Games.Officials do
   Bootstraps a new official with the given name and type.
   Generates a unique ID and sets optional license_number and federation.
   """
-  @spec bootstrap(String.t(), String.t()) :: GameOfficialState.t()
+  @spec bootstrap(String.t(), String.t()) :: OfficialState.t()
   def bootstrap(name, type) when is_binary(name) and is_binary(type) do
     bootstrap(name, type, nil, nil)
   end
 
-  @spec bootstrap(String.t(), String.t(), String.t() | nil) :: GameOfficialState.t()
+  @spec bootstrap(String.t(), String.t(), String.t() | nil) :: OfficialState.t()
   def bootstrap(name, type, license_number) when is_binary(name) and is_binary(type) do
     bootstrap(name, type, license_number, nil)
   end
