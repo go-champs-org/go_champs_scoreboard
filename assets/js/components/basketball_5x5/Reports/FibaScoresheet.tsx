@@ -43,6 +43,11 @@ export interface RunningScore {
   [score: number]: ScoreMark;
 }
 
+export interface Official {
+  id: string;
+  name: string;
+}
+
 export interface Team {
   name: string;
   players: Player[];
@@ -327,6 +332,13 @@ export interface FibaScoresheetData {
   game_id: string;
   team_a: Team;
   team_b: Team;
+  scorer: Official;
+  assistant_scorer: Official;
+  timekeeper: Official;
+  shot_clock_operator: Official;
+  crew_chief: Official;
+  umpire_1: Official;
+  umpire_2: Official;
 }
 
 interface FibaScoresheetProps {
@@ -342,7 +354,14 @@ function FibaScoresheet({ scoresheetData }: FibaScoresheetProps) {
         </View>
         <View style={styles.main}>
           <View style={styles.main.header}>
-            <HeaderBox scoresheetData={scoresheetData} />
+            <HeaderBox
+              gameId={scoresheetData.game_id}
+              crewChiefName={scoresheetData.crew_chief.name}
+              umpire1Name={scoresheetData.umpire_1.name}
+              umpire2Name={scoresheetData.umpire_2.name}
+              date="DD/MM/AAAA"
+              location="Localtion"
+            />
           </View>
           <View style={styles.main.teamsAndRunningScoreContainer}>
             <View
@@ -350,8 +369,17 @@ function FibaScoresheet({ scoresheetData }: FibaScoresheetProps) {
             >
               <TeamBox type="A" team={scoresheetData.team_a} />
               <TeamBox type="B" team={scoresheetData.team_b} />
-              <OfficialsBox />
-              <FiscalsBox />
+              <OfficialsBox
+                scorer={scoresheetData.scorer}
+                assistantScorer={scoresheetData.assistant_scorer}
+                timekeeper={scoresheetData.timekeeper}
+                shotClockOperator={scoresheetData.shot_clock_operator}
+              />
+              <FiscalsBox
+                crewChief={scoresheetData.crew_chief}
+                umpire1={scoresheetData.umpire_1}
+                umpire2={scoresheetData.umpire_2}
+              />
             </View>
             <View
               style={styles.main.teamsAndRunningScoreContainer.containerRight}

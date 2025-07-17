@@ -4,8 +4,14 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.OfficialMa
 
   @spec bootstrap(GameState.t(), atom()) :: FibaScoresheet.Official.t()
   def bootstrap(game_state, official_type) do
-    Enum.find(game_state.officials, %FibaScoresheet.Official{id: "", name: ""}, fn official ->
-      official.type == official_type
-    end)
+    case Enum.find(game_state.officials, fn official ->
+           official.type == official_type
+         end) do
+      nil ->
+        %FibaScoresheet.Official{id: "", name: ""}
+
+      official ->
+        %FibaScoresheet.Official{id: official.id, name: official.name}
+    end
   end
 end

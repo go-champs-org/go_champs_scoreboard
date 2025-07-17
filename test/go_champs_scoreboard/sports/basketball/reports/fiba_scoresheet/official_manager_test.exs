@@ -26,10 +26,11 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.OfficialMa
         ]
       }
 
-      result = OfficialManager.bootstrap(game_state, :scorer)
+      %FibaScoresheet.Official{id: id, name: name} =
+        OfficialManager.bootstrap(game_state, :scorer)
 
-      assert result.id == "1"
-      assert result.name == "John Doe"
+      assert id == "1"
+      assert name == "John Doe"
     end
   end
 end

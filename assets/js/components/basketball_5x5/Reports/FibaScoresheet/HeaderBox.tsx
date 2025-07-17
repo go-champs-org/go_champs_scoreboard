@@ -37,7 +37,23 @@ const styles = StyleSheet.create({
   },
 });
 
-function HeaderBox({ scoresheetData }: { scoresheetData: FibaScoresheetData }) {
+interface HeaderBoxProps {
+  location: string;
+  date: string;
+  gameId: string;
+  crewChiefName: string;
+  umpire1Name: string;
+  umpire2Name: string;
+}
+
+function HeaderBox({
+  gameId,
+  crewChiefName,
+  umpire1Name,
+  umpire2Name,
+  location,
+  date,
+}: HeaderBoxProps) {
   return (
     <View style={styles.headerBox}>
       <View style={styles.headerBox.row}>
@@ -47,7 +63,7 @@ function HeaderBox({ scoresheetData }: { scoresheetData: FibaScoresheetData }) {
           </View>
           <View style={styles.headerBox.row.column.value}>
             <Text style={styles.headerBox.row.column.value.content}>
-              Dunk Park
+              {location}
             </Text>
           </View>
         </View>
@@ -56,7 +72,7 @@ function HeaderBox({ scoresheetData }: { scoresheetData: FibaScoresheetData }) {
             <Text>Data</Text>
           </View>
           <View style={styles.headerBox.row.column.value}>
-            <Text>14/04/2025</Text>
+            <Text>{date}</Text>
           </View>
         </View>
         <View
@@ -70,7 +86,7 @@ function HeaderBox({ scoresheetData }: { scoresheetData: FibaScoresheetData }) {
             <Text>Jogo Id</Text>
           </View>
           <View style={styles.headerBox.row.column.value}>
-            <Text>{scoresheetData.game_id}</Text>
+            <Text>{gameId}</Text>
           </View>
         </View>
       </View>
@@ -81,7 +97,7 @@ function HeaderBox({ scoresheetData }: { scoresheetData: FibaScoresheetData }) {
           </View>
           <View style={styles.headerBox.row.column.value}>
             <Text style={styles.headerBox.row.column.value.content}>
-              cleber grabauska
+              {crewChiefName}
             </Text>
           </View>
         </View>
@@ -91,7 +107,7 @@ function HeaderBox({ scoresheetData }: { scoresheetData: FibaScoresheetData }) {
           </View>
           <View style={styles.headerBox.row.column.value}>
             <Text style={styles.headerBox.row.column.value.content}>
-              Arnoldo
+              {umpire1Name}
             </Text>
           </View>
         </View>
@@ -106,7 +122,9 @@ function HeaderBox({ scoresheetData }: { scoresheetData: FibaScoresheetData }) {
             <Text>Fiscal 2</Text>
           </View>
           <View style={styles.headerBox.row.column.value}>
-            <Text style={styles.headerBox.row.column.value.content}>Bento</Text>
+            <Text style={styles.headerBox.row.column.value.content}>
+              {umpire2Name}
+            </Text>
           </View>
         </View>
       </View>
