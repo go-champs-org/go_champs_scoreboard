@@ -7,6 +7,7 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
   alias GoChampsScoreboard.Games.Models.PlayerState
   alias GoChampsScoreboard.Games.Models.TeamState
   alias GoChampsScoreboard.Games.Models.ViewSettingsState
+  alias GoChampsScoreboard.Games.Models.InfoState
 
   @mock_initial_period_time 600
   @mock_initial_extra_period_time 300
@@ -49,6 +50,8 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
 
     view_settings_state = map_view_settings_state(view_settings_data["data"])
 
+    info = map_info_state(game_response)
+
     GameState.new(
       game_id,
       away_team,
@@ -56,7 +59,9 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
       clock_state,
       live_state,
       "basketball",
-      view_settings_state
+      view_settings_state,
+      [],
+      info
     )
   end
 
@@ -127,5 +132,33 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
         view = Map.get(data, "view", "basketball-medium")
         ViewSettingsState.new(view)
     end
+  end
+
+  defp map_info_state(game_response) do
+    datetime_str = Map.get(game_response, "datetime")
+
+    datetime =
+      if datetime_str do
+        case DateTime.from_iso8601(datetime_str) do
+          {:ok, parsed_datetime, _} -> parsed_datetime
+          {:error, _} -> DateTime.utc_now()
+        end
+      else
+        nil
+      end
+
+    location = Map.get(game_response, "location", "")
+
+    # Extract tournament info from nested phase structure
+    tournament_info = get_in(game_response, ["phase", "tournament"]) || %{}
+    tournament_id = Map.get(tournament_info, "id", "")
+    tournament_name = Map.get(tournament_info, "name", "")
+
+    InfoState.new(
+      datetime,
+      tournament_id: tournament_id,
+      tournament_name: tournament_name,
+      location: location
+    )
   end
 end

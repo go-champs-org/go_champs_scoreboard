@@ -154,6 +154,44 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
         "live_state" => "ended"
       }
     }
+    @response_body_with_info %{
+      "data" => %{
+        "id" => "game-id",
+        "away_team" => %{
+          "name" => "Team A",
+          "tri_code" => "ABC",
+          "logo_url" => "https://example.com/logo.png",
+          "players" => [
+            %{
+              "id" => "player-1",
+              "name" => "Player 1",
+              "shirt_name" => "P 1",
+              "shirt_number" => "1"
+            }
+          ]
+        },
+        "home_team" => %{
+          "name" => "Team B",
+          "players" => [
+            %{
+              "id" => "player-2",
+              "name" => "Player 2",
+              "shirt_name" => "P 2",
+              "shirt_number" => "2"
+            }
+          ]
+        },
+        "datetime" => "2023-10-01T12:00:00Z",
+        "location" => "Stadium A",
+        "phase" => %{
+          "tournament" => %{
+            "id" => "tournament-id",
+            "name" => "Tournament Name"
+          }
+        }
+      }
+    }
+
     @response_setting_body %{
       "data" => %{
         "view" => "basketball-basic"
@@ -317,6 +355,43 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
       assert coach_4.name == "Coach 4"
       assert coach_4.type == :assistant_coach
       assert coach_4.state == :available
+    end
+
+    test "maps game and info" do
+      expect(@http_client, :get, fn url, headers ->
+        assert url =~ "game-id"
+        assert headers == [{"Authorization", "Bearer token"}]
+
+        {:ok,
+         %HTTPoison.Response{
+           body: @response_body_with_info |> Poison.encode!(),
+           status_code: 200
+         }}
+      end)
+
+      expect(@http_client, :get, fn url ->
+        assert url =~ "game-id/scoreboard-setting"
+
+        {:ok,
+         %HTTPoison.Response{body: @response_setting_body |> Poison.encode!(), status_code: 200}}
+      end)
+
+      game =
+        Bootstrapper.bootstrap_from_go_champs(
+          GoChampsScoreboard.Games.Bootstrapper.bootstrap(),
+          "game-id",
+          "token"
+        )
+
+      {:ok, expected_datetime, _} =
+        DateTime.from_iso8601("2023-10-01T12:00:00Z")
+
+      assert game.info.datetime == expected_datetime
+      assert game.info.actual_start_datetime == nil
+      assert game.info.actual_end_datetime == nil
+      assert game.info.tournament_id == "tournament-id"
+      assert game.info.tournament_name == "Tournament Name"
+      assert game.info.location == "Stadium A"
     end
   end
 end

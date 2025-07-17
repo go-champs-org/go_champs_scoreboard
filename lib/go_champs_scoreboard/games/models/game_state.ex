@@ -6,6 +6,7 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
   alias GoChampsScoreboard.Games.Models.LiveState
   alias GoChampsScoreboard.Games.Models.ViewSettingsState
   alias GoChampsScoreboard.Games.Models.OfficialState
+  alias GoChampsScoreboard.Games.Models.InfoState
 
   @type t :: %__MODULE__{
           id: String.t(),
@@ -15,7 +16,8 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
           clock_state: GameClockState,
           live_state: LiveState,
           view_settings_state: ViewSettingsState,
-          officials: [OfficialState.t()]
+          officials: [OfficialState.t()],
+          info: InfoState.t()
         }
   defstruct [
     :id,
@@ -25,7 +27,8 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
     :sport_id,
     :live_state,
     :view_settings_state,
-    :officials
+    :officials,
+    :info
   ]
 
   @spec new(
@@ -36,7 +39,8 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
           LiveState.t(),
           String.t(),
           ViewSettingsState.t(),
-          [OfficialState.t()]
+          [OfficialState.t()],
+          InfoState.t()
         ) :: t()
   def new(
         id,
@@ -46,7 +50,8 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
         live_state,
         sport_id \\ "basketball",
         view_settings_state \\ ViewSettingsState.new(),
-        oficials \\ []
+        oficials \\ [],
+        info \\ InfoState.new(Date.utc_today())
       ) do
     %__MODULE__{
       id: id,
@@ -56,7 +61,8 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
       sport_id: sport_id,
       live_state: live_state,
       view_settings_state: view_settings_state,
-      officials: oficials
+      officials: oficials,
+      info: info
     }
   end
 
@@ -75,7 +81,8 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
         clock_state: %GameClockState{},
         live_state: %LiveState{},
         view_settings_state: %ViewSettingsState{},
-        officials: [%OfficialState{}]
+        officials: [%OfficialState{}],
+        info: %InfoState{}
       }
     )
   end
