@@ -27,12 +27,8 @@ function EditOfficialRow({ official, pushEvent }: EditOfficialRowProps) {
   };
 
   const handleSave = () => {
-    if (!name.trim()) {
-      alert('Please enter an official name');
-      return;
-    }
-
     const payload = {
+      id: official.id,
       type: official.type, // Use original type for identification
       name: name.trim(),
       license_number: licenseNumber.trim() || null,
@@ -86,9 +82,6 @@ function EditOfficialRow({ official, pushEvent }: EditOfficialRowProps) {
               ))}
             </select>
           </div>
-          <p className="help is-info is-size-7">
-            Type cannot be changed during edit
-          </p>
         </td>
         <td>
           <input
@@ -115,14 +108,10 @@ function EditOfficialRow({ official, pushEvent }: EditOfficialRowProps) {
               onClick={handleSave}
               disabled={!name.trim()}
             >
-              <span className="icon is-small">
-                <i className="fas fa-check"></i>
-              </span>
+              &#10004;
             </button>
             <button className="button is-light is-small" onClick={handleCancel}>
-              <span className="icon is-small">
-                <i className="fas fa-times"></i>
-              </span>
+              &#10008;
             </button>
           </div>
         </td>
@@ -140,6 +129,11 @@ function EditOfficialRow({ official, pushEvent }: EditOfficialRowProps) {
       </td>
       <td>{official.license_number || '-'}</td>
       <td>{official.federation || '-'}</td>
+      <td>
+        <button className="button is-primary is-small" onClick={handleEdit}>
+          &#9998;
+        </button>
+      </td>
       <td>
         <DoubleClickButton
           className="button is-warning is-small"

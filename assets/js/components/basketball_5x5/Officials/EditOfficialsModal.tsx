@@ -29,7 +29,8 @@ function OfficialsTable({
                 License Number
               </th>
               <th style={{ minWidth: '65px', maxWidth: '65px' }}>Federation</th>
-              <th style={{ minWidth: '50px', maxWidth: '50px' }}>Actions</th>
+              <th style={{ minWidth: '50px', maxWidth: '50px' }}>Edit</th>
+              <th style={{ minWidth: '50px', maxWidth: '50px' }}>Delete</th>
             </tr>
           </thead>
           <tbody>
