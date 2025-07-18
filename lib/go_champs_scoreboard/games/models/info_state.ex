@@ -49,7 +49,15 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
           } = _values,
           _options
         ) do
-      datetime = Date.from_iso8601!(datetime)
+      datetime =
+        if datetime do
+          case DateTime.from_iso8601(datetime) do
+            {:ok, parsed_datetime, _} -> parsed_datetime
+            {:error, _} -> DateTime.utc_now()
+          end
+        else
+          DateTime.utc_now()
+        end
 
       actual_start_datetime =
         if actual_start_datetime do

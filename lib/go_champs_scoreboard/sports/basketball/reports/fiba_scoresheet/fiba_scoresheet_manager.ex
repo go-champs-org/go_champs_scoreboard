@@ -7,6 +7,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManager
   alias GoChampsScoreboard.Events.EventLog
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet
+  alias GoChampsScoreboard.Games.Models.GameState
 
   @doc """
   Bootstraps the FIBA scoresheet data structure with initial values.
@@ -15,8 +16,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
   def bootstrap(event_log) do
     %FibaScoresheet{
       game_id: event_log.game_id,
-      tournament_name: "",
-      header: %FibaScoresheet.Header{},
+      info: bootstrap_info(event_log.snapshot.state),
       team_a: TeamManager.bootstrap(event_log.snapshot.state.home_team),
       team_b: TeamManager.bootstrap(event_log.snapshot.state.away_team),
       scorer: OfficialManager.bootstrap(event_log.snapshot.state, :scorer),
@@ -27,6 +27,18 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
       crew_chief: OfficialManager.bootstrap(event_log.snapshot.state, :crew_chief),
       umpire_1: OfficialManager.bootstrap(event_log.snapshot.state, :umpire_1),
       umpire_2: OfficialManager.bootstrap(event_log.snapshot.state, :umpire_2)
+    }
+  end
+
+  @spec bootstrap_info(GameState.t()) :: FibaScoresheet.Info.t()
+  defp bootstrap_info(game_state) do
+    %FibaScoresheet.Info{
+      game_id: game_state.id,
+      location: game_state.info.location,
+      datetime: game_state.info.datetime,
+      tournament_name: game_state.info.tournament_name,
+      actual_start_datetime: game_state.info.actual_start_datetime,
+      actual_end_datetime: game_state.info.actual_end_datetime
     }
   end
 

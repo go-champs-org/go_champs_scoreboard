@@ -11,6 +11,15 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
     test "returns a FibaScoresheet struct with game_id" do
       game_state = basketball_game_state_fixture()
 
+      {:ok, datetime, _} =
+        "2023-10-01T12:00:00Z"
+        |> DateTime.from_iso8601()
+
+      # 1 hour later
+      actual_start_datetime = DateTime.add(datetime, 60 * 60)
+      # 1 hour after that
+      actual_end_datetime = DateTime.add(actual_start_datetime, 60 * 60)
+
       event =
         GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
           game_state.id,
@@ -25,8 +34,14 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
 
       expected = %FibaScoresheet{
         game_id: event_log.game_id,
-        tournament_name: "",
-        header: %FibaScoresheet.Header{},
+        info: %FibaScoresheet.Info{
+          game_id: event_log.game_id,
+          location: "Game Location",
+          datetime: datetime,
+          tournament_name: "Tournament Name",
+          actual_start_datetime: actual_start_datetime,
+          actual_end_datetime: actual_end_datetime
+        },
         team_a: %FibaScoresheet.Team{
           name: "Some home team",
           coach: %FibaScoresheet.Coach{id: "coach-id", name: "First coach", fouls: []},

@@ -148,8 +148,6 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
       end
 
     location = Map.get(game_response, "location", "")
-
-    # Extract tournament info from nested phase structure
     tournament_info = get_in(game_response, ["phase", "tournament"]) || %{}
     tournament_id = Map.get(tournament_info, "id", "")
     tournament_name = Map.get(tournament_info, "name", "")

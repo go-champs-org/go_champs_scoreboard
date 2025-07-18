@@ -181,28 +181,34 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
     ]
   end
 
-  defmodule Header do
+  defmodule Info do
     @moduledoc """
-    Header struct for FIBA scoresheet.
+    Info struct for FIBA scoresheet.
     """
 
     @type t :: %__MODULE__{
             game_id: String.t(),
             location: String.t(),
-            date: String.t()
+            datetime: DateTime.t(),
+            tournament_name: String.t(),
+            actual_start_datetime: DateTime.t() | nil,
+            actual_end_datetime: DateTime.t() | nil
           }
 
     defstruct [
       :game_id,
       :location,
-      :date
+      :datetime,
+      :tournament_name,
+      :actual_start_datetime,
+      :actual_end_datetime
     ]
   end
 
   @type t :: %__MODULE__{
           game_id: String.t(),
           tournament_name: String.t(),
-          header: Header.t(),
+          info: Info.t(),
           team_a: Team.t(),
           team_b: Team.t(),
           scorer: Official.t(),
@@ -217,7 +223,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
   defstruct [
     :game_id,
     :tournament_name,
-    :header,
+    :info,
     :team_a,
     :team_b,
     :scorer,

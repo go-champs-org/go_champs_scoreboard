@@ -59,6 +59,15 @@ export interface Team {
   all_fouls: PlayerFoul[];
 }
 
+export interface Info {
+  game_id: string;
+  location: string;
+  datetime: string;
+  tournament_name: string;
+  actual_start_datetime: string;
+  actual_end_datetime: string;
+}
+
 const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',
@@ -332,6 +341,7 @@ export interface FibaScoresheetData {
   game_id: string;
   team_a: Team;
   team_b: Team;
+  info: Info;
   scorer: Official;
   assistant_scorer: Official;
   timekeeper: Official;
@@ -350,7 +360,7 @@ function FibaScoresheet({ scoresheetData }: FibaScoresheetProps) {
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.title}>
-          <Text>Liga de Basquete Amador</Text>
+          <Text>{scoresheetData.info.tournament_name}</Text>
         </View>
         <View style={styles.main}>
           <View style={styles.main.header}>
@@ -359,8 +369,8 @@ function FibaScoresheet({ scoresheetData }: FibaScoresheetProps) {
               crewChiefName={scoresheetData.crew_chief.name}
               umpire1Name={scoresheetData.umpire_1.name}
               umpire2Name={scoresheetData.umpire_2.name}
-              date="DD/MM/AAAA"
-              location="Localtion"
+              datetime={scoresheetData.info.datetime}
+              location={scoresheetData.info.location}
             />
           </View>
           <View style={styles.main.teamsAndRunningScoreContainer}>

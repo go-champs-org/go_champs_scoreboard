@@ -1,6 +1,5 @@
 import React from 'react';
 import { Text, View, StyleSheet } from '@react-pdf/renderer';
-import { FibaScoresheetData } from '../FibaScoresheet';
 
 const styles = StyleSheet.create({
   headerBox: {
@@ -39,7 +38,7 @@ const styles = StyleSheet.create({
 
 interface HeaderBoxProps {
   location: string;
-  date: string;
+  datetime: string;
   gameId: string;
   crewChiefName: string;
   umpire1Name: string;
@@ -52,8 +51,14 @@ function HeaderBox({
   umpire1Name,
   umpire2Name,
   location,
-  date,
+  datetime,
 }: HeaderBoxProps) {
+  const date = new Date(datetime).toLocaleDateString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    timeZone: 'UTC', // This forces UTC timezone
+  });
   return (
     <View style={styles.headerBox}>
       <View style={styles.headerBox.row}>

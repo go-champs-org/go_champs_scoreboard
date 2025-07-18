@@ -1,14 +1,14 @@
 defmodule GoChampsScoreboard.GameStateFixtures do
-  alias GoChampsScoreboard.Games.Models.ViewSettingsState
-  alias GoChampsScoreboard.Games.Models.CoachState
-  alias GoChampsScoreboard.Games.Models.PlayerState
-
   alias GoChampsScoreboard.Games.Models.{
     GameState,
     TeamState,
     GameClockState,
     LiveState,
-    OfficialState
+    OfficialState,
+    ViewSettingsState,
+    InfoState,
+    PlayerState,
+    CoachState
   }
 
   @doc """
@@ -107,6 +107,7 @@ defmodule GoChampsScoreboard.GameStateFixtures do
     live_state = Keyword.get(opts, :live_state, LiveState.new())
     officials = Keyword.get(opts, :officials, [])
     view_settings_state = Keyword.get(opts, :view_settings_state, ViewSettingsState.new())
+    info_state = Keyword.get(opts, :info_state, InfoState.new(DateTime.utc_now()))
 
     # Create the game state
 
@@ -118,7 +119,8 @@ defmodule GoChampsScoreboard.GameStateFixtures do
       live_state,
       sport_id,
       view_settings_state,
-      officials
+      officials,
+      info_state
     )
   end
 
@@ -155,8 +157,19 @@ defmodule GoChampsScoreboard.GameStateFixtures do
   Creates a basketball game state with predefined player stats matching the example.
   """
   def basketball_game_state_fixture(opts \\ []) do
+    game_id = Keyword.get(opts, :game_id, Ecto.UUID.generate())
+
+    {:ok, datetime, _} =
+      "2023-10-01T12:00:00Z"
+      |> DateTime.from_iso8601()
+
+    # 1 hour later
+    actual_start_datetime = DateTime.add(datetime, 60 * 60)
+    # 1 hour after that
+    actual_end_datetime = DateTime.add(actual_start_datetime, 60 * 60)
+
     game_state_with_players_fixture(
-      game_id: Keyword.get(opts, :game_id, Ecto.UUID.generate()),
+      game_id: game_id,
       sport_id: "basketball",
       clock_state: Keyword.get(opts, :clock_state, GameClockState.new()),
       home_players: [
@@ -304,7 +317,15 @@ defmodule GoChampsScoreboard.GameStateFixtures do
           license_number: "U2001",
           federation: "FIBA"
         }
-      ]
+      ],
+      info_state: %InfoState{
+        location: "Game Location",
+        datetime: datetime,
+        tournament_name: "Tournament Name",
+        tournament_id: "tournament-id",
+        actual_start_datetime: actual_start_datetime,
+        actual_end_datetime: actual_end_datetime
+      }
     )
   end
 end

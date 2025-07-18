@@ -51,7 +51,7 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
         sport_id \\ "basketball",
         view_settings_state \\ ViewSettingsState.new(),
         oficials \\ [],
-        info \\ InfoState.new(Date.utc_today())
+        info \\ InfoState.new(DateTime.utc_now())
       ) do
     %__MODULE__{
       id: id,

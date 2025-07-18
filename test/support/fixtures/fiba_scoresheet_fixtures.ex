@@ -61,7 +61,7 @@ defmodule GoChampsScoreboard.FibaScoresheetFixtures do
     %FibaScoresheet{
       game_id: game_id,
       tournament_name: tournament_name,
-      header: %FibaScoresheet.Header{},
+      info: %FibaScoresheet.Info{},
       team_a: %FibaScoresheet.Team{
         name: team_a_name,
         running_score: team_a_running_score,
