@@ -4,6 +4,20 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameClock do
   # Five minutes in seconds
   @initial_extra_period_time 300
 
+  @spec advance_to(GameClockState.t(), GameClockState.state()) :: GameClockState.t()
+  def advance_to(clock_state, state) do
+    case clock_state.state do
+      :not_started ->
+        %GameClockState{clock_state | state: state, started_at: DateTime.utc_now()}
+
+      :finished ->
+        clock_state
+
+      _ ->
+        %GameClockState{clock_state | state: state}
+    end
+  end
+
   @spec tick(GameClockState.t()) :: GameClockState.t()
   def tick(clock_state) do
     case clock_state.state do

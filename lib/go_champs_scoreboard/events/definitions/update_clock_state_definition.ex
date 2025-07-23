@@ -4,6 +4,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateClockStateDefinition do
   alias GoChampsScoreboard.Events.Models.Event
   alias GoChampsScoreboard.Games.Models.GameState
   alias GoChampsScoreboard.Games.Games
+  alias GoChampsScoreboard.Sports.Sports
   alias GoChampsScoreboard.Events.Models.StreamConfig
 
   @key "update-clock-state"
@@ -30,10 +31,12 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateClockStateDefinition do
   @impl true
   @spec handle(GameState.t(), Event.t()) :: GameState.t()
   def handle(game_state, %Event{payload: %{"state" => state}}) do
-    new_clock_state = %{game_state.clock_state | state: String.to_atom(state)}
+    next_clock_state =
+      game_state.sport_id
+      |> Sports.advance_to(game_state.clock_state, String.to_atom(state))
 
     game_state
-    |> Games.update_clock_state(new_clock_state)
+    |> Games.update_clock_state(next_clock_state)
   end
 
   @impl true
