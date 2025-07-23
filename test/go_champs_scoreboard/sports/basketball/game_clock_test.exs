@@ -65,7 +65,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameClockTest do
     end
   end
 
-  describe "next_period" do
+  describe "end_period" do
     test "increments the period by 1 and time to initial_period_time when time is 0 and state is :paused" do
       game_clock_state = %GameClockState{
         time: 0,
@@ -83,7 +83,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameClockTest do
         initial_extra_period_time: 300
       }
 
-      assert expected == GameClock.next_period(game_clock_state)
+      assert expected == GameClock.end_period(game_clock_state)
     end
 
     test "increments the period by 1 and resets time to 300 when time is 0 and state is :paused and period is >= 4" do
@@ -103,7 +103,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameClockTest do
         initial_extra_period_time: 300
       }
 
-      assert expected == GameClock.next_period(game_clock_state)
+      assert expected == GameClock.end_period(game_clock_state)
     end
   end
 end

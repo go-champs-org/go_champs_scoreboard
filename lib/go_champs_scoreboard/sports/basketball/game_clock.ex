@@ -18,8 +18,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameClock do
     end
   end
 
-  @spec next_period(GameClockState.t()) :: GameClockState.t()
-  def next_period(clock_state) do
+  @spec end_period(GameClockState.t()) :: GameClockState.t()
+  def end_period(clock_state) do
     case {clock_state.time, clock_state.period, clock_state.state} do
       {0, period, :paused} when period >= 1 and period <= 3 ->
         %GameClockState{

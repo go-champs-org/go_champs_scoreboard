@@ -40,7 +40,7 @@ defmodule GoChampsScoreboard.Events.Definitions.EndPeriodDefinition do
       ) do
     next_clock_state =
       game_state.sport_id
-      |> Sports.next_period(game_state.clock_state)
+      |> Sports.end_period(game_state.clock_state)
 
     game_state
     |> Games.update_clock_state(next_clock_state)
