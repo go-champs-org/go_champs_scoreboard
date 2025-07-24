@@ -15,6 +15,10 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.EventProce
   Processes an event and updates the FIBA scoresheet data structure.
   """
   @spec process(EventLog.t(), FibaScoresheet.t()) :: FibaScoresheet.t()
+  def process(event_log, data) when event_log.key == "end-game" do
+    EndPeriodProcessor.process(event_log, data)
+  end
+
   def process(event_log, data) when event_log.key == "end-period" do
     EndPeriodProcessor.process(event_log, data)
   end

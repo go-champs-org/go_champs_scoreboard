@@ -6,6 +6,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.EndPeriodP
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManager
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScoresheetManager
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet
+  alias GoChampsScoreboard.Events.EventLog
+
   @spec process(EventLog.t(), FibaScoresheet.t()) :: FibaScoresheet.t()
   def process(_event_log, data) do
     updated_home_team =
