@@ -1,7 +1,6 @@
 import React from 'react';
 import { GameClockState, LiveState, TeamState } from '../../types';
 import { invokeButtonClickRef } from '../../shared/invokeButtonClick';
-import { FeatureFlag } from '../../shared/FeatureFlags';
 
 interface ClockControlsProps {
   away_team: TeamState;
@@ -9,6 +8,28 @@ interface ClockControlsProps {
   clock_state: GameClockState;
   live_state: LiveState;
   pushEvent: (event: string, payload: any) => void;
+}
+
+interface InGameClockControlsProps {
+  clock_state: GameClockState;
+  clockButtonsDisabled: boolean;
+  isClockRunning: boolean;
+  isTimeZero: boolean;
+  endQuarterButtonDisabled: boolean;
+  clockEventHandlers: {
+    pauseStart: () => void;
+    updateTime: (operation: string) => void;
+    endQuarter: () => void;
+  };
+  pushEvent: (event: string, payload: any) => void;
+  buttonPauseStart: React.RefObject<HTMLButtonElement>;
+}
+
+interface EndGameClockControlsProps {
+  clockButtonsDisabled: boolean;
+  clockEventHandlers: {
+    endGame: () => void;
+  };
 }
 
 function formatTime(time: number) {
@@ -47,6 +68,119 @@ const TimeControl = ({ label, tooltip, onClick, disabled }) => (
   </button>
 );
 
+function InGameClockControls({
+  clock_state,
+  clockButtonsDisabled,
+  isClockRunning,
+  isTimeZero,
+  endQuarterButtonDisabled,
+  clockEventHandlers,
+  pushEvent,
+  buttonPauseStart,
+}: InGameClockControlsProps) {
+  return (
+    <div className="columns is-multiline">
+      <div className="column is-4">
+        <TimeoutButton
+          teamType="away"
+          disabled={clockButtonsDisabled}
+          pushEvent={pushEvent}
+        />
+      </div>
+
+      <div className="column is-4">
+        <span className="chip-label">{clock_state.period}</span>
+      </div>
+
+      <div className="column is-4">
+        <TimeoutButton
+          teamType="home"
+          disabled={clockButtonsDisabled}
+          pushEvent={pushEvent}
+        />
+      </div>
+
+      <div className="column is-2">
+        <TimeControl
+          label="<<"
+          tooltip="- 1 Min"
+          onClick={() => clockEventHandlers.updateTime('increment60')}
+          disabled={clockButtonsDisabled}
+        />
+      </div>
+      <div className="column is-2">
+        <TimeControl
+          label="<"
+          tooltip="- 1 Sec"
+          onClick={() => clockEventHandlers.updateTime('increment')}
+          disabled={clockButtonsDisabled}
+        />
+      </div>
+      <div className="column is-4">
+        <span className="chip-label">{formatTime(clock_state.time)}</span>
+      </div>
+      <div className="column is-2">
+        <TimeControl
+          label=">"
+          tooltip="+ 1 Sec"
+          onClick={() => clockEventHandlers.updateTime('decrement')}
+          disabled={clockButtonsDisabled}
+        />
+      </div>
+      <div className="column is-2">
+        <TimeControl
+          label=">>"
+          tooltip="+ 1 Min"
+          onClick={() => clockEventHandlers.updateTime('decrement60')}
+          disabled={clockButtonsDisabled}
+        />
+      </div>
+
+      <div className="column is-12">
+        {isTimeZero ? (
+          <button
+            className="button is-warning is-fullwidth"
+            onClick={clockEventHandlers.endQuarter}
+            disabled={endQuarterButtonDisabled}
+          >
+            End quarter
+          </button>
+        ) : (
+          <button
+            ref={buttonPauseStart}
+            className="button is-info is-fullwidth"
+            onClick={clockEventHandlers.pauseStart}
+            disabled={clockButtonsDisabled}
+          >
+            <span className="shortcut">SPACE</span>
+            {isClockRunning ? 'Pause' : 'Start'}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function EndGameClockControls({
+  clockButtonsDisabled,
+  clockEventHandlers,
+}: EndGameClockControlsProps) {
+  return (
+    <div className="columns is-multiline">
+      <div className="column is-12">
+        <button
+          className="button is-danger is-fullwidth"
+          onClick={clockEventHandlers.endGame}
+          disabled={clockButtonsDisabled}
+          style={{ height: '173px' }}
+        >
+          End Game
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function ClockControls({
   away_team,
   home_team,
@@ -63,6 +197,8 @@ function ClockControls({
   const endQuarterButtonDisabled = clock_state.period >= 4 && !isGameTied;
   const isClockRunning = clock_state.state === 'running';
   const isTimeZero = clock_state.time === 0;
+  const displayEndGameControls =
+    clock_state.period >= 4 && !isGameTied && isTimeZero;
 
   // Event handlers
   const clockEventHandlers = {
@@ -81,6 +217,10 @@ function ClockControls({
     endQuarter: () => {
       pushEvent('end-period', {});
     },
+
+    endGame: () => {
+      pushEvent('end-game', {});
+    },
   };
 
   React.useEffect(() => {
@@ -97,85 +237,27 @@ function ClockControls({
 
   return (
     <div className="controls">
-      <div className="columns is-multiline">
-        <div className="column is-4">
-          <TimeoutButton
-            teamType="away"
-            disabled={clockButtonsDisabled}
-            pushEvent={pushEvent}
-          />
-        </div>
-
-        <div className="column is-4">
-          <span className="chip-label">{clock_state.period}</span>
-        </div>
-
-        <div className="column is-4">
-          <TimeoutButton
-            teamType="home"
-            disabled={clockButtonsDisabled}
-            pushEvent={pushEvent}
-          />
-        </div>
-
-        <div className="column is-2">
-          <TimeControl
-            label="<<"
-            tooltip="- 1 Min"
-            onClick={() => clockEventHandlers.updateTime('increment60')}
-            disabled={clockButtonsDisabled}
-          />
-        </div>
-        <div className="column is-2">
-          <TimeControl
-            label="<"
-            tooltip="- 1 Sec"
-            onClick={() => clockEventHandlers.updateTime('increment')}
-            disabled={clockButtonsDisabled}
-          />
-        </div>
-        <div className="column is-4">
-          <span className="chip-label">{formatTime(clock_state.time)}</span>
-        </div>
-        <div className="column is-2">
-          <TimeControl
-            label=">"
-            tooltip="+ 1 Sec"
-            onClick={() => clockEventHandlers.updateTime('decrement')}
-            disabled={clockButtonsDisabled}
-          />
-        </div>
-        <div className="column is-2">
-          <TimeControl
-            label=">>"
-            tooltip="+ 1 Min"
-            onClick={() => clockEventHandlers.updateTime('decrement60')}
-            disabled={clockButtonsDisabled}
-          />
-        </div>
-
-        <div className="column is-12">
-          {isTimeZero ? (
-            <button
-              className="button is-warning is-fullwidth"
-              onClick={clockEventHandlers.endQuarter}
-              disabled={endQuarterButtonDisabled}
-            >
-              End quarter
-            </button>
-          ) : (
-            <button
-              ref={buttonPauseStart}
-              className="button is-info is-fullwidth"
-              onClick={clockEventHandlers.pauseStart}
-              disabled={clockButtonsDisabled}
-            >
-              <span className="shortcut">SPACE</span>
-              {isClockRunning ? 'Pause' : 'Start'}
-            </button>
-          )}
-        </div>
-      </div>
+      {displayEndGameControls ? (
+        <EndGameClockControls
+          clockButtonsDisabled={clockButtonsDisabled}
+          clockEventHandlers={{ endGame: clockEventHandlers.endGame }}
+        />
+      ) : (
+        <InGameClockControls
+          clock_state={clock_state}
+          clockButtonsDisabled={clockButtonsDisabled}
+          isClockRunning={isClockRunning}
+          isTimeZero={isTimeZero}
+          endQuarterButtonDisabled={endQuarterButtonDisabled}
+          clockEventHandlers={{
+            pauseStart: clockEventHandlers.pauseStart,
+            updateTime: clockEventHandlers.updateTime,
+            endQuarter: clockEventHandlers.endQuarter,
+          }}
+          pushEvent={pushEvent}
+          buttonPauseStart={buttonPauseStart}
+        />
+      )}
     </div>
   );
 }
