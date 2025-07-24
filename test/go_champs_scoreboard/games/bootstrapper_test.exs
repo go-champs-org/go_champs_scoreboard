@@ -387,8 +387,6 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
         DateTime.from_iso8601("2023-10-01T12:00:00Z")
 
       assert game.info.datetime == expected_datetime
-      assert game.info.actual_start_datetime == nil
-      assert game.info.actual_end_datetime == nil
       assert game.info.tournament_id == "tournament-id"
       assert game.info.tournament_name == "Tournament Name"
       assert game.info.location == "Stadium A"

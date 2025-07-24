@@ -164,14 +164,23 @@ defmodule GoChampsScoreboard.GameStateFixtures do
       |> DateTime.from_iso8601()
 
     # 1 hour later
-    actual_start_datetime = DateTime.add(datetime, 60 * 60)
+    started_at = DateTime.add(datetime, 60 * 60)
     # 1 hour after that
-    actual_end_datetime = DateTime.add(actual_start_datetime, 60 * 60)
+    finished_at = DateTime.add(started_at, 60 * 60)
 
     game_state_with_players_fixture(
       game_id: game_id,
       sport_id: "basketball",
-      clock_state: Keyword.get(opts, :clock_state, GameClockState.new()),
+      clock_state:
+        Keyword.get(opts, :clock_state, %GameClockState{
+          time: 0,
+          period: 4,
+          state: :finished,
+          initial_period_time: 600,
+          initial_extra_period_time: 300,
+          started_at: started_at,
+          finished_at: finished_at
+        }),
       home_players: [
         %PlayerState{
           id: "123",
@@ -322,9 +331,7 @@ defmodule GoChampsScoreboard.GameStateFixtures do
         location: "Game Location",
         datetime: datetime,
         tournament_name: "Tournament Name",
-        tournament_id: "tournament-id",
-        actual_start_datetime: actual_start_datetime,
-        actual_end_datetime: actual_end_datetime
+        tournament_id: "tournament-id"
       }
     )
   end

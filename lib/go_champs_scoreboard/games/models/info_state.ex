@@ -6,8 +6,6 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
 
   @type t :: %__MODULE__{
           datetime: DateTime.t(),
-          actual_start_datetime: DateTime.t() | nil,
-          actual_end_datetime: DateTime.t() | nil,
           tournament_id: String.t(),
           tournament_name: String.t(),
           location: String.t()
@@ -15,8 +13,6 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
 
   defstruct [
     :datetime,
-    :actual_start_datetime,
-    :actual_end_datetime,
     :tournament_id,
     :tournament_name,
     :location
@@ -29,8 +25,6 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
   def new(datetime, opts \\ []) do
     %__MODULE__{
       datetime: datetime,
-      actual_start_datetime: Keyword.get(opts, :actual_start_datetime),
-      actual_end_datetime: Keyword.get(opts, :actual_end_datetime),
       tournament_id: Keyword.get(opts, :tournament_id, ""),
       tournament_name: Keyword.get(opts, :tournament_name, ""),
       location: Keyword.get(opts, :location, "")
@@ -41,8 +35,6 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
     def decode(
           %{
             datetime: datetime,
-            actual_start_datetime: actual_start_datetime,
-            actual_end_datetime: actual_end_datetime,
             tournament_id: tournament_id,
             tournament_name: tournament_name,
             location: location
@@ -59,26 +51,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
           DateTime.utc_now()
         end
 
-      actual_start_datetime =
-        if actual_start_datetime do
-          DateTime.from_iso8601(actual_start_datetime)
-          |> elem(1)
-        else
-          nil
-        end
-
-      actual_end_datetime =
-        if actual_end_datetime do
-          DateTime.from_iso8601(actual_end_datetime)
-          |> elem(1)
-        else
-          nil
-        end
-
       %GoChampsScoreboard.Games.Models.InfoState{
         datetime: datetime,
-        actual_start_datetime: actual_start_datetime,
-        actual_end_datetime: actual_end_datetime,
         tournament_id: tournament_id,
         tournament_name: tournament_name,
         location: location
