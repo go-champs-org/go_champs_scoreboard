@@ -6,15 +6,18 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameClock do
 
   @spec advance_to(GameClockState.t(), GameClockState.state()) :: GameClockState.t()
   def advance_to(clock_state, state) do
-    case clock_state.state do
-      :not_started ->
-        %GameClockState{clock_state | state: state, started_at: DateTime.utc_now()}
+    case {clock_state.state, state} do
+      {:not_started, new_state} ->
+        %GameClockState{clock_state | state: new_state, started_at: DateTime.utc_now()}
 
-      :finished ->
+      {:finished, _} ->
         clock_state
 
-      _ ->
-        %GameClockState{clock_state | state: state}
+      {_, :finished} ->
+        %GameClockState{clock_state | state: :finished, finished_at: DateTime.utc_now()}
+
+      {_, new_state} ->
+        %GameClockState{clock_state | state: new_state}
     end
   end
 
@@ -52,5 +55,15 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameClock do
       {_, _, _} ->
         clock_state
     end
+  end
+
+  @spec start_game(GameClockState.t()) :: GameClockState.t()
+  def start_game(clock_state) do
+    advance_to(clock_state, :running)
+  end
+
+  @spec end_game(GameClockState.t()) :: GameClockState.t()
+  def end_game(clock_state) do
+    advance_to(clock_state, :finished)
   end
 end

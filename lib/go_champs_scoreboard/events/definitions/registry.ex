@@ -2,6 +2,7 @@ defmodule GoChampsScoreboard.Events.Definitions.Registry do
   alias GoChampsScoreboard.Events.Definitions.AddCoachToTeamDefinition
   alias GoChampsScoreboard.Events.Definitions.AddOfficialToGameDefinition
   alias GoChampsScoreboard.Events.Definitions.AddPlayerToTeamDefinition
+  alias GoChampsScoreboard.Events.Definitions.EndGameDefinition
   alias GoChampsScoreboard.Events.Definitions.EndGameLiveModeDefinition
   alias GoChampsScoreboard.Events.Definitions.EndPeriodDefinition
   alias GoChampsScoreboard.Events.Definitions.GameTickDefinition
@@ -9,6 +10,7 @@ defmodule GoChampsScoreboard.Events.Definitions.Registry do
   alias GoChampsScoreboard.Events.Definitions.RemoveOfficialInGameDefinition
   alias GoChampsScoreboard.Events.Definitions.RemovePlayerInTeamDefinition
   alias GoChampsScoreboard.Events.Definitions.ResetGameLiveModeDefinition
+  alias GoChampsScoreboard.Events.Definitions.StartGameDefinition
   alias GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition
   alias GoChampsScoreboard.Events.Definitions.SubstitutePlayerDefinition
   alias GoChampsScoreboard.Events.Definitions.UpdateClockStateDefinition
@@ -24,6 +26,7 @@ defmodule GoChampsScoreboard.Events.Definitions.Registry do
     AddCoachToTeamDefinition.key() => AddCoachToTeamDefinition,
     AddOfficialToGameDefinition.key() => AddOfficialToGameDefinition,
     AddPlayerToTeamDefinition.key() => AddPlayerToTeamDefinition,
+    EndGameDefinition.key() => EndGameDefinition,
     EndGameLiveModeDefinition.key() => EndGameLiveModeDefinition,
     EndPeriodDefinition.key() => EndPeriodDefinition,
     GameTickDefinition.key() => GameTickDefinition,
@@ -31,6 +34,7 @@ defmodule GoChampsScoreboard.Events.Definitions.Registry do
     RemoveOfficialInGameDefinition.key() => RemoveOfficialInGameDefinition,
     RemovePlayerInTeamDefinition.key() => RemovePlayerInTeamDefinition,
     ResetGameLiveModeDefinition.key() => ResetGameLiveModeDefinition,
+    StartGameDefinition.key() => StartGameDefinition,
     StartGameLiveModeDefinition.key() => StartGameLiveModeDefinition,
     SubstitutePlayerDefinition.key() => SubstitutePlayerDefinition,
     UpdateCoachInTeamDefinition.key() => UpdateCoachInTeamDefinition,

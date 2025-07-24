@@ -218,12 +218,12 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameClockTest do
         finished_at: nil
       }
 
-      result = GameClock.advance_to(game_clock_state, :finished)
+      result = GameClock.advance_to(game_clock_state, :running)
 
       expected = %GameClockState{
         time: 0,
         period: 4,
-        state: :finished,
+        state: :running,
         initial_period_time: 600,
         initial_extra_period_time: 300,
         started_at: started_time,
@@ -270,6 +270,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameClockTest do
       assert GameClock.advance_to(game_clock_state, :paused) == game_clock_state
       assert GameClock.advance_to(game_clock_state, :stopped) == game_clock_state
       assert GameClock.advance_to(game_clock_state, :not_started) == game_clock_state
+      assert GameClock.advance_to(game_clock_state, :finished) == game_clock_state
     end
 
     test "preserves all other properties when advancing from any state" do
@@ -294,6 +295,137 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameClockTest do
       assert result.started_at == started_time
       assert result.finished_at == nil
       assert result.state == :stopped
+    end
+
+    test "when advancing to :finished state, it sets finished_at timestamp" do
+      started_time = DateTime.utc_now()
+
+      game_clock_state = %GameClockState{
+        time: 200,
+        period: 3,
+        state: :running,
+        initial_period_time: 600,
+        initial_extra_period_time: 300,
+        started_at: started_time,
+        finished_at: nil
+      }
+
+      result = GameClock.advance_to(game_clock_state, :finished)
+
+      assert result.time == 200
+      assert result.period == 3
+      assert result.initial_period_time == 600
+      assert result.initial_extra_period_time == 300
+      assert result.started_at == started_time
+      assert result.state == :finished
+      assert result.finished_at != nil
+      assert DateTime.diff(DateTime.utc_now(), result.finished_at, :second) < 1
+    end
+
+    test "when advancing from :paused to :finished, it sets finished_at timestamp" do
+      started_time = DateTime.utc_now()
+
+      game_clock_state = %GameClockState{
+        time: 0,
+        period: 4,
+        state: :paused,
+        initial_period_time: 600,
+        initial_extra_period_time: 300,
+        started_at: started_time,
+        finished_at: nil
+      }
+
+      result = GameClock.advance_to(game_clock_state, :finished)
+
+      assert result.state == :finished
+      assert result.finished_at != nil
+      assert DateTime.diff(DateTime.utc_now(), result.finished_at, :second) < 1
+    end
+  end
+
+  describe "start_game" do
+    test "starts the game from :not_started state and sets started_at timestamp" do
+      clock_state = %GameClockState{
+        time: 600,
+        period: 1,
+        state: :not_started,
+        initial_period_time: 600,
+        initial_extra_period_time: 300,
+        started_at: nil,
+        finished_at: nil
+      }
+
+      result = GameClock.start_game(clock_state)
+
+      assert result.state == :running
+      assert result.time == 600
+      assert result.period == 1
+      assert result.started_at != nil
+      assert result.finished_at == nil
+      assert DateTime.diff(DateTime.utc_now(), result.started_at, :second) < 1
+    end
+
+    test "does not change finished game" do
+      finished_time = DateTime.utc_now()
+
+      clock_state = %GameClockState{
+        time: 0,
+        period: 4,
+        state: :finished,
+        initial_period_time: 600,
+        initial_extra_period_time: 300,
+        started_at: DateTime.utc_now(),
+        finished_at: finished_time
+      }
+
+      result = GameClock.start_game(clock_state)
+
+      # Should remain unchanged
+      assert result == clock_state
+    end
+  end
+
+  describe "end_game" do
+    test "ends the game from any state and sets finished_at timestamp" do
+      started_time = DateTime.utc_now()
+
+      clock_state = %GameClockState{
+        time: 300,
+        period: 2,
+        state: :running,
+        initial_period_time: 600,
+        initial_extra_period_time: 300,
+        started_at: started_time,
+        finished_at: nil
+      }
+
+      result = GameClock.end_game(clock_state)
+
+      assert result.state == :finished
+      assert result.time == 300
+      assert result.period == 2
+      assert result.started_at == started_time
+      assert result.finished_at != nil
+      assert DateTime.diff(DateTime.utc_now(), result.finished_at, :second) < 1
+    end
+
+    test "does not update finished_at timestamp when is already finished" do
+      original_finished_time = DateTime.utc_now() |> DateTime.add(-3600, :second)
+
+      clock_state = %GameClockState{
+        time: 0,
+        period: 4,
+        state: :finished,
+        initial_period_time: 600,
+        initial_extra_period_time: 300,
+        started_at: DateTime.utc_now(),
+        finished_at: original_finished_time
+      }
+
+      result = GameClock.end_game(clock_state)
+
+      assert result.state == :finished
+      assert result.finished_at == original_finished_time
     end
   end
 end

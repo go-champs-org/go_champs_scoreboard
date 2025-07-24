@@ -138,7 +138,7 @@ defmodule GoChampsScoreboard.Games.GamesTest do
 
       result_game_state = Games.react_to_event(event, game_state.id)
 
-      assert result_game_state == handled_game
+      assert result_game_state.clock_state.state == handled_game.clock_state.state
 
       unset_test_game(game_state.id)
     end

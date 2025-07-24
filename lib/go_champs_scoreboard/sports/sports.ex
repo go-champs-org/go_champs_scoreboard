@@ -42,6 +42,20 @@ defmodule GoChampsScoreboard.Sports.Sports do
 
   def end_period(_, game_clock_state), do: game_clock_state
 
+  @spec start_game(String.t(), GameClockState.t()) :: GameClockState.t()
+  def start_game("basketball", game_clock_state) do
+    Basketball.GameClock.start_game(game_clock_state)
+  end
+
+  def start_game(_, game_clock_state), do: game_clock_state
+
+  @spec end_game(String.t(), GameClockState.t()) :: GameClockState.t()
+  def end_game("basketball", game_clock_state) do
+    Basketball.GameClock.end_game(game_clock_state)
+  end
+
+  def end_game(_, game_clock_state), do: game_clock_state
+
   @spec event_logs_order_by(String.t(), Ecto.Query.t()) :: Ecto.Query.t()
   def event_logs_order_by("basketball", query) do
     Basketball.EventLogsOperations.order_by(query)
