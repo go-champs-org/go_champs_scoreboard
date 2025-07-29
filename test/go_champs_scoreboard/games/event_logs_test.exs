@@ -501,6 +501,85 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
     end
   end
 
+  describe "get_last_by_game_id/1" do
+    test "retrieves the last event log with game snapshot for a specific game ID" do
+      game_state = basketball_game_state_fixture()
+
+      start_live_event =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          game_state.id,
+          600,
+          1,
+          %{}
+        )
+
+      update_home_player_stat_event_second_period =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          300,
+          2,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => "123",
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      update_home_player_stat_event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          300,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => "123",
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      update_away_player_stat_event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          200,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "away",
+            "player-id" => "456",
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      {:ok, _first_event_log} = EventLogs.persist(start_live_event, game_state)
+
+      {:ok, last_game_event_log} =
+        EventLogs.persist(update_home_player_stat_event_second_period, game_state)
+
+      {:ok, _middle_event_log} = EventLogs.persist(update_home_player_stat_event, game_state)
+
+      {:ok, _last_persisted_event_log} =
+        EventLogs.persist(update_away_player_stat_event, game_state)
+
+      retrieved_event_log = EventLogs.get_last_by_game_id(game_state.id)
+
+      assert retrieved_event_log.id == last_game_event_log.id
+      assert retrieved_event_log.key == last_game_event_log.key
+      assert retrieved_event_log.game_id == last_game_event_log.game_id
+      assert retrieved_event_log.payload == last_game_event_log.payload
+
+      assert retrieved_event_log.snapshot.state ==
+               last_game_event_log.snapshot.state
+               |> Poison.encode!()
+               |> GameState.from_json()
+    end
+
+    test "returns nil for non-existent game ID" do
+      assert EventLogs.get_last_by_game_id(Ecto.UUID.generate()) == nil
+    end
+  end
+
   describe "get_pior/1" do
     test "retrieves the event log prior to a specific event log with the its associated parsed game snapshot" do
       game_state = basketball_game_state_fixture()

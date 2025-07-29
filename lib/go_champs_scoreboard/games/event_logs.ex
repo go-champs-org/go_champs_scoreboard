@@ -220,6 +220,37 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   end
 
   @doc """
+  Retrieves the last event log for a given game ID.
+  This function queries the database for the last event log associated with the specified game ID.
+  It returns the event log if found, or nil if no event log exists for that game ID.
+  ## Parameters
+  - `game_id`: The ID of the game for which to retrieve the last event log.
+  ## Returns
+  - The last event log created for the specified game ID, or nil if not found.
+  """
+  @spec get_last_by_game_id(Ecto.UUID.t()) :: EventLog.t() | nil
+  def get_last_by_game_id(game_id) do
+    first_event_log = get_first_created_by_game_id(game_id)
+
+    if first_event_log do
+      base_query = from e in EventLog, where: e.game_id == ^game_id
+
+      ordered_query =
+        first_event_log.snapshot.state.sport_id
+        |> Sports.event_logs_order_by(base_query)
+
+      event_logs = Repo.all(ordered_query)
+
+      if event_logs != [] do
+        last_event_log = List.last(event_logs)
+        last_event_log |> Repo.preload(:snapshot) |> parse_snapshot()
+      else
+        nil
+      end
+    end
+  end
+
+  @doc """
   Retrieves the next event log for a given event log along with its snapshot.
   This function finds the event log that occurred immediately after the specified event log
   in the context of the same game. It returns the next event log with its snapshot if found,
