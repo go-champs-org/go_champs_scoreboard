@@ -9,7 +9,6 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   import Ecto.Query
 
   @spec delete(Ecto.UUID.t()) :: {:ok, EventLog.t()} | {:error, any()}
-  @spec delete(Ecto.UUID.t()) :: {:ok, EventLog.t()} | {:error, any()}
   def delete(id) do
     with {:ok, event_log} <- fetch_event_log(id),
          :ok <- validate_not_first_event(event_log),

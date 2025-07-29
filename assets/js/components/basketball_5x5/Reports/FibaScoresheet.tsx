@@ -156,10 +156,10 @@ function Period({
 }: Period) {
   const quarterStyle = isQuarterCentered
     ? {
-        ...styles.periods.period.quarter,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }
+      ...styles.periods.period.quarter,
+      justifyContent: 'center',
+      alignItems: 'center',
+    }
     : styles.periods.period.quarter;
   return (
     <View style={styles.periods.period}>
@@ -318,7 +318,15 @@ function Protest() {
   );
 }
 
-function EndGame() {
+function EndGame({ endDatetime }: { endDatetime: string }) {
+  const formattedEndDatetime = new Date(endDatetime).toLocaleTimeString(
+    'pt-BR',
+    {
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: 'UTC',
+    },
+  );
   return (
     <View style={styles.periods}>
       <View style={styles.periods.row}>
@@ -328,7 +336,7 @@ function EndGame() {
               <Text>Fim de jogo às (hh:mm)</Text>
             </View>
             <View style={styles.periods.period.score}>
-              <Text>21:30</Text>
+              <Text>{formattedEndDatetime}</Text>
             </View>
           </View>
         </View>
@@ -407,7 +415,7 @@ function FibaScoresheet({ scoresheetData }: FibaScoresheetProps) {
                 teamB={scoresheetData.team_b}
               />
               <Protest />
-              <EndGame />
+              <EndGame endDatetime={scoresheetData.info.actual_end_datetime} />
             </View>
           </View>
         </View>
