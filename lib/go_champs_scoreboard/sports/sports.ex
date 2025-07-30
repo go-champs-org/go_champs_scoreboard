@@ -1,8 +1,10 @@
 defmodule GoChampsScoreboard.Sports.Sports do
   alias GoChampsScoreboard.Games.Models.PlayerState
+  alias GoChampsScoreboard.Games.Models.GameState
   alias GoChampsScoreboard.Sports.Basketball
   alias GoChampsScoreboard.Statistics.Models.Stat
   alias GoChampsScoreboard.Games.Models.GameClockState
+  alias GoChampsScoreboard.Events.GameSnapshot
 
   import Ecto.Query
 
@@ -66,5 +68,20 @@ defmodule GoChampsScoreboard.Sports.Sports do
     from e in query,
       order_by: [asc: e.timestamp],
       select: e
+  end
+
+  @spec map_from_snapshot(String.t(), GameState.t(), GameSnapshot.t()) :: GameState.t()
+  def map_from_snapshot("basketball", game_state, snapshot) do
+    Basketball.GameState.map_from_snapshot(game_state, snapshot)
+  end
+
+  def map_from_snapshot(_, game_state, snapshot) do
+    case snapshot.state do
+      %GameState{} = restored_state ->
+        restored_state
+
+      _ ->
+        game_state
+    end
   end
 end
