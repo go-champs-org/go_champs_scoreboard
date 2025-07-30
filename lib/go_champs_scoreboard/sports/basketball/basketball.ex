@@ -42,7 +42,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Basketball do
     Stat.new("free_throws_made", :manual, [:incremen, :decrement]),
     Stat.new("game_played", :manual, [:increment, :decrement]),
     Stat.new("game_started", :manual, [:incremen, :decrement]),
-    Stat.new("minutes_played", :manual, [:incremen, :decrement]),
+    Stat.new("minutes_played", :automatic, [:incremen, :decrement]),
     Stat.new("plus_minus", :manual, [:incremen, :decrement]),
     Stat.new("points", :calculated, [], &Statistics.calc_player_points/1),
     Stat.new("rebounds", :calculated, [], &Statistics.calc_player_rebounds/1),
