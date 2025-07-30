@@ -86,10 +86,13 @@ defmodule GoChampsScoreboard.Events.Definitions.LoadFromLastEventLogDefinitionTe
 
       result = LoadFromLastEventLogDefinition.handle(original_game_state, event)
 
-      # Should restore the modified state from the snapshot
-      assert result.clock_state.time == 300
-      assert result.clock_state.period == 2
-      assert result.clock_state.state == :running
+      # Should preserve original clock state (not restore from snapshot)
+      assert result.clock_state.time == original_game_state.clock_state.time
+      assert result.clock_state.period == original_game_state.clock_state.period
+      assert result.clock_state.state == original_game_state.clock_state.state
+
+      # Should preserve original game state since no players to update
+      assert result.id == original_game_state.id
     end
   end
 end

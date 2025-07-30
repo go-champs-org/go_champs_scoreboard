@@ -28,10 +28,11 @@ defmodule GoChampsScoreboard.Sports.SportsMapFromSnapshotTest do
 
       result = Sports.map_from_snapshot("basketball", original_game_state, mock_snapshot)
 
-      assert result.clock_state.time == 300
-      assert result.clock_state.period == 2
-      assert result.clock_state.state == :running
-      assert result.id == snapshot_game_state.id
+      # Should preserve original clock state and other fields (not restore from snapshot)
+      assert result.clock_state.time == original_game_state.clock_state.time
+      assert result.clock_state.period == original_game_state.clock_state.period
+      assert result.clock_state.state == original_game_state.clock_state.state
+      assert result.id == original_game_state.id
     end
 
     test "returns game state from snapshot when snapshot contains a valid GameState for non-basketball sport" do

@@ -15,6 +15,10 @@ defmodule GoChampsScoreboard.Sports.Sports do
   def find_calculated_player_stats("basketball"),
     do: Basketball.Basketball.find_calculated_player_stats()
 
+  @spec find_player_stat_by_type(String.t(), [atom()]) :: [Stat.t()]
+  def find_player_stat_by_type("basketball", types),
+    do: Basketball.Basketball.find_player_stat_by_type(types)
+
   @spec find_team_stat(String.t(), String.t()) :: Stat.t()
   def find_team_stat("basketball", stat_id), do: Basketball.Basketball.find_team_stat(stat_id)
 

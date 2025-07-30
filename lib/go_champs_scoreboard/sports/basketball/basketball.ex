@@ -96,6 +96,11 @@ defmodule GoChampsScoreboard.Sports.Basketball.Basketball do
     Enum.filter(@player_stats, fn stat -> stat.type == :calculated end)
   end
 
+  @spec find_player_stat_by_type([atom()]) :: [Stat.t()]
+  def find_player_stat_by_type(types) when is_list(types) do
+    Enum.filter(@player_stats, fn stat -> stat.type in types end)
+  end
+
   @spec find_team_stat(String.t()) :: Stat.t()
   def find_team_stat(stat_id) do
     Enum.find(@team_stats, fn stat -> stat.key == stat_id end)
@@ -104,5 +109,10 @@ defmodule GoChampsScoreboard.Sports.Basketball.Basketball do
   @spec find_calculated_team_stats() :: [Stat.t()]
   def find_calculated_team_stats() do
     Enum.filter(@team_stats, fn stat -> stat.type == :calculated end)
+  end
+
+  @spec find_team_stat_by_type([atom()]) :: [Stat.t()]
+  def find_team_stat_by_type(types) when is_list(types) do
+    Enum.filter(@team_stats, fn stat -> stat.type in types end)
   end
 end
