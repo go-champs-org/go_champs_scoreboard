@@ -5,16 +5,26 @@ const getEventLogs = async (
   gameId: string,
   filters?: Record<string, string>,
 ): Promise<EventLog[]> => {
-  const params = new URLSearchParams(filters);
-  const url = params.size
+  const params = new URLSearchParams();
+  if (filters) {
+    Object.entries(filters).forEach(([key, value]) => {
+      params.append(key, value);
+    });
+  }
+  const url = params.toString()
     ? `/v1/games/${gameId}/event-logs?${params.toString()}`
     : `/v1/games/${gameId}/event-logs`;
 
-  console.log('Fetching event logs from URL:', url);
   const response = await httpClient.get<ApiResponse<EventLog[]>>(url);
   return response.data;
 };
 
+const deleteLastEvent = async (gameId: string): Promise<void> => {
+  const url = `/v1/games/${gameId}/event-logs/last`;
+  await httpClient.delete(url);
+};
+
 export default {
   getEventLogs,
+  deleteLastEvent,
 };

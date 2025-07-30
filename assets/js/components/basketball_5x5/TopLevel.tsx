@@ -10,6 +10,7 @@ import { OnlineIcon, OfflineIcon } from '../../shared/ConnectionStatusesIcon';
 import EventLogModal from '../event_log/EventLogModal';
 import { FeatureFlag } from '../../shared/FeatureFlags';
 import EditOfficialsModal from './Officials/EditOfficialsModal';
+import eventLogsHttpClient from '../../features/event_logs/eventLogsHttpClient';
 
 interface TopLevelProps {
   game_state: GameState;
@@ -38,6 +39,15 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
       return;
     } else {
       setShowEndLiveWarningModal(true);
+    }
+  };
+  const onUndoClick = async () => {
+    try {
+      await eventLogsHttpClient.deleteLastEvent(game_state.id);
+      console.log('Last event deleted successfully');
+    } catch (error) {
+      console.error('Failed to delete last event:', error);
+      // You could add user notification here, e.g., toast notification
     }
   };
 
@@ -85,6 +95,13 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
               onClick={() => setShowEventLogModal(true)}
             >
               Event Logs
+            </button>
+          </p>
+        </FeatureFlag>
+        <FeatureFlag name="display_undo_button">
+          <p className="level-item">
+            <button className="button is-warning" onClick={onUndoClick}>
+              Undo Last Event
             </button>
           </p>
         </FeatureFlag>
