@@ -50,7 +50,7 @@ defmodule GoChampsScoreboard.EventsFixtures do
       "stat-id" => "field_goals_made"
     }
 
-    update_player_stat_event =
+    middle_update_player_stat_event =
       GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
         game_state.id,
         8,
@@ -58,12 +58,119 @@ defmodule GoChampsScoreboard.EventsFixtures do
         payload
       )
 
-    game_state_for_update_player_stat_event = Handler.handle(game_state, update_player_stat_event)
+    last_update_player_stat_event =
+      GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+        game_state.id,
+        7,
+        1,
+        payload
+      )
+
+    game_state_for_update_player_stat_event =
+      Handler.handle(game_state, middle_update_player_stat_event)
+
+    game_state_for_last_update_player_stat_event =
+      Handler.handle(game_state_for_update_player_stat_event, last_update_player_stat_event)
 
     {:ok, _event_log} = EventLogs.persist(start_live_event, game_state)
 
     {:ok, event_log} =
-      EventLogs.persist(update_player_stat_event, game_state_for_update_player_stat_event)
+      EventLogs.persist(middle_update_player_stat_event, game_state_for_update_player_stat_event)
+
+    {:ok, _event_log} =
+      EventLogs.persist(
+        last_update_player_stat_event,
+        game_state_for_last_update_player_stat_event
+      )
+
+    event_log
+  end
+
+  @doc """
+  Generate a event_log with a snapshot in the end of the game.
+  """
+  def event_log_with_snapshot_in_end_of_game_fixture(_attrs \\ %{}) do
+    home_players = [
+      %PlayerState{
+        id: "123",
+        stats_values: %{
+          "field_goals_made" => 0,
+          "free_throws_made" => 0,
+          "three_point_field_goals_made" => 0
+        },
+        name: "Home Player 12",
+        number: 12,
+        state: :available
+      }
+    ]
+
+    away_players = [
+      %PlayerState{
+        id: "456",
+        stats_values: %{
+          "field_goals_made" => 0,
+          "free_throws_made" => 0,
+          "three_point_field_goals_made" => 0
+        },
+        name: "Away Player 22",
+        number: 22,
+        state: :available
+      }
+    ]
+
+    game_state =
+      game_state_with_players_fixture(home_players: home_players, away_players: away_players)
+
+    start_live_event =
+      GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+        game_state.id,
+        10,
+        1,
+        %{}
+      )
+
+    middle_update_player_stat_event =
+      GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+        game_state.id,
+        8,
+        1,
+        %{
+          "operation" => "increment",
+          "team-type" => "home",
+          "player-id" => "123",
+          "stat-id" => "field_goals_made"
+        }
+      )
+
+    last_update_player_stat_event =
+      GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+        game_state.id,
+        7,
+        1,
+        %{
+          "operation" => "increment",
+          "team-type" => "home",
+          "player-id" => "123",
+          "stat-id" => "field_goals_made"
+        }
+      )
+
+    {:ok, _event_log} = EventLogs.persist(start_live_event, game_state)
+
+    game_state_for_update_player_stat_event =
+      Handler.handle(game_state, middle_update_player_stat_event)
+
+    game_state_for_last_update_player_stat_event =
+      Handler.handle(game_state_for_update_player_stat_event, last_update_player_stat_event)
+
+    {:ok, _event_log} =
+      EventLogs.persist(middle_update_player_stat_event, game_state_for_update_player_stat_event)
+
+    {:ok, event_log} =
+      EventLogs.persist(
+        last_update_player_stat_event,
+        game_state_for_last_update_player_stat_event
+      )
 
     event_log
   end

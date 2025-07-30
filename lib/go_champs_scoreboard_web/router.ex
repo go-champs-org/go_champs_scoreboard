@@ -32,6 +32,7 @@ defmodule GoChampsScoreboardWeb.Router do
 
     resources "/games", GameController, only: [:show] do
       resources "/event-logs", EventLogController, only: [:index], as: :event_logs
+      delete "/event-logs/last", EventLogController, :delete_last, as: :last_event_log
     end
   end
 

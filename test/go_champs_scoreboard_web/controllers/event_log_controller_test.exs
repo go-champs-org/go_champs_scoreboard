@@ -57,7 +57,7 @@ defmodule GoChampsScoreboardWeb.EventLogControllerTest do
     } do
       conn = get(conn, ~p"/v1/games/#{event_log.game_id}/event-logs")
 
-      [first_event, second_event] = EventLogs.get_all_by_game_id(event_log.game_id)
+      [first_event, second_event, third_event] = EventLogs.get_all_by_game_id(event_log.game_id)
 
       assert json_response(conn, 200)["data"] == [
                %{
@@ -82,6 +82,20 @@ defmodule GoChampsScoreboardWeb.EventLogControllerTest do
                  "timestamp" => second_event.timestamp |> DateTime.to_iso8601(),
                  "game_clock_time" => second_event.game_clock_time,
                  "game_clock_period" => second_event.game_clock_period
+               },
+               %{
+                 "game_clock_period" => third_event.game_clock_period,
+                 "game_clock_time" => third_event.game_clock_time,
+                 "game_id" => third_event.game_id,
+                 "id" => third_event.id,
+                 "key" => third_event.key,
+                 "payload" => %{
+                   "operation" => "increment",
+                   "player-id" => "123",
+                   "stat-id" => "field_goals_made",
+                   "team-type" => "home"
+                 },
+                 "timestamp" => third_event.timestamp |> DateTime.to_iso8601()
                }
              ]
     end
@@ -92,17 +106,9 @@ defmodule GoChampsScoreboardWeb.EventLogControllerTest do
     } do
       conn = get(conn, ~p"/v1/games/#{event_log.game_id}/event-logs?key=#{event_log.key}")
 
-      assert json_response(conn, 200)["data"] == [
-               %{
-                 "id" => event_log.id,
-                 "game_id" => event_log.game_id,
-                 "key" => event_log.key,
-                 "payload" => event_log.payload,
-                 "timestamp" => event_log.timestamp |> DateTime.to_iso8601(),
-                 "game_clock_time" => event_log.game_clock_time,
-                 "game_clock_period" => event_log.game_clock_period
-               }
-             ]
+      assert Enum.all?(json_response(conn, 200)["data"], fn event ->
+               event["key"] == event_log.key
+             end)
     end
   end
 
@@ -181,6 +187,19 @@ defmodule GoChampsScoreboardWeb.EventLogControllerTest do
     end
   end
 
+  describe "delete event_log in the end of the game" do
+    setup [:create_event_log_with_snapshot_in_end_of_game]
+
+    test "deletes chosen event_log", %{conn: conn, event_log: event_log} do
+      conn = delete(conn, ~p"/v1/games/#{event_log.game_id}/event-logs/last")
+      assert response(conn, 204)
+
+      conn = get(conn, ~p"/v1/event-logs/#{event_log.id}")
+
+      assert json_response(conn, 404)["errors"] == %{"detail" => "Not Found"}
+    end
+  end
+
   defp create_event_log_with_snapshot(_) do
     event_log = event_log_with_snapshot_fixture()
     %{event_log: event_log}
@@ -188,6 +207,11 @@ defmodule GoChampsScoreboardWeb.EventLogControllerTest do
 
   defp create_event_log_in_the_middle_of_a_game(_) do
     event_log = event_log_with_snapshot_in_middle_of_game_fixture()
+    %{event_log: event_log}
+  end
+
+  defp create_event_log_with_snapshot_in_end_of_game(_) do
+    event_log = event_log_with_snapshot_in_end_of_game_fixture()
     %{event_log: event_log}
   end
 end

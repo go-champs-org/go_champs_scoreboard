@@ -35,4 +35,17 @@ defmodule GoChampsScoreboardWeb.EventLogController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  def delete_last(conn, %{"game_id" => game_id}) do
+    EventLogs.get_last_by_game_id(game_id)
+    |> case do
+      nil ->
+        send_resp(conn, :not_found, "No event log found for game #{game_id}")
+
+      event_log ->
+        with {:ok, %EventLog{}} <- EventLogs.delete(event_log.id) do
+          send_resp(conn, :no_content, "")
+        end
+    end
+  end
 end
