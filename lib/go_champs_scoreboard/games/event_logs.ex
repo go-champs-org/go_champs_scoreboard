@@ -1,4 +1,5 @@
 defmodule GoChampsScoreboard.Games.EventLogs do
+  alias GoChampsScoreboard.Games.Messages.PubSub
   alias GoChampsScoreboard.Events.ValidatorCreator
   alias GoChampsScoreboard.Games.Models.GameState
   alias GoChampsScoreboard.Events.EventLog
@@ -8,19 +9,30 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   alias GoChampsScoreboard.Sports.Sports
   import Ecto.Query
 
-  @spec delete(Ecto.UUID.t()) :: {:ok, EventLog.t()} | {:error, any()}
-  def delete(id) do
+  @spec delete(Ecto.UUID.t(), module()) :: {:ok, EventLog.t()} | {:error, any()}
+  def delete(id, pub_sub \\ PubSub) do
     with {:ok, event_log} <- fetch_event_log(id),
          :ok <- validate_not_first_event(event_log),
          {:ok, next_event_log} <- get_next_if_exists(event_log),
          {:ok, deleted_event_log} <- do_delete(event_log) do
       case next_event_log do
         nil ->
+          pub_sub.boardcast_game_last_snapshot_updated(
+            event_log.game_id,
+            GoChampsScoreboard.PubSub
+          )
+
           {:ok, deleted_event_log}
 
         event ->
           # Update snapshots if next event exists
           update_subsequent_snapshots(event)
+
+          pub_sub.boardcast_game_last_snapshot_updated(
+            event_log.game_id,
+            GoChampsScoreboard.PubSub
+          )
+
           {:ok, deleted_event_log}
       end
     end
@@ -444,8 +456,8 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   }
   ```
   """
-  @spec update_payload(Ecto.UUID.t(), map()) :: {:ok, EventLog.t()} | {:error, any()}
-  def update_payload(id, new_payload) do
+  @spec update_payload(Ecto.UUID.t(), map(), module()) :: {:ok, EventLog.t()} | {:error, any()}
+  def update_payload(id, new_payload, pub_sub \\ PubSub) do
     with {:ok, event_log} <- fetch_event_log(id),
          :ok <- validate_payload(new_payload),
          :ok <- validate_not_first_event(event_log),
@@ -461,6 +473,11 @@ defmodule GoChampsScoreboard.Games.EventLogs do
              end) do
             {:error, :snapshot_update_failed}
           else
+            pub_sub.boardcast_game_last_snapshot_updated(
+              updated_event_log.game_id,
+              GoChampsScoreboard.PubSub
+            )
+
             {:ok, updated_event_log}
           end
 

@@ -7,6 +7,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
   alias GoChampsScoreboard.Games.Models.GameState
   alias GoChampsScoreboard.Events.Handler
   alias GoChampsScoreboard.Games.EventLogs
+  import Mox
 
   import GoChampsScoreboard.GameStateFixtures
 
@@ -171,6 +172,54 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       {:ok, event_log} = EventLogs.persist(event, game_state)
 
       assert EventLogs.delete(event_log.id) == {:error, :cannot_update_first_event_log}
+    end
+
+    test "calls PubSub.boardcast_game_last_snapshot_updated when event log is successfully deleted" do
+      game_state = basketball_game_state_fixture()
+
+      expect(
+        GoChampsScoreboard.Games.Messages.PubSubMock,
+        :boardcast_game_last_snapshot_updated,
+        fn game_id, _pub_sub ->
+          assert game_id == game_state.id
+          :ok
+        end
+      )
+
+      first_event =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          game_state.id,
+          10,
+          1,
+          %{}
+        )
+
+      # Use a player ID that exists in the basketball fixture
+      home_player = List.first(game_state.home_team.players)
+
+      update_player_stat_event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          10,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => home_player.id,
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      {:ok, _first_event_log} = EventLogs.persist(first_event, game_state)
+
+      updated_game_state = Handler.handle(game_state, update_player_stat_event)
+      {:ok, event_log} = EventLogs.persist(update_player_stat_event, updated_game_state)
+
+      # Test that deletion calls PubSub correctly
+      result = EventLogs.delete(event_log.id, GoChampsScoreboard.Games.Messages.PubSubMock)
+
+      assert {:ok, _deleted_event_log} = result
+      verify!()
     end
   end
 
@@ -1371,6 +1420,85 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
 
       assert updated_game_state.home_team.total_player_stats["field_goals_made"] ==
                game_state.home_team.total_player_stats["field_goals_made"] + 1
+    end
+
+    test "calls PubSub.boardcast_game_last_snapshot_updated when payload is successfully updated" do
+      game_state = basketball_game_state_fixture()
+
+      expect(
+        GoChampsScoreboard.Games.Messages.PubSubMock,
+        :boardcast_game_last_snapshot_updated,
+        fn game_id, _pub_sub ->
+          assert game_id == game_state.id
+          :ok
+        end
+      )
+
+      first_event =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          game_state.id,
+          10,
+          1,
+          %{}
+        )
+
+      # Use a player ID that exists in the basketball fixture
+      home_player = List.first(game_state.home_team.players)
+
+      payload = %{
+        "operation" => "increment",
+        "team-type" => "home",
+        "player-id" => home_player.id,
+        "stat-id" => "field_goals_made"
+      }
+
+      event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          20,
+          1,
+          payload
+        )
+
+      {:ok, _first_event_log} = EventLogs.persist(first_event, game_state)
+
+      updated_game_state = Handler.handle(game_state, event)
+      {:ok, second_event_log} = EventLogs.persist(event, updated_game_state)
+
+      # Create a third event
+      second_event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          30,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => home_player.id,
+            "stat-id" => "free_throws_made"
+          }
+        )
+
+      updated_game_state2 = Handler.handle(updated_game_state, second_event)
+      {:ok, _third_event_log} = EventLogs.persist(second_event, updated_game_state2)
+
+      new_payload = %{
+        "operation" => "increment",
+        "team-type" => "home",
+        "player-id" => home_player.id,
+        "stat-id" => "rebounds_defensive"
+      }
+
+      # Test that update_payload calls PubSub correctly (update the second event, not the first)
+      result =
+        EventLogs.update_payload(
+          second_event_log.id,
+          new_payload,
+          GoChampsScoreboard.Games.Messages.PubSubMock
+        )
+
+      assert {:ok, _updated_event_log} = result
+      verify!()
     end
   end
 

@@ -101,7 +101,7 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
         <FeatureFlag name="display_undo_button">
           <p className="level-item">
             <button className="button is-warning" onClick={onUndoClick}>
-              Undo Last Event
+              Undo Last Player Event
             </button>
           </p>
         </FeatureFlag>

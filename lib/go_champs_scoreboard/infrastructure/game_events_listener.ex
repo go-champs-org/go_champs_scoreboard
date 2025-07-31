@@ -33,6 +33,10 @@ defmodule GoChampsScoreboard.Infrastructure.GameEventsListener do
     {:noreply, state}
   end
 
+  def handle_info({:game_last_snapshot_updated, _payload}, state) do
+    {:noreply, state}
+  end
+
   def handle_call(:process_pending_messages, _from, state) do
     {:messages, pending_messages} = Process.info(self(), :messages)
 

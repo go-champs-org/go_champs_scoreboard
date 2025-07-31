@@ -14,6 +14,10 @@ Mox.defmock(GoChampsScoreboard.Infrastructure.GameEventLogsListenerSupervisorMoc
   for: GoChampsScoreboard.Infrastructure.GameEventLogsListenerSupervisorBehavior
 )
 
+Mox.defmock(GoChampsScoreboard.Games.Messages.PubSubMock,
+  for: GoChampsScoreboard.Games.Messages.PubSubBehavior
+)
+
 Mox.defmock(GoChampsScoreboard.Games.ResourceManagerMock,
   for: GoChampsScoreboard.Games.ResourceManagerBehavior
 )

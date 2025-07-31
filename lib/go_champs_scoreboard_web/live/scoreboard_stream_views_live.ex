@@ -25,4 +25,8 @@ defmodule GoChampsScoreboardWeb.ScoreboardStreamViewsLive do
 
     {:noreply, updated_socket}
   end
+
+  def handle_info({:game_last_snapshot_updated, _payload}, socket) do
+    {:noreply, socket}
+  end
 end
