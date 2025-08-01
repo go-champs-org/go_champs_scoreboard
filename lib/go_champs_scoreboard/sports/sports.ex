@@ -74,6 +74,15 @@ defmodule GoChampsScoreboard.Sports.Sports do
       select: e
   end
 
+  @spec event_logs_where_type_is_undoable(String.t(), Ecto.Query.t()) :: Ecto.Query.t()
+  def event_logs_where_type_is_undoable("basketball", query) do
+    Basketball.EventLogsOperations.where_type_is_undoable(query)
+  end
+
+  def event_logs_where_type_is_undoable(_, query) do
+    query
+  end
+
   @spec map_from_snapshot(String.t(), GameState.t(), GameSnapshot.t()) :: GameState.t()
   def map_from_snapshot("basketball", game_state, snapshot) do
     Basketball.GameState.map_from_snapshot(game_state, snapshot)

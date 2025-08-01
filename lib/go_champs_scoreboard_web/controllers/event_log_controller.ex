@@ -37,7 +37,7 @@ defmodule GoChampsScoreboardWeb.EventLogController do
   end
 
   def delete_last(conn, %{"game_id" => game_id}) do
-    EventLogs.get_last_by_game_id(game_id)
+    EventLogs.get_last_undoable_by_game_id(game_id)
     |> case do
       nil ->
         send_resp(conn, :not_found, "No event log found for game #{game_id}")

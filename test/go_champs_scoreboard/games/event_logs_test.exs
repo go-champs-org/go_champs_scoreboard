@@ -629,6 +629,274 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
     end
   end
 
+  describe "get_last_undoable_by_game_id/1" do
+    test "retrieves the last undoable event log for a basketball game" do
+      game_state = basketball_game_state_fixture()
+
+      # Use valid player IDs from the fixture
+      home_player = List.first(game_state.home_team.players)
+      away_player = List.first(game_state.away_team.players)
+
+      # Create a start event (not undoable)
+      start_live_event =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          game_state.id,
+          600,
+          1,
+          %{}
+        )
+
+      # Create update player stat events (undoable)
+      update_home_player_stat_event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          300,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => home_player.id,
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      update_away_player_stat_event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          200,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "away",
+            "player-id" => away_player.id,
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      # Create a game tick event (not undoable)
+      game_tick_event =
+        GoChampsScoreboard.Events.Definitions.GameTickDefinition.create(
+          game_state.id,
+          100,
+          1,
+          %{}
+        )
+
+      # Create another undoable event - this should be the last undoable one
+      last_undoable_event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          50,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => home_player.id,
+            "stat-id" => "rebounds_defensive"
+          }
+        )
+
+      last_not_undoable_event =
+        GoChampsScoreboard.Events.Definitions.GameTickDefinition.create(
+          game_state.id,
+          25,
+          1,
+          %{}
+        )
+
+      # Persist events in chronological order
+      {:ok, _start_event_log} = EventLogs.persist(start_live_event, game_state)
+
+      updated_game_state1 = Handler.handle(game_state, update_home_player_stat_event)
+
+      {:ok, _home_stat_event_log} =
+        EventLogs.persist(update_home_player_stat_event, updated_game_state1)
+
+      updated_game_state2 = Handler.handle(updated_game_state1, update_away_player_stat_event)
+
+      {:ok, _away_stat_event_log} =
+        EventLogs.persist(update_away_player_stat_event, updated_game_state2)
+
+      updated_game_state3 = Handler.handle(updated_game_state2, game_tick_event)
+      {:ok, _tick_event_log} = EventLogs.persist(game_tick_event, updated_game_state3)
+
+      updated_game_state4 = Handler.handle(updated_game_state3, last_undoable_event)
+
+      {:ok, expected_last_undoable_log} =
+        EventLogs.persist(last_undoable_event, updated_game_state4)
+
+      updated_game_state5 = Handler.handle(updated_game_state4, last_not_undoable_event)
+
+      {:ok, _last_not_undoable_event_log} =
+        EventLogs.persist(last_not_undoable_event, updated_game_state5)
+
+      # The function should return the last undoable event, not the game tick
+      retrieved_event_log = EventLogs.get_last_undoable_by_game_id(game_state.id)
+
+      assert retrieved_event_log.id == expected_last_undoable_log.id
+      assert retrieved_event_log.key == "update-player-stat"
+      assert retrieved_event_log.game_id == game_state.id
+      assert retrieved_event_log.payload == last_undoable_event.payload
+      assert retrieved_event_log.snapshot != nil
+    end
+
+    test "returns nil when no undoable events exist for a basketball game" do
+      game_state = basketball_game_state_fixture()
+
+      # Create only non-undoable events
+      start_live_event =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          game_state.id,
+          600,
+          1,
+          %{}
+        )
+
+      game_tick_event =
+        GoChampsScoreboard.Events.Definitions.GameTickDefinition.create(
+          game_state.id,
+          500,
+          1,
+          %{}
+        )
+
+      {:ok, _start_event_log} = EventLogs.persist(start_live_event, game_state)
+
+      updated_game_state = Handler.handle(game_state, game_tick_event)
+      {:ok, _tick_event_log} = EventLogs.persist(game_tick_event, updated_game_state)
+
+      # Should return nil since no undoable events exist
+      retrieved_event_log = EventLogs.get_last_undoable_by_game_id(game_state.id)
+
+      assert retrieved_event_log == nil
+    end
+
+    test "returns nil for non-existent game ID" do
+      assert EventLogs.get_last_undoable_by_game_id(Ecto.UUID.generate()) == nil
+    end
+
+    test "returns nil when no events exist for the game" do
+      game_id = Ecto.UUID.generate()
+      assert EventLogs.get_last_undoable_by_game_id(game_id) == nil
+    end
+
+    test "handles team stat updates as undoable events" do
+      game_state = basketball_game_state_fixture()
+
+      # Create a start event
+      start_live_event =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          game_state.id,
+          600,
+          1,
+          %{}
+        )
+
+      # Create an update team stat event (should be undoable)
+      update_team_stat_event =
+        GoChampsScoreboard.Events.Definitions.UpdateTeamStatDefinition.create(
+          game_state.id,
+          300,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "stat-id" => "timeouts"
+          }
+        )
+
+      {:ok, _start_event_log} = EventLogs.persist(start_live_event, game_state)
+
+      updated_game_state = Handler.handle(game_state, update_team_stat_event)
+
+      {:ok, expected_team_stat_log} =
+        EventLogs.persist(update_team_stat_event, updated_game_state)
+
+      retrieved_event_log = EventLogs.get_last_undoable_by_game_id(game_state.id)
+
+      assert retrieved_event_log.id == expected_team_stat_log.id
+      assert retrieved_event_log.key == "update-team-stat"
+      assert retrieved_event_log.game_id == game_state.id
+      assert retrieved_event_log.payload == update_team_stat_event.payload
+    end
+
+    test "returns the most recent undoable event when mixed with non-undoable events" do
+      game_state = basketball_game_state_fixture()
+      home_player = List.first(game_state.home_team.players)
+
+      # Mix of undoable and non-undoable events
+      start_event =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          game_state.id,
+          600,
+          1,
+          %{}
+        )
+
+      first_undoable =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          500,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => home_player.id,
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      non_undoable_tick =
+        GoChampsScoreboard.Events.Definitions.GameTickDefinition.create(
+          game_state.id,
+          400,
+          1,
+          %{}
+        )
+
+      second_undoable =
+        GoChampsScoreboard.Events.Definitions.UpdateTeamStatDefinition.create(
+          game_state.id,
+          300,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "away",
+            "stat-id" => "timeouts"
+          }
+        )
+
+      another_non_undoable =
+        GoChampsScoreboard.Events.Definitions.GameTickDefinition.create(
+          game_state.id,
+          200,
+          1,
+          %{}
+        )
+
+      # Persist all events
+      {:ok, _} = EventLogs.persist(start_event, game_state)
+
+      updated_state1 = Handler.handle(game_state, first_undoable)
+      {:ok, _} = EventLogs.persist(first_undoable, updated_state1)
+
+      updated_state2 = Handler.handle(updated_state1, non_undoable_tick)
+      {:ok, _} = EventLogs.persist(non_undoable_tick, updated_state2)
+
+      updated_state3 = Handler.handle(updated_state2, second_undoable)
+      {:ok, expected_last_undoable} = EventLogs.persist(second_undoable, updated_state3)
+
+      updated_state4 = Handler.handle(updated_state3, another_non_undoable)
+      {:ok, _} = EventLogs.persist(another_non_undoable, updated_state4)
+
+      # Should return the second undoable event, not the last persisted event
+      retrieved_event_log = EventLogs.get_last_undoable_by_game_id(game_state.id)
+
+      assert retrieved_event_log.id == expected_last_undoable.id
+      assert retrieved_event_log.key == "update-team-stat"
+    end
+  end
+
   describe "get_pior/1" do
     test "retrieves the event log prior to a specific event log with the its associated parsed game snapshot" do
       game_state = basketball_game_state_fixture()

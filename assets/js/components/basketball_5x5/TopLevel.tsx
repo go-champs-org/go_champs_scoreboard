@@ -88,6 +88,11 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
             Edit officials
           </button>
         </p>
+        <p className="level-item">
+          <button className="button is-warning" onClick={onUndoClick}>
+            Undo Last Player Event
+          </button>
+        </p>
         <FeatureFlag name="display_event_logs_modal">
           <p className="level-item">
             <button
@@ -95,13 +100,6 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
               onClick={() => setShowEventLogModal(true)}
             >
               Event Logs
-            </button>
-          </p>
-        </FeatureFlag>
-        <FeatureFlag name="display_undo_button">
-          <p className="level-item">
-            <button className="button is-warning" onClick={onUndoClick}>
-              Undo Last Player Event
             </button>
           </p>
         </FeatureFlag>
