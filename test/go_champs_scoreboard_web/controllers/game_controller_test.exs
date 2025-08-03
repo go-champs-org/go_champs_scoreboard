@@ -22,11 +22,11 @@ defmodule GoChampsScoreboardWeb.GameControllerTest do
 
   defp set_test_game() do
     game_state = GameStateFixtures.game_state_fixture()
-    Redix.command(:games_cache, ["SET", game_state.id, game_state])
+    Redix.command(:games_cache, ["SET", "game_state:#{game_state.id}", game_state])
     game_state
   end
 
   defp unset_test_game(game_id) do
-    Redix.command(:games_cache, ["DEL", game_id])
+    Redix.command(:games_cache, ["DEL", "game_state:#{game_id}"])
   end
 end

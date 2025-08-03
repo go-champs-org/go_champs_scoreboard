@@ -6,25 +6,24 @@ defmodule GoChampsScoreboard.Games.Games do
   alias GoChampsScoreboard.Events.Handler
   alias GoChampsScoreboard.Games.Bootstrapper
   alias GoChampsScoreboard.Games.ResourceManager
+  alias GoChampsScoreboard.Games.GameStateCache
   alias GoChampsScoreboard.Games.Models.TeamState
   alias GoChampsScoreboard.Games.Messages.PubSub
   alias GoChampsScoreboard.Games.Models.GameState
   alias GoChampsScoreboard.Games.Models.OfficialState
   alias GoChampsScoreboard.Games.Models.GameClockState
 
-  @two_days_in_seconds 172_800
-
   @spec find_or_bootstrap(String.t()) :: GameState.t()
   @spec find_or_bootstrap(String.t(), String.t()) :: GameState.t()
   @spec find_or_bootstrap(String.t(), String.t(), module()) :: GameState.t()
   def find_or_bootstrap(game_id, go_champs_token \\ "", resource_manager \\ ResourceManager) do
-    case get_game(game_id) do
+    case GameStateCache.get(game_id) do
       {:ok, nil} ->
         game_state =
           Bootstrapper.bootstrap()
           |> Bootstrapper.bootstrap_from_go_champs(game_id, go_champs_token)
 
-        update_game(game_state)
+        GameStateCache.update(game_state)
 
       {:ok, game} ->
         case game.live_state.state do
@@ -33,7 +32,7 @@ defmodule GoChampsScoreboard.Games.Games do
               game
               |> Bootstrapper.bootstrap_from_go_champs(game.id, go_champs_token)
 
-            update_game(updated_game)
+            GameStateCache.update(updated_game)
 
           :in_progress ->
             resource_manager.check_and_restart(game.id)
@@ -48,7 +47,7 @@ defmodule GoChampsScoreboard.Games.Games do
 
   @spec start_live_mode(String.t(), module()) :: GameState.t()
   def start_live_mode(game_id, resource_manager \\ ResourceManager) do
-    case get_game(game_id) do
+    case GameStateCache.get(game_id) do
       {:ok, nil} ->
         raise RuntimeError, message: "Game not found"
 
@@ -65,7 +64,7 @@ defmodule GoChampsScoreboard.Games.Games do
 
   @spec end_live_mode(String.t(), module()) :: GameState.t()
   def end_live_mode(game_id, resource_manager \\ ResourceManager) do
-    case get_game(game_id) do
+    case GameStateCache.get(game_id) do
       {:ok, nil} ->
         raise RuntimeError, message: "Game not found"
 
@@ -84,13 +83,13 @@ defmodule GoChampsScoreboard.Games.Games do
 
   @spec react_to_event(Event.t(), GameState.t()) :: GameState.t()
   def react_to_event(event, game_id) do
-    case get_game(game_id) do
+    case GameStateCache.get(game_id) do
       {:ok, nil} ->
         raise RuntimeError, message: "Game not found"
 
       {:ok, current_game_state} ->
         new_game_state = Handler.handle(current_game_state, event)
-        update_game(new_game_state)
+        GameStateCache.update(new_game_state)
 
         PubSub.broadcast_game_reacted_to_event(event, new_game_state)
 
@@ -140,25 +139,5 @@ defmodule GoChampsScoreboard.Games.Games do
   @spec update_clock_state(GameState.t(), GameClockState.t()) :: GameState.t()
   def update_clock_state(game_state, clock_state) do
     %{game_state | clock_state: clock_state}
-  end
-
-  @spec get_game(String.t()) :: {:ok, GameState.t()} | {:ok, nil} | {:error, any()}
-  def get_game(game_id) do
-    case Redix.command(:games_cache, ["GET", game_id]) do
-      {:ok, nil} ->
-        {:ok, nil}
-
-      {:ok, game_json} ->
-        {:ok, GameState.from_json(game_json)}
-
-      {:error, error} ->
-        {:error, error}
-    end
-  end
-
-  @spec update_game(GameState.t()) :: GameState.t()
-  defp update_game(game_state) do
-    Redix.command(:games_cache, ["SET", game_state.id, game_state, "EX", @two_days_in_seconds])
-    game_state
   end
 end

@@ -1,14 +1,14 @@
 defmodule GoChampsScoreboard.Events.ValidatorCreator do
   alias GoChampsScoreboard.Events.Definitions.Registry
   alias GoChampsScoreboard.Events.Models.Event
-  alias GoChampsScoreboard.Games.Games
+  alias GoChampsScoreboard.Games.GameStateCache
 
   @spec validate_and_create(String.t(), String.t()) :: {:ok, Event.t()} | {:error, any()}
   @spec validate_and_create(String.t(), String.t(), any()) :: {:ok, Event.t()} | {:error, any()}
   def validate_and_create(key, game_id, payload \\ nil) do
     case Registry.get_definition(key) do
       {:ok, definition} ->
-        {:ok, game_state} = Games.get_game(game_id)
+        {:ok, game_state} = GameStateCache.get(game_id)
 
         case game_state
              |> definition.validate(payload) do

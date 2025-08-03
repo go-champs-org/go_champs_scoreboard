@@ -1,10 +1,10 @@
 defmodule GoChampsScoreboardWeb.GameController do
   use GoChampsScoreboardWeb, :controller
 
-  alias GoChampsScoreboard.Games.Games
+  alias GoChampsScoreboard.Games.GameStateCache
 
   def show(conn, %{"id" => id}) do
-    case Games.get_game(id) do
+    case GameStateCache.get(id) do
       {:ok, nil} ->
         conn
         |> put_status(:not_found)

@@ -44,7 +44,7 @@ defmodule GoChampsScoreboard.Games.GamesTest do
 
       result_game_state = Games.find_or_bootstrap(game_state.id, "token")
 
-      {:ok, stored_game} = Redix.command(:games_cache, ["GET", game_state.id])
+      {:ok, stored_game} = Redix.command(:games_cache, ["GET", "game_state:#{game_state.id}"])
 
       redis_game = GameState.from_json(stored_game)
 
@@ -82,7 +82,7 @@ defmodule GoChampsScoreboard.Games.GamesTest do
 
       result_game_state = Games.find_or_bootstrap("some-game-id", "token")
 
-      {:ok, stored_game} = Redix.command(:games_cache, ["GET", "some-game-id"])
+      {:ok, stored_game} = Redix.command(:games_cache, ["GET", "game_state:some-game-id"])
 
       redis_game = GameState.from_json(stored_game)
 
@@ -292,17 +292,17 @@ defmodule GoChampsScoreboard.Games.GamesTest do
     game_state =
       GameState.new(Ecto.UUID.generate(), away_team, home_team, clock_state, live_state)
 
-    Redix.command(:games_cache, ["SET", game_state.id, game_state])
+    Redix.command(:games_cache, ["SET", "game_state:#{game_state.id}", game_state])
 
     game_state
   end
 
   defp unset_test_game(game_id) do
-    Redix.command(:games_cache, ["DEL", game_id])
+    Redix.command(:games_cache, ["DEL", "game_state:#{game_id}"])
   end
 
   defp get_test_game(game_id) do
-    {:ok, game_json} = Redix.command(:games_cache, ["GET", game_id])
+    {:ok, game_json} = Redix.command(:games_cache, ["GET", "game_state:#{game_id}"])
     GameState.from_json(game_json)
   end
 end

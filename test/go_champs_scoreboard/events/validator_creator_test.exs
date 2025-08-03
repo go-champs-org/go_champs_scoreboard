@@ -75,11 +75,11 @@ defmodule GoChampsScoreboard.Events.ValidatorCreatorTest do
     clock_state = GameClockState.new()
     live_state = LiveState.new()
     game_state = GameState.new("some-game-id", away_team, home_team, clock_state, live_state)
-    Redix.command(:games_cache, ["SET", "some-game-id", game_state])
+    Redix.command(:games_cache, ["SET", "game_state:some-game-id", game_state])
     game_state
   end
 
   defp unset_test_game() do
-    Redix.command(:games_cache, ["DEL", "some-game-id"])
+    Redix.command(:games_cache, ["DEL", "game_state:some-game-id"])
   end
 end
