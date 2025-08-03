@@ -479,6 +479,9 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
           %{}
         )
 
+      # Add a small delay to ensure different timestamps
+      :timer.sleep(10)
+
       update_player_stat_event =
         GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
           game_state.id,
