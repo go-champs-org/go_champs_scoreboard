@@ -15,23 +15,21 @@ defmodule GoChampsScoreboard.Infrastructure.GameEventLogsListener do
     {:ok, %{game_id: game_id}}
   end
 
-  def handle_info(
-        {:game_last_snapshot_updated, %{game_id: game_id} = _payload},
-        state
-      ) do
-    {:ok, event} =
-      LoadFromLastEventLogDefinition.key()
-      |> ValidatorCreator.validate_and_create(game_id)
+  def handle_info(msg, state) do
+    case msg do
+      {:game_last_snapshot_updated, %{game_id: game_id}} ->
+        {:ok, event} =
+          LoadFromLastEventLogDefinition.key()
+          |> ValidatorCreator.validate_and_create(game_id)
 
-    event
-    |> Games.react_to_event(game_id)
+        event
+        |> Games.react_to_event(game_id)
 
-    {:noreply, state}
-  end
+      _ ->
+        # Handle other messages if necessary
+        :ok
+    end
 
-  def handle_info({:game_reacted_to_event, %{event: _event, game_state: _game_state}}, state) do
-    # GameEventLogsListener doesn't need to handle game reaction events
-    # This listener only responds to snapshot updates
     {:noreply, state}
   end
 

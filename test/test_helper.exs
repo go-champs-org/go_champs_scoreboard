@@ -21,3 +21,7 @@ Mox.defmock(GoChampsScoreboard.Games.Messages.PubSubMock,
 Mox.defmock(GoChampsScoreboard.Games.ResourceManagerMock,
   for: GoChampsScoreboard.Games.ResourceManagerBehavior
 )
+
+Mox.defmock(GoChampsScoreboard.Games.EventLogCacheMock,
+  for: GoChampsScoreboard.Games.EventLogCacheBehavior
+)

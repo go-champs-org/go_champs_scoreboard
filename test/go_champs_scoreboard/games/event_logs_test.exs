@@ -7,6 +7,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
   alias GoChampsScoreboard.Games.Models.GameState
   alias GoChampsScoreboard.Events.Handler
   alias GoChampsScoreboard.Games.EventLogs
+  alias GoChampsScoreboard.Games.EventLogCacheMock
   import Mox
 
   import GoChampsScoreboard.GameStateFixtures
@@ -49,6 +50,37 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       assert event_log.inserted_at != nil
       assert event_log.updated_at != nil
       assert game_state_snapshoted == game_state
+    end
+
+    test "calls EventLogCache.add_event_log after successful persist" do
+      update_player_stat_event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          "7488a646-e31f-11e4-aace-600308960668",
+          10,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => "123",
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      game_state = game_state_fixture()
+
+      # Mock EventLogCache.add_event_log to verify it's called
+      expect(EventLogCacheMock, :add_event_log, fn game_id, event_log ->
+        assert game_id == "7488a646-e31f-11e4-aace-600308960668"
+        assert event_log.key == "update-player-stat"
+        :ok
+      end)
+
+      {:ok, event_log} =
+        EventLogs.persist(update_player_stat_event, game_state, EventLogCacheMock)
+
+      assert event_log.key == "update-player-stat"
+      # Verify the mock was called
+      verify!(EventLogCacheMock)
     end
   end
 
@@ -174,12 +206,12 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       assert EventLogs.delete(event_log.id) == {:error, :cannot_update_first_event_log}
     end
 
-    test "calls PubSub.boardcast_game_last_snapshot_updated when event log is successfully deleted" do
+    test "calls PubSub.broadcast_game_last_snapshot_updated when event log is successfully deleted" do
       game_state = basketball_game_state_fixture()
 
       expect(
         GoChampsScoreboard.Games.Messages.PubSubMock,
-        :boardcast_game_last_snapshot_updated,
+        :broadcast_game_last_snapshot_updated,
         fn game_id, _pub_sub ->
           assert game_id == game_state.id
           :ok
@@ -220,6 +252,58 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
 
       assert {:ok, _deleted_event_log} = result
       verify!()
+    end
+
+    test "calls EventLogCache.refresh after successful delete" do
+      first_event =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          "7488a646-e31f-11e4-aace-600308960668",
+          10,
+          1,
+          %{}
+        )
+
+      update_player_stat_event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          "7488a646-e31f-11e4-aace-600308960668",
+          10,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => "123",
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      game_state = game_state_fixture()
+      {:ok, _first_event_log} = EventLogs.persist(first_event, game_state)
+      {:ok, event_log} = EventLogs.persist(update_player_stat_event, game_state)
+
+      expect(
+        GoChampsScoreboard.Games.Messages.PubSubMock,
+        :broadcast_game_last_snapshot_updated,
+        fn
+          _game_id, _pub_sub ->
+            :ok
+        end
+      )
+
+      # Mock EventLogCache.refresh to verify it's called
+      expect(EventLogCacheMock, :refresh, fn game_id ->
+        assert game_id == "7488a646-e31f-11e4-aace-600308960668"
+        :ok
+      end)
+
+      result =
+        EventLogs.delete(
+          event_log.id,
+          GoChampsScoreboard.Games.Messages.PubSubMock,
+          EventLogCacheMock
+        )
+
+      assert {:ok, _deleted_event_log} = result
+      verify!(EventLogCacheMock)
     end
   end
 
@@ -692,11 +776,11 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
         )
 
       # Persist all events in chronological order
-      {:ok, start_event_log} = EventLogs.persist(start_live_event, game_state)
+      {:ok, _start_event_log} = EventLogs.persist(start_live_event, game_state)
 
       updated_game_state1 = Handler.handle(game_state, start_live_event)
 
-      {:ok, first_stat_event_log} =
+      {:ok, _first_stat_event_log} =
         EventLogs.persist(first_player_stat_event, updated_game_state1)
 
       updated_game_state2 = Handler.handle(updated_game_state1, first_player_stat_event)
@@ -716,15 +800,12 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       assert length(last_3_events) == 3
 
       # Should return the last 3 events in chronological order (oldest to newest)
-      # Note: The current implementation has a bug - it returns first k, not last k
-      # These tests document the expected behavior
-      _expected_ids = [tick_event_log.id, second_stat_event_log.id, team_stat_event_log.id]
+      # Chronological order: start → first_stat → tick → second_stat → team_stat
+      # Last 3 events should be: tick, second_stat, team_stat
+      expected_ids = [tick_event_log.id, second_stat_event_log.id, team_stat_event_log.id]
       actual_ids = Enum.map(last_3_events, & &1.id)
 
-      # For now, we'll test what the current implementation returns (first 3)
-      # TODO: Fix implementation to return last k events
-      current_expected_ids = [start_event_log.id, first_stat_event_log.id, tick_event_log.id]
-      assert actual_ids == current_expected_ids
+      assert actual_ids == expected_ids
     end
 
     test "retrieves all events when k is greater than total events" do
@@ -874,13 +955,13 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
         )
 
       # Persist events
-      {:ok, event_log1} = EventLogs.persist(event1, game_state)
+      {:ok, _event_log1} = EventLogs.persist(event1, game_state)
       updated_state1 = Handler.handle(game_state, event1)
 
       {:ok, event_log2} = EventLogs.persist(event2, updated_state1)
       updated_state2 = Handler.handle(updated_state1, event2)
 
-      {:ok, _event_log3} = EventLogs.persist(event3, updated_state2)
+      {:ok, event_log3} = EventLogs.persist(event3, updated_state2)
 
       # Get last 2 events
       events = EventLogs.get_last_k_by_game_id(game_state.id, 2)
@@ -888,8 +969,10 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       assert length(events) == 2
 
       # Events should be in chronological order (oldest to newest)
-      # Current implementation returns first 2, so we test that
-      assert Enum.map(events, & &1.id) == [event_log1.id, event_log2.id]
+      # Function should return the last 2 events from chronological order
+      # Chronological order: event1 → event2 → event3
+      # Last 2 events should be: event2, event3
+      assert Enum.map(events, & &1.id) == [event_log2.id, event_log3.id]
 
       # Verify they are indeed in the right chronological order
       first_event = List.first(events)
@@ -1822,6 +1905,78 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       assert EventLogs.update_payload(event_log2.id, new_payload) ==
                {:error, :invalid_payload}
     end
+
+    test "calls EventLogCache.refresh after successful update_payload" do
+      game_state = basketball_game_state_fixture()
+
+      payload = %{
+        "operation" => "increment",
+        "team-type" => "home",
+        "player-id" => "123",
+        "stat-id" => "field_goals_made"
+      }
+
+      event1 =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          "7488a646-e31f-11e4-aace-600308960668",
+          10,
+          1,
+          %{}
+        )
+
+      event2 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          "7488a646-e31f-11e4-aace-600308960668",
+          10,
+          1,
+          payload
+        )
+
+      event3 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          "7488a646-e31f-11e4-aace-600308960668",
+          10,
+          1,
+          payload
+        )
+
+      {:ok, _event_log1} = EventLogs.persist(event1, game_state)
+      {:ok, _event_log2} = EventLogs.persist(event2, game_state)
+      {:ok, event_log3} = EventLogs.persist(event3, game_state)
+
+      expect(
+        GoChampsScoreboard.Games.Messages.PubSubMock,
+        :broadcast_game_last_snapshot_updated,
+        fn
+          _game_id, _pub_sub ->
+            :ok
+        end
+      )
+
+      # Mock EventLogCache.refresh to verify it's called
+      expect(EventLogCacheMock, :refresh, fn game_id ->
+        assert game_id == "7488a646-e31f-11e4-aace-600308960668"
+        :ok
+      end)
+
+      new_payload = %{
+        "operation" => "decrement",
+        "team-type" => "away",
+        "player-id" => "456",
+        "stat-id" => "field_goals_made"
+      }
+
+      {:ok, updated_event_log} =
+        EventLogs.update_payload(
+          event_log3.id,
+          new_payload,
+          GoChampsScoreboard.Games.Messages.PubSubMock,
+          EventLogCacheMock
+        )
+
+      assert updated_event_log.payload == new_payload
+      verify!(EventLogCacheMock)
+    end
   end
 
   describe "update_single_snapshot/2" do
@@ -2036,12 +2191,12 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
                game_state.home_team.total_player_stats["field_goals_made"] + 1
     end
 
-    test "calls PubSub.boardcast_game_last_snapshot_updated when payload is successfully updated" do
+    test "calls PubSub.broadcast_game_last_snapshot_updated when payload is successfully updated" do
       game_state = basketball_game_state_fixture()
 
       expect(
         GoChampsScoreboard.Games.Messages.PubSubMock,
-        :boardcast_game_last_snapshot_updated,
+        :broadcast_game_last_snapshot_updated,
         fn game_id, _pub_sub ->
           assert game_id == game_state.id
           :ok

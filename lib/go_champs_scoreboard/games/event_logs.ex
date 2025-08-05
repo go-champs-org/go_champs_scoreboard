@@ -1,23 +1,27 @@
 defmodule GoChampsScoreboard.Games.EventLogs do
   alias GoChampsScoreboard.Games.Messages.PubSub
+  alias GoChampsScoreboard.Games.EventLogCache
   alias GoChampsScoreboard.Events.ValidatorCreator
   alias GoChampsScoreboard.Games.Models.GameState
   alias GoChampsScoreboard.Events.EventLog
+  alias GoChampsScoreboard.Events.GameSnapshot
   alias GoChampsScoreboard.Repo
   alias GoChampsScoreboard.Events.Models.Event
   alias GoChampsScoreboard.Events.Handler
   alias GoChampsScoreboard.Sports.Sports
   import Ecto.Query
 
-  @spec delete(Ecto.UUID.t(), module()) :: {:ok, EventLog.t()} | {:error, any()}
-  def delete(id, pub_sub \\ PubSub) do
+  @spec delete(Ecto.UUID.t(), module(), module()) :: {:ok, EventLog.t()} | {:error, any()}
+  def delete(id, pub_sub \\ PubSub, event_log_cache \\ EventLogCache) do
     with {:ok, event_log} <- fetch_event_log(id),
          :ok <- validate_not_first_event(event_log),
          {:ok, next_event_log} <- get_next_if_exists(event_log),
          {:ok, deleted_event_log} <- do_delete(event_log) do
       case next_event_log do
         nil ->
-          pub_sub.boardcast_game_last_snapshot_updated(
+          event_log_cache.refresh(event_log.game_id)
+
+          pub_sub.broadcast_game_last_snapshot_updated(
             event_log.game_id,
             GoChampsScoreboard.PubSub
           )
@@ -25,10 +29,11 @@ defmodule GoChampsScoreboard.Games.EventLogs do
           {:ok, deleted_event_log}
 
         event ->
-          # Update snapshots if next event exists
           update_subsequent_snapshots(event)
 
-          pub_sub.boardcast_game_last_snapshot_updated(
+          event_log_cache.refresh(event_log.game_id)
+
+          pub_sub.broadcast_game_last_snapshot_updated(
             event_log.game_id,
             GoChampsScoreboard.PubSub
           )
@@ -52,8 +57,8 @@ defmodule GoChampsScoreboard.Games.EventLogs do
     end
   end
 
-  @spec persist(Event.t(), GameState.t()) :: {:ok, EventLog.t()} | {:error, any()}
-  def persist(event, game_state) do
+  @spec persist(Event.t(), GameState.t(), module()) :: {:ok, EventLog.t()} | {:error, any()}
+  def persist(event, game_state, event_log_cache \\ EventLogCache) do
     Repo.transaction(fn ->
       # First, create a new event log
       event_log_changeset =
@@ -76,8 +81,8 @@ defmodule GoChampsScoreboard.Games.EventLogs do
             |> Poison.decode!()
 
           snapshot_changeset =
-            %GoChampsScoreboard.Events.GameSnapshot{}
-            |> GoChampsScoreboard.Events.GameSnapshot.changeset(%{
+            %GameSnapshot{}
+            |> GameSnapshot.changeset(%{
               event_log_id: event_log.id,
               state: game_state_map,
               game_id: event.game_id
@@ -85,6 +90,8 @@ defmodule GoChampsScoreboard.Games.EventLogs do
 
           case Repo.insert(snapshot_changeset) do
             {:ok, _snapshot} ->
+              event_log_cache.add_event_log(event.game_id, event_log)
+
               event_log |> Repo.preload(:snapshot) |> parse_snapshot()
 
             {:error, reason} ->
@@ -295,9 +302,10 @@ defmodule GoChampsScoreboard.Games.EventLogs do
           ordered_query
         end
 
+      # Get all events and take the last k
       query
-      |> limit(^k)
       |> Repo.all()
+      |> Enum.take(-k)
       |> Enum.map(&parse_snapshot/1)
     else
       []
@@ -533,8 +541,9 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   }
   ```
   """
-  @spec update_payload(Ecto.UUID.t(), map(), module()) :: {:ok, EventLog.t()} | {:error, any()}
-  def update_payload(id, new_payload, pub_sub \\ PubSub) do
+  @spec update_payload(Ecto.UUID.t(), map(), module(), module()) ::
+          {:ok, EventLog.t()} | {:error, any()}
+  def update_payload(id, new_payload, pub_sub \\ PubSub, event_log_cache \\ EventLogCache) do
     with {:ok, event_log} <- fetch_event_log(id),
          :ok <- validate_payload(new_payload),
          :ok <- validate_not_first_event(event_log),
@@ -550,7 +559,9 @@ defmodule GoChampsScoreboard.Games.EventLogs do
              end) do
             {:error, :snapshot_update_failed}
           else
-            pub_sub.boardcast_game_last_snapshot_updated(
+            event_log_cache.refresh(updated_event_log.game_id)
+
+            pub_sub.broadcast_game_last_snapshot_updated(
               updated_event_log.game_id,
               GoChampsScoreboard.PubSub
             )

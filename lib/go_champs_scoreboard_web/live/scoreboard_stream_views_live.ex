@@ -17,16 +17,17 @@ defmodule GoChampsScoreboardWeb.ScoreboardStreamViewsLive do
      end)}
   end
 
-  @spec handle_info({:game_reacted_to_event, any()}, any()) :: {:noreply, any()}
-  def handle_info({:game_reacted_to_event, %{game_state: game_state}}, socket) do
-    updated_socket =
-      socket
-      |> assign(:game_state, %{socket.assigns.game_state | result: game_state})
+  def handle_info(msg, socket) do
+    case msg do
+      {:game_reacted_to_event, %{game_state: game_state}} ->
+        updated_socket =
+          socket
+          |> assign(:game_state, %{socket.assigns.game_state | result: game_state})
 
-    {:noreply, updated_socket}
-  end
+        {:noreply, updated_socket}
 
-  def handle_info({:game_last_snapshot_updated, _payload}, socket) do
-    {:noreply, socket}
+      _ ->
+        {:noreply, socket}
+    end
   end
 end

@@ -15,25 +15,25 @@ defmodule GoChampsScoreboard.Infrastructure.GameEventsListener do
     {:ok, %{game_id: game_id}}
   end
 
-  def handle_info(
-        {:game_reacted_to_event, %{event: event, game_state: game_state} = payload},
-        state
-      ) do
-    stream_config = StreamConfigs.find_for_game_event(event.key)
+  def handle_info(msg, state) do
+    case msg do
+      {:game_reacted_to_event, %{event: event, game_state: game_state} = payload} ->
+        stream_config = StreamConfigs.find_for_game_event(event.key)
 
-    if stream_config.streamable do
-      PayloadBuilder.build(stream_config.payload_builder, payload)
-      |> Publisher.publish()
+        if stream_config.streamable do
+          PayloadBuilder.build(stream_config.payload_builder, payload)
+          |> Publisher.publish()
+        end
+
+        if event.meta[:persistable] do
+          EventLogs.persist(event, game_state)
+        end
+
+      _ ->
+        # Handle other messages if necessary
+        :ok
     end
 
-    if event.meta[:persistable] do
-      EventLogs.persist(event, game_state)
-    end
-
-    {:noreply, state}
-  end
-
-  def handle_info({:game_last_snapshot_updated, _payload}, state) do
     {:noreply, state}
   end
 
