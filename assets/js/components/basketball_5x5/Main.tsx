@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { EventLog, GameState, TeamType } from '../../types';
-import StatsControls from './StatsControls';
+import StatsControls, {
+  BasicStatsControls,
+  MediumStatsControls,
+} from './StatsControls';
 import ClockControls from './ClockControls';
 import TopLevel from './TopLevel';
 import PlayersControls from './PlayersControls';
 import TeamControls, { BasicTeamControls } from './TeamControls';
 import EndLiveModal from './EndLiveModal';
 import RecentEventLogs from './RecentEventLogs';
+import MediumTopControls, { BasicTopControls } from './TopControls';
 
 export interface LiveReactBase {
   pushEvent: (event: string, payload: any) => void;
@@ -24,61 +28,20 @@ interface MainProps extends LiveReactBase {
   recent_events: EventLog[];
 }
 
-interface TopControlsProps {
+interface ViewProps {
   game_state: GameState;
+  recent_events: EventLog[];
   pushEvent: (event: string, payload: any) => void;
 }
 
-function TopControls({ game_state, pushEvent }: TopControlsProps) {
-  if (game_state.view_settings_state.view === 'basketball-basic') {
-    return (
-      <div className="columns is-multiline">
-        <div className="column is-6">
-          <BasicTeamControls team={game_state.away_team} teamType="away" />
-        </div>
-        <div className="column is-6">
-          <BasicTeamControls team={game_state.home_team} teamType="home" />
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="columns is-multiline">
-      <div className="column is-4">
-        <TeamControls team={game_state.away_team} teamType="away" />
-      </div>
-
-      <div className="column is-4">
-        <ClockControls
-          home_team={game_state.home_team}
-          away_team={game_state.away_team}
-          clock_state={game_state.clock_state}
-          live_state={game_state.live_state}
-          pushEvent={pushEvent}
-        />
-      </div>
-
-      <div className="column is-4">
-        <div className="panel">
-          <TeamControls team={game_state.home_team} teamType="home" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Main({ game_state, recent_events, pushEvent }: MainProps) {
+function BasicView({ game_state, recent_events, pushEvent }: ViewProps) {
   const [playerSelection, setPlayerSelection] = useState<PlayerSelection>(null);
-  const showEndLiveModal = game_state.live_state.state === 'ended';
 
   return (
     <>
-      <TopLevel game_state={game_state} pushEvent={pushEvent} />
-
       <div className="columns is-multiline">
         <div className="column is-12">
-          <TopControls game_state={game_state} pushEvent={pushEvent} />
+          <BasicTopControls game_state={game_state} pushEvent={pushEvent} />
         </div>
 
         <div className="column is-4">
@@ -92,12 +55,11 @@ function Main({ game_state, recent_events, pushEvent }: MainProps) {
         </div>
 
         <div className="column is-4">
-          <StatsControls
+          <BasicStatsControls
             liveState={game_state.live_state}
             playerSelection={playerSelection}
             pushEvent={pushEvent}
             selectPlayer={setPlayerSelection}
-            viewSettings={game_state.view_settings_state}
           />
         </div>
 
@@ -110,9 +72,76 @@ function Main({ game_state, recent_events, pushEvent }: MainProps) {
             selectedPlayer={playerSelection}
           />
         </div>
-
-        <EndLiveModal showModal={showEndLiveModal} />
       </div>
+    </>
+  );
+}
+
+function MediumView({ game_state, recent_events, pushEvent }: ViewProps) {
+  const [playerSelection, setPlayerSelection] = useState<PlayerSelection>(null);
+
+  return (
+    <>
+      <div className="columns is-multiline">
+        <div className="column is-12">
+          <MediumTopControls game_state={game_state} pushEvent={pushEvent} />
+        </div>
+
+        <div className="column is-4">
+          <PlayersControls
+            team={game_state.away_team}
+            pushEvent={pushEvent}
+            teamType="away"
+            selectPlayer={setPlayerSelection}
+            selectedPlayer={playerSelection}
+          />
+        </div>
+
+        <div className="column is-4">
+          <MediumStatsControls
+            liveState={game_state.live_state}
+            playerSelection={playerSelection}
+            pushEvent={pushEvent}
+            selectPlayer={setPlayerSelection}
+          />
+        </div>
+
+        <div className="column is-4">
+          <PlayersControls
+            team={game_state.home_team}
+            pushEvent={pushEvent}
+            teamType="home"
+            selectPlayer={setPlayerSelection}
+            selectedPlayer={playerSelection}
+          />
+        </div>
+      </div>
+    </>
+  );
+}
+
+function Main({ game_state, recent_events, pushEvent }: MainProps) {
+  const showEndLiveModal = game_state.live_state.state === 'ended';
+
+  return (
+    <>
+      <TopLevel game_state={game_state} pushEvent={pushEvent} />
+
+      {game_state.view_settings_state.view === 'basketball-basic' ? (
+        <BasicView
+          game_state={game_state}
+          recent_events={recent_events}
+          pushEvent={pushEvent}
+        />
+      ) : (
+        <MediumView
+          game_state={game_state}
+          recent_events={recent_events}
+          pushEvent={pushEvent}
+        />
+      )}
+
+      <EndLiveModal showModal={showEndLiveModal} />
     </>
   );
 }
