@@ -75,6 +75,12 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
         :ok
       end)
 
+      # Mock EventLogCache.get to simulate the cache retrieval
+      expect(EventLogCacheMock, :get, fn game_id ->
+        assert game_id == "7488a646-e31f-11e4-aace-600308960668"
+        {:ok, []}
+      end)
+
       {:ok, event_log} =
         EventLogs.persist(update_player_stat_event, game_state, EventLogCacheMock)
 
@@ -218,6 +224,15 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
         end
       )
 
+      expect(
+        GoChampsScoreboard.Games.Messages.PubSubMock,
+        :broadcast_game_event_logs_updated,
+        fn game_id, _recent_events, _pub_sub ->
+          assert game_id == game_state.id
+          :ok
+        end
+      )
+
       first_event =
         GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
           game_state.id,
@@ -289,10 +304,25 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
         end
       )
 
+      expect(
+        GoChampsScoreboard.Games.Messages.PubSubMock,
+        :broadcast_game_event_logs_updated,
+        fn
+          _game_id, _recent_events, _pub_sub ->
+            :ok
+        end
+      )
+
       # Mock EventLogCache.refresh to verify it's called
       expect(EventLogCacheMock, :refresh, fn game_id ->
         assert game_id == "7488a646-e31f-11e4-aace-600308960668"
         :ok
+      end)
+
+      # Mock EventLogCache.get to simulate the cache retrieval
+      expect(EventLogCacheMock, :get, fn game_id ->
+        assert game_id == "7488a646-e31f-11e4-aace-600308960668"
+        {:ok, []}
       end)
 
       result =
@@ -1953,10 +1983,25 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
         end
       )
 
+      expect(
+        GoChampsScoreboard.Games.Messages.PubSubMock,
+        :broadcast_game_event_logs_updated,
+        fn
+          _game_id, _recent_events, _pub_sub ->
+            :ok
+        end
+      )
+
       # Mock EventLogCache.refresh to verify it's called
       expect(EventLogCacheMock, :refresh, fn game_id ->
         assert game_id == "7488a646-e31f-11e4-aace-600308960668"
         :ok
+      end)
+
+      # Mock EventLogCache.get to simulate the cache retrieval
+      expect(EventLogCacheMock, :get, fn game_id ->
+        assert game_id == "7488a646-e31f-11e4-aace-600308960668"
+        {:ok, []}
       end)
 
       new_payload = %{
@@ -2198,6 +2243,15 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
         GoChampsScoreboard.Games.Messages.PubSubMock,
         :broadcast_game_last_snapshot_updated,
         fn game_id, _pub_sub ->
+          assert game_id == game_state.id
+          :ok
+        end
+      )
+
+      expect(
+        GoChampsScoreboard.Games.Messages.PubSubMock,
+        :broadcast_game_event_logs_updated,
+        fn game_id, _recent_events, _pub_sub ->
           assert game_id == game_state.id
           :ok
         end

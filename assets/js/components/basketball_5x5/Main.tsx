@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { GameState, TeamType } from '../../types';
+import { EventLog, GameState, TeamType } from '../../types';
 import StatsControls from './StatsControls';
 import ClockControls from './ClockControls';
 import TopLevel from './TopLevel';
 import PlayersControls from './PlayersControls';
 import TeamControls, { BasicTeamControls } from './TeamControls';
 import EndLiveModal from './EndLiveModal';
+import RecentEventLogs from './RecentEventLogs';
 
 export interface LiveReactBase {
   pushEvent: (event: string, payload: any) => void;
@@ -20,6 +21,7 @@ export interface PlayerSelection {
 
 interface MainProps extends LiveReactBase {
   game_state: GameState;
+  recent_events: EventLog[];
 }
 
 interface TopControlsProps {
@@ -66,7 +68,7 @@ function TopControls({ game_state, pushEvent }: TopControlsProps) {
   );
 }
 
-function Main({ game_state, pushEvent }: MainProps) {
+function Main({ game_state, recent_events, pushEvent }: MainProps) {
   const [playerSelection, setPlayerSelection] = useState<PlayerSelection>(null);
   const showEndLiveModal = game_state.live_state.state === 'ended';
 

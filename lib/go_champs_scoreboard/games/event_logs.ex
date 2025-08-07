@@ -19,7 +19,7 @@ defmodule GoChampsScoreboard.Games.EventLogs do
          {:ok, deleted_event_log} <- do_delete(event_log) do
       case next_event_log do
         nil ->
-          event_log_cache.refresh(event_log.game_id)
+          refresh_cache_and_broadcast_event_logs(event_log.game_id, pub_sub, event_log_cache)
 
           pub_sub.broadcast_game_last_snapshot_updated(
             event_log.game_id,
@@ -31,7 +31,7 @@ defmodule GoChampsScoreboard.Games.EventLogs do
         event ->
           update_subsequent_snapshots(event)
 
-          event_log_cache.refresh(event_log.game_id)
+          refresh_cache_and_broadcast_event_logs(event_log.game_id, pub_sub, event_log_cache)
 
           pub_sub.broadcast_game_last_snapshot_updated(
             event_log.game_id,
@@ -57,8 +57,9 @@ defmodule GoChampsScoreboard.Games.EventLogs do
     end
   end
 
-  @spec persist(Event.t(), GameState.t(), module()) :: {:ok, EventLog.t()} | {:error, any()}
-  def persist(event, game_state, event_log_cache \\ EventLogCache) do
+  @spec persist(Event.t(), GameState.t(), module(), module()) ::
+          {:ok, EventLog.t()} | {:error, any()}
+  def persist(event, game_state, event_log_cache \\ EventLogCache, pub_sub \\ PubSub) do
     Repo.transaction(fn ->
       # First, create a new event log
       event_log_changeset =
@@ -91,6 +92,8 @@ defmodule GoChampsScoreboard.Games.EventLogs do
           case Repo.insert(snapshot_changeset) do
             {:ok, _snapshot} ->
               event_log_cache.add_event_log(event.game_id, event_log)
+
+              get_cached_events_and_broadcast(event.game_id, pub_sub, event_log_cache)
 
               event_log |> Repo.preload(:snapshot) |> parse_snapshot()
 
@@ -559,7 +562,11 @@ defmodule GoChampsScoreboard.Games.EventLogs do
              end) do
             {:error, :snapshot_update_failed}
           else
-            event_log_cache.refresh(updated_event_log.game_id)
+            refresh_cache_and_broadcast_event_logs(
+              updated_event_log.game_id,
+              pub_sub,
+              event_log_cache
+            )
 
             pub_sub.broadcast_game_last_snapshot_updated(
               updated_event_log.game_id,
@@ -845,5 +852,30 @@ defmodule GoChampsScoreboard.Games.EventLogs do
       # Snapshot not loaded, return event_log as is
       event_log
     end
+  end
+
+  # Helper function to get cached events and broadcast event logs updated
+  defp get_cached_events_and_broadcast(game_id, pub_sub, event_log_cache) do
+    case event_log_cache.get(game_id) do
+      {:ok, recent_events} ->
+        pub_sub.broadcast_game_event_logs_updated(
+          game_id,
+          recent_events,
+          GoChampsScoreboard.PubSub
+        )
+
+      {:error, _} ->
+        pub_sub.broadcast_game_event_logs_updated(
+          game_id,
+          [],
+          GoChampsScoreboard.PubSub
+        )
+    end
+  end
+
+  # Helper function to refresh cache and broadcast event logs updated
+  defp refresh_cache_and_broadcast_event_logs(game_id, pub_sub, event_log_cache) do
+    event_log_cache.refresh(game_id)
+    get_cached_events_and_broadcast(game_id, pub_sub, event_log_cache)
   end
 end

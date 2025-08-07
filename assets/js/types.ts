@@ -6,7 +6,8 @@ export interface EventLog {
   id: string;
   key: string;
   timestamp: string;
-  payload: object;
+  payload?: EventLogUpdatePlayerStatPayload;
+  game_id: string;
   game_clock_time: number;
   game_clock_period: number;
 }
@@ -84,6 +85,13 @@ export interface GameState {
   live_state: LiveState;
   view_settings_state: ViewSettingsState;
   officials: OfficialState[];
+}
+
+export interface EventLogUpdatePlayerStatPayload {
+  ['team-type']: 'home' | 'away';
+  ['stat-id']: string;
+  ['player-id']: string;
+  ['operation']: 'increment' | 'decrement';
 }
 
 export type TeamType = 'home' | 'away';

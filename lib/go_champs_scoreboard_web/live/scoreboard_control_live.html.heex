@@ -1,5 +1,9 @@
 {live_react_component(
   "Components.Scoreboard",
-  [game_data: Poison.encode!(@game_state), feature_flags_data: Poison.encode!(@feature_flags)],
+  [
+    game_data: Poison.encode!(@game_state),
+    recent_events_data: Poison.encode!(@recent_events),
+    feature_flags_data: Poison.encode!(@feature_flags)
+  ],
   id: "main-scoreboard"
 )}
