@@ -1,15 +1,9 @@
 import React, { useState } from 'react';
 import { EventLog, GameState, TeamType } from '../../types';
-import StatsControls, {
-  BasicStatsControls,
-  MediumStatsControls,
-} from './StatsControls';
-import ClockControls from './ClockControls';
+import { BasicStatsControls, MediumStatsControls } from './StatsControls';
 import TopLevel from './TopLevel';
 import PlayersControls from './PlayersControls';
-import TeamControls, { BasicTeamControls } from './TeamControls';
 import EndLiveModal from './EndLiveModal';
-import RecentEventLogs from './RecentEventLogs';
 import MediumTopControls, { BasicTopControls } from './TopControls';
 
 export interface LiveReactBase {

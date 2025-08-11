@@ -1,16 +1,9 @@
 import React from 'react';
 import { GameState, DEFAULT_GAME_STATE, TeamState } from '../types';
+import { formatTime } from '../shared/contentHelpers';
 
 interface StreamViewsProps {
   game_data: string;
-}
-
-function formatTime(time: number) {
-  const minutes = Math.floor(time / 60);
-  const seconds = time % 60;
-  const minutesStr = minutes < 10 ? `0${minutes}` : minutes;
-  const secondsStr = seconds < 10 ? `0${seconds}` : seconds;
-  return `${minutesStr}:${secondsStr}`;
 }
 
 // Utility function to calculate contrast color

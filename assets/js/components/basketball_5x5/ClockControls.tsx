@@ -1,6 +1,7 @@
 import React from 'react';
 import { GameClockState, LiveState, TeamState } from '../../types';
 import { invokeButtonClickRef } from '../../shared/invokeButtonClick';
+import { formatTime } from '../../shared/contentHelpers';
 
 interface ClockControlsProps {
   away_team: TeamState;
@@ -30,14 +31,6 @@ interface EndGameClockControlsProps {
   clockEventHandlers: {
     endGame: () => void;
   };
-}
-
-function formatTime(time: number) {
-  const minutes = Math.floor(time / 60);
-  const seconds = time % 60;
-  const minutesStr = minutes < 10 ? `0${minutes}` : minutes;
-  const secondsStr = seconds < 10 ? `0${seconds}` : seconds;
-  return `${minutesStr}:${secondsStr}`;
 }
 
 const TimeoutButton = ({ teamType, disabled, pushEvent }) => (
