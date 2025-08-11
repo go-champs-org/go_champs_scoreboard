@@ -213,17 +213,28 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
      |> react_and_update_game_state(socket.assigns.game_state.result.id, socket)}
   end
 
-  def handle_info({:game_reacted_to_event, %{game_state: game_state}}, socket) do
-    # React to the event and update the game state in the socket
-    updated_socket =
-      socket
-      |> assign(:game_state, %{socket.assigns.game_state | result: game_state})
+  def handle_info(msg, socket) do
+    case msg do
+      {:game_reacted_to_event, %{game_state: game_state}} ->
+        # React to the event and update the game state in the socket
+        updated_socket =
+          socket
+          |> assign(:game_state, %{socket.assigns.game_state | result: game_state})
 
-    {:noreply, updated_socket}
-  end
+        {:noreply, updated_socket}
 
-  def handle_info(_msg, socket) do
-    {:noreply, socket}
+      {:game_event_logs_updated, %{game_id: _game_id, recent_events: recent_events}} ->
+        # Handle the event logs update
+        updated_socket =
+          socket
+          |> assign(:recent_events, %{result: recent_events})
+
+        {:noreply, updated_socket}
+
+      _ ->
+        # Handle other messages if necessary
+        {:noreply, socket}
+    end
   end
 
   def handle_params(%{"game_id" => game_id}, _url, socket) do
