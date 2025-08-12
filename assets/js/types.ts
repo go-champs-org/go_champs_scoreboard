@@ -20,6 +20,14 @@ export interface CoachState {
   state: 'available' | 'not_available';
 }
 
+export const DEFAULT_PLAYER_STATE: PlayerState = {
+  state: 'available',
+  id: '',
+  name: '',
+  number: '',
+  stats_values: {},
+};
+
 export interface PlayerState {
   state:
     | 'playing'
