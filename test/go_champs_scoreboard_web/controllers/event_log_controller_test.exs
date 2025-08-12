@@ -61,13 +61,18 @@ defmodule GoChampsScoreboardWeb.EventLogControllerTest do
 
       assert json_response(conn, 200)["data"] == [
                %{
-                 "id" => first_event.id,
-                 "game_id" => first_event.game_id,
-                 "key" => first_event.key,
-                 "payload" => nil,
-                 "timestamp" => first_event.timestamp |> DateTime.to_iso8601(),
-                 "game_clock_time" => first_event.game_clock_time,
-                 "game_clock_period" => first_event.game_clock_period
+                 "game_clock_period" => third_event.game_clock_period,
+                 "game_clock_time" => third_event.game_clock_time,
+                 "game_id" => third_event.game_id,
+                 "id" => third_event.id,
+                 "key" => third_event.key,
+                 "payload" => %{
+                   "operation" => "increment",
+                   "player-id" => "123",
+                   "stat-id" => "field_goals_made",
+                   "team-type" => "home"
+                 },
+                 "timestamp" => third_event.timestamp |> DateTime.to_iso8601()
                },
                %{
                  "id" => second_event.id,
@@ -84,18 +89,13 @@ defmodule GoChampsScoreboardWeb.EventLogControllerTest do
                  "game_clock_period" => second_event.game_clock_period
                },
                %{
-                 "game_clock_period" => third_event.game_clock_period,
-                 "game_clock_time" => third_event.game_clock_time,
-                 "game_id" => third_event.game_id,
-                 "id" => third_event.id,
-                 "key" => third_event.key,
-                 "payload" => %{
-                   "operation" => "increment",
-                   "player-id" => "123",
-                   "stat-id" => "field_goals_made",
-                   "team-type" => "home"
-                 },
-                 "timestamp" => third_event.timestamp |> DateTime.to_iso8601()
+                 "id" => first_event.id,
+                 "game_id" => first_event.game_id,
+                 "key" => first_event.key,
+                 "payload" => nil,
+                 "timestamp" => first_event.timestamp |> DateTime.to_iso8601(),
+                 "game_clock_time" => first_event.game_clock_time,
+                 "game_clock_period" => first_event.game_clock_period
                }
              ]
     end

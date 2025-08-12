@@ -34,6 +34,19 @@
         "message": "Tem certeza que deseja finalizar o modo ao vivo? O jogo será considerado finalizado e você não poderá iniciá-lo novamente.",
         "endLive": "Finalizar Ao Vivo",
         "cancel": "Cancelar"
+      },
+      "eventLogs": {
+        "title": "Registro de Eventos",
+        "loading": "Carregando registro de eventos...",
+        "allQuarters": "Todos os Quartos",
+        "noLogsFound": "Nenhum registro de evento encontrado",
+        "noLogsFoundForQuarter": "Nenhum registro de evento encontrado para",
+        "table": {
+          "quarter": "Q",
+          "time": "Tempo",
+          "event": "Evento",
+          "description": "Descrição"
+        }
       }
     },
     "stats": {

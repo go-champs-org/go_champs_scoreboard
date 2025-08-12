@@ -34,6 +34,19 @@
         "message": "Are you sure you want to end the live mode? The game will be considered finished and you will not be able to start it again.",
         "endLive": "End Live",
         "cancel": "Cancel"
+      },
+      "eventLogs": {
+        "title": "Event Logs",
+        "loading": "Loading event logs...",
+        "allQuarters": "All Quarters",
+        "noLogsFound": "No event logs found",
+        "noLogsFoundForQuarter": "No event logs found for",
+        "table": {
+          "quarter": "Q",
+          "time": "Time",
+          "event": "Event",
+          "description": "Description"
+        }
       }
     },
     "stats": {

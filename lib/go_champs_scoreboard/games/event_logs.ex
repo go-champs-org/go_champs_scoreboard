@@ -132,6 +132,7 @@ defmodule GoChampsScoreboard.Games.EventLogs do
     - `:with_snapshot`: If true, preloads the snapshot associated with each event log.
     - `:game_clock_period`: Filters event logs by game clock period if provided.
     - `:key`: Filters event logs by key if provided.
+    - `:order`: Determines the order of results. Accepts `:asc` (default) or `:desc`.
   ## Returns
   - A list of event logs associated with the specified game ID, sorted by the sport sort logic.
   ## Example
@@ -157,6 +158,7 @@ defmodule GoChampsScoreboard.Games.EventLogs do
     with_snapshot? = Keyword.get(opts, :with_snapshot, false)
     game_clock_period = Keyword.get(opts, :game_clock_period, nil)
     key = Keyword.get(opts, :key, nil)
+    order = Keyword.get(opts, :order, :asc)
 
     first_event_log = get_first_created_by_game_id(game_id)
 
@@ -179,9 +181,17 @@ defmodule GoChampsScoreboard.Games.EventLogs do
           period_query
         end
 
+      # Apply ordering based on the order option
       ordered_query =
-        first_event_log.snapshot.state.sport_id
-        |> Sports.event_logs_order_by(key_query)
+        case order do
+          :desc ->
+            first_event_log.snapshot.state.sport_id
+            |> Sports.event_logs_reverse_order_by(key_query)
+
+          _ ->
+            first_event_log.snapshot.state.sport_id
+            |> Sports.event_logs_order_by(key_query)
+        end
 
       # Preload snapshot if requested
       query =
@@ -255,19 +265,15 @@ defmodule GoChampsScoreboard.Games.EventLogs do
     first_event_log = get_first_created_by_game_id(game_id)
 
     if first_event_log do
-      base_query = from e in EventLog, where: e.game_id == ^game_id
+      base_query = from e in EventLog, where: e.game_id == ^game_id, limit: 1
 
       ordered_query =
         first_event_log.snapshot.state.sport_id
-        |> Sports.event_logs_order_by(base_query)
+        |> Sports.event_logs_reverse_order_by(base_query)
 
-      event_logs = Repo.all(ordered_query)
-
-      if event_logs != [] do
-        last_event_log = List.last(event_logs)
-        last_event_log |> Repo.preload(:snapshot) |> parse_snapshot()
-      else
-        nil
+      case Repo.one(ordered_query) do
+        nil -> nil
+        event_log -> event_log |> Repo.preload(:snapshot) |> parse_snapshot()
       end
     end
   end

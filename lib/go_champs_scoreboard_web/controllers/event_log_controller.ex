@@ -13,6 +13,7 @@ defmodule GoChampsScoreboardWeb.EventLogController do
       params
       |> Enum.filter(fn {k, _v} -> k != "game_id" end)
       |> Enum.map(fn {k, v} -> {String.to_atom(k), v} end)
+      |> Keyword.put_new(:order, :desc)
 
     event_logs = EventLogs.get_all_by_game_id(game_id, filters)
     render(conn, :index, event_logs: event_logs)

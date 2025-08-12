@@ -74,6 +74,17 @@ defmodule GoChampsScoreboard.Sports.Sports do
       select: e
   end
 
+  @spec event_logs_reverse_order_by(String.t(), Ecto.Query.t()) :: Ecto.Query.t()
+  def event_logs_reverse_order_by("basketball", query) do
+    Basketball.EventLogsOperations.reverse_order_by(query)
+  end
+
+  def event_logs_reverse_order_by(_, query) do
+    from e in query,
+      order_by: [desc: e.timestamp],
+      select: e
+  end
+
   @spec event_logs_where_type_is_undoable(String.t(), Ecto.Query.t()) :: Ecto.Query.t()
   def event_logs_where_type_is_undoable("basketball", query) do
     Basketball.EventLogsOperations.where_type_is_undoable(query)

@@ -15,6 +15,17 @@ defmodule GoChampsScoreboard.Sports.Basketball.EventLogsOperations do
       select: e
   end
 
+  @spec reverse_order_by(Ecto.Query.t()) :: Ecto.Query.t()
+  def reverse_order_by(query) do
+    from e in query,
+      order_by: [
+        desc: e.game_clock_period,
+        asc: e.game_clock_time,
+        desc: e.timestamp
+      ],
+      select: e
+  end
+
   @spec where_type_is_undoable(Ecto.Query.t()) :: Ecto.Query.t()
   def where_type_is_undoable(query) do
     unduable_types = [
