@@ -3,6 +3,7 @@ import { PlayerSelection } from './Main';
 import debounce from '../../debounce';
 import { invokeButtonClickRef } from '../../shared/invokeButtonClick';
 import { LiveState } from '../../types';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface StatsControlsProps {
   pushEvent: (event: string, payload: any) => void;
@@ -69,6 +70,7 @@ export function MediumStatsControls({
   selectPlayer,
   liveState,
 }: StatsControlsProps) {
+  const { t } = useTranslation();
   const buttonRefs = {
     '1': React.useRef<HTMLButtonElement>(null),
     '2': React.useRef<HTMLButtonElement>(null),
@@ -101,7 +103,7 @@ export function MediumStatsControls({
             disabled={buttonsDisabled}
           >
             <span className="shortcut">1</span>
-            +1 PT
+            {t('basketball.stats.controls.onePt')}
           </button>
         </div>
         <div className="column is-4 has-text-centered">
@@ -112,7 +114,7 @@ export function MediumStatsControls({
             disabled={buttonsDisabled}
           >
             <span className="shortcut">2</span>
-            +2 PTS
+            {t('basketball.stats.controls.twoPts')}
           </button>
         </div>
         <div className="column is-4 has-text-centered">
@@ -123,7 +125,7 @@ export function MediumStatsControls({
             disabled={buttonsDisabled}
           >
             <span className="shortcut">3</span>
-            +3 PTS
+            {t('basketball.stats.controls.threePts')}
           </button>
         </div>
         <div className="column is-4 has-text-centered">
@@ -134,7 +136,7 @@ export function MediumStatsControls({
             disabled={buttonsDisabled}
           >
             <span className="shortcut">Q</span>
-            Miss 1 PT
+            {t('basketball.stats.controls.missOnePt')}
           </button>
         </div>
         <div className="column is-4 has-text-centered">
@@ -145,7 +147,7 @@ export function MediumStatsControls({
             disabled={buttonsDisabled}
           >
             <span className="shortcut">W</span>
-            Miss 2 PTS
+            {t('basketball.stats.controls.missTwoPts')}
           </button>
         </div>
         <div className="column is-4 has-text-centered">
@@ -156,7 +158,7 @@ export function MediumStatsControls({
             disabled={buttonsDisabled}
           >
             <span className="shortcut">E</span>
-            Miss 3 PTS
+            {t('basketball.stats.controls.missThreePts')}
           </button>
         </div>
         <div className="column is-4 has-text-centered">
@@ -167,7 +169,7 @@ export function MediumStatsControls({
             disabled={buttonsDisabled}
           >
             <span className="shortcut">A</span>
-            +1 REB OFF
+            {t('basketball.stats.controls.oneRebOff')}
           </button>
         </div>
         <div className="column is-4 has-text-centered">
@@ -178,7 +180,7 @@ export function MediumStatsControls({
             disabled={buttonsDisabled}
           >
             <span className="shortcut">S</span>
-            +1 STL
+            {t('basketball.stats.controls.oneStl')}
           </button>
         </div>
         <div className="column is-4 has-text-centered">
@@ -189,7 +191,7 @@ export function MediumStatsControls({
             disabled={buttonsDisabled}
           >
             <span className="shortcut">D</span>
-            +1 REB DEF
+            {t('basketball.stats.controls.oneRebDef')}
           </button>
         </div>
         <div className="column is-4 has-text-centered">
@@ -200,7 +202,7 @@ export function MediumStatsControls({
             disabled={buttonsDisabled}
           >
             <span className="shortcut">Z</span>
-            +1 ASS
+            {t('basketball.stats.controls.oneAss')}
           </button>
         </div>
         <div className="column is-4 has-text-centered">
@@ -211,7 +213,7 @@ export function MediumStatsControls({
             disabled={buttonsDisabled}
           >
             <span className="shortcut">X</span>
-            +1 BLK
+            {t('basketball.stats.controls.oneBlk')}
           </button>
         </div>
         <div className="column is-4 has-text-centered">
@@ -222,7 +224,7 @@ export function MediumStatsControls({
             disabled={buttonsDisabled}
           >
             <span className="shortcut">C</span>
-            +1 TO
+            {t('basketball.stats.controls.oneTo')}
           </button>
         </div>
         <div className="column is-4 has-text-centered">
@@ -233,7 +235,7 @@ export function MediumStatsControls({
             disabled={buttonsDisabled}
           >
             <span className="shortcut">T</span>
-            Personal Fault
+            {t('basketball.stats.controls.personalFault')}
           </button>
         </div>
         <div className="column is-4 has-text-centered">
@@ -244,7 +246,7 @@ export function MediumStatsControls({
             disabled={buttonsDisabled}
           >
             <span className="shortcut">G</span>
-            Technical Fault
+            {t('basketball.stats.controls.technicalFault')}
           </button>
         </div>
         <div className="column is-4 has-text-centered">
@@ -255,7 +257,7 @@ export function MediumStatsControls({
             disabled={buttonsDisabled}
           >
             <span className="shortcut">B</span>
-            Flagrant Fault
+            {t('basketball.stats.controls.flagrantFault')}
           </button>
         </div>
       </div>
@@ -269,6 +271,7 @@ export function BasicStatsControls({
   selectPlayer,
   liveState,
 }: StatsControlsProps) {
+  const { t } = useTranslation();
   const buttonRefs = {
     '1': React.useRef<HTMLButtonElement>(null),
     '2': React.useRef<HTMLButtonElement>(null),
@@ -293,7 +296,7 @@ export function BasicStatsControls({
             disabled={buttonsDisabled}
           >
             <span className="shortcut">1</span>
-            +1 PT
+            {t('basketball.stats.controls.onePt')}
           </button>
         </div>
         <div className="column is-4 has-text-centered">
@@ -304,7 +307,7 @@ export function BasicStatsControls({
             disabled={buttonsDisabled}
           >
             <span className="shortcut">2</span>
-            +2 PTS
+            {t('basketball.stats.controls.twoPts')}
           </button>
         </div>
         <div className="column is-4 has-text-centered">
@@ -315,7 +318,7 @@ export function BasicStatsControls({
             disabled={buttonsDisabled}
           >
             <span className="shortcut">3</span>
-            +3 PTS
+            {t('basketball.stats.controls.threePts')}
           </button>
         </div>
         <div className="column is-6 has-text-centered">
@@ -326,7 +329,7 @@ export function BasicStatsControls({
             disabled={buttonsDisabled}
           >
             <span className="shortcut">q</span>
-            +1 REB
+            {t('basketball.stats.controls.oneReb')}
           </button>
         </div>
         <div className="column is-6 has-text-centered">
@@ -337,7 +340,7 @@ export function BasicStatsControls({
             disabled={buttonsDisabled}
           >
             <span className="shortcut">w</span>
-            +1 ASS
+            {t('basketball.stats.controls.oneAss')}
           </button>
         </div>
         <div className="column is-6 has-text-centered">
@@ -348,7 +351,7 @@ export function BasicStatsControls({
             disabled={buttonsDisabled}
           >
             <span className="shortcut">a</span>
-            +1 BLK
+            {t('basketball.stats.controls.oneBlk')}
           </button>
         </div>
         <div className="column is-6 has-text-centered">
@@ -359,7 +362,7 @@ export function BasicStatsControls({
             disabled={buttonsDisabled}
           >
             <span className="shortcut">s</span>
-            +1 STL
+            {t('basketball.stats.controls.oneStl')}
           </button>
         </div>
       </div>

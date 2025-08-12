@@ -1,0 +1,74 @@
+{
+  "basketball": {
+    "navigation": {
+      "boxScore": "Estatísticas",
+      "editPlayers": "Editar Jogadores",
+      "editCoaches": "Editar Técnicos",
+      "editOfficials": "Editar Árbitros",
+      "eventLogs": "Eventos",
+      "streamViews": "Telas para Stream (OBS)",
+      "startLive": "Iniciar Ao Vivo",
+      "endLive": "Finalizar Ao Vivo",
+      "undoLastPlayerEvent": "Desfazer Evento"
+    },
+    "clock": {
+      "timeout": "Tempo Técnico",
+      "pause": "Pausar",
+      "start": "Iniciar",
+      "endQuarter": "Finalizar Quarto",
+      "endGame": "Finalizar Jogo",
+      "tooltips": {
+        "minusOneMinute": "- 1 Min",
+        "minusOneSecond": "- 1 Seg",
+        "plusOneSecond": "+ 1 Seg",
+        "plusOneMinute": "+ 1 Min"
+      }
+    },
+    "modals": {
+      "gameEnded": {
+        "title": "Jogo finalizado",
+        "message": "As estatísticas do jogo foram salvas no Go Champs e não podemos mais usar o Placar."
+      }
+    },
+    "stats": {
+      "abbreviations": {
+        "rebounds": "REB",
+        "offensiveRebounds": "REB O",
+        "defensiveRebounds": "REB D",
+        "assists": "ASS",
+        "steals": "ROU",
+        "blocks": "TOC",
+        "turnovers": "ERR",
+        "personalFouls": "FP",
+        "technicalFouls": "FT"
+      },
+      "controls": {
+        "onePt": "+1 PT",
+        "twoPts": "+2 PTS",
+        "threePts": "+3 PTS",
+        "missOnePt": "Erro 1 PT",
+        "missTwoPts": "Erro 2 PTS",
+        "missThreePts": "Erro 3 PTS",
+        "oneRebOff": "+1 REB OF",
+        "oneRebDef": "+1 REB DF",
+        "oneReb": "+1 REB",
+        "oneStl": "+1 ROU",
+        "oneAss": "+1 ASS",
+        "oneBlk": "+1 TOC",
+        "oneTo": "+1 ERR",
+        "personalFault": "Falta Pessoal",
+        "technicalFault": "Falta Técnica",
+        "flagrantFault": "Falta Antiesportiva"
+      }
+    },
+    "players": {
+      "controls": {
+        "substitute": "Substituir",
+        "cancel": "Cancelar"
+      },
+      "instructions": {
+        "selectStarting": "CLIQUE PARA SELECIONAR OS JOGADORES TITULARES"
+      }
+    }
+  }
+}

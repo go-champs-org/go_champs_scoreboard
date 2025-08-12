@@ -2,6 +2,7 @@ import React from 'react';
 import { GameClockState, LiveState, TeamState } from '../../types';
 import { invokeButtonClickRef } from '../../shared/invokeButtonClick';
 import { formatTime } from '../../shared/contentHelpers';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface ClockControlsProps {
   away_team: TeamState;
@@ -33,23 +34,45 @@ interface EndGameClockControlsProps {
   };
 }
 
-const TimeoutButton = ({ teamType, disabled, pushEvent }) => (
-  <button
-    className="button is-info"
-    onClick={() =>
-      pushEvent('update-team-stat', {
-        'stat-id': 'timeouts',
-        'team-type': teamType,
-        operation: 'increment',
-      })
-    }
-    disabled={disabled}
-  >
-    Timeout
-  </button>
-);
+const TimeoutButton = ({
+  teamType,
+  disabled,
+  pushEvent,
+}: {
+  teamType: string;
+  disabled: boolean;
+  pushEvent: (event: string, payload: any) => void;
+}) => {
+  const { t } = useTranslation();
 
-const TimeControl = ({ label, tooltip, onClick, disabled }) => (
+  return (
+    <button
+      className="button is-info"
+      onClick={() =>
+        pushEvent('update-team-stat', {
+          'stat-id': 'timeouts',
+          'team-type': teamType,
+          operation: 'increment',
+        })
+      }
+      disabled={disabled}
+    >
+      {t('basketball.clock.timeout')}
+    </button>
+  );
+};
+
+const TimeControl = ({
+  label,
+  tooltip,
+  onClick,
+  disabled,
+}: {
+  label: string;
+  tooltip: string;
+  onClick: () => void;
+  disabled: boolean;
+}) => (
   <button
     className="button is-info has-tooltip"
     data-tooltip={tooltip}
@@ -71,6 +94,8 @@ function InGameClockControls({
   pushEvent,
   buttonPauseStart,
 }: InGameClockControlsProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="columns is-multiline">
       <div className="column is-4">
@@ -96,7 +121,7 @@ function InGameClockControls({
       <div className="column is-2">
         <TimeControl
           label="<<"
-          tooltip="- 1 Min"
+          tooltip={t('basketball.clock.tooltips.minusOneMinute')}
           onClick={() => clockEventHandlers.updateTime('increment60')}
           disabled={clockButtonsDisabled}
         />
@@ -104,7 +129,7 @@ function InGameClockControls({
       <div className="column is-2">
         <TimeControl
           label="<"
-          tooltip="- 1 Sec"
+          tooltip={t('basketball.clock.tooltips.minusOneSecond')}
           onClick={() => clockEventHandlers.updateTime('increment')}
           disabled={clockButtonsDisabled}
         />
@@ -115,7 +140,7 @@ function InGameClockControls({
       <div className="column is-2">
         <TimeControl
           label=">"
-          tooltip="+ 1 Sec"
+          tooltip={t('basketball.clock.tooltips.plusOneSecond')}
           onClick={() => clockEventHandlers.updateTime('decrement')}
           disabled={clockButtonsDisabled}
         />
@@ -123,7 +148,7 @@ function InGameClockControls({
       <div className="column is-2">
         <TimeControl
           label=">>"
-          tooltip="+ 1 Min"
+          tooltip={t('basketball.clock.tooltips.plusOneMinute')}
           onClick={() => clockEventHandlers.updateTime('decrement60')}
           disabled={clockButtonsDisabled}
         />
@@ -136,7 +161,7 @@ function InGameClockControls({
             onClick={clockEventHandlers.endQuarter}
             disabled={endQuarterButtonDisabled}
           >
-            End quarter
+            {t('basketball.clock.endQuarter')}
           </button>
         ) : (
           <button
@@ -146,7 +171,9 @@ function InGameClockControls({
             disabled={clockButtonsDisabled}
           >
             <span className="shortcut">SPACE</span>
-            {isClockRunning ? 'Pause' : 'Start'}
+            {isClockRunning
+              ? t('basketball.clock.pause')
+              : t('basketball.clock.start')}
           </button>
         )}
       </div>
@@ -158,6 +185,8 @@ function EndGameClockControls({
   clockButtonsDisabled,
   clockEventHandlers,
 }: EndGameClockControlsProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="columns is-multiline">
       <div className="column is-12">
@@ -167,7 +196,7 @@ function EndGameClockControls({
           disabled={clockButtonsDisabled}
           style={{ height: '173px' }}
         >
-          End Game
+          {t('basketball.clock.endGame')}
         </button>
       </div>
     </div>

@@ -26,6 +26,9 @@ import Scoreboard from './components/Scoreboard';
 import StreamViews from './components/StreamViews';
 import ReportViewer from './shared/ReportViewer';
 
+// Initialize i18n
+import './i18n';
+
 // load react components
 const hooks = { LiveReact };
 const csfrElem = document.querySelector("meta[name='csrf-token']");

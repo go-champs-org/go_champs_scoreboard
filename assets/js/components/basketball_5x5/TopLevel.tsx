@@ -11,6 +11,8 @@ import EventLogModal from '../event_log/EventLogModal';
 import { FeatureFlag } from '../../shared/FeatureFlags';
 import EditOfficialsModal from './Officials/EditOfficialsModal';
 import eventLogsHttpClient from '../../features/event_logs/eventLogsHttpClient';
+import LanguageSwitcher from '../LanguageSwitcher';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface TopLevelProps {
   game_state: GameState;
@@ -18,6 +20,7 @@ interface TopLevelProps {
 }
 
 function TopLevel({ game_state, pushEvent }: TopLevelProps) {
+  const { t } = useTranslation();
   const [showBoxScoreModal, setShowBoxScoreModal] = React.useState(false);
   const [showEditPlayersModal, setShowEditPlayersModal] = React.useState(false);
   const [showEditCoachesModal, setShowEditCoachesModal] = React.useState(false);
@@ -61,7 +64,7 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
             className="button is-info"
             onClick={() => setShowBoxScoreModal(true)}
           >
-            Box score
+            {t('basketball.navigation.boxScore')}
           </button>
         </p>
         <p className="level-item">
@@ -69,7 +72,7 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
             className="button is-info"
             onClick={() => setShowEditPlayersModal(true)}
           >
-            Edit players
+            {t('basketball.navigation.editPlayers')}
           </button>
         </p>
         <p className="level-item">
@@ -77,7 +80,7 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
             className="button is-info"
             onClick={() => setShowEditCoachesModal(true)}
           >
-            Edit coaches
+            {t('basketball.navigation.editCoaches')}
           </button>
         </p>
         <p className="level-item">
@@ -85,12 +88,12 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
             className="button is-info"
             onClick={() => setShowEditOfficialsModal(true)}
           >
-            Edit officials
+            {t('basketball.navigation.editOfficials')}
           </button>
         </p>
         <p className="level-item">
           <button className="button is-warning" onClick={onUndoClick}>
-            Undo Last Player Event
+            {t('basketball.navigation.undoLastPlayerEvent')}
           </button>
         </p>
         <FeatureFlag name="display_event_logs_modal">
@@ -99,12 +102,12 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
               className="button is-info"
               onClick={() => setShowEventLogModal(true)}
             >
-              Event Logs
+              {t('basketball.navigation.eventLogs')}
             </button>
           </p>
         </FeatureFlag>
         <Modal
-          title="Box Score"
+          title={t('basketball.navigation.boxScore')}
           onClose={() => setShowBoxScoreModal(false)}
           showModal={showBoxScoreModal}
           modalCardStyle={{ width: '1024px' }}
@@ -168,6 +171,9 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
 
       <div className="level-right">
         <p className="level-item">
+          <LanguageSwitcher />
+        </p>
+        <p className="level-item">
           {liveSocket === 'connected' ? <OnlineIcon /> : <OfflineIcon />}
         </p>
         {game_state.view_settings_state.view !== 'basketball-basic' && (
@@ -177,18 +183,18 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
               href={`/scoreboard/stream_views/${game_state.id}`}
               target="_blank"
             >
-              Stream Views (OBS)
+              {t('basketball.navigation.streamViews')}
             </a>
           </p>
         )}
         <p className="level-item">
           {game_state.live_state.state === 'in_progress' ? (
             <button className="button is-danger" onClick={onEndLive}>
-              End Live
+              {t('basketball.navigation.endLive')}
             </button>
           ) : (
             <button className="button is-success" onClick={onStartLive}>
-              Start Live
+              {t('basketball.navigation.startLive')}
             </button>
           )}
         </p>

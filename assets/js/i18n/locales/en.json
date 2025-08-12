@@ -1,0 +1,74 @@
+{
+  "basketball": {
+    "navigation": {
+      "boxScore": "Box Score",
+      "editPlayers": "Edit Players",
+      "editCoaches": "Edit Coaches",
+      "editOfficials": "Edit Officials",
+      "eventLogs": "Event Logs",
+      "streamViews": "Stream Views (OBS)",
+      "startLive": "Start Live",
+      "endLive": "End Live",
+      "undoLastPlayerEvent": "Undo Last Player Event"
+    },
+    "clock": {
+      "timeout": "Timeout",
+      "pause": "Pause",
+      "start": "Start",
+      "endQuarter": "End Quarter",
+      "endGame": "End Game",
+      "tooltips": {
+        "minusOneMinute": "- 1 Min",
+        "minusOneSecond": "- 1 Sec",
+        "plusOneSecond": "+ 1 Sec",
+        "plusOneMinute": "+ 1 Min"
+      }
+    },
+    "modals": {
+      "gameEnded": {
+        "title": "Game has ended",
+        "message": "Game stats are saved in Go Champs and we cannot use Scoreboard anymore."
+      }
+    },
+    "stats": {
+      "abbreviations": {
+        "rebounds": "REB",
+        "offensiveRebounds": "O REB",
+        "defensiveRebounds": "D REB",
+        "assists": "AST",
+        "steals": "STL",
+        "blocks": "BLK",
+        "turnovers": "TO",
+        "personalFouls": "PF",
+        "technicalFouls": "TF"
+      },
+      "controls": {
+        "onePt": "+1 PT",
+        "twoPts": "+2 PTS",
+        "threePts": "+3 PTS",
+        "missOnePt": "Miss 1 PT",
+        "missTwoPts": "Miss 2 PTS",
+        "missThreePts": "Miss 3 PTS",
+        "oneRebOff": "+1 REB OFF",
+        "oneRebDef": "+1 REB DEF",
+        "oneReb": "+1 REB",
+        "oneStl": "+1 STL",
+        "oneAss": "+1 ASS",
+        "oneBlk": "+1 BLK",
+        "oneTo": "+1 TO",
+        "personalFault": "Personal Fault",
+        "technicalFault": "Technical Fault",
+        "flagrantFault": "Flagrant Fault"
+      }
+    },
+    "players": {
+      "controls": {
+        "substitute": "Substitute",
+        "cancel": "Cancel"
+      },
+      "instructions": {
+        "selectStarting": "CLICK TO SELECT THE STARTING PLAYERS"
+      }
+    }
+  }
+}

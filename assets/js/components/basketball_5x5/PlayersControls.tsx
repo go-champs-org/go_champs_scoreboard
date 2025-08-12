@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { PlayerState, TeamState, TeamType } from '../../types';
 import { PlayerSelection } from './Main';
@@ -26,6 +27,7 @@ function PlayingPlayers({
   selectedPlayer,
   onSubstituteClick,
 }: PlayingPlayersProps) {
+  const { t } = useTranslation();
   const subButtonDisabled =
     selectedPlayer === null || selectedPlayer?.teamType !== teamType;
   return (
@@ -52,7 +54,7 @@ function PlayingPlayers({
             onClick={onSubstituteClick}
             disabled={subButtonDisabled}
           >
-            Substitute
+            {t('basketball.players.controls.substitute')}
           </button>
         </div>
       </div>
@@ -75,6 +77,7 @@ function BenchPlayers({
   onPlayerClick,
   onCancelClick,
 }: BenchPlayersProps) {
+  const { t } = useTranslation();
   const playerButtonDisabled =
     selectedPlayer === null || selectedPlayer.teamType !== teamType;
   return (
@@ -97,7 +100,7 @@ function BenchPlayers({
             className="button is-warning is-fullwidth"
             onClick={onCancelClick}
           >
-            Cancel
+            {t('basketball.players.controls.cancel')}
           </button>
         </div>
       </div>
@@ -116,12 +119,13 @@ function NotStartingPlayers({
   teamType,
   onPlayerClick,
 }: NotStartingPlayersProps) {
+  const { t } = useTranslation();
   return (
     <div className="controls">
       <div className="columns is-multiline">
         <div className="column is-12 has-text-centered">
           <span className="title is-3 has-text-warning">
-            CLICK TO SELECT THE STARTING PLAYERS
+            {t('basketball.players.instructions.selectStarting')}
           </span>
         </div>
         {players.map((player) => (

@@ -1,14 +1,21 @@
 import React from 'react';
 import Modal from '../Modal';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface EndLiveModalProps {
   showModal: boolean;
 }
 
 function EndLiveModal({ showModal }: EndLiveModalProps) {
+  const { t } = useTranslation();
+
   return (
-    <Modal title="Game has ended" showModal={showModal} onClose={() => {}}>
-      Game stats are saved in Go Champs and we cannot use Scoreboard anymore.
+    <Modal
+      title={t('basketball.modals.gameEnded.title')}
+      showModal={showModal}
+      onClose={() => {}}
+    >
+      {t('basketball.modals.gameEnded.message')}
     </Modal>
   );
 }
