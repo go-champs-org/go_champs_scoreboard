@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { OFFICIAL_TYPES } from './constants';
 
 interface AddOfficialRowProps {
@@ -7,6 +8,7 @@ interface AddOfficialRowProps {
 }
 
 function AddOfficialRow({ pushEvent, onConfirmAction }: AddOfficialRowProps) {
+  const { t } = useTranslation();
   const [name, setName] = React.useState('');
   const [type, setType] = React.useState('scorer');
   const [licenseNumber, setLicenseNumber] = React.useState('');
@@ -14,7 +16,7 @@ function AddOfficialRow({ pushEvent, onConfirmAction }: AddOfficialRowProps) {
 
   const handleSubmit = () => {
     if (!name.trim()) {
-      alert('Please enter an official name');
+      alert(t('basketball.officials.alerts.enterName'));
       return;
     }
 
@@ -52,7 +54,7 @@ function AddOfficialRow({ pushEvent, onConfirmAction }: AddOfficialRowProps) {
         <input
           className="input is-small"
           type="text"
-          placeholder="Official name"
+          placeholder={t('basketball.officials.placeholders.officialName')}
           value={name}
           onChange={(e) => setName(e.target.value)}
           autoFocus
@@ -63,7 +65,7 @@ function AddOfficialRow({ pushEvent, onConfirmAction }: AddOfficialRowProps) {
           <select value={type} onChange={(e) => setType(e.target.value)}>
             {OFFICIAL_TYPES.map((officialType) => (
               <option key={officialType.value} value={officialType.value}>
-                {officialType.label}
+                {t(officialType.labelKey)}
               </option>
             ))}
           </select>
@@ -73,7 +75,7 @@ function AddOfficialRow({ pushEvent, onConfirmAction }: AddOfficialRowProps) {
         <input
           className="input is-small"
           type="text"
-          placeholder="License #"
+          placeholder={t('basketball.officials.placeholders.licenseNumber')}
           value={licenseNumber}
           onChange={(e) => setLicenseNumber(e.target.value)}
         />
@@ -82,7 +84,7 @@ function AddOfficialRow({ pushEvent, onConfirmAction }: AddOfficialRowProps) {
         <input
           className="input is-small"
           type="text"
-          placeholder="Federation"
+          placeholder={t('basketball.officials.placeholders.federation')}
           value={federation}
           onChange={(e) => setFederation(e.target.value)}
         />

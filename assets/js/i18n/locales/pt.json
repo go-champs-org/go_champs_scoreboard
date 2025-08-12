@@ -4,7 +4,7 @@
       "boxScore": "Estatísticas",
       "editPlayers": "Editar Jogadores",
       "editCoaches": "Editar Técnicos",
-      "editOfficials": "Editar Árbitros",
+      "editOfficials": "Editar Oficiais",
       "eventLogs": "Eventos",
       "streamViews": "Telas para Stream (OBS)",
       "startLive": "Iniciar Ao Vivo",
@@ -28,19 +28,42 @@
       "gameEnded": {
         "title": "Jogo finalizado",
         "message": "As estatísticas do jogo foram salvas no Go Champs e não podemos mais usar o Placar."
+      },
+      "endLiveConfirmation": {
+        "title": "Tem certeza?",
+        "message": "Tem certeza que deseja finalizar o modo ao vivo? O jogo será considerado finalizado e você não poderá iniciá-lo novamente.",
+        "endLive": "Finalizar Ao Vivo",
+        "cancel": "Cancelar"
       }
     },
     "stats": {
       "abbreviations": {
+        "points": "PT",
+        "assists": "ASS",
         "rebounds": "REB",
         "offensiveRebounds": "REB O",
         "defensiveRebounds": "REB D",
-        "assists": "ASS",
         "steals": "ROU",
         "blocks": "TOC",
         "turnovers": "ERR",
-        "personalFouls": "FP",
-        "technicalFouls": "FT"
+        "personalFouls": "F. PES",
+        "flagrantFouls": "F. ANT",
+        "technicalFouls": "F. TÉC",
+        "onePoint": "1 PT",
+        "onePointPercentage": "1 PT %",
+        "twoPoints": "2 PT",
+        "twoPointPercentage": "2 PT %",
+        "threePoints": "3 PT",
+        "threePointPercentage": "3 PT %",
+        "player": "Atleta",
+        "missOnePoint": "1 PT Erro",
+        "missTwoPoints": "2 PT Erro",
+        "missThreePoints": "3 PT Erro",
+        "defensiveReboundsShort": "RBD",
+        "offensiveReboundsShort": "RBO",
+        "personalFoulsShort": "FP",
+        "technicalFoulsShort": "FT",
+        "flagrantFoulsShort": "FA"
       },
       "controls": {
         "onePt": "+1 PT",
@@ -68,6 +91,54 @@
       },
       "instructions": {
         "selectStarting": "CLIQUE PARA SELECIONAR OS JOGADORES TITULARES"
+      },
+      "modal": {
+        "title": "Editar Jogadores",
+        "addPlayer": "Adicionar jogador",
+        "name": "Nome",
+        "delete": "Excluir"
+      }
+    },
+    "coaches": {
+      "modal": {
+        "title": "Editar Técnicos",
+        "addCoach": "Adicionar Técnico",
+        "name": "Nome",
+        "type": "Tipo",
+        "actions": "Ações"
+      },
+      "types": {
+        "headCoach": "Técnico Principal",
+        "assistantCoach": "Técnico Assistente"
+      }
+    },
+    "officials": {
+      "modal": {
+        "title": "Editar Oficiais",
+        "addOfficial": "Adicionar Oficial",
+        "name": "Nome",
+        "type": "Tipo",
+        "licenseNumber": "Número da Licença",
+        "federation": "Federação",
+        "edit": "Editar",
+        "delete": "Excluir"
+      },
+      "types": {
+        "scorer": "Apontador",
+        "assistantScorer": "Auxiliar de Apontador",
+        "timekeeper": "Cronometrista",
+        "shotClockOperator": "Operador dos 24 segundos",
+        "crewChief": "Árbitro Principal",
+        "umpire1": "Árbitro 1",
+        "umpire2": "Árbitro 2"
+      },
+      "placeholders": {
+        "officialName": "Nome do árbitro",
+        "licenseNumber": "Licença #",
+        "federation": "Federação"
+      },
+      "alerts": {
+        "enterName": "Por favor, insira o nome do árbitro"
       }
     }
   }

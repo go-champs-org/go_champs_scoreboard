@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { GameState } from '../../../types';
 import Modal from '../../Modal';
 import AddOfficialRow from './AddOfficialRow';
@@ -17,20 +18,31 @@ function OfficialsTable({
   pushEvent,
   setShowAddOfficialRow,
 }: OfficialsTableProps) {
+  const { t } = useTranslation();
   return (
     <div>
       <div className="table-container">
         <table className="table is-fullwidth">
           <thead>
             <tr>
-              <th style={{ minWidth: '140px', maxWidth: '140px' }}>Name</th>
-              <th style={{ minWidth: '140px', maxWidth: '140px' }}>Type</th>
-              <th style={{ minWidth: '65px', maxWidth: '65px' }}>
-                License Number
+              <th style={{ minWidth: '140px', maxWidth: '140px' }}>
+                {t('basketball.officials.modal.name')}
               </th>
-              <th style={{ minWidth: '65px', maxWidth: '65px' }}>Federation</th>
-              <th style={{ minWidth: '50px', maxWidth: '50px' }}>Edit</th>
-              <th style={{ minWidth: '50px', maxWidth: '50px' }}>Delete</th>
+              <th style={{ minWidth: '140px', maxWidth: '140px' }}>
+                {t('basketball.officials.modal.type')}
+              </th>
+              <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+                {t('basketball.officials.modal.licenseNumber')}
+              </th>
+              <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+                {t('basketball.officials.modal.federation')}
+              </th>
+              <th style={{ minWidth: '50px', maxWidth: '50px' }}>
+                {t('basketball.officials.modal.edit')}
+              </th>
+              <th style={{ minWidth: '50px', maxWidth: '50px' }}>
+                {t('basketball.officials.modal.delete')}
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -67,10 +79,11 @@ function EditOfficialsModal({
   game_state,
   pushEvent,
 }: EditOfficialsModalProps) {
+  const { t } = useTranslation();
   const [showAddOfficialRow, setShowAddOfficialRow] = React.useState(false);
   return (
     <Modal
-      title="Edit Officials"
+      title={t('basketball.officials.modal.title')}
       onClose={onCloseModal}
       showModal={showModal}
       modalCardStyle={{ width: '800px' }}
@@ -81,7 +94,7 @@ function EditOfficialsModal({
             className="button"
             onClick={() => setShowAddOfficialRow(true)}
           >
-            Add Official
+            {t('basketball.officials.modal.addOfficial')}
           </button>
         </div>
 

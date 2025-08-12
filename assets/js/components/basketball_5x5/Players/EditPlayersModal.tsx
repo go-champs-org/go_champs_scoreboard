@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { GameState, TeamState, TeamType } from '../../../types';
 import Modal from '../../Modal';
@@ -20,6 +21,7 @@ function BasicPlayersTable({
   pushEvent,
   setShowAddPlayerRow,
 }: PlayersTableProps) {
+  const { t } = useTranslation();
   return (
     <div>
       <div className="table-container">
@@ -27,15 +29,8 @@ function BasicPlayersTable({
           <thead>
             <tr>
               <th style={{ minWidth: '65px', maxWidth: '65px' }}>#</th>
-              <th style={{ minWidth: '140px', maxWidth: '140px' }}>Name</th>
-              <th
-                style={{
-                  minWidth: '65px',
-                  maxWidth: '65px',
-                  textAlign: 'center',
-                }}
-              >
-                + 1 PT
+              <th style={{ minWidth: '140px', maxWidth: '140px' }}>
+                {t('basketball.players.modal.name')}
               </th>
               <th
                 style={{
@@ -44,7 +39,7 @@ function BasicPlayersTable({
                   textAlign: 'center',
                 }}
               >
-                + 2 PTs
+                + 1 {t('basketball.stats.abbreviations.points')}
               </th>
               <th
                 style={{
@@ -53,7 +48,7 @@ function BasicPlayersTable({
                   textAlign: 'center',
                 }}
               >
-                + 3 PTs
+                + 2 {t('basketball.stats.abbreviations.points')}
               </th>
               <th
                 style={{
@@ -62,7 +57,7 @@ function BasicPlayersTable({
                   textAlign: 'center',
                 }}
               >
-                REB
+                + 3 {t('basketball.stats.abbreviations.points')}
               </th>
               <th
                 style={{
@@ -71,7 +66,7 @@ function BasicPlayersTable({
                   textAlign: 'center',
                 }}
               >
-                AST
+                {t('basketball.stats.abbreviations.rebounds')}
               </th>
               <th
                 style={{
@@ -80,7 +75,7 @@ function BasicPlayersTable({
                   textAlign: 'center',
                 }}
               >
-                BLK
+                {t('basketball.stats.abbreviations.assists')}
               </th>
               <th
                 style={{
@@ -89,7 +84,16 @@ function BasicPlayersTable({
                   textAlign: 'center',
                 }}
               >
-                STL
+                {t('basketball.stats.abbreviations.blocks')}
+              </th>
+              <th
+                style={{
+                  minWidth: '65px',
+                  maxWidth: '65px',
+                  textAlign: 'center',
+                }}
+              >
+                {t('basketball.stats.abbreviations.steals')}
               </th>
               <th
                 style={{
@@ -98,7 +102,7 @@ function BasicPlayersTable({
                   textAlign: 'center',
                 }}
               >
-                Delete
+                {t('basketball.players.modal.delete')}
               </th>
             </tr>
           </thead>
@@ -132,29 +136,64 @@ function MediumPlayersTable({
   pushEvent,
   setShowAddPlayerRow,
 }: PlayersTableProps) {
+  const { t } = useTranslation();
   return (
     <div className="table-container">
       <table className="table is-fullwidth">
         <thead>
           <tr>
             <th style={{ minWidth: '65px', maxWidth: '65px' }}>#</th>
-            <th style={{ minWidth: '140px', maxWidth: '140px' }}>Name</th>
-            <th style={{ minWidth: '65px', maxWidth: '65px' }}>+ 1 PT</th>
-            <th style={{ minWidth: '65px', maxWidth: '65px' }}>+ 2 PTs</th>
-            <th style={{ minWidth: '65px', maxWidth: '65px' }}>+ 3 PTs</th>
-            <th style={{ minWidth: '65px', maxWidth: '65px' }}>1 PT Miss</th>
-            <th style={{ minWidth: '65px', maxWidth: '65px' }}>2 PTs Miss</th>
-            <th style={{ minWidth: '65px', maxWidth: '65px' }}>3 PTs Miss</th>
-            <th style={{ minWidth: '65px', maxWidth: '65px' }}>AST</th>
-            <th style={{ minWidth: '65px', maxWidth: '65px' }}>BLK</th>
-            <th style={{ minWidth: '65px', maxWidth: '65px' }}>STL</th>
-            <th style={{ minWidth: '65px', maxWidth: '65px' }}>DRB</th>
-            <th style={{ minWidth: '65px', maxWidth: '65px' }}>ORB</th>
-            <th style={{ minWidth: '65px', maxWidth: '65px' }}>TO</th>
-            <th style={{ minWidth: '65px', maxWidth: '65px' }}>PF</th>
-            <th style={{ minWidth: '65px', maxWidth: '65px' }}>TF</th>
-            <th style={{ minWidth: '65px', maxWidth: '65px' }}>FF</th>
-            <th style={{ minWidth: '85px', maxWidth: '85px' }}>Delete</th>
+            <th style={{ minWidth: '140px', maxWidth: '140px' }}>
+              {t('basketball.players.modal.name')}
+            </th>
+            <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+              + 1 {t('basketball.stats.abbreviations.points')}
+            </th>
+            <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+              + 2 {t('basketball.stats.abbreviations.points')}
+            </th>
+            <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+              + 3 {t('basketball.stats.abbreviations.points')}
+            </th>
+            <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+              {t('basketball.stats.abbreviations.missOnePoint')}
+            </th>
+            <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+              {t('basketball.stats.abbreviations.missTwoPoints')}
+            </th>
+            <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+              {t('basketball.stats.abbreviations.missThreePoints')}
+            </th>
+            <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+              {t('basketball.stats.abbreviations.assists')}
+            </th>
+            <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+              {t('basketball.stats.abbreviations.blocks')}
+            </th>
+            <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+              {t('basketball.stats.abbreviations.steals')}
+            </th>
+            <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+              {t('basketball.stats.abbreviations.defensiveReboundsShort')}
+            </th>
+            <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+              {t('basketball.stats.abbreviations.offensiveReboundsShort')}
+            </th>
+            <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+              {t('basketball.stats.abbreviations.turnovers')}
+            </th>
+            <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+              {t('basketball.stats.abbreviations.personalFoulsShort')}
+            </th>
+            <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+              {t('basketball.stats.abbreviations.technicalFoulsShort')}
+            </th>
+            <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+              {t('basketball.stats.abbreviations.flagrantFoulsShort')}
+            </th>
+            <th style={{ minWidth: '85px', maxWidth: '85px' }}>
+              {t('basketball.players.modal.delete')}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -192,13 +231,14 @@ function EditPlayersModal({
   onCloseModal,
   pushEvent,
 }: EditPlayersModalProps) {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = React.useState('away' as TeamType);
   const [showAddPlayerRow, setShowAddPlayerRow] = React.useState(false);
   const selectedTeam =
     activeTab === 'away' ? game_state.away_team : game_state.home_team;
   return (
     <Modal
-      title="Edit Players"
+      title={t('basketball.players.modal.title')}
       showModal={showModal}
       onClose={onCloseModal}
       modalCardStyle={{ width: '1024px' }}
@@ -221,7 +261,7 @@ function EditPlayersModal({
       <div className="columns is-multiline">
         <div className="column is-12">
           <button className="button" onClick={() => setShowAddPlayerRow(true)}>
-            Add player
+            {t('basketball.players.modal.addPlayer')}
           </button>
         </div>
 

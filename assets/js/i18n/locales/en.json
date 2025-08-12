@@ -28,19 +28,42 @@
       "gameEnded": {
         "title": "Game has ended",
         "message": "Game stats are saved in Go Champs and we cannot use Scoreboard anymore."
+      },
+      "endLiveConfirmation": {
+        "title": "Are you sure?",
+        "message": "Are you sure you want to end the live mode? The game will be considered finished and you will not be able to start it again.",
+        "endLive": "End Live",
+        "cancel": "Cancel"
       }
     },
     "stats": {
       "abbreviations": {
+        "points": "PT",
+        "assists": "AST",
         "rebounds": "REB",
         "offensiveRebounds": "O REB",
         "defensiveRebounds": "D REB",
-        "assists": "AST",
         "steals": "STL",
         "blocks": "BLK",
         "turnovers": "TO",
-        "personalFouls": "PF",
-        "technicalFouls": "TF"
+        "personalFouls": "P. FLT",
+        "flagrantFouls": "F. FLT",
+        "technicalFouls": "T. FLT",
+        "onePoint": "1 PT",
+        "onePointPercentage": "1 PT %",
+        "twoPoints": "2 PT",
+        "twoPointPercentage": "2 PT %",
+        "threePoints": "3 PT",
+        "threePointPercentage": "3 PT %",
+        "player": "Player",
+        "missOnePoint": "1 PT Miss",
+        "missTwoPoints": "2 PT Miss",
+        "missThreePoints": "3 PT Miss",
+        "defensiveReboundsShort": "DRB",
+        "offensiveReboundsShort": "ORB",
+        "personalFoulsShort": "PF",
+        "technicalFoulsShort": "TF",
+        "flagrantFoulsShort": "FF"
       },
       "controls": {
         "onePt": "+1 PT",
@@ -68,6 +91,54 @@
       },
       "instructions": {
         "selectStarting": "CLICK TO SELECT THE STARTING PLAYERS"
+      },
+      "modal": {
+        "title": "Edit Players",
+        "addPlayer": "Add player",
+        "name": "Name",
+        "delete": "Delete"
+      }
+    },
+    "coaches": {
+      "modal": {
+        "title": "Edit Coaches",
+        "addCoach": "Add Coach",
+        "name": "Name",
+        "type": "Type",
+        "actions": "Actions"
+      },
+      "types": {
+        "headCoach": "Head Coach",
+        "assistantCoach": "Assistant Coach"
+      }
+    },
+    "officials": {
+      "modal": {
+        "title": "Edit Officials",
+        "addOfficial": "Add Official",
+        "name": "Name",
+        "type": "Type",
+        "licenseNumber": "License Number",
+        "federation": "Federation",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "types": {
+        "scorer": "Scorer",
+        "assistantScorer": "Assistant Scorer",
+        "timekeeper": "Timekeeper",
+        "shotClockOperator": "Shot Clock Operator",
+        "crewChief": "Crew Chief",
+        "umpire1": "Umpire 1",
+        "umpire2": "Umpire 2"
+      },
+      "placeholders": {
+        "officialName": "Official name",
+        "licenseNumber": "License #",
+        "federation": "Federation"
+      },
+      "alerts": {
+        "enterName": "Please enter an official name"
       }
     }
   }

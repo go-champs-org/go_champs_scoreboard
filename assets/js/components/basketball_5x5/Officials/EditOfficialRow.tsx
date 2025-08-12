@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { OfficialState } from '../../../types';
 import DoubleClickButton from '../../DoubleClickButton';
 import { OFFICIAL_TYPES } from './constants';
@@ -10,6 +11,7 @@ interface EditOfficialRowProps {
 }
 
 function EditOfficialRow({ official, pushEvent }: EditOfficialRowProps) {
+  const { t } = useTranslation();
   const [isEditing, setIsEditing] = React.useState(false);
   const [name, setName] = React.useState(official.name);
   const [type, setType] = React.useState(official.type);
@@ -53,7 +55,7 @@ function EditOfficialRow({ official, pushEvent }: EditOfficialRowProps) {
 
   const getOfficialTypeLabel = (typeValue: string) => {
     const officialType = OFFICIAL_TYPES.find((t) => t.value === typeValue);
-    return officialType ? officialType.label : typeValue;
+    return officialType ? t(officialType.labelKey) : typeValue;
   };
 
   if (isEditing) {
@@ -72,12 +74,12 @@ function EditOfficialRow({ official, pushEvent }: EditOfficialRowProps) {
           <div className="select is-small is-fullwidth">
             <select
               value={type}
-              onChange={(e) => setType(e.target.value)}
+              onChange={(e) => setType(e.target.value as any)}
               disabled // Disable type change during edit
             >
               {OFFICIAL_TYPES.map((officialType) => (
                 <option key={officialType.value} value={officialType.value}>
-                  {officialType.label}
+                  {t(officialType.labelKey)}
                 </option>
               ))}
             </select>
@@ -89,7 +91,7 @@ function EditOfficialRow({ official, pushEvent }: EditOfficialRowProps) {
             type="text"
             value={licenseNumber}
             onChange={(e) => setLicenseNumber(e.target.value)}
-            placeholder="License #"
+            placeholder={t('basketball.officials.placeholders.licenseNumber')}
           />
         </td>
         <td>
@@ -98,7 +100,7 @@ function EditOfficialRow({ official, pushEvent }: EditOfficialRowProps) {
             type="text"
             value={federation}
             onChange={(e) => setFederation(e.target.value)}
-            placeholder="Federation"
+            placeholder={t('basketball.officials.placeholders.federation')}
           />
         </td>
         <td>

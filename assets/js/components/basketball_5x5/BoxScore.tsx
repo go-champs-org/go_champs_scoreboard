@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { GameState, TeamState, TeamType } from '../../types';
 
 function formatPercentage(value: number) {
@@ -14,62 +15,65 @@ function boxScorePlayers(team: TeamState) {
 }
 
 function BasicTable({ team }: TableProps) {
+  const { t } = useTranslation();
   return (
     <div className="table-container">
       <table className="table is-fullwidth">
         <thead>
           <tr>
             <th style={{ minWidth: '50px', maxWidth: '50px' }}>#</th>
-            <th style={{ minWidth: '140px', maxWidth: '140px' }}>Player</th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
-              PTs
+            <th style={{ minWidth: '140px', maxWidth: '140px' }}>
+              {t('basketball.stats.abbreviations.player')}
             </th>
             <th
               className="has-text-centered"
               style={{ minWidth: '80px', maxWidth: '80px' }}
             >
-              ASTs
+              {t('basketball.stats.abbreviations.points')}
             </th>
             <th
               className="has-text-centered"
               style={{ minWidth: '80px', maxWidth: '80px' }}
             >
-              REBs
+              {t('basketball.stats.abbreviations.assists')}
             </th>
             <th
               className="has-text-centered"
               style={{ minWidth: '80px', maxWidth: '80px' }}
             >
-              STLs
+              {t('basketball.stats.abbreviations.rebounds')}
             </th>
             <th
               className="has-text-centered"
               style={{ minWidth: '80px', maxWidth: '80px' }}
             >
-              BLKs
+              {t('basketball.stats.abbreviations.steals')}
             </th>
             <th
               className="has-text-centered"
               style={{ minWidth: '80px', maxWidth: '80px' }}
             >
-              1 PT
+              {t('basketball.stats.abbreviations.blocks')}
             </th>
-
             <th
               className="has-text-centered"
               style={{ minWidth: '80px', maxWidth: '80px' }}
             >
-              2 PTs
+              {t('basketball.stats.abbreviations.onePoint')}
             </th>
 
             <th
               className="has-text-centered"
               style={{ minWidth: '80px', maxWidth: '80px' }}
             >
-              3 PTs
+              {t('basketball.stats.abbreviations.twoPoints')}
+            </th>
+
+            <th
+              className="has-text-centered"
+              style={{ minWidth: '80px', maxWidth: '80px' }}
+            >
+              {t('basketball.stats.abbreviations.threePoints')}
             </th>
           </tr>
         </thead>
@@ -111,114 +115,117 @@ function BasicTable({ team }: TableProps) {
 }
 
 function MediumTable({ team }: TableProps) {
+  const { t } = useTranslation();
   return (
     <div className="table-container">
       <table className="table is-fullwidth">
         <thead>
           <tr>
             <th style={{ minWidth: '50px', maxWidth: '50px' }}>#</th>
-            <th style={{ minWidth: '140px', maxWidth: '140px' }}>Player</th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
-              PTs
+            <th style={{ minWidth: '140px', maxWidth: '140px' }}>
+              {t('basketball.stats.abbreviations.player')}
             </th>
             <th
               className="has-text-centered"
               style={{ minWidth: '80px', maxWidth: '80px' }}
             >
-              ASTs
+              {t('basketball.stats.abbreviations.points')}
             </th>
             <th
               className="has-text-centered"
               style={{ minWidth: '80px', maxWidth: '80px' }}
             >
-              REBs
+              {t('basketball.stats.abbreviations.assists')}
             </th>
             <th
               className="has-text-centered"
               style={{ minWidth: '80px', maxWidth: '80px' }}
             >
-              STLs
+              {t('basketball.stats.abbreviations.rebounds')}
             </th>
             <th
               className="has-text-centered"
               style={{ minWidth: '80px', maxWidth: '80px' }}
             >
-              BLKs
+              {t('basketball.stats.abbreviations.steals')}
             </th>
             <th
               className="has-text-centered"
               style={{ minWidth: '80px', maxWidth: '80px' }}
             >
-              TOs
+              {t('basketball.stats.abbreviations.blocks')}
             </th>
             <th
               className="has-text-centered"
               style={{ minWidth: '80px', maxWidth: '80px' }}
             >
-              P. FLTs
+              {t('basketball.stats.abbreviations.turnovers')}
             </th>
             <th
               className="has-text-centered"
               style={{ minWidth: '80px', maxWidth: '80px' }}
             >
-              F. FLTs
+              {t('basketball.stats.abbreviations.personalFouls')}
             </th>
             <th
               className="has-text-centered"
               style={{ minWidth: '80px', maxWidth: '80px' }}
             >
-              T. FLTs
+              {t('basketball.stats.abbreviations.flagrantFouls')}
             </th>
             <th
               className="has-text-centered"
               style={{ minWidth: '80px', maxWidth: '80px' }}
             >
-              1 PT
+              {t('basketball.stats.abbreviations.technicalFouls')}
             </th>
             <th
               className="has-text-centered"
               style={{ minWidth: '80px', maxWidth: '80px' }}
             >
-              1 PT %
+              {t('basketball.stats.abbreviations.onePoint')}
             </th>
             <th
               className="has-text-centered"
               style={{ minWidth: '80px', maxWidth: '80px' }}
             >
-              2 PTs
+              {t('basketball.stats.abbreviations.onePointPercentage')}
             </th>
             <th
               className="has-text-centered"
               style={{ minWidth: '80px', maxWidth: '80px' }}
             >
-              2 PT %
+              {t('basketball.stats.abbreviations.twoPoints')}
             </th>
             <th
               className="has-text-centered"
               style={{ minWidth: '80px', maxWidth: '80px' }}
             >
-              3 PTs
+              {t('basketball.stats.abbreviations.twoPointPercentage')}
             </th>
             <th
               className="has-text-centered"
               style={{ minWidth: '80px', maxWidth: '80px' }}
             >
-              3 PT %
+              {t('basketball.stats.abbreviations.threePoints')}
             </th>
             <th
               className="has-text-centered"
               style={{ minWidth: '80px', maxWidth: '80px' }}
             >
-              REB. O
+              {t('basketball.stats.abbreviations.threePointPercentage')}
             </th>
             <th
               className="has-text-centered"
               style={{ minWidth: '80px', maxWidth: '80px' }}
             >
-              REB. D
+              {t('basketball.stats.abbreviations.offensiveRebounds')}
+            </th>
+            <th
+              className="has-text-centered"
+              style={{ minWidth: '80px', maxWidth: '80px' }}
+            >
+              {t('basketball.stats.abbreviations.defensiveRebounds')}
             </th>
           </tr>
         </thead>

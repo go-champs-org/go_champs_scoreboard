@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import FormField from '../../FormField';
 import { TeamType } from '../../../types';
 
@@ -13,6 +14,7 @@ function AddCoachRow({
   pushEvent,
   onConfirmAction,
 }: AddCoachRowProps) {
+  const { t } = useTranslation();
   const [name, setName] = React.useState('');
   const [type, setType] = React.useState<'head_coach' | 'assistant_coach'>(
     'head_coach',
@@ -58,8 +60,12 @@ function AddCoachRow({
           render={(value, onChange) => (
             <div className="select is-small">
               <select value={value} onChange={onChange}>
-                <option value="head_coach">Head Coach</option>
-                <option value="assistant_coach">Assistant Coach</option>
+                <option value="head_coach">
+                  {t('basketball.coaches.types.headCoach')}
+                </option>
+                <option value="assistant_coach">
+                  {t('basketball.coaches.types.assistantCoach')}
+                </option>
               </select>
             </div>
           )}

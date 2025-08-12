@@ -139,15 +139,12 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
           showModal={showEventLogModal}
         />
         <Modal
-          title="Are you sure?"
+          title={t('basketball.modals.endLiveConfirmation.title')}
           onClose={() => setShowEndLiveWarningModal(false)}
           showModal={showEndLiveWarningModal}
         >
           <>
-            <p>
-              Are you sure you want to end the live mode? The game will be
-              considered finished and you will not be able to start it again.
-            </p>
+            <p>{t('basketball.modals.endLiveConfirmation.message')}</p>
             <div className="modal-card-foot">
               <button
                 className="button is-danger"
@@ -156,13 +153,13 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
                   setShowEndLiveWarningModal(false);
                 }}
               >
-                End Live
+                {t('basketball.modals.endLiveConfirmation.endLive')}
               </button>
               <button
                 className="button"
                 onClick={() => setShowEndLiveWarningModal(false)}
               >
-                Cancel
+                {t('basketball.modals.endLiveConfirmation.cancel')}
               </button>
             </div>
           </>
