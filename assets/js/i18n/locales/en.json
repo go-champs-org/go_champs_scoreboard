@@ -8,8 +8,7 @@
       "eventLogs": "Event Logs",
       "streamViews": "Stream Views (OBS)",
       "startLive": "Start Live",
-      "endLive": "End Live",
-      "undoLastPlayerEvent": "Undo Last Player Event"
+      "endLive": "End Live"
     },
     "clock": {
       "timeout": "Timeout",

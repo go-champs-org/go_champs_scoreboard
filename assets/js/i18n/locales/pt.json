@@ -8,8 +8,7 @@
       "eventLogs": "Eventos",
       "streamViews": "Telas para Stream (OBS)",
       "startLive": "Iniciar Ao Vivo",
-      "endLive": "Finalizar Ao Vivo",
-      "undoLastPlayerEvent": "Desfazer Evento"
+      "endLive": "Finalizar Ao Vivo"
     },
     "clock": {
       "timeout": "Tempo Técnico",

@@ -19,11 +19,6 @@ const getEventLogs = async (
   return response.data;
 };
 
-const deleteLastEvent = async (gameId: string): Promise<void> => {
-  const url = `/v1/games/${gameId}/event-logs/last`;
-  await httpClient.delete(url);
-};
-
 const deleteEvent = async (eventId: string): Promise<void> => {
   const url = `/v1/event-logs/${eventId}`;
   await httpClient.delete(url);
@@ -31,6 +26,5 @@ const deleteEvent = async (eventId: string): Promise<void> => {
 
 export default {
   getEventLogs,
-  deleteLastEvent,
   deleteEvent,
 };

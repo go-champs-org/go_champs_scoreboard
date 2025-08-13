@@ -15,7 +15,6 @@ declare module 'react-i18next' {
             streamViews: string;
             startLive: string;
             endLive: string;
-            undoLastPlayerEvent: string;
           };
           clock: {
             timeout: string;
