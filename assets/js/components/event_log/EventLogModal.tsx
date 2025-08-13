@@ -3,8 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Modal from '../Modal';
 import { GameState, EventLog } from '../../types';
 import eventLogsHttpClient from '../../features/event_logs/eventLogsHttpClient';
-import { formatTime } from '../../shared/contentHelpers';
-import { payloadToString } from './payloadMapper';
+import EventLogTable from './EventLogTable';
 import { useTranslation } from 'react-i18next';
 
 interface EventLogModalProps {
@@ -20,15 +19,7 @@ interface QuarterFilterProps {
   onQuarterFilter: (quarter: number | null) => void;
 }
 
-interface EventLogTableProps {
-  eventLogs: EventLog[];
-  selectedQuarter: number | null;
-  gameState: GameState;
-}
-
-interface LoadingStateProps {}
-
-const LoadingState: React.FC<LoadingStateProps> = () => {
+function LoadingState() {
   const { t } = useTranslation();
   return (
     <div className="has-text-centered">
@@ -37,13 +28,13 @@ const LoadingState: React.FC<LoadingStateProps> = () => {
       </div>
     </div>
   );
-};
+}
 
-const QuarterFilter: React.FC<QuarterFilterProps> = ({
+function QuarterFilter({
   availableQuarters,
   selectedQuarter,
   onQuarterFilter,
-}) => {
+}: QuarterFilterProps) {
   const { t } = useTranslation();
 
   if (availableQuarters.length === 0) return null;
@@ -74,73 +65,15 @@ const QuarterFilter: React.FC<QuarterFilterProps> = ({
       ))}
     </div>
   );
-};
+}
 
-const EventLogTable: React.FC<EventLogTableProps> = ({
-  eventLogs,
-  selectedQuarter,
-  gameState,
-}) => {
-  const { t } = useTranslation();
-
-  const getEmptyStateMessage = () => {
-    if (selectedQuarter === null) {
-      return t('basketball.modals.eventLogs.noLogsFound');
-    }
-    return `${t(
-      'basketball.modals.eventLogs.noLogsFoundForQuarter',
-    )} Q${selectedQuarter}`;
-  };
-
-  return (
-    <table className="table is-striped is-fullwidth">
-      <thead>
-        <tr>
-          <th style={{ width: '50px' }}>
-            {t('basketball.modals.eventLogs.table.quarter')}
-          </th>
-          <th style={{ width: '70px' }}>
-            {t('basketball.modals.eventLogs.table.time')}
-          </th>
-          <th>{t('basketball.modals.eventLogs.table.event')}</th>
-          <th>{t('basketball.modals.eventLogs.table.description')}</th>
-        </tr>
-      </thead>
-      <tbody>
-        {eventLogs.length === 0 ? (
-          <tr>
-            <td colSpan={4} className="has-text-centered">
-              {getEmptyStateMessage()}
-            </td>
-          </tr>
-        ) : (
-          eventLogs.map((eventLog) => (
-            <tr key={eventLog.id}>
-              <td>{eventLog.game_clock_period}</td>
-              <td>{formatTime(eventLog.game_clock_time)}</td>
-              <td>{eventLog.key}</td>
-              <td>
-                {eventLog.payload
-                  ? payloadToString(eventLog.payload, gameState, t)
-                  : ''}
-              </td>
-            </tr>
-          ))
-        )}
-      </tbody>
-    </table>
-  );
-};
-
-// Hook for managing event logs data and filtering
-const useEventLogs = (gameId: string, showModal: boolean) => {
+function useEventLogs(gameId: string, showModal: boolean) {
   const [eventLogs, setEventLogs] = useState<EventLog[]>([]);
   const [filteredEventLogs, setFilteredEventLogs] = useState<EventLog[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedQuarter, setSelectedQuarter] = useState<number | null>(null);
   const [availableQuarters, setAvailableQuarters] = useState<number[]>([]);
 
-  // Fetch event logs when modal opens
   useEffect(() => {
     if (showModal) {
       const fetchEventLogs = async () => {
@@ -149,7 +82,6 @@ const useEventLogs = (gameId: string, showModal: boolean) => {
           const response = await eventLogsHttpClient.getEventLogs(gameId);
           setEventLogs(response);
 
-          // Calculate available quarters based on max game_clock_period
           if (response.length > 0) {
             const maxQuarter = Math.max(
               ...response.map((log) => log.game_clock_period),
@@ -163,7 +95,6 @@ const useEventLogs = (gameId: string, showModal: boolean) => {
             setAvailableQuarters([]);
           }
 
-          // Reset filter when new data is loaded
           setSelectedQuarter(null);
         } catch (error) {
           console.error('Error fetching event logs:', error);
@@ -178,7 +109,6 @@ const useEventLogs = (gameId: string, showModal: boolean) => {
     }
   }, [showModal, gameId]);
 
-  // Filter event logs based on selected quarter
   useEffect(() => {
     if (selectedQuarter === null) {
       setFilteredEventLogs(eventLogs);
@@ -200,7 +130,7 @@ const useEventLogs = (gameId: string, showModal: boolean) => {
     availableQuarters,
     handleQuarterFilter,
   };
-};
+}
 
 function EventLogModal({
   game_state,

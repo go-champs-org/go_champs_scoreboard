@@ -46,6 +46,31 @@
           "time": "Time",
           "event": "Event",
           "description": "Description"
+        },
+        "eventKeys": {
+          "addCoachToTeam": "Add Coach to Team",
+          "addOfficialToGame": "Add Official to Game",
+          "addPlayerToTeam": "Add Player to Team",
+          "endGame": "End Game",
+          "endGameLiveMode": "End Game Live Mode",
+          "endPeriod": "End Period",
+          "gameTick": "Game Tick",
+          "loadFromLastEventLog": "Load from Last Event Log",
+          "removeCoachInTeam": "Remove Coach from Team",
+          "removeOfficialInGame": "Remove Official from Game",
+          "removePlayerInTeam": "Remove Player from Team",
+          "resetGameLiveMode": "Reset Game Live Mode",
+          "startGame": "Start Game",
+          "startGameLiveMode": "Start Game Live Mode",
+          "substitutePlayer": "Substitute Player",
+          "updateClockState": "Update Clock State",
+          "updateClockTimeAndPeriod": "Update Clock Time and Period",
+          "updateCoachInTeam": "Update Coach in Team",
+          "updateCoachStat": "Update Coach Stat",
+          "updateOfficialInGame": "Update Official in Game",
+          "updatePlayerStat": "Update Player Stat",
+          "updatePlayerInTeam": "Update Player in Team",
+          "updateTeamStat": "Update Team Stat"
         }
       }
     },

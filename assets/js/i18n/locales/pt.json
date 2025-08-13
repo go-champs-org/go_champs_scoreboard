@@ -46,6 +46,31 @@
           "time": "Tempo",
           "event": "Evento",
           "description": "Descrição"
+        },
+        "eventKeys": {
+          "addCoachToTeam": "Novo Técnico",
+          "addOfficialToGame": "Novo Oficial",
+          "addPlayerToTeam": "Novo Atleta",
+          "endGame": "Fim do Jogo",
+          "endGameLiveMode": "Finalizar Ao Vivo",
+          "endPeriod": "Fim de Período",
+          "gameTick": "Tick do Jogo",
+          "loadFromLastEventLog": "Recalcular estado de jogo",
+          "removeCoachInTeam": "Remover Técnico",
+          "removeOfficialInGame": "Remover Oficial",
+          "removePlayerInTeam": "Remover Atleta",
+          "resetGameLiveMode": "Reiniciar Ao Vivo",
+          "startGame": "Iniciar Jogo",
+          "startGameLiveMode": "Iniciar Ao Vivo",
+          "substitutePlayer": "Substituição de Atleta",
+          "updateClockState": "Atualização Cronômetro",
+          "updateClockTimeAndPeriod": "Atualização Tempo",
+          "updateCoachInTeam": "Atualização de Técnico",
+          "updateCoachStat": "Atualização de Estatística de Técnico",
+          "updateOfficialInGame": "Atualização Oficial",
+          "updatePlayerStat": "Atualização de Estatística de Atleta",
+          "updatePlayerInTeam": "Atualização de Atleta",
+          "updateTeamStat": "Atualização de Estatística de Time"
         }
       }
     },
