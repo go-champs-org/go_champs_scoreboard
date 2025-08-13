@@ -146,4 +146,111 @@ describe('eventLogsHttpClient', () => {
       );
     });
   });
+
+  describe('deleteEvent', () => {
+    it('deletes a specific event successfully', async () => {
+      // Arrange
+      const eventId = 'event-123';
+      const expectedUrl = `/v1/event-logs/${eventId}`;
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        url: expectedUrl,
+      });
+
+      // Act
+      await eventLogsHttpClient.deleteEvent(eventId);
+
+      // Assert
+      expect(mockFetch).toHaveBeenCalledWith(
+        expectedUrl,
+        expect.objectContaining({
+          method: 'DELETE',
+        }),
+      );
+    });
+
+    it('handles API errors when deleting a specific event', async () => {
+      // Arrange
+      const eventId = 'event-123';
+      const expectedUrl = `/v1/event-logs/${eventId}`;
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+        statusText: 'Not Found',
+        url: expectedUrl,
+      });
+
+      // Act
+      await eventLogsHttpClient.deleteEvent(eventId);
+
+      // Assert
+      expect(mockFetch).toHaveBeenCalledWith(
+        `/v1/event-logs/${eventId}`,
+        expect.objectContaining({
+          method: 'DELETE',
+        }),
+      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'Error deleting resource:',
+        404,
+        'Not Found',
+      );
+    });
+
+    it('constructs the correct URL with the provided event ID', async () => {
+      // Arrange
+      const customEventId = 'custom-event-456';
+      const expectedUrl = `/v1/event-logs/${customEventId}`;
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        url: expectedUrl,
+      });
+
+      // Act
+      await eventLogsHttpClient.deleteEvent(customEventId);
+
+      // Assert
+      expect(mockFetch).toHaveBeenCalledWith(
+        expectedUrl,
+        expect.objectContaining({
+          method: 'DELETE',
+        }),
+      );
+    });
+
+    it('handles network errors when deleting a specific event', async () => {
+      // Arrange
+      const eventId = 'event-123';
+      const networkError = new Error('Network Error');
+      mockFetch.mockRejectedValueOnce(networkError);
+
+      // Act & Assert
+      await expect(eventLogsHttpClient.deleteEvent(eventId)).rejects.toThrow(
+        'Network Error',
+      );
+      expect(mockFetch).toHaveBeenCalledWith(
+        `/v1/event-logs/${eventId}`,
+        expect.objectContaining({
+          method: 'DELETE',
+        }),
+      );
+    });
+
+    it('calls the delete endpoint exactly once', async () => {
+      // Arrange
+      const eventId = 'event-789';
+      const expectedUrl = `/v1/event-logs/${eventId}`;
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        url: expectedUrl,
+      });
+
+      // Act
+      await eventLogsHttpClient.deleteEvent(eventId);
+
+      // Assert
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+    });
+  });
 });

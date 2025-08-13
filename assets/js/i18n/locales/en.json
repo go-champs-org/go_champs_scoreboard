@@ -45,7 +45,8 @@
           "quarter": "Q",
           "time": "Time",
           "event": "Event",
-          "description": "Description"
+          "description": "Description",
+          "delete": "Delete"
         },
         "eventKeys": {
           "addCoachToTeam": "Add Coach to Team",

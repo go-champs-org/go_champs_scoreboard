@@ -35,22 +35,10 @@ function QuarterFilter({
   selectedQuarter,
   onQuarterFilter,
 }: QuarterFilterProps) {
-  const { t } = useTranslation();
-
-  if (availableQuarters.length === 0) return null;
+  if (availableQuarters.length === 0) return <></>;
 
   return (
     <div className="field is-grouped mb-4">
-      <div className="control">
-        <button
-          className={`button ${
-            selectedQuarter === null ? 'is-primary' : 'is-light'
-          }`}
-          onClick={() => onQuarterFilter(null)}
-        >
-          {t('basketball.modals.eventLogs.allQuarters')}
-        </button>
-      </div>
       {availableQuarters.map((quarter) => (
         <div key={quarter} className="control">
           <button
@@ -91,11 +79,11 @@ function useEventLogs(gameId: string, showModal: boolean) {
               (_, i) => i + 1,
             );
             setAvailableQuarters(quarters);
+            setSelectedQuarter(maxQuarter);
           } else {
             setAvailableQuarters([]);
+            setSelectedQuarter(null);
           }
-
-          setSelectedQuarter(null);
         } catch (error) {
           console.error('Error fetching event logs:', error);
           setEventLogs([]);
@@ -123,12 +111,22 @@ function useEventLogs(gameId: string, showModal: boolean) {
     setSelectedQuarter(quarter);
   };
 
+  const handleDeleteEvent = async (eventId: string) => {
+    try {
+      await eventLogsHttpClient.deleteEvent(eventId);
+      setEventLogs((prevLogs) => prevLogs.filter((log) => log.id !== eventId));
+    } catch (error) {
+      console.error('Error deleting event log:', error);
+    }
+  };
+
   return {
     filteredEventLogs,
     loading,
     selectedQuarter,
     availableQuarters,
     handleQuarterFilter,
+    handleDeleteEvent,
   };
 }
 
@@ -147,6 +145,7 @@ function EventLogModal({
     selectedQuarter,
     availableQuarters,
     handleQuarterFilter,
+    handleDeleteEvent,
   } = useEventLogs(gameId, showModal);
 
   return (
@@ -170,6 +169,7 @@ function EventLogModal({
               eventLogs={filteredEventLogs}
               selectedQuarter={selectedQuarter}
               gameState={game_state}
+              onDeleteEvent={handleDeleteEvent}
             />
           </>
         )}

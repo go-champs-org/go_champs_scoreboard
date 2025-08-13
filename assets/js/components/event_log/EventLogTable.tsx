@@ -1,31 +1,76 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EventLog, GameState } from '../../types';
 import { formatTime } from '../../shared/contentHelpers';
 import { eventKeyToString } from './contentMappers';
 import EventLogPayload from './EventLogPayload';
+import DoubleClickButton from '../DoubleClickButton';
 
 interface EventLogRowProps {
   eventLog: EventLog;
   gameState: GameState;
+  onDeleteEvent: (eventId: string) => Promise<void>;
+  isDeleting: boolean;
+  onStartDeleting: (eventId: string) => void;
 }
 
 interface EventLogTableProps {
   eventLogs: EventLog[];
   selectedQuarter: number | null;
   gameState: GameState;
+  onDeleteEvent: (eventId: string) => Promise<void>;
 }
 
-function EventLogRow({ eventLog, gameState }: EventLogRowProps) {
+function EventLogRow({
+  eventLog,
+  gameState,
+  onDeleteEvent,
+  isDeleting,
+  onStartDeleting,
+}: EventLogRowProps) {
   const { t } = useTranslation();
+  const canDelete =
+    eventLog.key === 'update-player-stat' ||
+    eventLog.key === 'update-team-stat';
+
+  const handleDelete = async () => {
+    onStartDeleting(eventLog.id);
+    // Add a small delay for the animation to show
+    setTimeout(async () => {
+      await onDeleteEvent(eventLog.id);
+    }, 300);
+  };
 
   return (
-    <tr key={eventLog.id}>
+    <tr
+      key={eventLog.id}
+      className={isDeleting ? 'is-deleting' : ''}
+      style={{
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        transform: isDeleting
+          ? 'translateX(-100%) scale(0.95)'
+          : 'translateX(0) scale(1)',
+        opacity: isDeleting ? 0 : 1,
+        backgroundColor: isDeleting ? '#ffebee' : 'transparent',
+        overflow: 'hidden',
+      }}
+    >
       <td>{eventLog.game_clock_period}</td>
       <td>{formatTime(eventLog.game_clock_time)}</td>
       <td>{eventKeyToString(eventLog.key, t)}</td>
       <td>
         <EventLogPayload eventLog={eventLog} gameState={gameState} />
+      </td>
+      <td>
+        <DoubleClickButton
+          className={`button is-small ${
+            isDeleting ? 'is-loading is-danger' : 'is-warning'
+          }`}
+          disabled={!canDelete || isDeleting}
+          onClick={handleDelete}
+        >
+          {!isDeleting && '✕'}
+        </DoubleClickButton>
       </td>
     </tr>
   );
@@ -35,8 +80,26 @@ function EventLogTable({
   eventLogs,
   selectedQuarter,
   gameState,
+  onDeleteEvent,
 }: EventLogTableProps) {
   const { t } = useTranslation();
+  const [deletingEventIds, setDeletingEventIds] = useState<Set<string>>(
+    new Set(),
+  );
+
+  const handleStartDeleting = (eventId: string) => {
+    setDeletingEventIds((prev) => new Set(prev).add(eventId));
+  };
+
+  const handleDeleteEvent = async (eventId: string) => {
+    await onDeleteEvent(eventId);
+    // Remove from deleting state after successful deletion
+    setDeletingEventIds((prev) => {
+      const newSet = new Set(prev);
+      newSet.delete(eventId);
+      return newSet;
+    });
+  };
 
   const getEmptyStateMessage = () => {
     if (selectedQuarter === null) {
@@ -59,12 +122,13 @@ function EventLogTable({
           </th>
           <th>{t('basketball.modals.eventLogs.table.event')}</th>
           <th>{t('basketball.modals.eventLogs.table.description')}</th>
+          <th>{t('basketball.modals.eventLogs.table.delete')}</th>
         </tr>
       </thead>
       <tbody>
         {eventLogs.length === 0 ? (
           <tr>
-            <td colSpan={4} className="has-text-centered">
+            <td colSpan={5} className="has-text-centered">
               {getEmptyStateMessage()}
             </td>
           </tr>
@@ -74,6 +138,9 @@ function EventLogTable({
               key={eventLog.id}
               eventLog={eventLog}
               gameState={gameState}
+              onDeleteEvent={handleDeleteEvent}
+              isDeleting={deletingEventIds.has(eventLog.id)}
+              onStartDeleting={handleStartDeleting}
             />
           ))
         )}

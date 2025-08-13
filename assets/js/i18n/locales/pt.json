@@ -45,7 +45,8 @@
           "quarter": "Q",
           "time": "Tempo",
           "event": "Evento",
-          "description": "Descrição"
+          "description": "Descrição",
+          "delete": "Excluir"
         },
         "eventKeys": {
           "addCoachToTeam": "Novo Técnico",
