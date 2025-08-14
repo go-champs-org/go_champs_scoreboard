@@ -621,60 +621,6 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   end
 
   @doc """
-  Updates the game state snapshot for a single event log.
-  This function applies the event log to the prior game state snapshot and updates the snapshot in the database.
-  It is designed to be idempotent, meaning that applying the same event log multiple times
-  will not change the final game state snapshot.
-  ## Parameters
-  - `event_log`: The event log to be processed.
-  - `prior_event_log`: The prior event log to use as the base for the update.
-  ## Returns
-  - `{:ok, GameSnapshot.t()}` if the update was successful.
-  - `{:error, any()}` if there was an error during the update.
-  ## Example
-  ```
-  iex> event_log = %EventLog{
-    id: "some-uuid",
-    game_id: "game-id",
-    key: "event_key",
-    payload: %{"key" => "value"},
-    timestamp: ~N[2023-10-01 12:00:00],
-    game_clock_time: 120,
-    game_clock_period: 1
-  }
-  iex> prior_event_log = %EventLog{
-    id: "prior-uuid",
-    game_id: "game-id",
-    key: "event_key",
-    payload: %{"key" => "value"},
-    timestamp: ~N[2023-10-01 11:00:00],
-    game_clock_time: 100,
-    game_clock_period: 1
-  }
-  iex> {:ok, updated_event_log} = update_single_snapshot(event_log, prior_event_log)
-  ```
-  """
-  @spec update_single_snapshot(EventLog.t(), EventLog.t()) ::
-          {:ok, EventLog.t()} | {:error, any()}
-  def update_single_snapshot(event_log, prior_event_log) do
-    updated_game_state_snapshot =
-      apply_to_game_state(event_log, prior_event_log.snapshot.state)
-
-    json_state =
-      updated_game_state_snapshot
-      |> Poison.encode!()
-      |> Poison.decode!()
-
-    snapshot_changeset =
-      event_log.snapshot
-      |> GoChampsScoreboard.Events.GameSnapshot.changeset(%{
-        state: json_state
-      })
-
-    Repo.update(snapshot_changeset)
-  end
-
-  @doc """
   Updates the game state snapshots for all subsequent event logs.
   This function applies each subsequent event log to the prior game state snapshot
   and updates the snapshot in the database.
@@ -751,44 +697,6 @@ defmodule GoChampsScoreboard.Games.EventLogs do
           end
         )
     end
-  end
-
-  @doc """
-  Reduces a list of event logs to a game state starting with a giving game state.
-  This function processes a list of event logs and returns the final game state.
-  It applies the events in the order they occurred, updating the game state accordingly.
-  The function is designed to be idempotent, meaning that applying the same event log multiple times
-  will not change the final game state.
-  The function is also designed to be pure, meaning that it does not have any side effects
-  and does not modify any external state.
-  It is important to note that this function does not persist any changes to the database.
-  Instead, it simply returns the final game state after applying all the event logs.
-
-
-  ## Parameters
-  - `event_logs`: A list of event logs to be processed.
-  - `game_state`: The initial game state to start with.
-
-  ## Returns
-  - A list of event logs that were processed.
-  - The final game state after applying all the event logs.
-  ## Example
-  ```
-  iex> event_logs = [
-  ...>   %EventLog{key: "update_player_stat", payload: %{"operation" => "increment", "player_id" => 1}},
-  ...>   %EventLog{key: "update_player_stat", payload: %{"operation" => "decrement", "player_id" => 2}}
-  ...> ]
-  iex> initial_game_state = %GameState{players: [%{id: 1, stats: %{points: 0}}, %{id: 2, stats: %{points: 0}}]}
-  iex> final_game_state = reduce_event_logs_to_game_state(event_logs, initial_game_state)
-  iex> final_game_state.players
-  [%{id: 1, stats: %{points: 1}}, %{id: 2, stats: %{points: -1}}]
-  ```
-  """
-  @spec reduce_event_logs_to_game_state([EventLog.t()], GameState.t()) :: [EventLog.t()]
-  def reduce_event_logs_to_game_state(event_logs, game_state) do
-    Enum.reduce(event_logs, game_state, fn event_log, acc ->
-      apply_to_game_state(event_log, acc)
-    end)
   end
 
   @doc """
