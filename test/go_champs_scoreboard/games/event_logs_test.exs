@@ -6,11 +6,292 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
   alias GoChampsScoreboard.Events.GameSnapshot
   alias GoChampsScoreboard.Games.Models.GameState
   alias GoChampsScoreboard.Events.Handler
+  alias GoChampsScoreboard.Events.EventLog
   alias GoChampsScoreboard.Games.EventLogs
   alias GoChampsScoreboard.Games.EventLogCacheMock
   import Mox
 
   import GoChampsScoreboard.GameStateFixtures
+
+  describe "add/1" do
+    test "generates snapshot based on prior event log" do
+      # Create a game state fixture
+      game_state = basketball_game_state_fixture()
+
+      # Create an event log for the initial game state
+      start_game_event =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          game_state.id,
+          10,
+          1,
+          %{}
+        )
+
+      {:ok, _event_log} = EventLogs.persist(start_game_event, game_state)
+
+      update_player_stat_event_log = %EventLog{
+        key: "update-player-stat",
+        game_id: game_state.id,
+        timestamp: DateTime.utc_now(),
+        payload: %{
+          "operation" => "increment",
+          "team-type" => "home",
+          "player-id" => "123",
+          "stat-id" => "field_goals_made"
+        },
+        game_clock_time: 10,
+        game_clock_period: 1
+      }
+
+      {:ok, new_event_log} = EventLogs.add(update_player_stat_event_log)
+      expected_field_goals_made = 1
+
+      assert new_event_log.key == update_player_stat_event_log.key
+      assert new_event_log.game_id == update_player_stat_event_log.game_id
+
+      assert new_event_log.snapshot.state
+             |> get_field_goals_made_from_player_in_game_state("123") == expected_field_goals_made
+    end
+
+    test "handles chronological event insertion and snapshot updates correctly" do
+      game_state = basketball_game_state_fixture()
+
+      event_a =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          game_state.id,
+          600,
+          1,
+          %{}
+        )
+
+      game_state_after_a = Handler.handle(game_state, event_a)
+      {:ok, _event_log_a} = EventLogs.persist(event_a, game_state_after_a)
+
+      home_player_id = "123"
+
+      event_b =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          500,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => home_player_id,
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      game_state_after_b = Handler.handle(game_state_after_a, event_b)
+      {:ok, event_log_b} = EventLogs.persist(event_b, game_state_after_b)
+
+      away_player_id = "456"
+
+      event_c =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          400,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "away",
+            "player-id" => away_player_id,
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      game_state_after_c = Handler.handle(game_state_after_b, event_c)
+      {:ok, event_log_c} = EventLogs.persist(event_c, game_state_after_c)
+
+      # EventD: UpdatePlayerStatDefinition for away team player with clock time 550 (inserted later but chronologically earlier)
+      event_d_log = %EventLog{
+        key: "update-player-stat",
+        game_id: game_state.id,
+        timestamp: DateTime.utc_now(),
+        payload: %{
+          "operation" => "increment",
+          "team-type" => "away",
+          "player-id" => away_player_id,
+          "stat-id" => "field_goals_made"
+        },
+        game_clock_time: 550,
+        game_clock_period: 1
+      }
+
+      {:ok, event_log_d} = EventLogs.add(event_d_log)
+
+      # Reload the event logs to get updated snapshots with the snapshot preloaded
+      updated_event_log_b =
+        EventLogs.get(event_log_b.id, with_snapshot: true)
+
+      updated_event_log_c =
+        EventLogs.get(event_log_c.id, with_snapshot: true)
+
+      # Assert eventB snapshot contains the away team player with field_goals_made updated (eventD)
+      # EventB should now reflect the state after EventD has been applied chronologically
+      assert updated_event_log_b.snapshot.state
+             |> get_field_goals_made_from_player_in_game_state(away_player_id, "away") == 1
+
+      # Assert eventC snapshot sums the eventD field_goals_made
+      # EventC should now have both EventD and EventC effects
+      assert updated_event_log_c.snapshot.state
+             |> get_field_goals_made_from_player_in_game_state(away_player_id, "away") == 2
+
+      # Assert the game's last event snapshot has 2 field_goals_made for the away team player
+      last_event_log = EventLogs.get_last_by_game_id(game_state.id)
+
+      assert last_event_log.snapshot.state
+             |> get_field_goals_made_from_player_in_game_state(away_player_id, "away") == 2
+
+      # Verify home player still has their original stats
+      assert updated_event_log_b.snapshot.state
+             |> get_field_goals_made_from_player_in_game_state(home_player_id, "home") == 1
+
+      assert updated_event_log_c.snapshot.state
+             |> get_field_goals_made_from_player_in_game_state(home_player_id, "home") == 1
+
+      # Verify chronological order is maintained
+      all_events = EventLogs.get_all_by_game_id(game_state.id)
+
+      # Events should be ordered: EventA (600), EventD (550), EventB (500), EventC (400)
+      assert length(all_events) == 4
+      assert Enum.at(all_events, 0).key == "start-game-live-mode"
+      assert Enum.at(all_events, 0).game_clock_time == 600
+      assert Enum.at(all_events, 1).id == event_log_d.id
+      assert Enum.at(all_events, 1).game_clock_time == 550
+      assert Enum.at(all_events, 2).id == event_log_b.id
+      assert Enum.at(all_events, 2).game_clock_time == 500
+      assert Enum.at(all_events, 3).id == event_log_c.id
+      assert Enum.at(all_events, 3).game_clock_time == 400
+    end
+
+    test "calls refresh_cache_and_broadcast_event_logs after update_subsequent_snapshots" do
+      game_state = basketball_game_state_fixture()
+
+      start_event =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          game_state.id,
+          600,
+          1,
+          %{}
+        )
+
+      {:ok, _start_event_log} = EventLogs.persist(start_event, game_state)
+
+      expect(EventLogCacheMock, :refresh, fn game_id ->
+        assert game_id == game_state.id
+        :ok
+      end)
+
+      expect(EventLogCacheMock, :get, fn game_id ->
+        assert game_id == game_state.id
+        {:ok, []}
+      end)
+
+      expect(
+        GoChampsScoreboard.Games.Messages.PubSubMock,
+        :broadcast_game_event_logs_updated,
+        fn game_id, _recent_events, _pub_sub ->
+          assert game_id == game_state.id
+          :ok
+        end
+      )
+
+      expect(
+        GoChampsScoreboard.Games.Messages.PubSubMock,
+        :broadcast_game_last_snapshot_updated,
+        fn game_id, _pub_sub ->
+          assert game_id == game_state.id
+          :ok
+        end
+      )
+
+      event_log_to_add = %EventLog{
+        key: "update-player-stat",
+        game_id: game_state.id,
+        timestamp: DateTime.utc_now(),
+        payload: %{
+          "operation" => "increment",
+          "team-type" => "home",
+          "player-id" => "123",
+          "stat-id" => "field_goals_made"
+        },
+        game_clock_time: 550,
+        game_clock_period: 1
+      }
+
+      result =
+        EventLogs.add(
+          event_log_to_add,
+          GoChampsScoreboard.Games.Messages.PubSubMock,
+          EventLogCacheMock
+        )
+
+      assert {:ok, _added_event_log} = result
+      verify!(EventLogCacheMock)
+      verify!()
+    end
+
+    test "calls pub_sub.broadcast_game_last_snapshot_updated after successful add" do
+      game_state = basketball_game_state_fixture()
+
+      start_event =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          game_state.id,
+          600,
+          1,
+          %{}
+        )
+
+      {:ok, _start_event_log} = EventLogs.persist(start_event, game_state)
+
+      expect(
+        GoChampsScoreboard.Games.Messages.PubSubMock,
+        :broadcast_game_last_snapshot_updated,
+        fn game_id, pub_sub_module ->
+          assert game_id == game_state.id
+          assert pub_sub_module == GoChampsScoreboard.PubSub
+          :ok
+        end
+      )
+
+      expect(
+        GoChampsScoreboard.Games.Messages.PubSubMock,
+        :broadcast_game_event_logs_updated,
+        fn game_id, _recent_events, _pub_sub ->
+          assert game_id == game_state.id
+          :ok
+        end
+      )
+
+      expect(EventLogCacheMock, :refresh, fn _game_id -> :ok end)
+      expect(EventLogCacheMock, :get, fn _game_id -> {:ok, []} end)
+
+      event_log_to_add = %EventLog{
+        key: "update-player-stat",
+        game_id: game_state.id,
+        timestamp: DateTime.utc_now(),
+        payload: %{
+          "operation" => "increment",
+          "team-type" => "home",
+          "player-id" => "123",
+          "stat-id" => "field_goals_made"
+        },
+        game_clock_time: 550,
+        game_clock_period: 1
+      }
+
+      result =
+        EventLogs.add(
+          event_log_to_add,
+          GoChampsScoreboard.Games.Messages.PubSubMock,
+          EventLogCacheMock
+        )
+
+      assert {:ok, _added_event_log} = result
+      verify!()
+    end
+  end
 
   describe "persist/1" do
     test "persists the event along with the snapshot to the database" do
@@ -1526,7 +1807,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
     end
   end
 
-  describe "get_pior/1" do
+  describe "get_prior/1" do
     test "retrieves the event log prior to a specific event log with the its associated parsed game snapshot" do
       game_state = basketball_game_state_fixture()
 
@@ -1576,7 +1857,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       {:ok, event_log1} = EventLogs.persist(event1, game_state)
       {:ok, event_log2} = EventLogs.persist(event2, event2_game_state)
 
-      retrieved_event_log = EventLogs.get_pior(event_log2)
+      retrieved_event_log = EventLogs.get_prior(event_log2)
 
       assert retrieved_event_log.id == event_log1.id
       assert retrieved_event_log.key == event_log1.key
@@ -1609,7 +1890,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
 
       {:ok, event_log} = EventLogs.persist(event, game_state)
       # Attempt to retrieve the prior event log for the first event log
-      retrieved_event_log = EventLogs.get_pior(event_log)
+      retrieved_event_log = EventLogs.get_prior(event_log)
       # Since this is the first event log, it should return nil
       assert retrieved_event_log == nil
     end

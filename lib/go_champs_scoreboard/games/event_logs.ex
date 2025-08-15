@@ -11,6 +11,82 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   alias GoChampsScoreboard.Sports.Sports
   import Ecto.Query
 
+  @spec add(EventLog.t(), module(), module()) :: {:ok, EventLog.t()} | {:error, any()}
+  def add(event_log, pub_sub \\ PubSub, event_log_cache \\ EventLogCache) do
+    Repo.transaction(fn ->
+      with {:ok, inserted_event_log} <- insert_event_log(event_log),
+           {:ok, prior_event_log} <- get_prior_event_log(inserted_event_log),
+           {:ok, _snapshot} <- create_snapshot_from_prior(inserted_event_log, prior_event_log) do
+        update_subsequent_snapshots(inserted_event_log)
+
+        refresh_cache_and_broadcast_event_logs(
+          inserted_event_log.game_id,
+          pub_sub,
+          event_log_cache
+        )
+
+        pub_sub.broadcast_game_last_snapshot_updated(
+          inserted_event_log.game_id,
+          GoChampsScoreboard.PubSub
+        )
+
+        inserted_event_log
+        |> Repo.preload(:snapshot)
+        |> parse_snapshot()
+      else
+        {:error, reason} -> Repo.rollback(reason)
+      end
+    end)
+  end
+
+  # Insert the event log into the database
+  defp insert_event_log(event_log) do
+    event_log_changeset =
+      %EventLog{}
+      |> EventLog.changeset(%{
+        key: event_log.key,
+        game_id: event_log.game_id,
+        payload: event_log.payload,
+        timestamp: event_log.timestamp,
+        game_clock_time: event_log.game_clock_time,
+        game_clock_period: event_log.game_clock_period
+      })
+
+    case Repo.insert(event_log_changeset) do
+      {:ok, event_log} -> {:ok, event_log}
+      {:error, reason} -> {:error, reason}
+    end
+  end
+
+  # Get the prior event log or return an error if none exists
+  defp get_prior_event_log(event_log) do
+    case get_prior(event_log) do
+      nil -> {:error, :no_prior_event_log}
+      prior -> {:ok, prior}
+    end
+  end
+
+  # Create snapshot from the prior event log's state
+  defp create_snapshot_from_prior(event_log, prior_event_log) do
+    game_state_map =
+      prior_event_log.snapshot.state
+      |> Poison.encode!()
+      |> Poison.decode!()
+
+    snapshot_changeset =
+      %GameSnapshot{}
+      |> GameSnapshot.changeset(%{
+        event_log_id: event_log.id,
+        state: game_state_map,
+        game_id: event_log.game_id
+      })
+
+    case Repo.insert(snapshot_changeset) do
+      {:ok, snapshot} -> {:ok, snapshot}
+      {:error, reason} -> {:error, reason}
+    end
+  end
+
   @spec delete(Ecto.UUID.t(), module(), module()) :: {:ok, EventLog.t()} | {:error, any()}
   def delete(id, pub_sub \\ PubSub, event_log_cache \\ EventLogCache) do
     with {:ok, event_log} <- fetch_event_log(id),
@@ -443,7 +519,7 @@ defmodule GoChampsScoreboard.Games.EventLogs do
     game_clock_time: 120,
     game_clock_period: 1
   }
-  iex> prior_event_log = get_pior(event_log)
+  iex> prior_event_log = get_prior(event_log)
   iex> prior_event_log
   %EventLog{
     id: "prior-uuid",
@@ -456,8 +532,8 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   }
   ```
   """
-  @spec get_pior(EventLog.t()) :: EventLog.t() | nil
-  def get_pior(event_log) do
+  @spec get_prior(EventLog.t()) :: EventLog.t() | nil
+  def get_prior(event_log) do
     all_game_event_logs = get_all_by_game_id(event_log.game_id)
 
     case Enum.find_index(all_game_event_logs, fn el -> el.id == event_log.id end) do
@@ -599,7 +675,7 @@ defmodule GoChampsScoreboard.Games.EventLogs do
 
   # Helper to validate it's not the first event
   defp validate_not_first_event(event_log) do
-    case get_pior(event_log) do
+    case get_prior(event_log) do
       nil ->
         {:error, :cannot_update_first_event_log}
 
@@ -659,12 +735,13 @@ defmodule GoChampsScoreboard.Games.EventLogs do
           GameState.t()
         }
   def update_subsequent_snapshots(event_log) do
-    case get_pior(event_log) do
+    case get_prior(event_log) do
       nil ->
         {:error, :first_event_log}
 
       first_prior_event_log ->
         # Get all event logs for the game
+
         current_and_subsequent_event_logs =
           get_all_by_game_id(event_log.game_id, with_snapshot: true)
           |> subsequent_event_logs(first_prior_event_log)
