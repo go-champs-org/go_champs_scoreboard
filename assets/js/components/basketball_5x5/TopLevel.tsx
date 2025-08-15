@@ -70,22 +70,26 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
             {t('basketball.navigation.editPlayers')}
           </button>
         </p>
-        <p className="level-item">
-          <button
-            className="button is-info is-small"
-            onClick={() => setShowEditCoachesModal(true)}
-          >
-            {t('basketball.navigation.editCoaches')}
-          </button>
-        </p>
-        <p className="level-item">
-          <button
-            className="button is-info is-small"
-            onClick={() => setShowEditOfficialsModal(true)}
-          >
-            {t('basketball.navigation.editOfficials')}
-          </button>
-        </p>
+        {game_state.view_settings_state.view !== 'basketball-basic' && (
+          <p className="level-item">
+            <button
+              className="button is-info is-small"
+              onClick={() => setShowEditCoachesModal(true)}
+            >
+              {t('basketball.navigation.editCoaches')}
+            </button>
+          </p>
+        )}
+        {game_state.view_settings_state.view !== 'basketball-basic' && (
+          <p className="level-item">
+            <button
+              className="button is-info is-small"
+              onClick={() => setShowEditOfficialsModal(true)}
+            >
+              {t('basketball.navigation.editOfficials')}
+            </button>
+          </p>
+        )}
         <p className="level-item">
           <button
             className="button is-info is-small"
