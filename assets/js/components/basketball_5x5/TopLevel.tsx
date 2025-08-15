@@ -48,6 +48,12 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
   return (
     <nav className="level nav-level">
       <div className="level-left">
+        <img
+          src="/images/go-champs-logo.png"
+          alt="Go Champs"
+          width={32}
+          height={32}
+        />
         <p className="level-item">
           <button
             className="button is-info is-small"
