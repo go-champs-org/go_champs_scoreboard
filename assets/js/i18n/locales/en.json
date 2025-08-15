@@ -40,6 +40,13 @@
         "allQuarters": "All Quarters",
         "noLogsFound": "No event logs found",
         "noLogsFoundForQuarter": "No event logs found for",
+        "addEvent": "Add Event",
+        "showEvents": "Events",
+        "cancel": "Cancel",
+        "key": "Event Type",
+        "game_clock_period": "Period",
+        "minute": "Minute",
+        "second": "Second",
         "table": {
           "quarter": "Q",
           "time": "Time",

@@ -7,9 +7,7 @@ defmodule GoChampsScoreboard.Infrastructure.FeatureFlags do
   """
 
   # Define default flags - these can also be loaded from a config or database
-  @flags %{
-    "display_event_logs_modal" => true
-  }
+  @flags %{}
 
   @doc """
   Returns all feature flags and their statuses.

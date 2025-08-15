@@ -4,6 +4,7 @@ import Modal from '../Modal';
 import { GameState, EventLog } from '../../types';
 import eventLogsHttpClient from '../../features/event_logs/eventLogsHttpClient';
 import EventLogTable from './EventLogTable';
+import EventLogForm from './EventLogForm';
 import { useTranslation } from 'react-i18next';
 
 interface EventLogModalProps {
@@ -17,6 +18,7 @@ interface QuarterFilterProps {
   availableQuarters: number[];
   selectedQuarter: number | null;
   onQuarterFilter: (quarter: number | null) => void;
+  showForm: boolean;
 }
 
 function LoadingState() {
@@ -34,24 +36,45 @@ function QuarterFilter({
   availableQuarters,
   selectedQuarter,
   onQuarterFilter,
+  showForm,
 }: QuarterFilterProps) {
-  if (availableQuarters.length === 0) return <></>;
+  const { t } = useTranslation();
+
+  if (availableQuarters.length === 0 && !showForm) return <></>;
 
   return (
     <div className="field is-grouped mb-4">
-      {availableQuarters.map((quarter) => (
-        <div key={quarter} className="control">
-          <button
-            className={`button ${
-              selectedQuarter === quarter ? 'is-primary' : 'is-light'
-            }`}
-            onClick={() => onQuarterFilter(quarter)}
-          >
-            Q{quarter}
-          </button>
-        </div>
-      ))}
+      {!showForm &&
+        availableQuarters.map((quarter) => (
+          <div key={quarter} className="control">
+            <button
+              className={`button is-small ${
+                selectedQuarter === quarter ? 'is-primary' : 'is-light'
+              }`}
+              onClick={() => onQuarterFilter(quarter)}
+            >
+              Q{quarter}
+            </button>
+          </div>
+        ))}
     </div>
+  );
+}
+
+interface ToggleViewButtonProps {
+  showForm: boolean;
+  onToggleForm: () => void;
+}
+
+function ToggleViewButton({ showForm, onToggleForm }: ToggleViewButtonProps) {
+  const { t } = useTranslation();
+
+  return (
+    <button className="button is-info is-small" onClick={onToggleForm}>
+      {showForm
+        ? t('basketball.modals.eventLogs.showEvents')
+        : t('basketball.modals.eventLogs.addEvent')}
+    </button>
   );
 }
 
@@ -138,6 +161,7 @@ function EventLogModal({
 }: EventLogModalProps) {
   const { t } = useTranslation();
   const gameId = game_state.id;
+  const [showForm, setShowForm] = useState(false);
 
   const {
     filteredEventLogs,
@@ -147,6 +171,26 @@ function EventLogModal({
     handleQuarterFilter,
     handleDeleteEvent,
   } = useEventLogs(gameId, showModal);
+
+  const handleToggleForm = () => {
+    setShowForm(!showForm);
+  };
+
+  const handleFormSubmit = async (eventData: any) => {
+    try {
+      // Here you would typically send the event data to your backend
+      // For now, we'll just close the form
+      console.log('Event data:', eventData);
+      // You can add API call here to create the event
+      setShowForm(false);
+    } catch (error) {
+      console.error('Error creating event:', error);
+    }
+  };
+
+  const handleFormCancel = () => {
+    setShowForm(false);
+  };
 
   return (
     <Modal
@@ -159,19 +203,42 @@ function EventLogModal({
         {loading ? (
           <LoadingState />
         ) : (
-          <>
-            <QuarterFilter
-              availableQuarters={availableQuarters}
-              selectedQuarter={selectedQuarter}
-              onQuarterFilter={handleQuarterFilter}
-            />
-            <EventLogTable
-              eventLogs={filteredEventLogs}
-              selectedQuarter={selectedQuarter}
-              gameState={game_state}
-              onDeleteEvent={handleDeleteEvent}
-            />
-          </>
+          <div className="columns is-multiline">
+            <div className="column is-12">
+              <div className="columns">
+                <div className="column is-6">
+                  <QuarterFilter
+                    availableQuarters={availableQuarters}
+                    selectedQuarter={selectedQuarter}
+                    onQuarterFilter={handleQuarterFilter}
+                    showForm={showForm}
+                  />
+                </div>
+                <div className="column is-6 has-text-right">
+                  <ToggleViewButton
+                    showForm={showForm}
+                    onToggleForm={handleToggleForm}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="column is-12">
+              {showForm ? (
+                <EventLogForm
+                  gameState={game_state}
+                  onSubmit={handleFormSubmit}
+                  onCancel={handleFormCancel}
+                />
+              ) : (
+                <EventLogTable
+                  eventLogs={filteredEventLogs}
+                  selectedQuarter={selectedQuarter}
+                  gameState={game_state}
+                  onDeleteEvent={handleDeleteEvent}
+                />
+              )}
+            </div>
+          </div>
         )}
       </div>
     </Modal>
