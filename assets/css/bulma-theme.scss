@@ -1,0 +1,21 @@
+// Bulma Theme Configuration for v1.0+
+// This file configures Bulma variables using the modern @use syntax
+
+// Import your custom color variables
+@import './colors.scss';
+
+// Configure Bulma variables using CSS custom properties approach
+// These will be used by Bulma's CSS custom properties system
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bulma-link-h: 166deg;
+    --bulma-link-s: 30%;
+    --bulma-link-l: 50%;
+
+    --bulma-info-h: 190deg;
+    --bulma-info-s: 63%;
+    --bulma-info-l: 58%;
+    --bulma-scheme-main: #{$black};
+  }
+}

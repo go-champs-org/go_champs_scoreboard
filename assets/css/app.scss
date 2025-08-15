@@ -19,7 +19,8 @@
 // Load bulma Tooltip
 @use '../../node_modules/bulma-tooltip/dist/css/bulma-tooltip.min.css';
 
-// Import fonts and other styles
+// Import custom theme, fonts and other styles
+@import './bulma-theme.scss';
 @import './fonts.scss';
 @import './colors.scss';
 @import './components/index.scss';
