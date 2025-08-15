@@ -53,6 +53,26 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
              |> get_field_goals_made_from_player_in_game_state("123") == expected_field_goals_made
     end
 
+    test "returns error when no prior event log exists" do
+      game_state = basketball_game_state_fixture()
+
+      update_player_stat_event_log = %EventLog{
+        key: "update-player-stat",
+        game_id: game_state.id,
+        timestamp: DateTime.utc_now(),
+        payload: %{
+          "operation" => "increment",
+          "team-type" => "home",
+          "player-id" => "123",
+          "stat-id" => "field_goals_made"
+        },
+        game_clock_time: 10,
+        game_clock_period: 1
+      }
+
+      assert {:error, :no_prior_event_log} = EventLogs.add(update_player_stat_event_log)
+    end
+
     test "handles chronological event insertion and snapshot updates correctly" do
       game_state = basketball_game_state_fixture()
 

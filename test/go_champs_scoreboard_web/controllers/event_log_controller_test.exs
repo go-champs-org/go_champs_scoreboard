@@ -112,6 +112,74 @@ defmodule GoChampsScoreboardWeb.EventLogControllerTest do
     end
   end
 
+  describe "create" do
+    setup [:create_initial_event_log]
+
+    test "creates and renders event_log when data is valid", %{
+      conn: conn,
+      event_log: first_event_log
+    } do
+      create_attrs = %{
+        "key" => "update-player-stat",
+        "game_id" => first_event_log.game_id,
+        "game_clock_time" => 5,
+        "game_clock_period" => 1,
+        "payload" => %{
+          "operation" => "increment",
+          "team-type" => "home",
+          "player-id" => "123",
+          "stat-id" => "field_goals_made"
+        }
+      }
+
+      conn = post(conn, ~p"/v1/event-logs", create_attrs)
+
+      response = json_response(conn, 201)["data"]
+
+      assert response["key"] == "update-player-stat"
+      assert response["game_id"] == first_event_log.game_id
+      assert response["game_clock_time"] == 5
+      assert response["game_clock_period"] == 1
+
+      assert response["payload"] == %{
+               "operation" => "increment",
+               "team-type" => "home",
+               "player-id" => "123",
+               "stat-id" => "field_goals_made"
+             }
+
+      assert response["id"] != nil
+      assert response["timestamp"] != nil
+    end
+
+    test "renders errors when required data is missing", %{conn: conn} do
+      incomplete_attrs = %{
+        "key" => "update-player-stat",
+        "game_clock_time" => 550
+      }
+
+      conn = post(conn, ~p"/v1/event-logs", incomplete_attrs)
+
+      assert json_response(conn, 422)["errors"] != %{}
+    end
+
+    test "renders errors when no prior event exists", %{conn: conn} do
+      new_game_id = Ecto.UUID.generate()
+
+      create_attrs = %{
+        "key" => "update-player-stat",
+        "game_id" => new_game_id,
+        "game_clock_time" => 550,
+        "game_clock_period" => 1,
+        "payload" => %{}
+      }
+
+      conn = post(conn, ~p"/v1/event-logs", create_attrs)
+
+      assert json_response(conn, 422)["errors"] != %{}
+    end
+  end
+
   describe "update first event_log" do
     setup [:create_event_log_with_snapshot]
 
@@ -201,6 +269,11 @@ defmodule GoChampsScoreboardWeb.EventLogControllerTest do
   end
 
   defp create_event_log_with_snapshot(_) do
+    event_log = event_log_with_snapshot_fixture()
+    %{event_log: event_log}
+  end
+
+  defp create_initial_event_log(_) do
     event_log = event_log_with_snapshot_fixture()
     %{event_log: event_log}
   end

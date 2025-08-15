@@ -24,6 +24,15 @@ defmodule GoChampsScoreboardWeb.EventLogController do
     render(conn, :show, event_log: event_log)
   end
 
+  def create(conn, params) do
+    with {:ok, event_log} <- build_event_log(params),
+         {:ok, %EventLog{} = created_event_log} <- EventLogs.add(event_log) do
+      conn
+      |> put_status(:created)
+      |> render(:show, event_log: created_event_log)
+    end
+  end
+
   def update(conn, %{"id" => id, "payload" => payload_params}) do
     with {:ok, %EventLog{} = event_log} <-
            EventLogs.update_payload(id, payload_params) do
@@ -47,6 +56,27 @@ defmodule GoChampsScoreboardWeb.EventLogController do
         with {:ok, %EventLog{}} <- EventLogs.delete(event_log.id) do
           send_resp(conn, :no_content, "")
         end
+    end
+  end
+
+  defp build_event_log(params) do
+    required_fields = ["key", "game_id", "game_clock_time", "game_clock_period"]
+
+    case Enum.all?(required_fields, &Map.has_key?(params, &1)) do
+      false ->
+        {:error, "Missing required fields: #{inspect(required_fields)}"}
+
+      true ->
+        event_log = %EventLog{
+          key: params["key"],
+          game_id: params["game_id"],
+          payload: params["payload"] || %{},
+          timestamp: DateTime.utc_now(),
+          game_clock_time: params["game_clock_time"],
+          game_clock_period: params["game_clock_period"]
+        }
+
+        {:ok, event_log}
     end
   end
 end

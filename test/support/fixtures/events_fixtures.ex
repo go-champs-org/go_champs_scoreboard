@@ -13,7 +13,7 @@ defmodule GoChampsScoreboard.EventsFixtures do
   Generate a event_log with a snapshot.
   """
   def event_log_with_snapshot_fixture(_attrs \\ %{}) do
-    game_state = game_state_fixture()
+    game_state = game_state_with_players_fixture()
 
     start_live_event =
       GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(

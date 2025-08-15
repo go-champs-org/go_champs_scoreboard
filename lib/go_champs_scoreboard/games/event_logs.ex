@@ -13,30 +13,37 @@ defmodule GoChampsScoreboard.Games.EventLogs do
 
   @spec add(EventLog.t(), module(), module()) :: {:ok, EventLog.t()} | {:error, any()}
   def add(event_log, pub_sub \\ PubSub, event_log_cache \\ EventLogCache) do
-    Repo.transaction(fn ->
-      with {:ok, inserted_event_log} <- insert_event_log(event_log),
-           {:ok, prior_event_log} <- get_prior_event_log(inserted_event_log),
-           {:ok, _snapshot} <- create_snapshot_from_prior(inserted_event_log, prior_event_log) do
-        update_subsequent_snapshots(inserted_event_log)
+    # First validate that there are existing event logs for this game
+    case get_all_by_game_id(event_log.game_id) do
+      [] ->
+        {:error, :no_prior_event_log}
 
-        refresh_cache_and_broadcast_event_logs(
-          inserted_event_log.game_id,
-          pub_sub,
-          event_log_cache
-        )
+      _existing_logs ->
+        Repo.transaction(fn ->
+          with {:ok, inserted_event_log} <- insert_event_log(event_log),
+               {:ok, prior_event_log} <- get_prior_event_log(inserted_event_log),
+               {:ok, _snapshot} <- create_snapshot_from_prior(inserted_event_log, prior_event_log) do
+            update_subsequent_snapshots(inserted_event_log)
 
-        pub_sub.broadcast_game_last_snapshot_updated(
-          inserted_event_log.game_id,
-          GoChampsScoreboard.PubSub
-        )
+            refresh_cache_and_broadcast_event_logs(
+              inserted_event_log.game_id,
+              pub_sub,
+              event_log_cache
+            )
 
-        inserted_event_log
-        |> Repo.preload(:snapshot)
-        |> parse_snapshot()
-      else
-        {:error, reason} -> Repo.rollback(reason)
-      end
-    end)
+            pub_sub.broadcast_game_last_snapshot_updated(
+              inserted_event_log.game_id,
+              GoChampsScoreboard.PubSub
+            )
+
+            inserted_event_log
+            |> Repo.preload(:snapshot)
+            |> parse_snapshot()
+          else
+            {:error, reason} -> Repo.rollback(reason)
+          end
+        end)
+    end
   end
 
   # Insert the event log into the database

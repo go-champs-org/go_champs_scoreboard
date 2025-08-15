@@ -43,4 +43,26 @@ defmodule GoChampsScoreboardWeb.FallbackController do
       }
     })
   end
+
+  # This clause handles errors when no prior event log exists.
+  def call(conn, {:error, :no_prior_event_log}) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> json(%{
+      errors: %{
+        detail: "No prior event log found"
+      }
+    })
+  end
+
+  # This clause handles validation errors (like missing required fields).
+  def call(conn, {:error, message}) when is_binary(message) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> json(%{
+      errors: %{
+        detail: message
+      }
+    })
+  end
 end
