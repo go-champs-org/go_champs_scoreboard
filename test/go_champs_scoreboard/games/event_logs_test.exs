@@ -2297,6 +2297,241 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
 
       assert EventLogs.update_subsequent_snapshots(event_log) == {:error, :first_event_log}
     end
+
+    test "handles player addition and subsequent stats correctly after update_subsequent_snapshots" do
+      game_state = basketball_game_state_fixture()
+
+      event_a =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          game_state.id,
+          600,
+          1,
+          %{}
+        )
+
+      game_state_after_a = Handler.handle(game_state, event_a)
+      {:ok, _event_log_a} = EventLogs.persist(event_a, game_state_after_a)
+
+      # EventB: UpdatePlayerStatDefinition of existing player
+      # Player exists in basketball_game_state_fixture
+      existing_player_id = "123"
+
+      event_b =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          590,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => existing_player_id,
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      game_state_after_b = Handler.handle(game_state_after_a, event_b)
+      {:ok, event_log_b} = EventLogs.persist(event_b, game_state_after_b)
+
+      event_c =
+        GoChampsScoreboard.Events.Definitions.AddPlayerToTeamDefinition.create(
+          game_state.id,
+          580,
+          1,
+          %{
+            "team-type" => "home",
+            "name" => "New Player",
+            "number" => 99
+          }
+        )
+
+      game_state_after_c = Handler.handle(game_state_after_b, event_c)
+      {:ok, _event_log_c} = EventLogs.persist(event_c, game_state_after_c)
+
+      new_player =
+        game_state_after_c.home_team.players
+        |> Enum.find(fn player -> player.name == "New Player" && player.number == 99 end)
+
+      assert new_player != nil
+      new_player_id = new_player.id
+
+      event_d =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          570,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => new_player_id,
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      game_state_after_d = Handler.handle(game_state_after_c, event_d)
+      {:ok, _event_log_d} = EventLogs.persist(event_d, game_state_after_d)
+
+      {updated_events, final_game_state} = EventLogs.update_subsequent_snapshots(event_log_b)
+
+      assert length(updated_events) == 3
+      assert match?([{:ok, _}, {:ok, _}, {:ok, _}], updated_events)
+
+      [{:ok, _updated_event_log_b}, {:ok, updated_event_log_c}, {:ok, updated_event_log_d}] =
+        updated_events
+
+      # Assert that the returned game_state contains the EventD result correctly assigned to the added player
+      # The new player should exist in the final game state
+      final_new_player =
+        final_game_state.home_team.players
+        |> Enum.find(fn player -> player.id == new_player_id end)
+
+      assert final_new_player != nil
+      assert final_new_player.name == "New Player"
+      assert final_new_player.number == 99
+
+      # The new player should have the stats from EventD
+      assert final_new_player.stats_values["field_goals_made"] == 1
+
+      # The existing player should still have their updated stats from EventB
+      existing_player =
+        final_game_state.home_team.players
+        |> Enum.find(fn player -> player.id == existing_player_id end)
+
+      assert existing_player != nil
+      assert existing_player.stats_values["field_goals_made"] == 1
+
+      # Updated EventC snapshot should have both players but new player with no stats yet
+      event_c_state = updated_event_log_c.snapshot.state
+
+      existing_player_in_c =
+        event_c_state.home_team.players
+        |> Enum.find(fn player -> player.id == existing_player_id end)
+
+      new_player_in_c =
+        event_c_state.home_team.players
+        |> Enum.find(fn player -> player.id == new_player_id end)
+
+      assert existing_player_in_c.stats_values["field_goals_made"] == 1
+      assert new_player_in_c != nil
+      assert new_player_in_c.name == "New Player"
+      assert new_player_in_c.number == 99
+      assert Map.get(new_player_in_c.stats_values, "field_goals_made", 0) == 0
+
+      # Updated EventD snapshot should have both players with their respective stats
+      event_d_state = updated_event_log_d.snapshot.state
+
+      existing_player_in_d =
+        event_d_state.home_team.players
+        |> Enum.find(fn player -> player.id == existing_player_id end)
+
+      new_player_in_d =
+        event_d_state.home_team.players
+        |> Enum.find(fn player -> player.id == new_player_id end)
+
+      assert existing_player_in_d.stats_values["field_goals_made"] == 1
+      assert new_player_in_d.stats_values["field_goals_made"] == 1
+
+      # Verify final game state matches EventD snapshot
+      assert final_game_state == event_d_state
+    end
+
+    test "handles coach addition and subsequent stats correctly after update_subsequent_snapshots" do
+      game_state = basketball_game_state_fixture()
+
+      event_a =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          game_state.id,
+          600,
+          1,
+          %{}
+        )
+
+      game_state_after_a = Handler.handle(game_state, event_a)
+      {:ok, _event_log_a} = EventLogs.persist(event_a, game_state_after_a)
+
+      existing_coach_id = "coach-id"
+
+      event_b =
+        GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinition.create(
+          game_state.id,
+          590,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "coach-id" => existing_coach_id,
+            "stat-id" => "fouls_technical"
+          }
+        )
+
+      game_state_after_b = Handler.handle(game_state_after_a, event_b)
+      {:ok, event_log_b} = EventLogs.persist(event_b, game_state_after_b)
+
+      event_c =
+        GoChampsScoreboard.Events.Definitions.AddCoachToTeamDefinition.create(
+          game_state.id,
+          580,
+          1,
+          %{
+            "team-type" => "home",
+            "name" => "New Coach",
+            "type" => "assistant_coach"
+          }
+        )
+
+      game_state_after_c = Handler.handle(game_state_after_b, event_c)
+      {:ok, _event_log_c} = EventLogs.persist(event_c, game_state_after_c)
+
+      new_coach =
+        game_state_after_c.home_team.coaches
+        |> Enum.find(fn coach -> coach.name == "New Coach" && coach.type == "assistant_coach" end)
+
+      assert new_coach != nil
+      new_coach_id = new_coach.id
+
+      event_d =
+        GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinition.create(
+          game_state.id,
+          570,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "coach-id" => new_coach_id,
+            "stat-id" => "fouls_technical"
+          }
+        )
+
+      game_state_after_d = Handler.handle(game_state_after_c, event_d)
+      {:ok, _event_log_d} = EventLogs.persist(event_d, game_state_after_d)
+
+      {updated_events, final_game_state} = EventLogs.update_subsequent_snapshots(event_log_b)
+
+      assert length(updated_events) == 3
+      assert match?([{:ok, _}, {:ok, _}, {:ok, _}], updated_events)
+
+      [{:ok, _updated_event_log_b}, {:ok, _updated_event_log_c}, {:ok, _updated_event_log_d}] =
+        updated_events
+
+      # Assert that the returned game_state contains the EventD result correctly assigned to the added coach
+      # The new coach should exist in the final game state
+      final_new_coach =
+        final_game_state.home_team.coaches
+        |> Enum.find(fn coach -> coach.id == new_coach_id end)
+
+      assert final_new_coach != nil
+      assert final_new_coach.name == "New Coach"
+      assert final_new_coach.type == :assistant_coach
+
+      # The new coach should have the stats from EventD
+      assert final_new_coach.stats_values["fouls_technical"] == 1
+
+      existing_coach =
+        final_game_state.home_team.coaches
+        |> Enum.find(fn coach -> coach.id == existing_coach_id end)
+
+      assert existing_coach != nil
+      assert existing_coach.stats_values["fouls_technical"] == 1
+    end
   end
 
   describe "apply_to_game_state/2" do

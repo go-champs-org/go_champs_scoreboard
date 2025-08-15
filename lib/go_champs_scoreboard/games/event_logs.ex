@@ -729,8 +729,13 @@ defmodule GoChampsScoreboard.Games.EventLogs do
            event_log.payload
          ) do
       {:ok, event} ->
-        game_state
-        |> Handler.handle(event)
+        if event.meta.logs_reduce_behavior == :copy_all_stats_from_game_state do
+          event_log.snapshot.state.sport_id
+          |> Sports.copy_all_stats_from_game_state(game_state, event_log.snapshot.state)
+        else
+          game_state
+          |> Handler.handle(event)
+        end
 
       {:error, reason} ->
         IO.puts("Error creating event: #{reason}")

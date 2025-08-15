@@ -94,6 +94,15 @@ defmodule GoChampsScoreboard.Sports.Sports do
     query
   end
 
+  @spec copy_all_stats_from_game_state(String.t(), GameState.t(), GameState.t()) :: GameState.t()
+  def copy_all_stats_from_game_state("basketball", source_game_state, target_game_state) do
+    Basketball.GameState.copy_all_stats_from_game_state(source_game_state, target_game_state)
+  end
+
+  def copy_all_stats_from_game_state(_, source_game_state, _target_game_state) do
+    source_game_state
+  end
+
   @spec map_from_snapshot(String.t(), GameState.t(), GameSnapshot.t()) :: GameState.t()
   def map_from_snapshot("basketball", game_state, snapshot) do
     Basketball.GameState.map_from_snapshot(game_state, snapshot)

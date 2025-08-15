@@ -7,6 +7,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameStateTest do
   alias GoChampsScoreboard.Games.Models.GameClockState
   alias GoChampsScoreboard.Games.Models.TeamState
   alias GoChampsScoreboard.Games.Models.PlayerState
+  alias GoChampsScoreboard.Games.Models.CoachState
   alias GoChampsScoreboard.Events.GameSnapshot
 
   import GoChampsScoreboard.GameStateFixtures
@@ -373,6 +374,219 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameStateTest do
       # Invalid team stat should remain from original (not updated from snapshot, but preserved)
       # Original value, not 200 from snapshot
       assert result.home_team.stats_values["invalid_team_stat"] == 99
+    end
+  end
+
+  describe "copy_all_stats_from_game_state/2" do
+    test "copies player stats from source to target game state for matching players" do
+      original_player = %PlayerState{
+        id: "player-1",
+        name: "Original Player",
+        state: :playing,
+        stats_values: %{
+          "points" => 25,
+          "assists" => 8,
+          "field_goals_made" => 10,
+          "rebounds_defensive" => 5
+        }
+      }
+
+      source_game_state = %GameStateModel{
+        basketball_game_state_fixture()
+        | home_team: %TeamState{
+            basketball_game_state_fixture().home_team
+            | players: [original_player]
+          }
+      }
+
+      # Same ID as original player but different stats
+      target_player_same_id = %PlayerState{
+        id: "player-1",
+        name: "Target Player Same ID",
+        state: :bench,
+        stats_values: %{
+          "points" => 5,
+          "assists" => 2,
+          "field_goals_made" => 2,
+          "rebounds_defensive" => 1
+        }
+      }
+
+      target_player_different_id = %PlayerState{
+        id: "player-2",
+        name: "Target Player Different ID",
+        state: :available,
+        stats_values: %{
+          "points" => 15,
+          "assists" => 6,
+          "field_goals_made" => 6,
+          "rebounds_defensive" => 3
+        }
+      }
+
+      target_game_state = %GameStateModel{
+        basketball_game_state_fixture()
+        | home_team: %TeamState{
+            basketball_game_state_fixture().home_team
+            | players: [target_player_same_id, target_player_different_id]
+          }
+      }
+
+      result = GameState.copy_all_stats_from_game_state(source_game_state, target_game_state)
+
+      assert length(result.home_team.players) == 2
+
+      result_player_1 = Enum.find(result.home_team.players, &(&1.id == "player-1"))
+      result_player_2 = Enum.find(result.home_team.players, &(&1.id == "player-2"))
+
+      assert result_player_1.id == "player-1"
+      assert result_player_1.name == original_player.name
+      assert result_player_1.state == original_player.state
+      assert result_player_1.stats_values["points"] == 25
+      assert result_player_1.stats_values["assists"] == 8
+      assert result_player_1.stats_values["field_goals_made"] == 10
+      assert result_player_1.stats_values["rebounds_defensive"] == 5
+
+      assert result_player_2.id == "player-2"
+      assert result_player_2.name == target_player_different_id.name
+      assert result_player_2.state == target_player_different_id.state
+      assert result_player_2.stats_values["points"] == 15
+      assert result_player_2.stats_values["assists"] == 6
+      assert result_player_2.stats_values["field_goals_made"] == 6
+      assert result_player_2.stats_values["rebounds_defensive"] == 3
+    end
+
+    test "copies coach stats from source to target game state for matching coaches" do
+      original_coach = %CoachState{
+        id: "coach-1",
+        name: "Original Coach",
+        type: :head_coach,
+        state: :available,
+        stats_values: %{
+          "fouls_technical" => 2,
+          "fouls_personal" => 1
+        }
+      }
+
+      source_game_state = %GameStateModel{
+        basketball_game_state_fixture()
+        | home_team: %TeamState{
+            basketball_game_state_fixture().home_team
+            | coaches: [original_coach],
+              players: []
+          }
+      }
+
+      # Same ID as original coach but different stats and type
+      target_coach_same_id = %CoachState{
+        id: "coach-1",
+        name: "Target Coach Same ID",
+        type: :assistant_coach,
+        state: :not_available,
+        stats_values: %{
+          "fouls_technical" => 0,
+          "fouls_personal" => 0
+        }
+      }
+
+      target_coach_different_id = %CoachState{
+        id: "coach-2",
+        name: "Target Coach Different ID",
+        type: :head_coach,
+        state: :available,
+        stats_values: %{
+          "fouls_technical" => 1,
+          "fouls_personal" => 3
+        }
+      }
+
+      target_game_state = %GameStateModel{
+        basketball_game_state_fixture()
+        | home_team: %TeamState{
+            basketball_game_state_fixture().home_team
+            | coaches: [target_coach_same_id, target_coach_different_id],
+              players: []
+          }
+      }
+
+      result = GameState.copy_all_stats_from_game_state(source_game_state, target_game_state)
+
+      assert length(result.home_team.coaches) == 2
+
+      result_coach_1 = Enum.find(result.home_team.coaches, &(&1.id == "coach-1"))
+      result_coach_2 = Enum.find(result.home_team.coaches, &(&1.id == "coach-2"))
+
+      assert result_coach_1.id == "coach-1"
+      assert result_coach_1.name == original_coach.name
+      assert result_coach_1.type == original_coach.type
+      assert result_coach_1.state == original_coach.state
+      assert result_coach_1.stats_values["fouls_technical"] == 2
+      assert result_coach_1.stats_values["fouls_personal"] == 1
+
+      assert result_coach_2.id == "coach-2"
+      assert result_coach_2.name == target_coach_different_id.name
+      assert result_coach_2.type == target_coach_different_id.type
+      assert result_coach_2.state == target_coach_different_id.state
+      assert result_coach_2.stats_values["fouls_technical"] == 1
+      assert result_coach_2.stats_values["fouls_personal"] == 3
+    end
+
+    test "copies team stats from source to target game state" do
+      # Create source game state with specific team stats
+      source_game_state = %GameStateModel{
+        basketball_game_state_fixture()
+        | home_team: %TeamState{
+            basketball_game_state_fixture().home_team
+            | total_player_stats: %{
+                "points" => 85,
+                "assists" => 22,
+                "field_goals_made" => 35
+              },
+              stats_values: %{
+                "timeouts" => 3,
+                "fouls_technical" => 2,
+                "points" => 85
+              },
+              # Remove players to focus on team stats
+              players: [],
+              # Remove coaches to focus on team stats
+              coaches: []
+          }
+      }
+
+      # Create target game state with different team stats
+      target_game_state = %GameStateModel{
+        basketball_game_state_fixture()
+        | home_team: %TeamState{
+            basketball_game_state_fixture().home_team
+            | total_player_stats: %{
+                "points" => 45,
+                "assists" => 12,
+                "field_goals_made" => 18
+              },
+              stats_values: %{
+                "timeouts" => 5,
+                "fouls_technical" => 0,
+                "points" => 45
+              },
+              # Remove players to focus on team stats
+              players: [],
+              # Remove coaches to focus on team stats
+              coaches: []
+          }
+      }
+
+      result = GameState.copy_all_stats_from_game_state(source_game_state, target_game_state)
+
+      # Assert that team total_player_stats are copied from source
+      assert result.home_team.total_player_stats["points"] == 85
+      assert result.home_team.total_player_stats["assists"] == 22
+      assert result.home_team.total_player_stats["field_goals_made"] == 35
+
+      # Assert that team stats_values are copied from source
+      assert result.home_team.stats_values["timeouts"] == 3
+      assert result.home_team.stats_values["fouls_technical"] == 2
+      assert result.home_team.stats_values["points"] == 85
     end
   end
 end

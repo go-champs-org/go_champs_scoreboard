@@ -1,6 +1,19 @@
 defmodule GoChampsScoreboard.Events.Models.Event do
+  @moduledoc """
+  Event model for representing game events.
+
+  The `persistable` field indicates whether the event should be stored in the database.
+
+  The `logs_reduce_behavior` in meta controls how events are processed during log reduction:
+  - `:handle` - Process the event normally through its specific handler
+  - `:copy_all_stats_from_game_state` - Copy all stats from source game state instead of handling
+  """
+
+  @type logs_reduce_behavior :: :handle | :copy_all_stats_from_game_state
+
   @type meta :: %{
-          persistable: boolean()
+          persistable: boolean(),
+          logs_reduce_behavior: logs_reduce_behavior()
         }
 
   @type t :: %__MODULE__{
@@ -33,7 +46,7 @@ defmodule GoChampsScoreboard.Events.Models.Event do
         clock_state_time_at,
         clock_state_period_at,
         payload \\ nil,
-        meta \\ %{persistable: true},
+        meta \\ %{persistable: true, logs_reduce_behavior: :handle},
         timestamp \\ DateTime.utc_now()
       ) do
     %__MODULE__{
