@@ -46,11 +46,11 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
   const liveSocket = useConnectionState();
 
   return (
-    <nav className="level">
+    <nav className="level nav-level">
       <div className="level-left">
         <p className="level-item">
           <button
-            className="button is-info"
+            className="button is-info is-small"
             onClick={() => setShowBoxScoreModal(true)}
           >
             {t('basketball.navigation.boxScore')}
@@ -58,7 +58,7 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
         </p>
         <p className="level-item">
           <button
-            className="button is-info"
+            className="button is-info is-small"
             onClick={() => setShowEditPlayersModal(true)}
           >
             {t('basketball.navigation.editPlayers')}
@@ -66,7 +66,7 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
         </p>
         <p className="level-item">
           <button
-            className="button is-info"
+            className="button is-info is-small"
             onClick={() => setShowEditCoachesModal(true)}
           >
             {t('basketball.navigation.editCoaches')}
@@ -74,7 +74,7 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
         </p>
         <p className="level-item">
           <button
-            className="button is-info"
+            className="button is-info is-small"
             onClick={() => setShowEditOfficialsModal(true)}
           >
             {t('basketball.navigation.editOfficials')}
@@ -82,7 +82,7 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
         </p>
         <p className="level-item">
           <button
-            className="button is-info"
+            className="button is-info is-small"
             onClick={() => setShowEventLogModal(true)}
           >
             {t('basketball.navigation.eventLogs')}
@@ -129,7 +129,7 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
             <p>{t('basketball.modals.endLiveConfirmation.message')}</p>
             <div className="modal-card-foot">
               <button
-                className="button is-danger"
+                className="button is-danger is-small"
                 onClick={() => {
                   pushEvent('end-game-live-mode', {});
                   setShowEndLiveWarningModal(false);
@@ -138,7 +138,7 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
                 {t('basketball.modals.endLiveConfirmation.endLive')}
               </button>
               <button
-                className="button"
+                className="button is-small"
                 onClick={() => setShowEndLiveWarningModal(false)}
               >
                 {t('basketball.modals.endLiveConfirmation.cancel')}
@@ -158,7 +158,7 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
         {game_state.view_settings_state.view !== 'basketball-basic' && (
           <p className="level-item">
             <a
-              className="button is-info"
+              className="button is-info is-small"
               href={`/scoreboard/stream_views/${game_state.id}`}
               target="_blank"
             >
@@ -168,11 +168,14 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
         )}
         <p className="level-item">
           {game_state.live_state.state === 'in_progress' ? (
-            <button className="button is-danger" onClick={onEndLive}>
+            <button className="button is-danger is-small" onClick={onEndLive}>
               {t('basketball.navigation.endLive')}
             </button>
           ) : (
-            <button className="button is-success" onClick={onStartLive}>
+            <button
+              className="button is-success is-small"
+              onClick={onStartLive}
+            >
               {t('basketball.navigation.startLive')}
             </button>
           )}
