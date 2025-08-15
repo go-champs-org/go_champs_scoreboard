@@ -61,7 +61,7 @@ config :go_champs_scoreboard, GoChampsScoreboardWeb.Endpoint,
 config :go_champs_scoreboard, GoChampsScoreboardWeb.Endpoint,
   live_reload: [
     patterns: [
-      ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",
+      ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg|woff|woff2|ttf|eot)$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/go_champs_scoreboard_web/(controllers|live|components)/.*(ex|heex)$"
     ]

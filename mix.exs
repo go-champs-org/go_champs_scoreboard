@@ -76,8 +76,13 @@ defmodule GoChampsScoreboard.MixProject do
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["esbuild.install --if-missing"],
-      "assets.build": ["esbuild go_champs_scoreboard"],
+      "assets.build": ["esbuild go_champs_scoreboard", "assets.copy"],
+      "assets.copy": [
+        "cmd mkdir -p priv/static/fonts",
+        "cmd cp -r assets/fonts/* priv/static/fonts/ 2>/dev/null || true"
+      ],
       "assets.deploy": [
+        "assets.copy",
         "esbuild go_champs_scoreboard --minify",
         "sass default --no-source-map --style=compressed",
         "phx.digest"

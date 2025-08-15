@@ -19,11 +19,13 @@
 // Load bulma Tooltip
 @use '../../node_modules/bulma-tooltip/dist/css/bulma-tooltip.min.css';
 
+// Import fonts and other styles
+@import './fonts.scss';
 @import './colors.scss';
 @import './components/index.scss';
 
 * {
-  font-family: 'Fira Sans', sans-serif;
+  font-family: 'Proxima Nova', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 .live-mode {
