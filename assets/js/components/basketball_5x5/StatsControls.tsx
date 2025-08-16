@@ -98,7 +98,7 @@ export function MediumStatsControls({
         <div className="column is-4 has-text-centered">
           <button
             ref={buttonRefs['1']}
-            className="button is-tall is-success"
+            className="button is-stat is-success"
             onClick={() => onStatUpdate('free_throws_made')}
             disabled={buttonsDisabled}
           >
@@ -109,7 +109,7 @@ export function MediumStatsControls({
         <div className="column is-4 has-text-centered">
           <button
             ref={buttonRefs['2']}
-            className="button is-tall is-success"
+            className="button is-stat is-success"
             onClick={() => onStatUpdate('field_goals_made')}
             disabled={buttonsDisabled}
           >
@@ -120,7 +120,7 @@ export function MediumStatsControls({
         <div className="column is-4 has-text-centered">
           <button
             ref={buttonRefs['3']}
-            className="button is-tall is-success"
+            className="button is-stat is-success"
             onClick={() => onStatUpdate('three_point_field_goals_made')}
             disabled={buttonsDisabled}
           >
@@ -131,7 +131,7 @@ export function MediumStatsControls({
         <div className="column is-4 has-text-centered">
           <button
             ref={buttonRefs.q}
-            className="button is-tall is-danger"
+            className="button is-stat is-danger"
             onClick={() => onStatUpdate('free_throws_missed')}
             disabled={buttonsDisabled}
           >
@@ -142,7 +142,7 @@ export function MediumStatsControls({
         <div className="column is-4 has-text-centered">
           <button
             ref={buttonRefs.w}
-            className="button is-tall is-danger"
+            className="button is-stat is-danger"
             onClick={() => onStatUpdate('field_goals_missed')}
             disabled={buttonsDisabled}
           >
@@ -153,7 +153,7 @@ export function MediumStatsControls({
         <div className="column is-4 has-text-centered">
           <button
             ref={buttonRefs.e}
-            className="button is-tall is-danger"
+            className="button is-stat is-danger"
             onClick={() => onStatUpdate('three_point_field_goals_missed')}
             disabled={buttonsDisabled}
           >
@@ -164,7 +164,7 @@ export function MediumStatsControls({
         <div className="column is-4 has-text-centered">
           <button
             ref={buttonRefs.a}
-            className="button is-tall is-info"
+            className="button is-stat is-info"
             onClick={() => onStatUpdate('rebounds_offensive')}
             disabled={buttonsDisabled}
           >
@@ -175,7 +175,7 @@ export function MediumStatsControls({
         <div className="column is-4 has-text-centered">
           <button
             ref={buttonRefs.s}
-            className="button is-tall is-info"
+            className="button is-stat is-info"
             onClick={() => onStatUpdate('steals')}
             disabled={buttonsDisabled}
           >
@@ -186,7 +186,7 @@ export function MediumStatsControls({
         <div className="column is-4 has-text-centered">
           <button
             ref={buttonRefs.d}
-            className="button is-tall is-info"
+            className="button is-stat is-info"
             onClick={() => onStatUpdate('rebounds_defensive')}
             disabled={buttonsDisabled}
           >
@@ -197,7 +197,7 @@ export function MediumStatsControls({
         <div className="column is-4 has-text-centered">
           <button
             ref={buttonRefs.z}
-            className="button is-tall is-info"
+            className="button is-stat is-info"
             onClick={() => onStatUpdate('assists')}
             disabled={buttonsDisabled}
           >
@@ -208,7 +208,7 @@ export function MediumStatsControls({
         <div className="column is-4 has-text-centered">
           <button
             ref={buttonRefs.x}
-            className="button is-tall is-info"
+            className="button is-stat is-info"
             onClick={() => onStatUpdate('blocks')}
             disabled={buttonsDisabled}
           >
@@ -219,7 +219,7 @@ export function MediumStatsControls({
         <div className="column is-4 has-text-centered">
           <button
             ref={buttonRefs.c}
-            className="button is-tall is-danger"
+            className="button is-stat is-danger"
             onClick={() => onStatUpdate('turnovers')}
             disabled={buttonsDisabled}
           >
@@ -230,7 +230,7 @@ export function MediumStatsControls({
         <div className="column is-4 has-text-centered">
           <button
             ref={buttonRefs.t}
-            className="button is-tall is-warning"
+            className="button is-stat is-warning"
             onClick={() => onStatUpdate('fouls_personal')}
             disabled={buttonsDisabled}
           >
@@ -241,7 +241,7 @@ export function MediumStatsControls({
         <div className="column is-4 has-text-centered">
           <button
             ref={buttonRefs.g}
-            className="button is-tall is-warning"
+            className="button is-stat is-warning"
             onClick={() => onStatUpdate('fouls_technical')}
             disabled={buttonsDisabled}
           >
@@ -252,7 +252,7 @@ export function MediumStatsControls({
         <div className="column is-4 has-text-centered">
           <button
             ref={buttonRefs.b}
-            className="button is-tall is-warning"
+            className="button is-stat is-warning"
             onClick={() => onStatUpdate('fouls_flagrant')}
             disabled={buttonsDisabled}
           >
@@ -291,7 +291,7 @@ export function BasicStatsControls({
         <div className="column is-4 has-text-centered">
           <button
             ref={buttonRefs['1']}
-            className="button is-tall is-success"
+            className="button is-stat is-success"
             onClick={() => onStatUpdate('free_throws_made')}
             disabled={buttonsDisabled}
           >
@@ -302,7 +302,7 @@ export function BasicStatsControls({
         <div className="column is-4 has-text-centered">
           <button
             ref={buttonRefs['2']}
-            className="button is-tall is-success"
+            className="button is-stat is-success"
             onClick={() => onStatUpdate('field_goals_made')}
             disabled={buttonsDisabled}
           >
@@ -313,7 +313,7 @@ export function BasicStatsControls({
         <div className="column is-4 has-text-centered">
           <button
             ref={buttonRefs['3']}
-            className="button is-tall is-success"
+            className="button is-stat is-success"
             onClick={() => onStatUpdate('three_point_field_goals_made')}
             disabled={buttonsDisabled}
           >
@@ -324,7 +324,7 @@ export function BasicStatsControls({
         <div className="column is-6 has-text-centered">
           <button
             ref={buttonRefs.q}
-            className="button is-tall is-info"
+            className="button is-stat is-info"
             onClick={() => onStatUpdate('rebounds_defensive')}
             disabled={buttonsDisabled}
           >
@@ -335,7 +335,7 @@ export function BasicStatsControls({
         <div className="column is-6 has-text-centered">
           <button
             ref={buttonRefs.w}
-            className="button is-tall is-info"
+            className="button is-stat is-info"
             onClick={() => onStatUpdate('assists')}
             disabled={buttonsDisabled}
           >
@@ -346,7 +346,7 @@ export function BasicStatsControls({
         <div className="column is-6 has-text-centered">
           <button
             ref={buttonRefs.a}
-            className="button is-tall is-info"
+            className="button is-stat is-info"
             onClick={() => onStatUpdate('blocks')}
             disabled={buttonsDisabled}
           >
@@ -357,7 +357,7 @@ export function BasicStatsControls({
         <div className="column is-6 has-text-centered">
           <button
             ref={buttonRefs.s}
-            className="button is-tall is-info"
+            className="button is-stat is-info"
             onClick={() => onStatUpdate('steals')}
             disabled={buttonsDisabled}
           >

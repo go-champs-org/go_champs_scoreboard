@@ -1,12 +1,12 @@
 .button {
-  width: 100%;
-  padding: 0.4rem;
-  border-radius: 5px;
-  border-width: 2px;
   transition: all 0.3s;
 
-  &.is-tall {
-    padding: 1.25rem;
+  &.is-stat {
+    height: 68px;
+    width: 100%;
+    border-radius: 5px;
+    border-width: 2px;
+    text-wrap: wrap;
   }
 
   &:not(:disabled) {
