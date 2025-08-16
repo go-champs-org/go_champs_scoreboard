@@ -259,8 +259,11 @@ function EditPlayersModal({
       </div>
 
       <div className="columns is-multiline">
-        <div className="column is-12">
-          <button className="button" onClick={() => setShowAddPlayerRow(true)}>
+        <div className="column is-12 has-text-right">
+          <button
+            className="button is-info is-small"
+            onClick={() => setShowAddPlayerRow(true)}
+          >
             {t('basketball.players.modal.addPlayer')}
           </button>
         </div>

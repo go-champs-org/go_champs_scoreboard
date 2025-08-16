@@ -89,9 +89,9 @@ function EditOfficialsModal({
       modalCardStyle={{ width: '800px' }}
     >
       <div className="columns is-multiline">
-        <div className="column is-12">
+        <div className="column is-12 has-text-right">
           <button
-            className="button"
+            className="button is-info is-small"
             onClick={() => setShowAddOfficialRow(true)}
           >
             {t('basketball.officials.modal.addOfficial')}
