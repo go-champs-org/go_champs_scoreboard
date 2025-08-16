@@ -52,7 +52,6 @@ const styles = StyleSheet.create({
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            borderRight: '1px solid #000',
           },
           numberContainer: {
             flex: '1 1 50%',
@@ -66,20 +65,30 @@ const styles = StyleSheet.create({
   },
 });
 
-function ScoreMark({
+function ScoreMarkDisplay({
   number,
   runningScore,
+  isReversed = false,
 }: {
   key: number;
   number: number;
   runningScore: RenderRunningScore;
+  isReversed: boolean;
 }) {
   return (
-    <View style={styles.runningScore.columnsContainer.column.scoreMark}>
+    <View
+      style={{
+        ...styles.runningScore.columnsContainer.column.scoreMark,
+        flexDirection: isReversed ? 'row-reverse' : 'row',
+      }}
+    >
       <View
-        style={
-          styles.runningScore.columnsContainer.column.scoreMark.playerContainer
-        }
+        style={{
+          ...styles.runningScore.columnsContainer.column.scoreMark
+            .playerContainer,
+          borderRight: !isReversed ? '1px solid #000' : 'none',
+          borderLeft: isReversed ? '1px solid #000' : 'none',
+        }}
       >
         {runningScore[number] && (
           <Text style={textColorForPeriod(runningScore[number].period)}>
@@ -115,10 +124,12 @@ function ScoreList({
   runningScore,
   firstNumber,
   lastNumber,
+  isReversed = false,
 }: {
   runningScore: RenderRunningScore;
   firstNumber: number;
   lastNumber: number;
+  isReversed?: boolean;
 }) {
   const scoreList = Array.from(
     { length: lastNumber - firstNumber + 1 },
@@ -127,7 +138,12 @@ function ScoreList({
   return (
     <>
       {scoreList.map((number) => (
-        <ScoreMark key={number} number={number} runningScore={runningScore} />
+        <ScoreMarkDisplay
+          key={number}
+          number={number}
+          runningScore={runningScore}
+          isReversed={isReversed}
+        />
       ))}
     </>
   );
@@ -178,6 +194,7 @@ export default function RunningScoreBox({
             runningScore={bTeamFullRunningScore}
             firstNumber={1}
             lastNumber={40}
+            isReversed
           />
         </View>
         <View style={styles.runningScore.columnsContainer.column}>
@@ -198,6 +215,7 @@ export default function RunningScoreBox({
             runningScore={bTeamFullRunningScore}
             firstNumber={41}
             lastNumber={80}
+            isReversed
           />
         </View>
         <View style={styles.runningScore.columnsContainer.column}>
@@ -218,6 +236,7 @@ export default function RunningScoreBox({
             runningScore={bTeamFullRunningScore}
             firstNumber={81}
             lastNumber={120}
+            isReversed
           />
         </View>
         <View style={styles.runningScore.columnsContainer.column}>
@@ -238,6 +257,7 @@ export default function RunningScoreBox({
             runningScore={bTeamFullRunningScore}
             firstNumber={121}
             lastNumber={160}
+            isReversed
           />
         </View>
       </View>
