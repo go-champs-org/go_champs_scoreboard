@@ -11,7 +11,6 @@ interface EventLogModalProps {
   game_state: GameState;
   showModal: boolean;
   onCloseModal: () => void;
-  pushEvent: (event: string, data: any) => void;
 }
 
 interface QuarterFilterProps {
@@ -171,12 +170,12 @@ function EventLogModal({
   game_state,
   showModal,
   onCloseModal,
-  pushEvent,
 }: EventLogModalProps) {
   const { t } = useTranslation();
   const gameId = game_state.id;
   const [showForm, setShowForm] = useState(false);
   const [isPosting, setIsPosting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const currentPeriod = game_state.clock_state.period;
 
   const {
@@ -190,17 +189,24 @@ function EventLogModal({
 
   const handleToggleForm = () => {
     setShowForm(!showForm);
+    setSubmitError(null);
   };
 
   const handleFormSubmit = async (eventData: PostEventLog) => {
     try {
       setIsPosting(true);
+      setSubmitError(null);
       await eventLogsHttpClient.postEventLogs(eventData);
       await handleQuarterFilter(eventData.game_clock_period);
 
       setShowForm(false);
     } catch (error) {
       console.error('Error creating event:', error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'An unexpected error occurred while creating the event. Please try again.';
+      setSubmitError(errorMessage);
     } finally {
       setIsPosting(false);
     }
@@ -208,6 +214,7 @@ function EventLogModal({
 
   const handleFormCancel = () => {
     setShowForm(false);
+    setSubmitError(null);
   };
 
   return (
@@ -245,6 +252,7 @@ function EventLogModal({
                 <EventLogForm
                   gameState={game_state}
                   isSubmitting={isPosting}
+                  submitError={submitError}
                   onSubmit={handleFormSubmit}
                   onCancel={handleFormCancel}
                 />

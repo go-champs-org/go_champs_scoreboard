@@ -127,7 +127,6 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
         <EventLogModal
           game_state={game_state}
           onCloseModal={() => setShowEventLogModal(false)}
-          pushEvent={pushEvent}
           showModal={showEventLogModal}
         />
         <Modal

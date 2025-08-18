@@ -8,6 +8,7 @@ import { eventKeyToString } from './contentMappers';
 interface EventLogFormProps {
   gameState: GameState;
   isSubmitting?: boolean;
+  submitError?: string | null;
   onSubmit: (eventData: any) => void;
   onCancel: () => void;
 }
@@ -15,6 +16,7 @@ interface EventLogFormProps {
 function EventLogForm({
   gameState,
   isSubmitting = false,
+  submitError = null,
   onSubmit,
   onCancel,
 }: EventLogFormProps) {
@@ -163,7 +165,7 @@ function EventLogForm({
           />
         </div>
 
-        <div className="column is-12">
+        <div className="column is-6">
           <div className="field is-grouped">
             <div className="control">
               <button
@@ -186,6 +188,14 @@ function EventLogForm({
               </button>
             </div>
           </div>
+        </div>
+
+        <div className="column is-6">
+          {submitError && (
+            <div className="notification is-danger">
+              <strong>Error:</strong> {submitError}
+            </div>
+          )}
         </div>
       </div>
     </form>
