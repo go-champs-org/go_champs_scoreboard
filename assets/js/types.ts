@@ -2,14 +2,19 @@ export type ApiResponse<T> = {
   data: T;
 };
 
-export interface EventLog {
-  id: string;
+interface BaseEventLog {
   key: string;
-  timestamp: string;
-  payload?: EventLogUpdatePlayerStatPayload;
+  payload?: Record<string, any>;
   game_id: string;
   game_clock_time: number;
   game_clock_period: number;
+}
+
+export interface PostEventLog extends BaseEventLog {}
+
+export interface EventLog extends BaseEventLog {
+  id: string;
+  timestamp: string;
 }
 
 export interface CoachState {
@@ -80,8 +85,10 @@ export interface LiveState {
   ended_at: string;
 }
 
+export type BasketballViews = 'basketball-medium' | 'basketball-basic';
+
 export interface ViewSettingsState {
-  view: 'basketball-medium' | 'basketball-basic';
+  view: BasketballViews;
 }
 
 export interface GameState {

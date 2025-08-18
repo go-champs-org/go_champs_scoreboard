@@ -1,5 +1,5 @@
 import httpClient from '../../shared/httpClient';
-import { ApiResponse, EventLog } from '../../types';
+import { ApiResponse, EventLog, PostEventLog } from '../../types';
 
 const getEventLogs = async (
   gameId: string,
@@ -24,7 +24,13 @@ const deleteEvent = async (eventId: string): Promise<void> => {
   await httpClient.delete(url);
 };
 
+const postEventLogs = async (eventLog: PostEventLog): Promise<void> => {
+  const url = `/v1/event-logs`;
+  await httpClient.post(url, eventLog);
+};
+
 export default {
   getEventLogs,
   deleteEvent,
+  postEventLogs,
 };

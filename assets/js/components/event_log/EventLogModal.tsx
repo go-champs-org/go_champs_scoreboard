@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import Modal from '../Modal';
-import { GameState, EventLog } from '../../types';
+import { GameState, EventLog, PostEventLog } from '../../types';
 import eventLogsHttpClient from '../../features/event_logs/eventLogsHttpClient';
 import EventLogTable from './EventLogTable';
 import EventLogForm from './EventLogForm';
@@ -44,19 +44,22 @@ function QuarterFilter({
 
   return (
     <div className="field is-grouped mb-4">
-      {!showForm &&
-        availableQuarters.map((quarter) => (
-          <div key={quarter} className="control">
-            <button
-              className={`button is-small ${
-                selectedQuarter === quarter ? 'is-primary' : 'is-light'
-              }`}
-              onClick={() => onQuarterFilter(quarter)}
-            >
-              Q{quarter}
-            </button>
-          </div>
-        ))}
+      {!showForm && (
+        <>
+          {availableQuarters.map((quarter) => (
+            <div key={quarter} className="control">
+              <button
+                className={`button is-small ${
+                  selectedQuarter === quarter ? 'is-primary' : 'is-light'
+                }`}
+                onClick={() => onQuarterFilter(quarter)}
+              >
+                Q{quarter}
+              </button>
+            </div>
+          ))}
+        </>
+      )}
     </div>
   );
 }
@@ -78,47 +81,56 @@ function ToggleViewButton({ showForm, onToggleForm }: ToggleViewButtonProps) {
   );
 }
 
-function useEventLogs(gameId: string, showModal: boolean) {
+function useEventLogs(
+  gameId: string,
+  showModal: boolean,
+  currentPeriod: number,
+) {
   const [eventLogs, setEventLogs] = useState<EventLog[]>([]);
   const [filteredEventLogs, setFilteredEventLogs] = useState<EventLog[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedQuarter, setSelectedQuarter] = useState<number | null>(null);
+  const [selectedQuarter, setSelectedQuarter] = useState<number | null>(
+    currentPeriod,
+  );
   const [availableQuarters, setAvailableQuarters] = useState<number[]>([]);
+
+  const fetchEventLogs = async (period?: number | null) => {
+    setLoading(true);
+    try {
+      const filters = period
+        ? { game_clock_period: period.toString() }
+        : undefined;
+      const response = await eventLogsHttpClient.getEventLogs(gameId, filters);
+      setEventLogs(response);
+
+      if (response.length > 0) {
+        const maxQuarter = Math.max(
+          ...response.map((log) => log.game_clock_period),
+        );
+        const totalQuarters = Math.max(maxQuarter, currentPeriod);
+        const quarters = Array.from({ length: totalQuarters }, (_, i) => i + 1);
+        setAvailableQuarters(quarters);
+      } else {
+        const quarters = Array.from({ length: currentPeriod }, (_, i) => i + 1);
+        setAvailableQuarters(quarters);
+      }
+    } catch (error) {
+      console.error('Error fetching event logs:', error);
+      setEventLogs([]);
+      const quarters = Array.from({ length: currentPeriod }, (_, i) => i + 1);
+      setAvailableQuarters(quarters);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (showModal) {
-      const fetchEventLogs = async () => {
-        setLoading(true);
-        try {
-          const response = await eventLogsHttpClient.getEventLogs(gameId);
-          setEventLogs(response);
-
-          if (response.length > 0) {
-            const maxQuarter = Math.max(
-              ...response.map((log) => log.game_clock_period),
-            );
-            const quarters = Array.from(
-              { length: maxQuarter },
-              (_, i) => i + 1,
-            );
-            setAvailableQuarters(quarters);
-            setSelectedQuarter(maxQuarter);
-          } else {
-            setAvailableQuarters([]);
-            setSelectedQuarter(null);
-          }
-        } catch (error) {
-          console.error('Error fetching event logs:', error);
-          setEventLogs([]);
-          setAvailableQuarters([]);
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      fetchEventLogs();
+      // Initialize with current period
+      setSelectedQuarter(currentPeriod);
+      fetchEventLogs(currentPeriod);
     }
-  }, [showModal, gameId]);
+  }, [showModal, gameId, currentPeriod]);
 
   useEffect(() => {
     if (selectedQuarter === null) {
@@ -130,8 +142,10 @@ function useEventLogs(gameId: string, showModal: boolean) {
     }
   }, [eventLogs, selectedQuarter]);
 
-  const handleQuarterFilter = (quarter: number | null) => {
+  const handleQuarterFilter = async (quarter: number | null) => {
     setSelectedQuarter(quarter);
+    // Fetch new data when quarter filter changes
+    await fetchEventLogs(quarter);
   };
 
   const handleDeleteEvent = async (eventId: string) => {
@@ -162,6 +176,8 @@ function EventLogModal({
   const { t } = useTranslation();
   const gameId = game_state.id;
   const [showForm, setShowForm] = useState(false);
+  const [isPosting, setIsPosting] = useState(false);
+  const currentPeriod = game_state.clock_state.period;
 
   const {
     filteredEventLogs,
@@ -170,21 +186,23 @@ function EventLogModal({
     availableQuarters,
     handleQuarterFilter,
     handleDeleteEvent,
-  } = useEventLogs(gameId, showModal);
+  } = useEventLogs(gameId, showModal, currentPeriod);
 
   const handleToggleForm = () => {
     setShowForm(!showForm);
   };
 
-  const handleFormSubmit = async (eventData: any) => {
+  const handleFormSubmit = async (eventData: PostEventLog) => {
     try {
-      // Here you would typically send the event data to your backend
-      // For now, we'll just close the form
-      console.log('Event data:', eventData);
-      // You can add API call here to create the event
+      setIsPosting(true);
+      await eventLogsHttpClient.postEventLogs(eventData);
+      await handleQuarterFilter(eventData.game_clock_period);
+
       setShowForm(false);
     } catch (error) {
       console.error('Error creating event:', error);
+    } finally {
+      setIsPosting(false);
     }
   };
 
@@ -226,6 +244,7 @@ function EventLogModal({
               {showForm ? (
                 <EventLogForm
                   gameState={game_state}
+                  isSubmitting={isPosting}
                   onSubmit={handleFormSubmit}
                   onCancel={handleFormCancel}
                 />

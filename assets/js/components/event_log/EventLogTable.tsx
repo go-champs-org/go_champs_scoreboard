@@ -63,7 +63,7 @@ function EventLogRow({
       </td>
       <td>
         <DoubleClickButton
-          className={`button is-small ${
+          className={`button is-small is-fullwidth ${
             isDeleting ? 'is-loading is-danger' : 'is-warning'
           }`}
           disabled={!canDelete || isDeleting}

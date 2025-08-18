@@ -1,18 +1,27 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GameState } from '../../types';
+import { EVENT_KEYS_EDITABLE } from '../basketball_5x5/constants';
+import PayloadForm from './PayloadForm';
+import { eventKeyToString } from './contentMappers';
 
 interface EventLogFormProps {
   gameState: GameState;
+  isSubmitting?: boolean;
   onSubmit: (eventData: any) => void;
   onCancel: () => void;
 }
 
-function EventLogForm({ gameState, onSubmit, onCancel }: EventLogFormProps) {
+function EventLogForm({
+  gameState,
+  isSubmitting = false,
+  onSubmit,
+  onCancel,
+}: EventLogFormProps) {
   const { t } = useTranslation();
   const [formData, setFormData] = useState({
     game_id: gameState.id,
-    game_clock_period: 0,
+    game_clock_period: 1,
     game_clock_time: 0,
     minute: 0,
     second: 0,
@@ -58,7 +67,13 @@ function EventLogForm({ gameState, onSubmit, onCancel }: EventLogFormProps) {
                 <select
                   value={formData.key}
                   onChange={(e) => handleInputChange('key', e.target.value)}
-                ></select>
+                >
+                  {EVENT_KEYS_EDITABLE.map((key) => (
+                    <option key={key} value={key}>
+                      {eventKeyToString(key, t)}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
           </div>
@@ -86,7 +101,7 @@ function EventLogForm({ gameState, onSubmit, onCancel }: EventLogFormProps) {
                   <option value={5}>Q5</option>
                   <option value={6}>Q6</option>
                   <option value={7}>Q7</option>
-                  <option value={8}>QO8</option>
+                  <option value={8}>Q8</option>
                   <option value={9}>Q9</option>
                   <option value={10}>Q10</option>
                 </select>
@@ -136,9 +151,28 @@ function EventLogForm({ gameState, onSubmit, onCancel }: EventLogFormProps) {
         </div>
 
         <div className="column is-12">
+          <PayloadForm
+            eventKey={formData.key}
+            onPayloadChange={(updateFn: (prevPayload: any) => any) => {
+              setFormData((prev) => ({
+                ...prev,
+                payload: updateFn(prev.payload),
+              }));
+            }}
+            gameState={gameState}
+          />
+        </div>
+
+        <div className="column is-12">
           <div className="field is-grouped">
             <div className="control">
-              <button type="submit" className="button is-primary is-small">
+              <button
+                type="submit"
+                className={`button is-primary is-small ${
+                  isSubmitting ? 'is-loading' : ''
+                }`}
+                disabled={isSubmitting}
+              >
                 {t('basketball.modals.eventLogs.addEvent')}
               </button>
             </div>
