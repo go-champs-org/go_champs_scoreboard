@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GameState } from '../../../types';
 import { getManualPlayerStatsForView } from '../../basketball_5x5/constants';
@@ -6,16 +6,25 @@ import { getManualPlayerStatsForView } from '../../basketball_5x5/constants';
 interface UpdatePlayerStatFormProps {
   onChange: (updateFn: (prevPayload: any) => any) => void;
   gameState: GameState;
+  initialPayload?: Record<string, any>;
 }
 
 const UpdatePlayerStatForm: React.FC<UpdatePlayerStatFormProps> = ({
   onChange,
   gameState,
+  initialPayload = {},
 }) => {
   const { t } = useTranslation();
+
   const [selectedTeamType, setSelectedTeamType] = useState<
     'home' | 'away' | ''
-  >('');
+  >(initialPayload['team-type'] || '');
+
+  useEffect(() => {
+    if (Object.keys(initialPayload).length > 0) {
+      onChange(() => initialPayload);
+    }
+  }, [initialPayload, onChange]);
 
   const manualStats = getManualPlayerStatsForView(
     gameState.view_settings_state.view,
@@ -75,6 +84,7 @@ const UpdatePlayerStatForm: React.FC<UpdatePlayerStatFormProps> = ({
             <div className="select is-fullwidth">
               <select
                 disabled={!selectedTeamType}
+                value={initialPayload['player-id'] || ''}
                 onChange={(e) => handleInputChange('player-id', e.target.value)}
               >
                 <option value="">
@@ -105,6 +115,7 @@ const UpdatePlayerStatForm: React.FC<UpdatePlayerStatFormProps> = ({
           <div className="control">
             <div className="select is-fullwidth">
               <select
+                value={initialPayload['stat-id'] || ''}
                 onChange={(e) => handleInputChange('stat-id', e.target.value)}
               >
                 <option value="">

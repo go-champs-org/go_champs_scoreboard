@@ -1,5 +1,5 @@
 import httpClient from '../../shared/httpClient';
-import { ApiResponse, EventLog, PostEventLog } from '../../types';
+import { ApiResponse, EventLog, PutEventLog, PostEventLog } from '../../types';
 
 const getEventLogs = async (
   gameId: string,
@@ -29,8 +29,19 @@ const postEventLogs = async (eventLog: PostEventLog): Promise<void> => {
   await httpClient.post(url, eventLog);
 };
 
+const putEventLog = async (
+  eventId: string,
+  payload: Record<string, any>,
+): Promise<void> => {
+  const url = `/v1/event-logs/${eventId}`;
+  await httpClient.put<PutEventLog, string>(url, {
+    payload,
+  });
+};
+
 export default {
   getEventLogs,
   deleteEvent,
   postEventLogs,
+  putEventLog,
 };

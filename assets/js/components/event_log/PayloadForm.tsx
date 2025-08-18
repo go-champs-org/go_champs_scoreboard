@@ -7,12 +7,14 @@ import { GameState } from '../../types';
 interface PayloadFormProps {
   eventKey: string;
   gameState: GameState;
+  initialPayload?: Record<string, any>;
   onPayloadChange: (updateFn: (prevPayload: any) => any) => void;
 }
 
 const PayloadForm: React.FC<PayloadFormProps> = ({
   eventKey,
   gameState,
+  initialPayload = {},
   onPayloadChange,
 }) => {
   if (!EVENT_KEYS_EDITABLE.includes(eventKey)) {
@@ -25,6 +27,7 @@ const PayloadForm: React.FC<PayloadFormProps> = ({
         <UpdatePlayerStatForm
           onChange={onPayloadChange}
           gameState={gameState}
+          initialPayload={initialPayload}
         />
       );
     case EVENT_KEYS.UPDATE_COACH_STAT:

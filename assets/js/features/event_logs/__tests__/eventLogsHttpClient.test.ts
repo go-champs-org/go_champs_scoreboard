@@ -388,4 +388,261 @@ describe('eventLogsHttpClient', () => {
       );
     });
   });
+
+  describe('putEventLog', () => {
+    it('updates event log successfully', async () => {
+      // Arrange
+      const mockEventLog = {
+        id: 'event-123',
+        payload: {
+          player_id: 'player-456',
+          stat_type: 'points',
+          value: 3,
+          operation: 'increment',
+        },
+      };
+      const expectedUrl = `/v1/event-logs/${mockEventLog.id}`;
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        url: expectedUrl,
+        json: async () => ({ success: true }),
+      });
+
+      // Act
+      await eventLogsHttpClient.putEventLog(
+        mockEventLog.id,
+        mockEventLog.payload,
+      );
+
+      // Assert
+      expect(mockFetch).toHaveBeenCalledWith(
+        expectedUrl,
+        expect.objectContaining({
+          method: 'PUT',
+          headers: expect.objectContaining({
+            'Content-Type': 'application/json',
+          }),
+          body: JSON.stringify({ payload: mockEventLog.payload }),
+        }),
+      );
+    });
+
+    it('updates event log with complex payload successfully', async () => {
+      // Arrange
+      const mockEventLog = {
+        id: 'event-789',
+        payload: {
+          team_id: 'team-abc',
+          stat_type: 'timeouts',
+          value: 1,
+          operation: 'decrement',
+          quarter: 2,
+        },
+      };
+      const expectedUrl = `/v1/event-logs/${mockEventLog.id}`;
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        url: expectedUrl,
+        json: async () => ({ success: true }),
+      });
+
+      // Act
+      await eventLogsHttpClient.putEventLog(
+        mockEventLog.id,
+        mockEventLog.payload,
+      );
+
+      // Assert
+      expect(mockFetch).toHaveBeenCalledWith(
+        expectedUrl,
+        expect.objectContaining({
+          method: 'PUT',
+          headers: expect.objectContaining({
+            'Content-Type': 'application/json',
+          }),
+          body: JSON.stringify({ payload: mockEventLog.payload }),
+        }),
+      );
+    });
+
+    it('handles API errors when updating event log', async () => {
+      // Arrange
+      const mockEventLog = {
+        id: 'event-error',
+        payload: {
+          player_id: 'player-999',
+          stat_type: 'invalid_stat',
+          value: -1,
+        },
+      };
+      const expectedUrl = `/v1/event-logs/${mockEventLog.id}`;
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 422,
+        statusText: 'Unprocessable Entity',
+        url: expectedUrl,
+        json: async () => ({ error: 'Unprocessable Entity' }),
+      });
+
+      // Act
+      await eventLogsHttpClient.putEventLog(
+        mockEventLog.id,
+        mockEventLog.payload,
+      );
+
+      // Assert
+      expect(mockFetch).toHaveBeenCalledWith(
+        expectedUrl,
+        expect.objectContaining({
+          method: 'PUT',
+          body: JSON.stringify({ payload: mockEventLog.payload }),
+        }),
+      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'Error putting resource:',
+        422,
+        'Unprocessable Entity',
+      );
+    });
+
+    it('handles network errors when updating event log', async () => {
+      // Arrange
+      const mockEventLog = {
+        id: 'event-network-error',
+        payload: {
+          coach_id: 'coach-123',
+          stat_type: 'technical_fouls',
+          value: 1,
+          operation: 'increment',
+        },
+      };
+      const networkError = new Error('Network Error');
+      mockFetch.mockRejectedValueOnce(networkError);
+
+      // Act & Assert
+      await expect(
+        eventLogsHttpClient.putEventLog(mockEventLog.id, mockEventLog.payload),
+      ).rejects.toThrow('Network Error');
+      expect(mockFetch).toHaveBeenCalledWith(
+        `/v1/event-logs/${mockEventLog.id}`,
+        expect.objectContaining({
+          method: 'PUT',
+          body: JSON.stringify({ payload: mockEventLog.payload }),
+        }),
+      );
+    });
+
+    it('constructs the correct URL with the provided event ID', async () => {
+      // Arrange
+      const eventId = 'very-specific-event-id-12345';
+      const mockEventLog = {
+        id: eventId,
+        payload: {
+          player_id: 'player-url-test',
+          stat_type: 'assists',
+          value: 1,
+        },
+      };
+      const expectedUrl = `/v1/event-logs/${eventId}`;
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        url: expectedUrl,
+        json: async () => ({ success: true }),
+      });
+
+      // Act
+      await eventLogsHttpClient.putEventLog(
+        mockEventLog.id,
+        mockEventLog.payload,
+      );
+
+      // Assert
+      expect(mockFetch).toHaveBeenCalledWith(
+        expectedUrl,
+        expect.objectContaining({
+          method: 'PUT',
+        }),
+      );
+    });
+
+    it('calls the put endpoint exactly once', async () => {
+      // Arrange
+      const mockEventLog = {
+        id: 'event-single-call',
+        payload: {
+          player_id: 'player-single',
+          stat_type: 'rebounds',
+          value: 2,
+        },
+      };
+      const expectedUrl = `/v1/event-logs/${mockEventLog.id}`;
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        url: expectedUrl,
+        json: async () => ({ success: true }),
+      });
+
+      // Act
+      await eventLogsHttpClient.putEventLog(
+        mockEventLog.id,
+        mockEventLog.payload,
+      );
+
+      // Assert
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+    });
+
+    it('sends only the payload in the request body', async () => {
+      // Arrange
+      const mockEventLog = {
+        id: 'event-payload-only',
+        payload: {
+          substitution: {
+            player_in: 'player-in-123',
+            player_out: 'player-out-456',
+            team_id: 'team-789',
+          },
+          quarter: 3,
+          timestamp: '2023-01-01T15:30:00Z',
+        },
+      };
+      const expectedUrl = `/v1/event-logs/${mockEventLog.id}`;
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        url: expectedUrl,
+        json: async () => ({ success: true }),
+      });
+
+      // Act
+      await eventLogsHttpClient.putEventLog(
+        mockEventLog.id,
+        mockEventLog.payload,
+      );
+
+      // Assert
+      expect(mockFetch).toHaveBeenCalledWith(
+        expectedUrl,
+        expect.objectContaining({
+          method: 'PUT',
+          headers: expect.objectContaining({
+            'Content-Type': 'application/json',
+          }),
+          body: JSON.stringify({ payload: mockEventLog.payload }),
+        }),
+      );
+
+      // Ensure the ID is not included in the body
+      const callArgs = mockFetch.mock.calls[0];
+      const requestBody = JSON.parse(callArgs[1].body);
+      expect(requestBody).not.toHaveProperty('id');
+      expect(requestBody).toEqual({ payload: mockEventLog.payload });
+    });
+  });
 });

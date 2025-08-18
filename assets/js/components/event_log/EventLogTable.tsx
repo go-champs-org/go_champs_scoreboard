@@ -10,6 +10,7 @@ interface EventLogRowProps {
   eventLog: EventLog;
   gameState: GameState;
   onDeleteEvent: (eventId: string) => Promise<void>;
+  onEditEvent: (eventLog: EventLog) => void;
   isDeleting: boolean;
   onStartDeleting: (eventId: string) => void;
 }
@@ -19,18 +20,25 @@ interface EventLogTableProps {
   selectedQuarter: number | null;
   gameState: GameState;
   onDeleteEvent: (eventId: string) => Promise<void>;
+  onEditEvent: (eventLog: EventLog) => void;
 }
 
 function EventLogRow({
   eventLog,
   gameState,
   onDeleteEvent,
+  onEditEvent,
   isDeleting,
   onStartDeleting,
 }: EventLogRowProps) {
   const { t } = useTranslation();
   const canDelete =
     eventLog.key === 'update-player-stat' ||
+    eventLog.key === 'update-team-stat';
+
+  const canEdit =
+    eventLog.key === 'update-player-stat' ||
+    eventLog.key === 'update-coach-stat' ||
     eventLog.key === 'update-team-stat';
 
   const handleDelete = async () => {
@@ -41,10 +49,19 @@ function EventLogRow({
     }, 300);
   };
 
+  const handleRowClick = () => {
+    if (canEdit && !isDeleting) {
+      onEditEvent(eventLog);
+    }
+  };
+
   return (
     <tr
       key={eventLog.id}
-      className={isDeleting ? 'is-deleting' : ''}
+      className={`${isDeleting ? 'is-deleting' : ''} ${
+        canEdit ? 'is-clickable' : ''
+      }`}
+      onClick={handleRowClick}
       style={{
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         transform: isDeleting
@@ -53,6 +70,7 @@ function EventLogRow({
         opacity: isDeleting ? 0 : 1,
         backgroundColor: isDeleting ? '#ffebee' : 'transparent',
         overflow: 'hidden',
+        cursor: canEdit ? 'pointer' : 'default',
       }}
     >
       <td>{eventLog.game_clock_period}</td>
@@ -81,6 +99,7 @@ function EventLogTable({
   selectedQuarter,
   gameState,
   onDeleteEvent,
+  onEditEvent,
 }: EventLogTableProps) {
   const { t } = useTranslation();
   const [deletingEventIds, setDeletingEventIds] = useState<Set<string>>(
@@ -139,6 +158,7 @@ function EventLogTable({
               eventLog={eventLog}
               gameState={gameState}
               onDeleteEvent={handleDeleteEvent}
+              onEditEvent={onEditEvent}
               isDeleting={deletingEventIds.has(eventLog.id)}
               onStartDeleting={handleStartDeleting}
             />

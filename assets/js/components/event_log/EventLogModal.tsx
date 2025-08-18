@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import Modal from '../Modal';
-import { GameState, EventLog, PostEventLog } from '../../types';
+import { GameState, EventLog, PostEventLog, PutEventLog } from '../../types';
 import eventLogsHttpClient from '../../features/event_logs/eventLogsHttpClient';
 import EventLogTable from './EventLogTable';
 import EventLogForm from './EventLogForm';
@@ -176,6 +176,7 @@ function EventLogModal({
   const [showForm, setShowForm] = useState(false);
   const [isPosting, setIsPosting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [editingEvent, setEditingEvent] = useState<EventLog | null>(null);
   const currentPeriod = game_state.clock_state.period;
 
   const {
@@ -189,6 +190,13 @@ function EventLogModal({
 
   const handleToggleForm = () => {
     setShowForm(!showForm);
+    setEditingEvent(null); // Clear editing when toggling
+    setSubmitError(null);
+  };
+
+  const handleEditEvent = (eventLog: EventLog) => {
+    setEditingEvent(eventLog);
+    setShowForm(true);
     setSubmitError(null);
   };
 
@@ -196,16 +204,29 @@ function EventLogModal({
     try {
       setIsPosting(true);
       setSubmitError(null);
-      await eventLogsHttpClient.postEventLogs(eventData);
-      await handleQuarterFilter(eventData.game_clock_period);
+
+      if (editingEvent) {
+        await eventLogsHttpClient.putEventLog(
+          editingEvent.id,
+          eventData.payload!,
+        );
+        await handleQuarterFilter(editingEvent.game_clock_period);
+      } else {
+        // Create new event
+        await eventLogsHttpClient.postEventLogs(eventData);
+        await handleQuarterFilter(eventData.game_clock_period);
+      }
 
       setShowForm(false);
+      setEditingEvent(null);
     } catch (error) {
-      console.error('Error creating event:', error);
+      console.error('Error creating/updating event:', error);
       const errorMessage =
         error instanceof Error
           ? error.message
-          : 'An unexpected error occurred while creating the event. Please try again.';
+          : `An unexpected error occurred while ${
+              editingEvent ? 'updating' : 'creating'
+            } the event. Please try again.`;
       setSubmitError(errorMessage);
     } finally {
       setIsPosting(false);
@@ -214,6 +235,7 @@ function EventLogModal({
 
   const handleFormCancel = () => {
     setShowForm(false);
+    setEditingEvent(null); // Clear editing when cancelling
     setSubmitError(null);
   };
 
@@ -253,6 +275,7 @@ function EventLogModal({
                   gameState={game_state}
                   isSubmitting={isPosting}
                   submitError={submitError}
+                  editingEvent={editingEvent}
                   onSubmit={handleFormSubmit}
                   onCancel={handleFormCancel}
                 />
@@ -262,6 +285,7 @@ function EventLogModal({
                   selectedQuarter={selectedQuarter}
                   gameState={game_state}
                   onDeleteEvent={handleDeleteEvent}
+                  onEditEvent={handleEditEvent}
                 />
               )}
             </div>

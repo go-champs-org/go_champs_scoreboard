@@ -12,6 +12,10 @@ interface BaseEventLog {
 
 export interface PostEventLog extends BaseEventLog {}
 
+export interface PutEventLog {
+  payload: Record<string, any>;
+}
+
 export interface EventLog extends BaseEventLog {
   id: string;
   timestamp: string;

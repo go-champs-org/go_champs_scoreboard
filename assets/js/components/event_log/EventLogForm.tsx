@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { GameState } from '../../types';
+import { GameState, EventLog } from '../../types';
 import { EVENT_KEYS_EDITABLE } from '../basketball_5x5/constants';
 import PayloadForm from './PayloadForm';
 import { eventKeyToString } from './contentMappers';
@@ -9,6 +9,7 @@ interface EventLogFormProps {
   gameState: GameState;
   isSubmitting?: boolean;
   submitError?: string | null;
+  editingEvent?: EventLog | null;
   onSubmit: (eventData: any) => void;
   onCancel: () => void;
 }
@@ -17,19 +18,44 @@ function EventLogForm({
   gameState,
   isSubmitting = false,
   submitError = null,
+  editingEvent = null,
   onSubmit,
   onCancel,
 }: EventLogFormProps) {
   const { t } = useTranslation();
-  const [formData, setFormData] = useState({
-    game_id: gameState.id,
-    game_clock_period: 1,
-    game_clock_time: 0,
-    minute: 0,
-    second: 0,
-    key: 'score',
-    payload: {},
-  });
+
+  // Initialize form data based on editing mode
+  const getInitialFormData = () => {
+    if (editingEvent) {
+      const minutes = Math.floor(editingEvent.game_clock_time / 60);
+      const seconds = editingEvent.game_clock_time % 60;
+      return {
+        game_id: gameState.id,
+        game_clock_period: editingEvent.game_clock_period,
+        game_clock_time: editingEvent.game_clock_time,
+        minute: minutes,
+        second: seconds,
+        key: editingEvent.key,
+        payload: editingEvent.payload || {},
+      };
+    }
+    return {
+      game_id: gameState.id,
+      game_clock_period: 1,
+      game_clock_time: 0,
+      minute: 0,
+      second: 0,
+      key: 'score',
+      payload: {},
+    };
+  };
+
+  const [formData, setFormData] = useState(getInitialFormData());
+
+  // Update form data when editingEvent changes
+  useEffect(() => {
+    setFormData(getInitialFormData());
+  }, [editingEvent]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,6 +94,7 @@ function EventLogForm({
               <div className="select is-fullwidth">
                 <select
                   value={formData.key}
+                  disabled={!!editingEvent}
                   onChange={(e) => handleInputChange('key', e.target.value)}
                 >
                   {EVENT_KEYS_EDITABLE.map((key) => (
@@ -89,6 +116,7 @@ function EventLogForm({
               <div className="select is-fullwidth">
                 <select
                   value={formData.game_clock_period}
+                  disabled={!!editingEvent}
                   onChange={(e) =>
                     handleInputChange(
                       'game_clock_period',
@@ -123,6 +151,7 @@ function EventLogForm({
                 type="number"
                 min="0"
                 max="12"
+                disabled={!!editingEvent}
                 value={formData.minute}
                 onChange={(e) =>
                   handleInputChange('minute', parseInt(e.target.value))
@@ -143,6 +172,7 @@ function EventLogForm({
                 type="number"
                 min="0"
                 max="59"
+                disabled={!!editingEvent}
                 value={formData.second}
                 onChange={(e) =>
                   handleInputChange('second', parseInt(e.target.value))
@@ -155,6 +185,7 @@ function EventLogForm({
         <div className="column is-12">
           <PayloadForm
             eventKey={formData.key}
+            initialPayload={formData.payload}
             onPayloadChange={(updateFn: (prevPayload: any) => any) => {
               setFormData((prev) => ({
                 ...prev,

@@ -18,9 +18,9 @@ function UpdatePlayerStatPayload({
       ? gameState.home_team
       : gameState.away_team;
   const player =
-    team.players.find((p) => p.id === eventLog.payload['player-id']) ||
+    team.players.find((p) => p.id === eventLog.payload?.['player-id']) ||
     DEFAULT_PLAYER_STATE;
-  const statKey = statIdToAbbreviationKey(eventLog.payload['stat-id']);
+  const statKey = statIdToAbbreviationKey(eventLog.payload?.['stat-id']);
   return `${team.name} - ${player.name} | ${t(statKey)}`;
 }
 
