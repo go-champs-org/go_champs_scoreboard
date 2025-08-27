@@ -48,6 +48,8 @@
         "game_clock_period": "Period",
         "minute": "Minute",
         "second": "Second",
+        "statFilter": "Filter by Stat",
+        "allStats": "All Stats",
         "table": {
           "quarter": "Q",
           "time": "Time",

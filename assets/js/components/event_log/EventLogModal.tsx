@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from 'react';
 
 import Modal from '../Modal';
-import { GameState, EventLog, PostEventLog, PutEventLog } from '../../types';
+import {
+  GameState,
+  EventLog,
+  PostEventLog,
+  PutEventLog,
+  BasketballViews,
+} from '../../types';
 import eventLogsHttpClient from '../../features/event_logs/eventLogsHttpClient';
 import EventLogTable from './EventLogTable';
 import EventLogForm from './EventLogForm';
 import { useTranslation } from 'react-i18next';
+import { EVENT_KEYS } from '../../constants';
+import { getManualPlayerStatsForView } from '../basketball_5x5/constants';
 
 interface EventLogModalProps {
   game_state: GameState;
@@ -83,6 +91,51 @@ function ToggleViewButton({ showForm, onToggleForm }: ToggleViewButtonProps) {
   );
 }
 
+interface StatFilterProps {
+  selectedStat: string | null;
+  onStatFilter: (statKey: string | null) => void;
+  showForm: boolean;
+  currentView: BasketballViews;
+}
+
+function StatFilter({
+  selectedStat,
+  onStatFilter,
+  showForm,
+  currentView,
+}: StatFilterProps) {
+  const { t } = useTranslation();
+
+  if (showForm) return null;
+
+  const availableStats = getManualPlayerStatsForView(currentView);
+
+  return (
+    <div className="field">
+      <label className="label has-text-white-ter">
+        {t('basketball.modals.eventLogs.statFilter')}
+      </label>
+      <div className="control">
+        <div className="select is-fullwidth">
+          <select
+            value={selectedStat || ''}
+            onChange={(e) => onStatFilter(e.target.value || null)}
+          >
+            <option value="">
+              {t('basketball.modals.eventLogs.allStats')}
+            </option>
+            {availableStats.map((stat) => (
+              <option key={stat.key} value={stat.key}>
+                {t(stat.labelTranslationKey)}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function useEventLogs(
   gameId: string,
   showModal: boolean,
@@ -94,6 +147,7 @@ function useEventLogs(
   const [selectedQuarter, setSelectedQuarter] = useState<number | null>(
     currentPeriod,
   );
+  const [selectedStat, setSelectedStat] = useState<string | null>(null);
   const [availableQuarters, setAvailableQuarters] = useState<number[]>([]);
 
   const fetchEventLogs = async (period?: number | null) => {
@@ -135,19 +189,35 @@ function useEventLogs(
   }, [showModal, gameId, currentPeriod]);
 
   useEffect(() => {
-    if (selectedQuarter === null) {
-      setFilteredEventLogs(eventLogs);
-    } else {
-      setFilteredEventLogs(
-        eventLogs.filter((log) => log.game_clock_period === selectedQuarter),
+    let filtered = eventLogs;
+
+    // Filter by quarter
+    if (selectedQuarter !== null) {
+      filtered = filtered.filter(
+        (log) => log.game_clock_period === selectedQuarter,
       );
     }
-  }, [eventLogs, selectedQuarter]);
+
+    // Filter by stat (only for UPDATE_PLAYER_STAT events)
+    if (selectedStat !== null) {
+      filtered = filtered.filter(
+        (log) =>
+          log.key === EVENT_KEYS.UPDATE_PLAYER_STAT &&
+          log.payload?.['stat-id'] === selectedStat,
+      );
+    }
+
+    setFilteredEventLogs(filtered);
+  }, [eventLogs, selectedQuarter, selectedStat]);
 
   const handleQuarterFilter = async (quarter: number | null) => {
     setSelectedQuarter(quarter);
     // Fetch new data when quarter filter changes
     await fetchEventLogs(quarter);
+  };
+
+  const handleStatFilter = (statKey: string | null) => {
+    setSelectedStat(statKey);
   };
 
   const handleDeleteEvent = async (eventId: string) => {
@@ -163,8 +233,10 @@ function useEventLogs(
     filteredEventLogs,
     loading,
     selectedQuarter,
+    selectedStat,
     availableQuarters,
     handleQuarterFilter,
+    handleStatFilter,
     handleDeleteEvent,
   };
 }
@@ -186,8 +258,10 @@ function EventLogModal({
     filteredEventLogs,
     loading,
     selectedQuarter,
+    selectedStat,
     availableQuarters,
     handleQuarterFilter,
+    handleStatFilter,
     handleDeleteEvent,
   } = useEventLogs(gameId, showModal, currentPeriod);
 
@@ -255,7 +329,7 @@ function EventLogModal({
         ) : (
           <div className="columns is-multiline">
             <div className="column is-12">
-              <div className="columns">
+              <div className="columns is-multiline">
                 <div className="column is-6">
                   <QuarterFilter
                     availableQuarters={availableQuarters}
@@ -268,6 +342,14 @@ function EventLogModal({
                   <ToggleViewButton
                     showForm={showForm}
                     onToggleForm={handleToggleForm}
+                  />
+                </div>
+                <div className="column is-12">
+                  <StatFilter
+                    selectedStat={selectedStat}
+                    onStatFilter={handleStatFilter}
+                    showForm={showForm}
+                    currentView={game_state.view_settings_state.view}
                   />
                 </div>
               </div>
