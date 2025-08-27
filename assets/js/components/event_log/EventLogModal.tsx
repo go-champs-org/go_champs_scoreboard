@@ -23,7 +23,10 @@ interface QuarterFilterProps {
 function LoadingState() {
   const { t } = useTranslation();
   return (
-    <div className="has-text-centered">
+    <div
+      className="has-text-centered"
+      style={{ height: '100px', width: '100%' }}
+    >
       <div className="is-loading">
         {t('basketball.modals.eventLogs.loading')}
       </div>

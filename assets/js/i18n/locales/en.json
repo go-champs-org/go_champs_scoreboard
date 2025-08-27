@@ -41,6 +41,7 @@
         "noLogsFound": "No event logs found",
         "noLogsFoundForQuarter": "No event logs found for",
         "addEvent": "Add Event",
+        "saveEvent": "Save Event",
         "showEvents": "Events",
         "cancel": "Cancel",
         "key": "Event Type",

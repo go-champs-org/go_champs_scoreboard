@@ -74,7 +74,7 @@ const TimeControl = ({
   disabled: boolean;
 }) => (
   <button
-    className="button is-info has-tooltip"
+    className="button is-info has-tooltip is-fullwidth"
     data-tooltip={tooltip}
     onClick={onClick}
     disabled={disabled}

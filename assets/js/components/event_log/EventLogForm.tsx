@@ -4,6 +4,7 @@ import { GameState, EventLog } from '../../types';
 import { EVENT_KEYS_EDITABLE } from '../basketball_5x5/constants';
 import PayloadForm from './PayloadForm';
 import { eventKeyToString } from './contentMappers';
+import { EVENT_KEYS } from '../../constants';
 
 interface EventLogFormProps {
   gameState: GameState;
@@ -45,7 +46,7 @@ function EventLogForm({
       game_clock_time: 0,
       minute: 0,
       second: 0,
-      key: 'score',
+      key: EVENT_KEYS.UPDATE_PLAYER_STAT,
       payload: {},
     };
   };
@@ -206,7 +207,9 @@ function EventLogForm({
                 }`}
                 disabled={isSubmitting}
               >
-                {t('basketball.modals.eventLogs.addEvent')}
+                {editingEvent
+                  ? t('basketball.modals.eventLogs.saveEvent')
+                  : t('basketball.modals.eventLogs.addEvent')}
               </button>
             </div>
             <div className="control">

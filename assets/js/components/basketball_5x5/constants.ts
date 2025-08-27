@@ -3,8 +3,8 @@ import { BasketballViews } from '../../types';
 
 export const EVENT_KEYS_EDITABLE = [
   EVENT_KEYS.UPDATE_PLAYER_STAT,
-  EVENT_KEYS.UPDATE_COACH_STAT,
-  EVENT_KEYS.UPDATE_TEAM_STAT,
+  // EVENT_KEYS.UPDATE_COACH_STAT,
+  // EVENT_KEYS.UPDATE_TEAM_STAT,
 ];
 
 export interface PlayerStat {
