@@ -7,6 +7,7 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
   alias GoChampsScoreboard.Games.Models.ViewSettingsState
   alias GoChampsScoreboard.Games.Models.OfficialState
   alias GoChampsScoreboard.Games.Models.InfoState
+  alias GoChampsScoreboard.Games.Models.ProtestState
 
   @type t :: %__MODULE__{
           id: String.t(),
@@ -17,6 +18,7 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
           live_state: LiveState,
           view_settings_state: ViewSettingsState,
           officials: [OfficialState.t()],
+          protest: ProtestState.t(),
           info: InfoState.t()
         }
   defstruct [
@@ -28,6 +30,7 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
     :live_state,
     :view_settings_state,
     :officials,
+    :protest,
     :info
   ]
 
@@ -40,6 +43,7 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
           String.t(),
           ViewSettingsState.t(),
           [OfficialState.t()],
+          ProtestState.t(),
           InfoState.t()
         ) :: t()
   def new(
@@ -50,7 +54,8 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
         live_state,
         sport_id \\ "basketball",
         view_settings_state \\ ViewSettingsState.new(),
-        oficials \\ [],
+        officials \\ [],
+        protest \\ ProtestState.new("", "", :no_protest),
         info \\ InfoState.new(DateTime.utc_now())
       ) do
     %__MODULE__{
@@ -61,7 +66,8 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
       sport_id: sport_id,
       live_state: live_state,
       view_settings_state: view_settings_state,
-      officials: oficials,
+      officials: officials,
+      protest: protest,
       info: info
     }
   end
@@ -82,6 +88,7 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
         live_state: %LiveState{},
         view_settings_state: %ViewSettingsState{},
         officials: [%OfficialState{}],
+        protest: %ProtestState{},
         info: %InfoState{}
       }
     )

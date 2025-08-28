@@ -267,6 +267,7 @@
     "endPeriod": "End Period",
     "gameTick": "Game Tick",
     "loadFromLastEventLog": "Load from Last Event Log",
+    "protestGame": "Protest Game",
     "removeCoachInTeam": "Remove Coach from Team",
     "removeOfficialInGame": "Remove Official from Game",
     "removePlayerInTeam": "Remove Player from Team",

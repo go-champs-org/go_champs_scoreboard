@@ -47,7 +47,7 @@ const TimeoutButton = ({
 
   return (
     <button
-      className="button is-info"
+      className="button is-info is-fullwidth"
       onClick={() =>
         pushEvent('update-team-stat', {
           'stat-id': 'timeouts',

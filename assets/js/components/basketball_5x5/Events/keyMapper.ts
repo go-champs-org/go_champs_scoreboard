@@ -7,6 +7,7 @@ const KEY_TO_EVENT_TYPE_KEY: { [key: string]: string } = {
   'end-period': 'eventKeys.endPeriod',
   'game-tick': 'eventKeys.gameTick',
   'load-from-last-event-log': 'eventKeys.loadFromLastEventLog',
+  'protest-game': 'eventKeys.protestGame',
   'remove-coach-in-team': 'eventKeys.removeCoachInTeam',
   'remove-official-in-game': 'eventKeys.removeOfficialInGame',
   'remove-player-in-team': 'eventKeys.removePlayerInTeam',

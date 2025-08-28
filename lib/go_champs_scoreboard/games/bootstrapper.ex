@@ -8,6 +8,7 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
   alias GoChampsScoreboard.Games.Models.TeamState
   alias GoChampsScoreboard.Games.Models.ViewSettingsState
   alias GoChampsScoreboard.Games.Models.InfoState
+  alias GoChampsScoreboard.Games.Models.ProtestState
 
   @mock_initial_period_time 600
   @mock_initial_extra_period_time 300
@@ -61,6 +62,7 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
       "basketball",
       view_settings_state,
       [],
+      ProtestState.new("", "", :no_protest),
       info
     )
   end

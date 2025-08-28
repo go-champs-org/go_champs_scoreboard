@@ -8,7 +8,8 @@ defmodule GoChampsScoreboard.GameStateFixtures do
     ViewSettingsState,
     InfoState,
     PlayerState,
-    CoachState
+    CoachState,
+    ProtestState
   }
 
   @doc """
@@ -120,6 +121,7 @@ defmodule GoChampsScoreboard.GameStateFixtures do
       sport_id,
       view_settings_state,
       officials,
+      ProtestState.new("", "", :no_protest),
       info_state
     )
   end

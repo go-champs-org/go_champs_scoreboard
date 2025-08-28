@@ -267,6 +267,7 @@
     "endPeriod": "Fim de Período",
     "gameTick": "Tick do Jogo",
     "loadFromLastEventLog": "Recalcular estado de jogo",
+    "protestGame": "Protestar Jogo",
     "removeCoachInTeam": "Remover Técnico",
     "removeOfficialInGame": "Remover Oficial",
     "removePlayerInTeam": "Remover Atleta",
