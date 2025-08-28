@@ -21,6 +21,7 @@ export interface Player {
   name: string;
   number: number;
   fouls: PlayerFoul[];
+  license_number: string;
   has_started: boolean;
   has_played: boolean;
   is_captain: boolean;

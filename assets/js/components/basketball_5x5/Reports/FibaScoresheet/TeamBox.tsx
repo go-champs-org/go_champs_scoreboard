@@ -85,6 +85,14 @@ const styles = StyleSheet.create({
         flex: '1 1 auto',
         borderBottom: '1px solid #000',
         minHeight: '14px',
+        columnLic: {
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '24px',
+          overflow: 'hidden',
+          borderRight: '1px solid #000',
+        },
         column: {
           flex: '1 1',
           display: 'flex',
@@ -335,6 +343,7 @@ export default function TeamBox({ type, team }: TeamProps) {
           type: teamPlayer.fouls[index]?.type || '',
           period: teamPlayer.fouls[index]?.period || 0,
         })),
+        license_number: teamPlayer.license_number || '',
         has_started: teamPlayer.has_started,
         first_played_period: teamPlayer.first_played_period,
         has_played: teamPlayer.has_played,
@@ -345,6 +354,7 @@ export default function TeamBox({ type, team }: TeamProps) {
       name: '',
       number: null,
       fouls,
+      license_number: '',
       has_started: false,
       has_played: false,
       is_captain: false,
@@ -377,6 +387,9 @@ export default function TeamBox({ type, team }: TeamProps) {
       </View>
       <View style={styles.teamContainer.table}>
         <View style={styles.teamContainer.table.row}>
+          <View style={styles.teamContainer.table.row.columnLic}>
+            <Text style={styles.teamContainer.table.content}>Lic #</Text>
+          </View>
           <View style={styles.teamContainer.table.row.column}>
             <Text style={styles.teamContainer.table.content}>
               Nome de atletas
@@ -394,6 +407,11 @@ export default function TeamBox({ type, team }: TeamProps) {
         </View>
         {renderPlayers.map((player, index) => (
           <View key={index} style={styles.teamContainer.table.row}>
+            <View style={styles.teamContainer.table.row.columnLic}>
+              <Text style={styles.teamContainer.table.content}>
+                {player.license_number}
+              </Text>
+            </View>
             <View
               style={{
                 ...styles.teamContainer.table.row.column,

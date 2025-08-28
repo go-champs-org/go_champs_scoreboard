@@ -12,15 +12,27 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
         name: "Some team",
         players: [
           %{id: "123", name: "Player 1", number: 12, state: :available},
-          %{id: "456", name: "Player 2", number: 23, state: :available}
+          %{id: "456", name: "Player 2", number: 23, state: :available, license_number: "CD34"}
         ]
       }
 
       expected = %FibaScoresheet.Team{
         name: "Some team",
         players: [
-          %FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: []},
-          %FibaScoresheet.Player{id: "456", name: "Player 2", number: 23, fouls: []}
+          %FibaScoresheet.Player{
+            id: "123",
+            name: "Player 1",
+            number: 12,
+            fouls: [],
+            license_number: ""
+          },
+          %FibaScoresheet.Player{
+            id: "456",
+            name: "Player 2",
+            number: 23,
+            fouls: [],
+            license_number: "CD34"
+          }
         ],
         coach: %FibaScoresheet.Coach{
           id: "",
@@ -45,7 +57,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       team_state = %{
         name: "Some team",
         players: [
-          %{id: "123", name: "Player 1", number: 12, state: :available},
+          %{id: "123", name: "Player 1", number: 12, state: :available, license_number: "AB12"},
           %{id: "456", name: "Player 2", number: 23, state: :not_available}
         ]
       }
@@ -53,7 +65,13 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       expected = %FibaScoresheet.Team{
         name: "Some team",
         players: [
-          %FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: []}
+          %FibaScoresheet.Player{
+            id: "123",
+            name: "Player 1",
+            number: 12,
+            fouls: [],
+            license_number: "AB12"
+          }
         ],
         coach: %FibaScoresheet.Coach{
           id: "",
