@@ -48,6 +48,7 @@ export interface PlayerState {
   id: string;
   name: string;
   number: string;
+  license_number: string;
   stats_values: { [key: string]: number };
 }
 

@@ -93,7 +93,7 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
         Map.get(player, "state", "available")
         |> String.to_atom()
 
-      PlayerState.new(player["id"], name, player["shirt_number"], state)
+      PlayerState.new(player["id"], name, player["shirt_number"], player["license_number"], state)
     end)
   end
 

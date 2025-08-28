@@ -210,6 +210,7 @@
       "modal": {
         "title": "Editar Jogadores",
         "addPlayer": "Adicionar jogador",
+        "licenseNumber": "Lic #",
         "name": "Nome",
         "delete": "Excluir"
       }

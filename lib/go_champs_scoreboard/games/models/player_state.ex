@@ -7,17 +7,26 @@ defmodule GoChampsScoreboard.Games.Models.PlayerState do
           id: String.t(),
           name: String.t(),
           number: String.t(),
+          license_number: String.t() | nil,
           state: state(),
           stats_values: map()
         }
-  defstruct [:id, :name, :number, :state, :stats_values]
+  defstruct [:id, :name, :number, :license_number, :state, :stats_values]
 
-  @spec new(String.t(), String.t(), String.t(), state(), map()) :: t()
-  def new(id, name, number \\ "0", state \\ :available, stats_values \\ Basketball.bootstrap()) do
+  @spec new(String.t(), String.t(), String.t(), String.t(), state(), map()) :: t()
+  def new(
+        id,
+        name,
+        number \\ "0",
+        license_number \\ "",
+        state \\ :available,
+        stats_values \\ Basketball.bootstrap()
+      ) do
     %__MODULE__{
       id: id,
       name: name,
       number: number,
+      license_number: license_number,
       state: state,
       stats_values: stats_values
     }
@@ -25,7 +34,14 @@ defmodule GoChampsScoreboard.Games.Models.PlayerState do
 
   defimpl Poison.Decoder, for: GoChampsScoreboard.Games.Models.PlayerState do
     def decode(
-          %{id: id, name: name, number: number, state: state, stats_values: stats_values},
+          %{
+            id: id,
+            name: name,
+            number: number,
+            license_number: license_number,
+            state: state,
+            stats_values: stats_values
+          },
           _options
         ) do
       %GoChampsScoreboard.Games.Models.PlayerState{
@@ -33,6 +49,7 @@ defmodule GoChampsScoreboard.Games.Models.PlayerState do
         id: id,
         name: name,
         number: number,
+        license_number: license_number,
         stats_values: stats_values
       }
     end

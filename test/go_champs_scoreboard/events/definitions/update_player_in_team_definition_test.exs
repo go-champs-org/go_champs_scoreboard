@@ -71,4 +71,36 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayerInTeamDefinitionTest
       assert player.number == 23
     end
   end
+
+  test "returns the game state with updated player when no value is assign to property" do
+    game_state = %GameState{
+      id: "1",
+      away_team: %TeamState{
+        players: []
+      },
+      home_team: %TeamState{
+        players: [%PlayerState{id: "some-id", name: "Kobe Bryant", number: 24}]
+      }
+    }
+
+    update_player_in_team_payload = %{
+      "team-type" => "home",
+      "player" => %{
+        "id" => "some-id",
+        "name" => "Kobe Bryant",
+        "number" => 24,
+        "license_number" => "KB24"
+      }
+    }
+
+    event =
+      UpdatePlayerInTeamDefinition.create(game_state.id, 10, 1, update_player_in_team_payload)
+
+    game = UpdatePlayerInTeamDefinition.handle(game_state, event)
+    [player] = game.home_team.players
+
+    assert player.name == "Kobe Bryant"
+    assert player.number == 24
+    assert player.license_number == "KB24"
+  end
 end

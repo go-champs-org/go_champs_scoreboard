@@ -35,12 +35,14 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
               "id" => "player-1",
               "name" => "Player 1",
               "shirt_name" => "P 1",
-              "shirt_number" => "1"
+              "shirt_number" => "1",
+              "license_number" => "L1"
             },
             %{
               "id" => "player-2",
               "name" => "Player 2",
-              "shirt_number" => "2"
+              "shirt_number" => "2",
+              "license_number" => "L2"
             },
             %{
               "id" => "player-3",
@@ -225,10 +227,12 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
       assert player_1.id == "player-1"
       assert player_1.name == "P 1"
       assert player_1.number == "1"
+      assert player_1.license_number == "L1"
       assert player_1.state == :available
       assert player_2.id == "player-2"
       assert player_2.name == "Player 2"
       assert player_2.number == "2"
+      assert player_2.license_number == "L2"
       assert player_2.state == :available
       assert player_3.id == "player-3"
       assert player_3.name == "P 3"

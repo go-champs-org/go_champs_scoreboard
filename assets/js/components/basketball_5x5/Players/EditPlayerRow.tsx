@@ -235,6 +235,12 @@ function MediumEditPlayerRow({
       player: { ...player, number: value },
     });
   };
+  const onUpdateLicenseNumber = (value: string) => {
+    pushEvent('update-player-in-team', {
+      ['team-type']: teamType,
+      player: { ...player, license_number: value },
+    });
+  };
   const onRemovePlayer = () => {
     pushEvent('remove-player-in-team', {
       ['team-type']: teamType,
@@ -383,6 +389,21 @@ function MediumEditPlayerRow({
           statKey="fouls_flagrant"
           pushEvent={pushEvent}
           teamType={teamType}
+        />
+      </td>
+      <td>
+        <FormField
+          initialValue={player.license_number}
+          onChange={onUpdateLicenseNumber}
+          render={(value, onChange) => (
+            <input
+              className="input is-small"
+              type="text"
+              value={value}
+              onChange={onChange}
+              disabled={player.state === 'not_available'}
+            />
+          )}
         />
       </td>
       <td>
