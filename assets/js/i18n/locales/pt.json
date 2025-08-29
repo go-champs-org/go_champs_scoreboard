@@ -215,6 +215,14 @@
         "delete": "Excluir"
       }
     },
+    "protest": {
+      "controls": {
+        "registryProtest": "Registrar Protesto",
+        "registry": "Registrar",
+        "selectTeam": "Selecionar Time",
+        "selectPlayer": "Selecionar Jogador"
+      }
+    },
     "coaches": {
       "modal": {
         "title": "Editar Técnicos",

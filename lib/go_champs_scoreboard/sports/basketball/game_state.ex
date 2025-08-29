@@ -199,4 +199,20 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameState do
     |> Map.put(:total_player_stats, source_team.total_player_stats || %{})
     |> Map.put(:stats_values, source_team.stats_values || %{})
   end
+
+  @spec protest_game(GameState.t(), map()) :: GameState.t()
+  def protest_game(game_state, event_payload) do
+    team_type = Map.get(event_payload, "team-type", "none") |> String.to_atom()
+    player_id = Map.get(event_payload, "player-id", "")
+
+    protest_state =
+      GoChampsScoreboard.Games.Models.ProtestState.new(
+        team_type,
+        player_id,
+        :protest_filed
+      )
+
+    game_state
+    |> Games.update_protest_state(protest_state)
+  end
 end

@@ -589,4 +589,66 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameStateTest do
       assert result.home_team.stats_values["points"] == 85
     end
   end
+
+  describe "protest_game/2" do
+    test "updates game state protest with team-id and player-id from payload" do
+      game_state = basketball_game_state_fixture()
+
+      event_payload = %{
+        "team-type" => "away",
+        "player-id" => "away-player-123"
+      }
+
+      result = GameState.protest_game(game_state, event_payload)
+
+      assert result.protest.team_type == :away
+      assert result.protest.player_id == "away-player-123"
+      assert result.protest.state == :protest_filed
+    end
+
+    test "updates game state protest with empty strings when payload keys are missing" do
+      game_state = basketball_game_state_fixture()
+
+      event_payload = %{}
+
+      result = GameState.protest_game(game_state, event_payload)
+
+      assert result.protest.team_type == :none
+      assert result.protest.player_id == ""
+      assert result.protest.state == :protest_filed
+    end
+
+    test "updates game state protest with home team data" do
+      game_state = basketball_game_state_fixture()
+
+      event_payload = %{
+        "team-type" => "home",
+        "player-id" => "home-player-456"
+      }
+
+      result = GameState.protest_game(game_state, event_payload)
+
+      assert result.protest.team_type == :home
+      assert result.protest.player_id == "home-player-456"
+      assert result.protest.state == :protest_filed
+    end
+
+    test "preserves other game state fields when updating protest" do
+      game_state = basketball_game_state_fixture()
+      original_id = game_state.id
+      original_clock_time = game_state.clock_state.time
+
+      event_payload = %{
+        "team-type" => "away",
+        "player-id" => "player-789"
+      }
+
+      result = GameState.protest_game(game_state, event_payload)
+
+      assert result.id == original_id
+      assert result.clock_state.time == original_clock_time
+      assert result.home_team == game_state.home_team
+      assert result.away_team == game_state.away_team
+    end
+  end
 end

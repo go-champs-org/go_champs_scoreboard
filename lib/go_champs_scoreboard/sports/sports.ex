@@ -117,4 +117,14 @@ defmodule GoChampsScoreboard.Sports.Sports do
         game_state
     end
   end
+
+  @spec protest_game(String.t(), GameState.t(), map()) :: GameState.t()
+  def protest_game("basketball", game_state, event_payload) do
+    Basketball.GameState.protest_game(game_state, event_payload)
+  end
+
+  @spec protest_game(String.t(), GameState.t(), map()) :: GameState.t()
+  def protest_game(_, game_state, _event_payload) do
+    game_state
+  end
 end

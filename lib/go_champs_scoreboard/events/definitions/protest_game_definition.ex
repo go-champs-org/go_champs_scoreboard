@@ -4,6 +4,7 @@ defmodule GoChampsScoreboard.Events.Definitions.ProtestGameDefinition do
   alias GoChampsScoreboard.Events.Models.Event
   alias GoChampsScoreboard.Games.Models.GameState
   alias GoChampsScoreboard.Events.Models.StreamConfig
+  alias GoChampsScoreboard.Sports.Sports
 
   @key "protest-game"
 
@@ -34,9 +35,16 @@ defmodule GoChampsScoreboard.Events.Definitions.ProtestGameDefinition do
   @spec handle(any()) :: none()
   def handle(
         game_state,
-        _event \\ nil
+        event \\ nil
       ) do
-    game_state
+    case event do
+      %Event{payload: payload} when payload != nil ->
+        game_state.sport_id
+        |> Sports.protest_game(game_state, payload)
+
+      _ ->
+        game_state
+    end
   end
 
   @impl true

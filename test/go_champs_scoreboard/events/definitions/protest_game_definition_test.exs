@@ -41,12 +41,39 @@ defmodule GoChampsScoreboard.Events.Definitions.ProtestGameDefinitionTest do
   end
 
   describe "handle/2" do
-    test "returns the game state unchanged" do
+    test "updates game state protest with payload data" do
+      game_state = %GameState{
+        id: "game-123",
+        sport_id: "basketball",
+        protest: GoChampsScoreboard.Games.Models.ProtestState.new(:none, "", :no_protest)
+      }
+
+      event = %Event{
+        key: "protest-game",
+        payload: %{"team-type" => "home", "player-id" => "player-456"}
+      }
+
+      result = ProtestGameDefinition.handle(game_state, event)
+
+      assert result.protest.team_type == :home
+      assert result.protest.player_id == "player-456"
+      assert result.protest.state == :protest_filed
+    end
+
+    test "returns game state unchanged when event is nil" do
+      game_state = %GameState{id: "game-123"}
+
+      result = ProtestGameDefinition.handle(game_state)
+
+      assert result == game_state
+    end
+
+    test "returns game state unchanged when event payload is nil" do
       game_state = %GameState{id: "game-123"}
 
       event = %Event{
         key: "protest-game",
-        payload: %{"team-id" => "team-123", "player-id" => "player-456"}
+        payload: nil
       }
 
       result = ProtestGameDefinition.handle(game_state, event)

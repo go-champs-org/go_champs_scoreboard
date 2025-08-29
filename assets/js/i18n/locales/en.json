@@ -215,6 +215,14 @@
         "delete": "Delete"
       }
     },
+    "protest": {
+      "controls": {
+        "registryProtest": "Registry Protest",
+        "registry": "Registry",
+        "selectTeam": "Select Team",
+        "selectPlayer": "Select Player"
+      }
+    },
     "coaches": {
       "modal": {
         "title": "Edit Coaches",

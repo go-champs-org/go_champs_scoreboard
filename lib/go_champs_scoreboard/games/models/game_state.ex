@@ -55,7 +55,7 @@ defmodule GoChampsScoreboard.Games.Models.GameState do
         sport_id \\ "basketball",
         view_settings_state \\ ViewSettingsState.new(),
         officials \\ [],
-        protest \\ ProtestState.new("", "", :no_protest),
+        protest \\ ProtestState.new(:none, "", :no_protest),
         info \\ InfoState.new(DateTime.utc_now())
       ) do
     %__MODULE__{

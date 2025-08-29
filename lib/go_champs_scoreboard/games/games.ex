@@ -1,4 +1,5 @@
 defmodule GoChampsScoreboard.Games.Games do
+  alias GoChampsScoreboard.Games.Models.ProtestState
   alias GoChampsScoreboard.Events.Definitions.EndGameLiveModeDefinition
   alias GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition
   alias GoChampsScoreboard.Events.ValidatorCreator
@@ -12,6 +13,7 @@ defmodule GoChampsScoreboard.Games.Games do
   alias GoChampsScoreboard.Games.Models.GameState
   alias GoChampsScoreboard.Games.Models.OfficialState
   alias GoChampsScoreboard.Games.Models.GameClockState
+  alias GoChampsScoreboard.Games.Models.ProtestState
 
   @spec find_or_bootstrap(String.t()) :: GameState.t()
   @spec find_or_bootstrap(String.t(), String.t()) :: GameState.t()
@@ -139,5 +141,10 @@ defmodule GoChampsScoreboard.Games.Games do
   @spec update_clock_state(GameState.t(), GameClockState.t()) :: GameState.t()
   def update_clock_state(game_state, clock_state) do
     %{game_state | clock_state: clock_state}
+  end
+
+  @spec update_protest_state(GameState.t(), ProtestState.t()) :: GameState.t()
+  def update_protest_state(game_state, protest_state) do
+    %{game_state | protest: protest_state}
   end
 end

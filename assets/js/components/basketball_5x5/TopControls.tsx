@@ -2,6 +2,7 @@ import React from 'react';
 import { GameState } from '../../types';
 import TeamControls, { BasicTeamControls } from './TeamControls';
 import ClockControls from './ClockControls';
+import ProtestControls from './ProtestControls';
 
 interface TopControlsProps {
   game_state: GameState;
@@ -29,13 +30,17 @@ function MediumTopControls({ game_state, pushEvent }: TopControlsProps) {
       </div>
 
       <div className="column is-4">
-        <ClockControls
-          home_team={game_state.home_team}
-          away_team={game_state.away_team}
-          clock_state={game_state.clock_state}
-          live_state={game_state.live_state}
-          pushEvent={pushEvent}
-        />
+        {game_state.clock_state.state === 'finished' ? (
+          <ProtestControls game_state={game_state} pushEvent={pushEvent} />
+        ) : (
+          <ClockControls
+            home_team={game_state.home_team}
+            away_team={game_state.away_team}
+            clock_state={game_state.clock_state}
+            live_state={game_state.live_state}
+            pushEvent={pushEvent}
+          />
+        )}
       </div>
 
       <div className="column is-4">

@@ -246,6 +246,32 @@ defmodule GoChampsScoreboard.Games.GamesTest do
     end
   end
 
+  describe "update_protest_state/2" do
+    test "updates the protest state in the game state" do
+      game_state = %GameState{
+        id: "some-game-id",
+        away_team: %TeamState{name: "Some away team"},
+        home_team: %TeamState{name: "Some home team"},
+        protest: %GoChampsScoreboard.Games.Models.ProtestState{
+          team_type: :none,
+          player_id: "",
+          state: :no_protest
+        }
+      }
+
+      updated_protest_state = %GoChampsScoreboard.Games.Models.ProtestState{
+        team_type: :home,
+        player_id: "player-456",
+        state: :protest_filed
+      }
+
+      result_game_state = Games.update_protest_state(game_state, updated_protest_state)
+
+      assert result_game_state.id == "some-game-id"
+      assert result_game_state.protest == updated_protest_state
+    end
+  end
+
   defp set_go_champs_api_respose(
          game_id \\ "some-game-id",
          away_team_name \\ "Go champs away team",

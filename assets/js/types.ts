@@ -66,7 +66,7 @@ export interface GameClockState {
   initial_period_time: number;
   time: number;
   period: number;
-  state: 'not_started' | 'running' | 'paused' | 'stopped';
+  state: 'not_started' | 'running' | 'paused' | 'stopped' | 'finished';
 }
 
 export interface OfficialState {
