@@ -98,6 +98,17 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
             {t('basketball.navigation.eventLogs')}
           </button>
         </p>
+        {game_state.view_settings_state.view !== 'basketball-basic' && (
+          <p className="level-item">
+            <a
+              className="button is-info is-small"
+              href={`/scoreboard/report_viewer/${game_state.id}`}
+              target="_blank"
+            >
+              {t('basketball.navigation.fibaScoresheet')}
+            </a>
+          </p>
+        )}
         <Modal
           title={t('basketball.navigation.boxScore')}
           onClose={() => setShowBoxScoreModal(false)}
