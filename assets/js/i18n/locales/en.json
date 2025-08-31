@@ -221,6 +221,12 @@
         "registry": "Registry",
         "selectTeam": "Select Team",
         "selectPlayer": "Select Player"
+      },
+      "registered": {
+        "title": "Protest Registered",
+        "message": "A protest has been filed for this game",
+        "player": "Player",
+        "team": "Team"
       }
     },
     "coaches": {

@@ -34,6 +34,7 @@ export const DEFAULT_PLAYER_STATE: PlayerState = {
   id: '',
   name: '',
   number: '',
+  license_number: '',
   stats_values: {},
 };
 
@@ -96,6 +97,12 @@ export interface ViewSettingsState {
   view: BasketballViews;
 }
 
+export interface ProtestState {
+  team_type: 'home' | 'away';
+  player_id: string;
+  state: 'no_protest' | 'protest_filed';
+}
+
 export interface GameState {
   id: string;
   away_team: TeamState;
@@ -105,6 +112,7 @@ export interface GameState {
   live_state: LiveState;
   view_settings_state: ViewSettingsState;
   officials: OfficialState[];
+  protest: ProtestState;
 }
 
 export interface EventLogUpdatePlayerStatPayload {
@@ -152,4 +160,9 @@ export const DEFAULT_GAME_STATE = {
     view: 'basketball-medium',
   },
   officials: [],
+  protest: {
+    team_id: '',
+    player_id: '',
+    state: 'no_protest',
+  },
 } as GameState;

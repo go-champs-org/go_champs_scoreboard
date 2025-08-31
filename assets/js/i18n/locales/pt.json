@@ -221,6 +221,12 @@
         "registry": "Registrar",
         "selectTeam": "Selecionar Time",
         "selectPlayer": "Selecionar Jogador"
+      },
+      "registered": {
+        "title": "Protesto Registrado",
+        "message": "Um protesto foi registrado para este jogo",
+        "player": "Jogador",
+        "team": "Time"
       }
     },
     "coaches": {
