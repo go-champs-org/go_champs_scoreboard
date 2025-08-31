@@ -49,6 +49,11 @@ export interface Official {
   name: string;
 }
 
+export interface Protest {
+  state: 'no_protest' | 'protest_filed';
+  player_name: string;
+}
+
 export interface Team {
   name: string;
   players: Player[];
@@ -290,17 +295,20 @@ function EndResults({ teamA, teamB }: { teamA: Team; teamB: Team }) {
   );
 }
 
-function Protest() {
+function Protest({ protest }: { protest: Protest }) {
   return (
     <View style={styles.periods}>
       <View style={styles.periods.row}>
         <View style={styles.periods.row.column}>
           <View style={styles.periods.period}>
             <View style={styles.periods.period.quarter}>
-              <Text>Súmula protestada?</Text>
+              <Text>
+                Súmula protestada?{' '}
+                {protest.state === 'no_protest' ? ' Não' : ' Sim'}
+              </Text>
             </View>
             <View style={styles.periods.period.score}>
-              <Text>Assinatura capitão caso prostesto</Text>
+              <Text>Assinatura</Text>
             </View>
           </View>
         </View>
@@ -309,7 +317,9 @@ function Protest() {
         <View style={styles.periods.row.column}>
           <View style={styles.periods.period}>
             <View style={styles.periods.period.quarter}>
-              <Text>Não</Text>
+              <Text>
+                Atleta: {protest.player_name ? protest.player_name : 'N/A'}
+              </Text>
             </View>
             <View style={styles.periods.period.score}></View>
           </View>
@@ -358,6 +368,7 @@ export interface FibaScoresheetData {
   crew_chief: Official;
   umpire_1: Official;
   umpire_2: Official;
+  protest: Protest;
 }
 
 interface FibaScoresheetProps {
@@ -415,7 +426,7 @@ function FibaScoresheet({ scoresheetData }: FibaScoresheetProps) {
                 teamA={scoresheetData.team_a}
                 teamB={scoresheetData.team_b}
               />
-              <Protest />
+              <Protest protest={scoresheetData.protest} />
               <EndGame endDatetime={scoresheetData.info.actual_end_datetime} />
             </View>
           </View>

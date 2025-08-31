@@ -109,6 +109,7 @@ defmodule GoChampsScoreboard.GameStateFixtures do
     officials = Keyword.get(opts, :officials, [])
     view_settings_state = Keyword.get(opts, :view_settings_state, ViewSettingsState.new())
     info_state = Keyword.get(opts, :info_state, InfoState.new(DateTime.utc_now()))
+    protest_state = Keyword.get(opts, :protest_state, ProtestState.new("", "", :no_protest))
 
     # Create the game state
 
@@ -121,7 +122,7 @@ defmodule GoChampsScoreboard.GameStateFixtures do
       sport_id,
       view_settings_state,
       officials,
-      ProtestState.new("", "", :no_protest),
+      protest_state,
       info_state
     )
   end
@@ -334,6 +335,11 @@ defmodule GoChampsScoreboard.GameStateFixtures do
         datetime: datetime,
         tournament_name: "Tournament Name",
         tournament_id: "tournament-id"
+      },
+      protest_state: %ProtestState{
+        team_type: :home,
+        player_id: "123",
+        state: :protest_filed
       }
     )
   end

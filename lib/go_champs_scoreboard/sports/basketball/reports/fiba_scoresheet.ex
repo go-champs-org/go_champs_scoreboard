@@ -207,6 +207,22 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
     ]
   end
 
+  defmodule Protest do
+    @moduledoc """
+    Protest struct for FIBA scoresheet.
+    """
+
+    @type t :: %__MODULE__{
+            player_name: String.t(),
+            state: :no_protest | :protest_filed
+          }
+
+    defstruct [
+      :player_name,
+      :state
+    ]
+  end
+
   @type t :: %__MODULE__{
           game_id: String.t(),
           tournament_name: String.t(),
@@ -219,7 +235,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
           shot_clock_operator: Official.t(),
           crew_chief: Official.t(),
           umpire_1: Official.t(),
-          umpire_2: Official.t()
+          umpire_2: Official.t(),
+          protest: Protest.t()
         }
 
   defstruct [
@@ -234,6 +251,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
     :shot_clock_operator,
     :crew_chief,
     :umpire_1,
-    :umpire_2
+    :umpire_2,
+    :protest
   ]
 end

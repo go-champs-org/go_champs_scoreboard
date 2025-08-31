@@ -116,6 +116,10 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
         umpire_2: %FibaScoresheet.Official{
           id: "umpire-2-official-id",
           name: "Lisa Umpire Two"
+        },
+        protest: %FibaScoresheet.Protest{
+          state: :protest_filed,
+          player_name: "Player 1"
         }
       }
 
