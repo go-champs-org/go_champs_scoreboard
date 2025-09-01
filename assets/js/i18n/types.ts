@@ -86,7 +86,7 @@ declare module 'react-i18next' {
               oneTo: string;
               personalFault: string;
               technicalFault: string;
-              flagrantFault: string;
+              unsportsmanlikeFault: string;
             };
           };
           players: {

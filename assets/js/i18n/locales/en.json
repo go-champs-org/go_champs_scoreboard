@@ -182,22 +182,22 @@
         "turnovers": "Turnovers"
       },
       "controls": {
-        "onePt": "+1 PT",
+        "onePt": "+1 PT (FT)",
         "twoPts": "+2 PTS",
         "threePts": "+3 PTS",
-        "missOnePt": "Miss 1 PT",
-        "missTwoPts": "Miss 2 PTS",
-        "missThreePts": "Miss 3 PTS",
-        "oneRebOff": "+1 REB OFF",
-        "oneRebDef": "+1 REB DEF",
-        "oneReb": "+1 REB",
-        "oneStl": "+1 STL",
-        "oneAss": "+1 ASS",
-        "oneBlk": "+1 BLK",
-        "oneTo": "+1 TO",
-        "personalFault": "Personal Fault",
-        "technicalFault": "Technical Fault",
-        "flagrantFault": "Flagrant Fault"
+        "missOnePt": "MISS 1 PT (FT)",
+        "missTwoPts": "MISS 2 PTS",
+        "missThreePts": "MISS 3 PTS",
+        "oneRebOff": "+1 REBOUND OFF.",
+        "oneRebDef": "+1 REBOUND DEF.",
+        "oneReb": "+1 REBOUND",
+        "oneStl": "+1 STILL",
+        "oneAss": "+1 ASSIST",
+        "oneBlk": "+1 BLOCK",
+        "oneTo": "+1 TURNOVER",
+        "personalFault": "PERSONAL F. (P)",
+        "technicalFault": "TECHNICAL F. (T)",
+        "unsportsmanlikeFault": "UNSPORT. F. (U)"
       }
     },
     "players": {

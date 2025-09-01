@@ -182,22 +182,22 @@
         "turnovers": "Erros de Ataque"
       },
       "controls": {
-        "onePt": "+1 PT",
+        "onePt": "+1 PT (LL)",
         "twoPts": "+2 PTS",
         "threePts": "+3 PTS",
-        "missOnePt": "Erro 1 PT",
-        "missTwoPts": "Erro 2 PTS",
-        "missThreePts": "Erro 3 PTS",
-        "oneRebOff": "+1 REB OF",
-        "oneRebDef": "+1 REB DF",
-        "oneReb": "+1 REB",
-        "oneStl": "+1 ROU",
-        "oneAss": "+1 ASS",
-        "oneBlk": "+1 TOC",
-        "oneTo": "+1 ERR",
-        "personalFault": "Falta Pessoal",
-        "technicalFault": "Falta Técnica",
-        "flagrantFault": "Falta Antiesportiva"
+        "missOnePt": "1 PT ERRO (LL)",
+        "missTwoPts": "2 PTS ERRO",
+        "missThreePts": "3 PTS ERRO",
+        "oneRebOff": "+1 REBOTE OF.",
+        "oneRebDef": "+1 REBOTE DF.",
+        "oneReb": "+1 REBOTE",
+        "oneStl": "+1 ROUBO",
+        "oneAss": "+1 ASSISTÊNCIA",
+        "oneBlk": "+1 TOCO",
+        "oneTo": "+1 ERRO",
+        "personalFault": "F. PESSOAL (P)",
+        "technicalFault": "F. TÉCNICA (T)",
+        "unsportsmanlikeFault": "F. ANT. (U)"
       }
     },
     "players": {

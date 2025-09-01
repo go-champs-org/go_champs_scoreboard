@@ -257,7 +257,7 @@ export function MediumStatsControls({
             disabled={buttonsDisabled}
           >
             <span className="shortcut">B</span>
-            {t('basketball.stats.controls.flagrantFault')}
+            {t('basketball.stats.controls.unsportsmanlikeFault')}
           </button>
         </div>
       </div>
