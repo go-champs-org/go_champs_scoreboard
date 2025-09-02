@@ -96,7 +96,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
 
     updated_player = %FibaScoresheet.Player{
       player
-      | fouls: [foul | player.fouls]
+      | fouls: player.fouls ++ [foul]
     }
 
     updated_team = %FibaScoresheet.Team{
@@ -107,7 +107,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
             Enum.find_index(team.players, fn p -> p.id == player_id end),
             updated_player
           ),
-        all_fouls: [foul | team.all_fouls]
+        all_fouls: team.all_fouls ++ [foul]
     }
 
     updated_team
@@ -122,7 +122,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
 
     updated_coach = %FibaScoresheet.Coach{
       coach
-      | fouls: [foul | coach.fouls]
+      | fouls: coach.fouls ++ [foul]
     }
 
     updated_team = %FibaScoresheet.Team{
@@ -139,7 +139,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
           else
             team.assistant_coach
           end,
-        all_fouls: [foul | team.all_fouls]
+        all_fouls: team.all_fouls ++ [foul]
     }
 
     updated_team
@@ -169,7 +169,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
   @spec add_timeout(FibaScoresheet.Team.t(), FibaScoresheet.Timeout.t()) ::
           FibaScoresheet.Team.t()
   def add_timeout(team, timeout) do
-    updated_timeouts = [timeout | team.timeouts]
+    updated_timeouts = team.timeouts ++ [timeout]
     %FibaScoresheet.Team{team | timeouts: updated_timeouts}
   end
 

@@ -271,6 +271,41 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       assert player.fouls == [foul]
       assert updated_team.all_fouls == [foul]
     end
+
+    test "adds multiple fouls to the end of the player's and team's foul lists" do
+      existing_foul = %FibaScoresheet.Foul{
+        type: "P",
+        period: 1,
+        extra_action: nil
+      }
+
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [
+          %FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: [existing_foul]}
+        ],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [existing_foul],
+        running_score: %{},
+        score: 0
+      }
+
+      new_foul = %FibaScoresheet.Foul{
+        type: "T",
+        period: 2,
+        extra_action: "FT"
+      }
+
+      updated_team = TeamManager.add_player_foul(team, "123", new_foul)
+      player = Enum.find(updated_team.players, fn p -> p.id == "123" end)
+
+      assert player.fouls == [existing_foul, new_foul]
+      assert List.last(player.fouls) == new_foul
+
+      assert updated_team.all_fouls == [existing_foul, new_foul]
+      assert List.last(updated_team.all_fouls) == new_foul
+    end
   end
 
   describe "add_coach_foul/3" do
@@ -296,6 +331,41 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       assert coach.fouls == [foul]
       assert updated_team.all_fouls == [foul]
     end
+
+    test "adds multiple fouls to the end of the coach's and team's foul lists" do
+      existing_foul = %FibaScoresheet.Foul{
+        type: "T",
+        period: 1,
+        extra_action: nil
+      }
+
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [],
+        coach: %FibaScoresheet.Coach{id: "coach-id", name: "Coach 1", fouls: [existing_foul]},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [existing_foul],
+        running_score: %{},
+        score: 0
+      }
+
+      new_foul = %FibaScoresheet.Foul{
+        type: "T",
+        period: 2,
+        extra_action: "FT"
+      }
+
+      updated_team = TeamManager.add_coach_foul(team, "coach-id", new_foul)
+      coach = updated_team.coach
+
+      # Verify the new foul is added at the end of the coach's fouls array
+      assert coach.fouls == [existing_foul, new_foul]
+      assert List.last(coach.fouls) == new_foul
+
+      # Verify the new foul is added at the end of the team's all_fouls array
+      assert updated_team.all_fouls == [existing_foul, new_foul]
+      assert List.last(updated_team.all_fouls) == new_foul
+    end
   end
 
   describe "add_timeout/2" do
@@ -318,6 +388,35 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
 
       updated_team = TeamManager.add_timeout(team, timeout)
       assert updated_team.timeouts == [timeout]
+    end
+
+    test "adds multiple timeouts to the end of the team's timeouts list" do
+      existing_timeout = %FibaScoresheet.Timeout{
+        period: 1,
+        minute: 5
+      }
+
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [],
+        running_score: %{},
+        score: 0,
+        timeouts: [existing_timeout]
+      }
+
+      new_timeout = %FibaScoresheet.Timeout{
+        period: 2,
+        minute: 8
+      }
+
+      updated_team = TeamManager.add_timeout(team, new_timeout)
+
+      # Verify the new timeout is added at the end of the timeouts array
+      assert updated_team.timeouts == [existing_timeout, new_timeout]
+      assert List.last(updated_team.timeouts) == new_timeout
     end
   end
 
