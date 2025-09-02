@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, StyleSheet } from '@react-pdf/renderer';
 import { RunningScore, ScoreMark } from '../FibaScoresheet';
-import { backgroundColorForPeriod, textColorForPeriod } from './styles';
+import { backgroundColorForPeriod, BLUE, textColorForPeriod } from './styles';
 
 const styles = StyleSheet.create({
   runningScore: {
@@ -52,12 +52,62 @@ const styles = StyleSheet.create({
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
+            position: 'relative',
+            circle: {
+              position: 'absolute',
+              top: '0',
+              left: '0',
+              height: '100%',
+              width: '100%',
+              borderRadius: '15px',
+              borderWidth: '1px',
+            },
+            middleLine: {
+              position: 'absolute',
+              top: '0',
+              left: '49%',
+              width: '2px',
+              height: '100%',
+            },
           },
           numberContainer: {
             flex: '1 1 50%',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
+            position: 'relative',
+            dot: {
+              position: 'absolute',
+              top: '5px',
+              left: '6px',
+              width: '4px',
+              height: '4px',
+              borderRadius: '2px',
+            },
+            slash: {
+              position: 'absolute',
+              top: '6px',
+              left: '-2px',
+              height: '2px',
+              width: '21px',
+              transform: 'rotate(37deg)',
+            },
+            circle: {
+              position: 'absolute',
+              top: '0',
+              left: '0',
+              height: '100%',
+              width: '100%',
+              borderRadius: '15px',
+              borderWidth: '1px',
+            },
+            middleLine: {
+              position: 'absolute',
+              top: '0',
+              left: '49%',
+              width: '2px',
+              height: '100%',
+            },
           },
         },
       },
@@ -69,12 +119,15 @@ function ScoreMarkDisplay({
   number,
   runningScore,
   isReversed = false,
+  isNotUsed = false,
 }: {
   key: number;
   number: number;
   runningScore: RenderRunningScore;
   isReversed: boolean;
+  isNotUsed: boolean;
 }) {
+  const score = runningScore[number];
   return (
     <View
       style={{
@@ -90,10 +143,28 @@ function ScoreMarkDisplay({
           borderLeft: isReversed ? '1px solid #000' : 'none',
         }}
       >
-        {runningScore[number] && (
-          <Text style={textColorForPeriod(runningScore[number].period)}>
-            {runningScore[number].player_number}
+        {score && (
+          <Text style={textColorForPeriod(score.period)}>
+            {score.player_number}
           </Text>
+        )}
+        {score && score.type === '3PT' && (
+          <View
+            style={{
+              ...styles.runningScore.columnsContainer.column.scoreMark
+                .playerContainer.circle,
+              borderColor: textColorForPeriod(score.period).color,
+            }}
+          />
+        )}
+        {isNotUsed && (
+          <View
+            style={{
+              ...styles.runningScore.columnsContainer.column.scoreMark
+                .playerContainer.middleLine,
+              backgroundColor: BLUE,
+            }}
+          />
         )}
       </View>
       <View
@@ -102,13 +173,49 @@ function ScoreMarkDisplay({
         }
       >
         <Text>{number}</Text>
+        {score && score.type === 'FT' && (
+          <View
+            style={{
+              ...styles.runningScore.columnsContainer.column.scoreMark
+                .numberContainer.dot,
+              ...backgroundColorForPeriod(score.period),
+            }}
+          />
+        )}
+        {score && (score.type === '2PT' || score.type === '3PT') && (
+          <View
+            style={{
+              ...styles.runningScore.columnsContainer.column.scoreMark
+                .numberContainer.slash,
+              ...backgroundColorForPeriod(score.period),
+            }}
+          />
+        )}
+        {score && score.is_last_of_period && (
+          <View
+            style={{
+              ...styles.runningScore.columnsContainer.column.scoreMark
+                .numberContainer.circle,
+              borderColor: textColorForPeriod(score.period).color,
+            }}
+          />
+        )}
+        {isNotUsed && (
+          <View
+            style={{
+              ...styles.runningScore.columnsContainer.column.scoreMark
+                .numberContainer.middleLine,
+              backgroundColor: BLUE,
+            }}
+          />
+        )}
       </View>
-      {runningScore[number] && runningScore[number].is_last_of_period && (
+      {score && score.is_last_of_period && (
         <View
           style={{
             ...styles.runningScore.columnsContainer.column.scoreMark
               .endPeriodLine,
-            ...backgroundColorForPeriod(runningScore[number].period),
+            ...backgroundColorForPeriod(score.period),
           }}
         ></View>
       )}
@@ -124,12 +231,16 @@ function ScoreList({
   runningScore,
   firstNumber,
   lastNumber,
+  lastTeamScore,
   isReversed = false,
+  isGameEnded = false,
 }: {
   runningScore: RenderRunningScore;
   firstNumber: number;
   lastNumber: number;
+  lastTeamScore: number;
   isReversed?: boolean;
+  isGameEnded?: boolean;
 }) {
   const scoreList = Array.from(
     { length: lastNumber - firstNumber + 1 },
@@ -143,6 +254,7 @@ function ScoreList({
           number={number}
           runningScore={runningScore}
           isReversed={isReversed}
+          isNotUsed={isGameEnded && number > lastTeamScore}
         />
       ))}
     </>
@@ -163,10 +275,16 @@ function generateRunningScoreData(
 
 export default function RunningScoreBox({
   aTeamRunningScore,
+  aTeamLastScore = 0,
   bTeamRunningScore,
+  bTeamLastScore = 0,
+  isGameEnded = false,
 }: {
   aTeamRunningScore: RunningScore;
+  aTeamLastScore: number;
   bTeamRunningScore: RunningScore;
+  bTeamLastScore: number;
+  isGameEnded?: boolean;
 }) {
   const aTeamFullRunningScore = generateRunningScoreData(aTeamRunningScore);
   const bTeamFullRunningScore = generateRunningScoreData(bTeamRunningScore);
@@ -184,6 +302,8 @@ export default function RunningScoreBox({
             runningScore={aTeamFullRunningScore}
             firstNumber={1}
             lastNumber={40}
+            lastTeamScore={aTeamLastScore}
+            isGameEnded={isGameEnded}
           />
         </View>
         <View style={styles.runningScore.columnsContainer.column}>
@@ -195,6 +315,8 @@ export default function RunningScoreBox({
             firstNumber={1}
             lastNumber={40}
             isReversed
+            lastTeamScore={bTeamLastScore}
+            isGameEnded={isGameEnded}
           />
         </View>
         <View style={styles.runningScore.columnsContainer.column}>
@@ -205,6 +327,8 @@ export default function RunningScoreBox({
             runningScore={aTeamFullRunningScore}
             firstNumber={41}
             lastNumber={80}
+            lastTeamScore={aTeamLastScore}
+            isGameEnded={isGameEnded}
           />
         </View>
         <View style={styles.runningScore.columnsContainer.column}>
@@ -216,6 +340,8 @@ export default function RunningScoreBox({
             firstNumber={41}
             lastNumber={80}
             isReversed
+            lastTeamScore={bTeamLastScore}
+            isGameEnded={isGameEnded}
           />
         </View>
         <View style={styles.runningScore.columnsContainer.column}>
@@ -226,6 +352,8 @@ export default function RunningScoreBox({
             runningScore={aTeamFullRunningScore}
             firstNumber={81}
             lastNumber={120}
+            lastTeamScore={aTeamLastScore}
+            isGameEnded={isGameEnded}
           />
         </View>
         <View style={styles.runningScore.columnsContainer.column}>
@@ -237,6 +365,8 @@ export default function RunningScoreBox({
             firstNumber={81}
             lastNumber={120}
             isReversed
+            lastTeamScore={bTeamLastScore}
+            isGameEnded={isGameEnded}
           />
         </View>
         <View style={styles.runningScore.columnsContainer.column}>
@@ -247,6 +377,8 @@ export default function RunningScoreBox({
             runningScore={aTeamFullRunningScore}
             firstNumber={121}
             lastNumber={160}
+            lastTeamScore={aTeamLastScore}
+            isGameEnded={isGameEnded}
           />
         </View>
         <View style={styles.runningScore.columnsContainer.column}>
@@ -258,6 +390,8 @@ export default function RunningScoreBox({
             firstNumber={121}
             lastNumber={160}
             isReversed
+            lastTeamScore={bTeamLastScore}
+            isGameEnded={isGameEnded}
           />
         </View>
       </View>

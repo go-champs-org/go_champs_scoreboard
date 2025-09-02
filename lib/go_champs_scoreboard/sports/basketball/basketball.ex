@@ -4,10 +4,10 @@ defmodule GoChampsScoreboard.Sports.Basketball.Basketball do
 
   @player_stats [
     Stat.new("assists", :manual, [:increment, :decrement]),
-    Stat.new("blocks", :manual, [:incremen, :decrement]),
+    Stat.new("blocks", :manual, [:increment, :decrement]),
     Stat.new("disqualifications", :manual, [:increment, :decrement]),
     Stat.new("ejections", :manual, [:increment, :decrement]),
-    Stat.new("efficiency", :manual, [:incremen, :decrement]),
+    Stat.new("efficiency", :manual, [:increment, :decrement]),
     Stat.new(
       "field_goal_percentage",
       :calculated,
@@ -21,10 +21,10 @@ defmodule GoChampsScoreboard.Sports.Basketball.Basketball do
       &Statistics.calc_player_field_goals_attempted/1
     ),
     Stat.new("field_goals_missed", :manual, [:increment, :decrement]),
-    Stat.new("field_goals_made", :manual, [:incremen, :decrement]),
+    Stat.new("field_goals_made", :manual, [:increment, :decrement]),
     Stat.new("fouls", :calculated, [], &Statistics.calc_player_fouls/1),
-    Stat.new("fouls_flagrant", :manual, [:incremen, :decrement]),
-    Stat.new("fouls_personal", :manual, [:incremen, :decrement]),
+    Stat.new("fouls_flagrant", :manual, [:increment, :decrement]),
+    Stat.new("fouls_personal", :manual, [:increment, :decrement]),
     Stat.new("fouls_technical", :manual, [:increment, :decrement]),
     Stat.new(
       "free_throw_percentage",
@@ -39,16 +39,16 @@ defmodule GoChampsScoreboard.Sports.Basketball.Basketball do
       &Statistics.calc_player_free_throws_attempted/1
     ),
     Stat.new("free_throws_missed", :manual, [:increment, :decrement]),
-    Stat.new("free_throws_made", :manual, [:incremen, :decrement]),
+    Stat.new("free_throws_made", :manual, [:increment, :decrement]),
     Stat.new("game_played", :manual, [:increment, :decrement]),
-    Stat.new("game_started", :manual, [:incremen, :decrement]),
-    Stat.new("minutes_played", :automatic, [:incremen, :decrement]),
-    Stat.new("plus_minus", :manual, [:incremen, :decrement]),
+    Stat.new("game_started", :manual, [:increment, :decrement]),
+    Stat.new("minutes_played", :automatic, [:increment, :decrement]),
+    Stat.new("plus_minus", :manual, [:increment, :decrement]),
     Stat.new("points", :calculated, [], &Statistics.calc_player_points/1),
     Stat.new("rebounds", :calculated, [], &Statistics.calc_player_rebounds/1),
-    Stat.new("rebounds_defensive", :manual, [:incremen, :decrement]),
-    Stat.new("rebounds_offensive", :manual, [:incremen, :decrement]),
-    Stat.new("steals", :manual, [:incremen, :decrement]),
+    Stat.new("rebounds_defensive", :manual, [:increment, :decrement]),
+    Stat.new("rebounds_offensive", :manual, [:increment, :decrement]),
+    Stat.new("steals", :manual, [:increment, :decrement]),
     Stat.new(
       "three_point_field_goal_percentage",
       :calculated,
@@ -62,7 +62,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Basketball do
       &Statistics.calc_player_three_point_field_goals_attempted/1
     ),
     Stat.new("three_point_field_goals_missed", :manual, [:increment, :decrement]),
-    Stat.new("three_point_field_goals_made", :manual, [:incremen, :decrement]),
+    Stat.new("three_point_field_goals_made", :manual, [:increment, :decrement]),
     Stat.new("turnovers", :manual, [:increment, :decrement])
   ]
 

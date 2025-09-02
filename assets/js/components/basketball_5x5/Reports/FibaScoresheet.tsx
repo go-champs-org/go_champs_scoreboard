@@ -416,7 +416,10 @@ function FibaScoresheet({ scoresheetData }: FibaScoresheetProps) {
             >
               <RunningScoreBox
                 aTeamRunningScore={scoresheetData.team_a.running_score}
+                aTeamLastScore={scoresheetData.team_a.score}
                 bTeamRunningScore={scoresheetData.team_b.running_score}
+                bTeamLastScore={scoresheetData.team_b.score}
+                isGameEnded={!!scoresheetData.info.actual_end_datetime}
               />
               <Periods
                 teamA={scoresheetData.team_a}
