@@ -197,7 +197,11 @@
         "oneTo": "+1 ERRO",
         "personalFault": "F. PESSOAL (P)",
         "technicalFault": "F. TÉCNICA (T)",
-        "unsportsmanlikeFault": "F. ANT. (U)"
+        "unsportsmanlikeFault": "F. ANT. (U)",
+        "oneFreeThrow": "+1 LL",
+        "twoFreeThrows": "+2 LL",
+        "threeFreeThrows": "+3 LL",
+        "canceledFreeThrows": "LL Cancelado"
       }
     },
     "players": {

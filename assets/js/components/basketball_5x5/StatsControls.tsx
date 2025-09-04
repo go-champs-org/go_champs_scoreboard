@@ -4,6 +4,7 @@ import debounce from '../../debounce';
 import { invokeButtonClickRef } from '../../shared/invokeButtonClick';
 import { LiveState } from '../../types';
 import { useTranslation } from '../../hooks/useTranslation';
+import PopUpButton from '../PopUpButton';
 
 interface StatsControlsProps {
   pushEvent: (event: string, payload: any) => void;
@@ -20,12 +21,13 @@ function useStatUpdate(
 ) {
   return React.useMemo(
     () =>
-      debounce<(stat: string) => void>((stat) => {
+      debounce<(stat: string, metadata?: any) => void>((stat, metadata) => {
         pushEvent('update-player-stat', {
           ['stat-id']: stat,
           operation: 'increment',
           ['player-id']: playerSelection.playerId,
           ['team-type']: playerSelection.teamType,
+          ...(metadata && { metadata }),
         });
         selectPlayer(null);
       }, 100),
@@ -64,6 +66,66 @@ function useButtonsDisabled(
   );
 }
 
+interface FoulButtonProps {
+  statId: 'fouls_personal' | 'fouls_technical' | 'fouls_flagrant';
+  disabled: boolean;
+  label: string;
+  shortcut: string;
+  onStatUpdate: (stat: string, metadata?: any) => void;
+}
+
+function FoulButton({
+  statId,
+  disabled,
+  label,
+  shortcut,
+  onStatUpdate,
+}: FoulButtonProps) {
+  const { t } = useTranslation();
+
+  const handleQuickClick = () => {
+    onStatUpdate(statId);
+  };
+
+  const handleFreeThrowOption = (freeThrows: string) => {
+    onStatUpdate(statId, {
+      ['free-throws-awarded']: freeThrows,
+    });
+  };
+
+  const popUpButtons = [
+    {
+      label: t('basketball.stats.controls.oneFreeThrow'),
+      onClick: () => handleFreeThrowOption('1'),
+    },
+    {
+      label: t('basketball.stats.controls.twoFreeThrows'),
+      onClick: () => handleFreeThrowOption('2'),
+    },
+    {
+      label: t('basketball.stats.controls.threeFreeThrows'),
+      onClick: () => handleFreeThrowOption('3'),
+    },
+    {
+      label: t('basketball.stats.controls.canceledFreeThrows'),
+      onClick: () => handleFreeThrowOption('C'),
+    },
+  ];
+
+  return (
+    <PopUpButton
+      popUpButtons={popUpButtons}
+      keyboardKey={shortcut.toLowerCase()}
+      className="button is-stat is-warning"
+      onQuickClick={handleQuickClick}
+      disabled={disabled}
+    >
+      <span className="shortcut">{shortcut}</span>
+      {label}
+    </PopUpButton>
+  );
+}
+
 export function MediumStatsControls({
   pushEvent,
   playerSelection,
@@ -84,9 +146,6 @@ export function MediumStatsControls({
     z: React.useRef<HTMLButtonElement>(null),
     x: React.useRef<HTMLButtonElement>(null),
     c: React.useRef<HTMLButtonElement>(null),
-    t: React.useRef<HTMLButtonElement>(null),
-    g: React.useRef<HTMLButtonElement>(null),
-    b: React.useRef<HTMLButtonElement>(null),
   };
 
   const onStatUpdate = useStatUpdate(pushEvent, playerSelection, selectPlayer);
@@ -228,37 +287,31 @@ export function MediumStatsControls({
           </button>
         </div>
         <div className="column is-4 has-text-centered">
-          <button
-            ref={buttonRefs.t}
-            className="button is-stat is-warning"
-            onClick={() => onStatUpdate('fouls_personal')}
+          <FoulButton
+            statId="fouls_personal"
             disabled={buttonsDisabled}
-          >
-            <span className="shortcut">T</span>
-            {t('basketball.stats.controls.personalFault')}
-          </button>
+            label={t('basketball.stats.controls.personalFault')}
+            shortcut="T"
+            onStatUpdate={onStatUpdate}
+          />
         </div>
         <div className="column is-4 has-text-centered">
-          <button
-            ref={buttonRefs.g}
-            className="button is-stat is-warning"
-            onClick={() => onStatUpdate('fouls_technical')}
+          <FoulButton
+            statId="fouls_technical"
             disabled={buttonsDisabled}
-          >
-            <span className="shortcut">G</span>
-            {t('basketball.stats.controls.technicalFault')}
-          </button>
+            label={t('basketball.stats.controls.technicalFault')}
+            shortcut="G"
+            onStatUpdate={onStatUpdate}
+          />
         </div>
         <div className="column is-4 has-text-centered">
-          <button
-            ref={buttonRefs.b}
-            className="button is-stat is-warning"
-            onClick={() => onStatUpdate('fouls_flagrant')}
+          <FoulButton
+            statId="fouls_flagrant"
             disabled={buttonsDisabled}
-          >
-            <span className="shortcut">B</span>
-            {t('basketball.stats.controls.unsportsmanlikeFault')}
-          </button>
+            label={t('basketball.stats.controls.unsportsmanlikeFault')}
+            shortcut="B"
+            onStatUpdate={onStatUpdate}
+          />
         </div>
       </div>
     </div>

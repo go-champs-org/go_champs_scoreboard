@@ -197,7 +197,11 @@
         "oneTo": "+1 TURNOVER",
         "personalFault": "PERSONAL F. (P)",
         "technicalFault": "TECHNICAL F. (T)",
-        "unsportsmanlikeFault": "UNSPORT. F. (U)"
+        "unsportsmanlikeFault": "UNSPORT. F. (U)",
+        "oneFreeThrow": "+1 FT",
+        "twoFreeThrows": "+2 FT",
+        "threeFreeThrows": "+3 FT",
+        "canceledFreeThrows": "FT Canceled"
       }
     },
     "players": {

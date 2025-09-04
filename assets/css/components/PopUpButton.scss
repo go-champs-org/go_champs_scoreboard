@@ -1,0 +1,233 @@
+.pop-up-container {
+  position: relative;
+}
+
+.pop-up-button {
+  position: relative;
+  overflow: hidden;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  // Create a pseudo-element for the progress animation
+  &::before {
+    content: '';
+    position: absolute;
+    background: rgba(0, 123, 255, 0.3);
+    pointer-events: none;
+    z-index: -1;
+    transition: none;
+  }
+
+  // Direction-specific initial states (not holding)
+  &--top::before {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 0;
+  }
+
+  &--bottom::before {
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0;
+  }
+
+  &--left::before {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 0;
+  }
+
+  &--right::before {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 0;
+  }
+
+  // Holding state - animate to full size
+  &--holding {
+    filter: brightness(140%);
+    transform: scale(1.2, 1.2);
+
+    &.pop-up-button--top::before {
+      height: 100%;
+      background: rgba(0, 123, 255, 0.4);
+      transition: height var(--hold-duration, 1000ms) linear;
+    }
+
+    &.pop-up-button--bottom::before {
+      height: 100%;
+      background: rgba(0, 123, 255, 0.4);
+      transition: height var(--hold-duration, 1000ms) linear;
+    }
+
+    &.pop-up-button--left::before {
+      width: 100%;
+      background: rgba(0, 123, 255, 0.4);
+      transition: width var(--hold-duration, 1000ms) linear;
+    }
+
+    &.pop-up-button--right::before {
+      width: 100%;
+      background: rgba(0, 123, 255, 0.4);
+      transition: width var(--hold-duration, 1000ms) linear;
+    }
+  }
+
+  // Quick reset when not holding
+  &:not(&--holding)::before {
+    transition: all 0.1s ease-out;
+  }
+}
+
+.pop-up-panel {
+  position: absolute;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform-origin: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  // Default direction styles (top)
+  &--top {
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px) scale(0.95);
+    margin-bottom: 8px;
+  }
+
+  &--bottom {
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px) scale(0.95);
+    margin-top: 8px;
+  }
+
+  &--left {
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%) translateX(-8px) scale(0.95);
+    margin-right: 8px;
+  }
+
+  &--right {
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%) translateX(8px) scale(0.95);
+    margin-left: 8px;
+  }
+
+  // Open state
+  &--open {
+    opacity: 1;
+    visibility: visible;
+
+    &.pop-up-panel--top {
+      transform: translateX(-50%) translateY(0) scale(1);
+    }
+
+    &.pop-up-panel--bottom {
+      transform: translateX(-50%) translateY(0) scale(1);
+    }
+
+    &.pop-up-panel--left {
+      transform: translateY(-50%) translateX(0) scale(1);
+    }
+
+    &.pop-up-panel--right {
+      transform: translateY(-50%) translateX(0) scale(1);
+    }
+  }
+
+  // Arrow indicators (optional)
+  &--top::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: white;
+  }
+
+  &--bottom::after {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-bottom-color: white;
+  }
+
+  &--left::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-left-color: white;
+  }
+
+  &--right::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-right-color: white;
+  }
+
+  // Styles for buttons inside the popup panel
+  .button {
+    &:focus {
+      outline: 2px solid #007bff;
+      outline-offset: 2px;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+      transform: scale(1.05);
+      transition: all 0.2s ease-in-out;
+    }
+
+    &:focus:not(:focus-visible) {
+      outline: none;
+      box-shadow: none;
+      transform: none;
+    }
+
+    // Enhanced focus for keyboard navigation
+    &:focus-visible {
+      outline: 2px solid #007bff;
+      outline-offset: 2px;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+      transform: scale(1.05);
+    }
+
+    // Hover state that works well with focus
+    &:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      transition: all 0.2s ease-in-out;
+    }
+
+    &:focus:hover {
+      transform: scale(1.05) translateY(-1px);
+    }
+  }
+}
