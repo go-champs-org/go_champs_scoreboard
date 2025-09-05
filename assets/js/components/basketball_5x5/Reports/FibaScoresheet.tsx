@@ -8,8 +8,9 @@ import HeaderBox from './FibaScoresheet/HeaderBox';
 import { textColorForPeriod } from './FibaScoresheet/styles';
 
 export interface PlayerFoul {
-  type: 'P' | 'P1' | 'P2' | 'T';
+  type: 'P' | 'T';
   period: number;
+  extra_action?: '1' | '2' | '3' | 'C' | '';
 }
 
 export interface Coach {

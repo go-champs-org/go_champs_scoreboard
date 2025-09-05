@@ -125,6 +125,18 @@ const styles = StyleSheet.create({
             width: '15px',
             height: '100%',
             border: '1px solid #000',
+            position: 'relative',
+            type: {
+              position: 'absolute',
+              top: '1px',
+              left: '1px',
+            },
+            extraAction: {
+              position: 'absolute',
+              bottom: '1px',
+              right: '1px',
+              fontSize: '5px',
+            },
           },
         },
       },
@@ -342,6 +354,7 @@ export default function TeamBox({ type, team }: TeamProps) {
         fouls: fouls.map((_, index) => ({
           type: teamPlayer.fouls[index]?.type || '',
           period: teamPlayer.fouls[index]?.period || 0,
+          extra_action: teamPlayer.fouls[index]?.extra_action || '',
         })),
         license_number: teamPlayer.license_number || '',
         has_started: teamPlayer.has_started,
@@ -454,12 +467,23 @@ export default function TeamBox({ type, team }: TeamProps) {
                 >
                   <Text
                     style={{
-                      ...styles.teamContainer.table.content,
+                      ...styles.teamContainer.table.row.columnFouls.fouls.type,
                       ...textColorForPeriod(foul.period),
                     }}
                   >
                     {foul.type}
                   </Text>
+                  {foul.extra_action && (
+                    <Text
+                      style={{
+                        ...styles.teamContainer.table.row.columnFouls.fouls
+                          .extraAction,
+                        ...textColorForPeriod(foul.period),
+                      }}
+                    >
+                      {foul.extra_action}
+                    </Text>
+                  )}
                 </View>
               ))}
             </View>
