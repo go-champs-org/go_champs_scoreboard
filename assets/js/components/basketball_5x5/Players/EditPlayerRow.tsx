@@ -386,7 +386,7 @@ function MediumEditPlayerRow({
       <td>
         <StatInput
           player={player}
-          statKey="fouls_flagrant"
+          statKey="fouls_unsportsmanlike"
           pushEvent={pushEvent}
           teamType={teamType}
         />

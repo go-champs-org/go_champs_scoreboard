@@ -91,11 +91,12 @@ export const PLAYER_STATS = [
     labelTranslationKey: 'basketball.stats.labels.fouls',
   },
   {
-    key: 'fouls_flagrant',
+    key: 'fouls_unsportsmanlike',
     type: 'manual',
     view: ['basketball-medium'],
-    abbreviationTranslationKey: 'basketball.stats.abbreviations.flagrantFouls',
-    labelTranslationKey: 'basketball.stats.labels.flagrantFouls',
+    abbreviationTranslationKey:
+      'basketball.stats.abbreviations.unsportsmanlikeFouls',
+    labelTranslationKey: 'basketball.stats.labels.unsportsmanlikeFouls',
   },
   {
     key: 'fouls_personal',

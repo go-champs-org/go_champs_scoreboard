@@ -67,7 +67,7 @@ function useButtonsDisabled(
 }
 
 interface FoulButtonProps {
-  statId: 'fouls_personal' | 'fouls_technical' | 'fouls_flagrant';
+  statId: 'fouls_personal' | 'fouls_technical' | 'fouls_unsportsmanlike';
   disabled: boolean;
   label: string;
   shortcut: string;
@@ -306,7 +306,7 @@ export function MediumStatsControls({
         </div>
         <div className="column is-4 has-text-centered">
           <FoulButton
-            statId="fouls_flagrant"
+            statId="fouls_unsportsmanlike"
             disabled={buttonsDisabled}
             label={t('basketball.stats.controls.unsportsmanlikeFault')}
             shortcut="B"

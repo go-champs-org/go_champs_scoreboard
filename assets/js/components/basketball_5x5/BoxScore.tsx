@@ -256,7 +256,7 @@ function MediumTable({ team }: TableProps) {
                 {player.stats_values['fouls_personal']}
               </td>
               <td className="has-text-centered">
-                {player.stats_values['fouls_flagrant']}
+                {player.stats_values['fouls_unsportsmanlike']}
               </td>
               <td className="has-text-centered">
                 {player.stats_values['fouls_technical']}

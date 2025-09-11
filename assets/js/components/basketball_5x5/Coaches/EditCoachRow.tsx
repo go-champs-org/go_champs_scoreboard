@@ -120,7 +120,7 @@ function EditCoachRow({ coach, teamType, pushEvent }: EditCoachRowProps) {
       <td>
         <StatInput
           coach={coach}
-          statKey="fouls_flagrant"
+          statKey="fouls_unsportsmanlike"
           pushEvent={pushEvent}
           teamType={teamType}
         />
