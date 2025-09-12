@@ -189,7 +189,7 @@ function MediumPlayersTable({
               {t('basketball.stats.abbreviations.technicalFoulsShort')}
             </th>
             <th style={{ minWidth: '65px', maxWidth: '65px' }}>
-              {t('basketball.stats.abbreviations.flagrantFoulsShort')}
+              {t('basketball.stats.abbreviations.unsportsmanlikeFoulsShort')}
             </th>
             <th style={{ minWidth: '65px', maxWidth: '65px' }}>
               {t('basketball.players.modal.licenseNumber')}

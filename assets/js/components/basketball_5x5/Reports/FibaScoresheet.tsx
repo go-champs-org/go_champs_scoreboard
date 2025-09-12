@@ -8,7 +8,7 @@ import HeaderBox from './FibaScoresheet/HeaderBox';
 import { textColorForPeriod } from './FibaScoresheet/styles';
 
 export interface PlayerFoul {
-  type: 'P' | 'T';
+  type: 'P' | 'T' | 'U' | 'D' | 'GD';
   period: number;
   extra_action?: '1' | '2' | '3' | 'C' | '';
 }
@@ -163,10 +163,10 @@ function Period({
 }: Period) {
   const quarterStyle = isQuarterCentered
     ? {
-        ...styles.periods.period.quarter,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }
+      ...styles.periods.period.quarter,
+      justifyContent: 'center',
+      alignItems: 'center',
+    }
     : styles.periods.period.quarter;
   return (
     <View style={styles.periods.period}>

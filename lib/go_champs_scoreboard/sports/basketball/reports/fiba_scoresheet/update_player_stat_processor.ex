@@ -17,7 +17,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
     "fouls_personal",
     "fouls_technical",
     "fouls_unsportsmanlike",
-    "fouls_disqualifying"
+    "fouls_disqualifying",
+    "fouls_game_disqualifying"
   ]
 
   @spec process(EventLog.t(), FibaScoresheet.t()) :: FibaScoresheet.t()
@@ -84,6 +85,9 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
       case stat_id do
         "fouls_personal" -> "P"
         "fouls_technical" -> "T"
+        "fouls_unsportsmanlike" -> "U"
+        "fouls_disqualifying" -> "D"
+        "fouls_game_disqualifying" -> "GD"
       end
 
     # Extract extra_action from metadata if present

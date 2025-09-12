@@ -192,6 +192,9 @@ defmodule GoChampsScoreboard.GameStateFixtures do
           stats_values: %{
             "fouls_personal" => 0,
             "fouls_technical" => 0,
+            "fouls_unsportsmanlike" => 0,
+            "fouls_disqualifying" => 0,
+            "fouls_game_disqualifying" => 0,
             "free_throws_made" => 0,
             "three_point_field_goals_made" => 0,
             "field_goals_made" => 0,
@@ -209,6 +212,9 @@ defmodule GoChampsScoreboard.GameStateFixtures do
           stats_values: %{
             "fouls_personal" => 0,
             "fouls_technical" => 0,
+            "fouls_unsportsmanlike" => 0,
+            "fouls_disqualifying" => 0,
+            "fouls_game_disqualifying" => 0,
             "free_throws_made" => 0,
             "three_point_field_goals_made" => 0,
             "field_goals_made" => 0,
@@ -248,6 +254,9 @@ defmodule GoChampsScoreboard.GameStateFixtures do
           stats_values: %{
             "fouls_personal" => 0,
             "fouls_technical" => 0,
+            "fouls_unsportsmanlike" => 0,
+            "fouls_disqualifying" => 0,
+            "fouls_game_disqualifying" => 0,
             "free_throws_made" => 0,
             "three_point_field_goals_made" => 0,
             "field_goals_made" => 0,
