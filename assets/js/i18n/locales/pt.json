@@ -105,6 +105,18 @@
             "set": "Definir (=)"
           }
         }
+      },
+      "fouls": {
+        "title": "Gerenciamento de Faltas",
+        "selectTeam": "Selecionar Time",
+        "selectPersonType": "Selecionar Tipo",
+        "player": "Atleta",
+        "coach": "Técnico",
+        "selectPlayer": "Selecionar Atleta",
+        "selectCoach": "Selecionar Técnico",
+        "noPlayers": "Nenhum atleta disponível",
+        "noCoaches": "Nenhum técnico disponível",
+        "availableFouls": "Faltas Disponíveis"
       }
     },
     "stats": {
@@ -198,9 +210,15 @@
         "oneAss": "+1 ASSISTÊNCIA",
         "oneBlk": "+1 TOCO",
         "oneTo": "+1 ERRO",
-        "personalFault": "F. PESSOAL (P)",
-        "technicalFault": "F. TÉCNICA (T)",
-        "unsportsmanlikeFault": "F. ANT. (U)",
+        "disqualifyingFoul": "F. DESQ. (D)",
+        "gameDisqualifyingFoul": "F. DESQ. JOGO (GD)",
+        "fightDisqualifyingFoul": "F. DESQ. BRIGA (F)",
+        "coachTechnicalFoul": "F. TÉC. TÉCNICO (C)",
+        "benchTechnicalFoul": "F. TÉC. BANCO (B)",
+        "personalFoul": "F. PESSOAL (P)",
+        "technicalFoul": "F. TÉCNICA (T)",
+        "unsportsmanlikeFoul": "F. ANT. (U)",
+        "moreFouls": "MAIS FALTAS",
         "oneFreeThrow": "+1 LL",
         "twoFreeThrows": "+2 LL",
         "threeFreeThrows": "+3 LL",
@@ -299,11 +317,15 @@
     "substitutePlayer": "Substituição de Atleta",
     "updateClockState": "Atualização Cronômetro",
     "updateClockTimeAndPeriod": "Atualização Tempo",
-    "updateCoachInTeam": "Atualização de Técnico",
-    "updateCoachStat": "Atualização de Estatística de Técnico",
-    "updateOfficialInGame": "Atualização Oficial",
-    "updatePlayerStat": "Atualização de Estatística de Atleta",
-    "updatePlayerInTeam": "Atualização de Atleta",
-    "updateTeamStat": "Atualização de Estatística de Time"
+    "updateCoachInTeam": "Atualizar Técnico na Equipe",
+    "updateCoachStat": "Atualizar Estatística do Técnico",
+    "updateOfficialInGame": "Atualizar Oficial do Jogo",
+    "updatePlayerStat": "Atualizar Estatística do Atleta",
+    "updatePlayerInTeam": "Atualizar Atleta na Equipe",
+    "updateTeamStat": "Atualizar Estatística da Equipe"
+  },
+  "teams": {
+    "home": "Casa",
+    "away": "Visitante"
   }
 }

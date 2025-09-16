@@ -4,13 +4,14 @@ import debounce from '../../debounce';
 import { invokeButtonClickRef } from '../../shared/invokeButtonClick';
 import { LiveState } from '../../types';
 import { useTranslation } from '../../hooks/useTranslation';
-import PopUpButton from '../PopUpButton';
+import FoulButton from './Stats/FoulButton';
 
 interface StatsControlsProps {
   pushEvent: (event: string, payload: any) => void;
   playerSelection: PlayerSelection;
   selectPlayer: (playerSelection: PlayerSelection | null) => void;
   liveState: LiveState;
+  onShowFoulsModal: () => void;
 }
 
 // Custom hook for stat update logic
@@ -66,71 +67,12 @@ function useButtonsDisabled(
   );
 }
 
-interface FoulButtonProps {
-  statId: 'fouls_personal' | 'fouls_technical' | 'fouls_unsportsmanlike';
-  disabled: boolean;
-  label: string;
-  shortcut: string;
-  onStatUpdate: (stat: string, metadata?: any) => void;
-}
-
-function FoulButton({
-  statId,
-  disabled,
-  label,
-  shortcut,
-  onStatUpdate,
-}: FoulButtonProps) {
-  const { t } = useTranslation();
-
-  const handleQuickClick = () => {
-    onStatUpdate(statId);
-  };
-
-  const handleFreeThrowOption = (freeThrows: string) => {
-    onStatUpdate(statId, {
-      ['free-throws-awarded']: freeThrows,
-    });
-  };
-
-  const popUpButtons = [
-    {
-      label: t('basketball.stats.controls.oneFreeThrow'),
-      onClick: () => handleFreeThrowOption('1'),
-    },
-    {
-      label: t('basketball.stats.controls.twoFreeThrows'),
-      onClick: () => handleFreeThrowOption('2'),
-    },
-    {
-      label: t('basketball.stats.controls.threeFreeThrows'),
-      onClick: () => handleFreeThrowOption('3'),
-    },
-    {
-      label: t('basketball.stats.controls.canceledFreeThrows'),
-      onClick: () => handleFreeThrowOption('C'),
-    },
-  ];
-
-  return (
-    <PopUpButton
-      popUpButtons={popUpButtons}
-      keyboardKey={shortcut.toLowerCase()}
-      className="button is-stat is-warning"
-      onQuickClick={handleQuickClick}
-      disabled={disabled}
-    >
-      <span className="shortcut">{shortcut}</span>
-      {label}
-    </PopUpButton>
-  );
-}
-
 export function MediumStatsControls({
   pushEvent,
   playerSelection,
   selectPlayer,
   liveState,
+  onShowFoulsModal,
 }: StatsControlsProps) {
   const { t } = useTranslation();
   const buttonRefs = {
@@ -290,7 +232,7 @@ export function MediumStatsControls({
           <FoulButton
             statId="fouls_personal"
             disabled={buttonsDisabled}
-            label={t('basketball.stats.controls.personalFault')}
+            label={t('basketball.stats.controls.personalFoul')}
             shortcut="T"
             onStatUpdate={onStatUpdate}
           />
@@ -299,19 +241,20 @@ export function MediumStatsControls({
           <FoulButton
             statId="fouls_technical"
             disabled={buttonsDisabled}
-            label={t('basketball.stats.controls.technicalFault')}
+            label={t('basketball.stats.controls.technicalFoul')}
             shortcut="G"
             onStatUpdate={onStatUpdate}
           />
         </div>
         <div className="column is-4 has-text-centered">
-          <FoulButton
-            statId="fouls_unsportsmanlike"
-            disabled={buttonsDisabled}
-            label={t('basketball.stats.controls.unsportsmanlikeFault')}
-            shortcut="B"
-            onStatUpdate={onStatUpdate}
-          />
+          <button
+            className="button is-stat is-warning"
+            onClick={() => onShowFoulsModal?.()}
+            disabled={liveState.state !== 'in_progress'}
+          >
+            <span className="shortcut">B</span>
+            {t('basketball.stats.controls.moreFouls')}
+          </button>
         </div>
       </div>
     </div>
@@ -323,6 +266,7 @@ export function BasicStatsControls({
   playerSelection,
   selectPlayer,
   liveState,
+  onShowFoulsModal = () => {},
 }: StatsControlsProps) {
   const { t } = useTranslation();
   const buttonRefs = {

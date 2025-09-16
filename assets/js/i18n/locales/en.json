@@ -105,6 +105,18 @@
             "set": "Set (=)"
           }
         }
+      },
+      "fouls": {
+        "title": "Fouls Management",
+        "selectTeam": "Select Team",
+        "selectPersonType": "Select Type",
+        "player": "Player",
+        "coach": "Coach",
+        "selectPlayer": "Select Player",
+        "selectCoach": "Select Coach",
+        "noPlayers": "No players available",
+        "noCoaches": "No coaches available",
+        "availableFouls": "Available Fouls"
       }
     },
     "stats": {
@@ -198,9 +210,15 @@
         "oneAss": "+1 ASSIST",
         "oneBlk": "+1 BLOCK",
         "oneTo": "+1 TURNOVER",
-        "personalFault": "PERSONAL F. (P)",
-        "technicalFault": "TECHNICAL F. (T)",
-        "unsportsmanlikeFault": "UNSPORT. F. (U)",
+        "disqualifyingFoul": "DISQ. F. (D)",
+        "gameDisqualifyingFoul": "GAME DISQ. F. (GD)",
+        "fightDisqualifyingFoul": "FIGHT DISQ. F. (F)",
+        "coachTechnicalFoul": "COACH TECH. F. (C)",
+        "benchTechnicalFoul": "BENCH TECH. F. (B)",
+        "personalFoul": "PERSONAL F. (P)",
+        "technicalFoul": "TECHNICAL F. (T)",
+        "unsportsmanlikeFoul": "UNSPORT. F. (U)",
+        "moreFouls": "MORE FOULS",
         "oneFreeThrow": "+1 FT",
         "twoFreeThrows": "+2 FT",
         "threeFreeThrows": "+3 FT",
@@ -305,5 +323,9 @@
     "updatePlayerStat": "Update Player Stat",
     "updatePlayerInTeam": "Update Player in Team",
     "updateTeamStat": "Update Team Stat"
+  },
+  "teams": {
+    "home": "Home",
+    "away": "Away"
   }
 }

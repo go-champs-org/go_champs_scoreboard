@@ -5,6 +5,7 @@ import TopLevel from './TopLevel';
 import PlayersControls from './PlayersControls';
 import EndLiveModal from './EndLiveModal';
 import MediumTopControls, { BasicTopControls } from './TopControls';
+import FoulsModal from './Stats/FoulsModal';
 
 export interface LiveReactBase {
   pushEvent: (event: string, payload: any) => void;
@@ -54,6 +55,7 @@ function BasicView({ game_state, recent_events, pushEvent }: ViewProps) {
             playerSelection={playerSelection}
             pushEvent={pushEvent}
             selectPlayer={setPlayerSelection}
+            gameState={game_state}
           />
         </div>
 
@@ -73,6 +75,7 @@ function BasicView({ game_state, recent_events, pushEvent }: ViewProps) {
 
 function MediumView({ game_state, recent_events, pushEvent }: ViewProps) {
   const [playerSelection, setPlayerSelection] = useState<PlayerSelection>(null);
+  const [showFoulsModal, setShowFoulsModal] = useState(false);
 
   return (
     <>
@@ -97,6 +100,8 @@ function MediumView({ game_state, recent_events, pushEvent }: ViewProps) {
             playerSelection={playerSelection}
             pushEvent={pushEvent}
             selectPlayer={setPlayerSelection}
+            gameState={game_state}
+            onShowFoulsModal={() => setShowFoulsModal(true)}
           />
         </div>
 
@@ -110,6 +115,12 @@ function MediumView({ game_state, recent_events, pushEvent }: ViewProps) {
           />
         </div>
       </div>
+      <FoulsModal
+        gameState={game_state}
+        showModal={showFoulsModal}
+        onCloseModal={() => setShowFoulsModal(false)}
+        pushEvent={pushEvent}
+      />
     </>
   );
 }
