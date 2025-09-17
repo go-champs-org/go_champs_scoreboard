@@ -247,6 +247,10 @@ function ClockControls({
 
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      // Check if any modal is currently open
+      const isModalOpen = document.querySelector('.modal.is-active') !== null;
+      if (isModalOpen) return;
+
       if (event.key === ' ') {
         event.preventDefault();
         invokeButtonClickRef(buttonPauseStart);

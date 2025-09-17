@@ -116,7 +116,12 @@
         "selectCoach": "Select Coach",
         "noPlayers": "No players available",
         "noCoaches": "No coaches available",
-        "availableFouls": "Available Fouls"
+        "availableFouls": "Available Fouls",
+        "placeholders": {
+          "selectTeam": "Please select a team first",
+          "selectPersonType": "Now select whether to add fouls to players or coaches",
+          "instruction": "Follow the steps above to record fouls"
+        }
       }
     },
     "stats": {

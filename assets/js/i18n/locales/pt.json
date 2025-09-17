@@ -107,7 +107,7 @@
         }
       },
       "fouls": {
-        "title": "Gerenciamento de Faltas",
+        "title": "Mais Faltas",
         "selectTeam": "Selecionar Time",
         "selectPersonType": "Selecionar Tipo",
         "player": "Atleta",
@@ -116,7 +116,12 @@
         "selectCoach": "Selecionar Técnico",
         "noPlayers": "Nenhum atleta disponível",
         "noCoaches": "Nenhum técnico disponível",
-        "availableFouls": "Faltas Disponíveis"
+        "availableFouls": "Faltas Disponíveis",
+        "placeholders": {
+          "selectTeam": "Por favor, selecione um time primeiro",
+          "selectPersonType": "Agora selecione se deseja adicionar faltas a atletas ou técnicos",
+          "instruction": "Siga os passos acima para registrar faltas"
+        }
       }
     },
     "stats": {

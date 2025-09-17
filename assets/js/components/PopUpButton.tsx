@@ -135,6 +135,9 @@ function PopUpButton(props: PopUpButtonProps) {
     if (!keyboardKey) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
+      const isModalOpen = document.querySelector('.modal.is-active') !== null;
+      if (isModalOpen) return;
+
       if (event.key === keyboardKey && !event.repeat) {
         event.preventDefault();
         startHold();
@@ -142,6 +145,9 @@ function PopUpButton(props: PopUpButtonProps) {
     };
 
     const handleKeyUp = (event: KeyboardEvent) => {
+      const isModalOpen = document.querySelector('.modal.is-active') !== null;
+      if (isModalOpen) return;
+
       if (event.key === keyboardKey) {
         event.preventDefault();
         stopHold();

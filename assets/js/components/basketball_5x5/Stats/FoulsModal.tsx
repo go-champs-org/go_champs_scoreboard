@@ -157,6 +157,45 @@ function CoachDisplayName({ coach }: CoachDisplayNameProps) {
   );
 }
 
+interface PersonSelectionPlaceholderProps {
+  selectedTeam: TeamType | null;
+  selectedPersonType: PersonType | null;
+}
+
+function PersonSelectionPlaceholder({
+  selectedTeam,
+  selectedPersonType,
+}: PersonSelectionPlaceholderProps) {
+  const { t } = useTranslation();
+
+  return (
+    <div className="people-placeholder content has-text-centered">
+      <div className="notification is-info is-light">
+        <p className="is-size-5 mb-3">
+          <span className="icon is-large">
+            <i className="fas fa-info-circle fa-2x"></i>
+          </span>
+        </p>
+        <p className="is-size-6">
+          {!selectedTeam && (
+            <strong>
+              {t('basketball.modals.fouls.placeholders.selectTeam')}
+            </strong>
+          )}
+          {selectedTeam && !selectedPersonType && (
+            <strong>
+              {t('basketball.modals.fouls.placeholders.selectPersonType')}
+            </strong>
+          )}
+        </p>
+        <p className="is-size-7 has-text-grey">
+          {t('basketball.modals.fouls.placeholders.instruction')}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 function PersonList({
   teamType,
   personType,
@@ -190,7 +229,7 @@ function PersonList({
           }`,
         )}
       </label>
-      <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+      <div className="player-list">
         {people.map((person) => {
           const isSelected = selectedPerson?.personId === person.id;
 
@@ -537,7 +576,7 @@ function FoulsModal({
       showModal={showModal}
       onClose={handleCloseModal}
     >
-      <div className="modal-card-body">
+      <div className="modal-card-body fouls-modal">
         <div className="columns">
           <div className="column is-6">
             <TeamSelector
@@ -559,13 +598,18 @@ function FoulsModal({
           </div>
 
           <div className="column is-6">
-            {selectedTeam && selectedPersonType && (
+            {selectedTeam && selectedPersonType ? (
               <PersonList
                 teamType={selectedTeam}
                 personType={selectedPersonType}
                 gameState={gameState}
                 onPersonSelect={handlePersonSelect}
                 selectedPerson={personSelection}
+              />
+            ) : (
+              <PersonSelectionPlaceholder
+                selectedTeam={selectedTeam}
+                selectedPersonType={selectedPersonType}
               />
             )}
           </div>

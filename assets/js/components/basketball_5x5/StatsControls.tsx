@@ -43,6 +43,9 @@ function useKeyboardShortcuts(
 ) {
   React.useEffect(() => {
     const listener = (event: KeyboardEvent) => {
+      const isModalOpen = document.querySelector('.modal.is-active') !== null;
+      if (isModalOpen) return;
+
       const { key } = event;
       if (key === 'Escape') {
         selectPlayer(null);
@@ -88,6 +91,7 @@ export function MediumStatsControls({
     z: React.useRef<HTMLButtonElement>(null),
     x: React.useRef<HTMLButtonElement>(null),
     c: React.useRef<HTMLButtonElement>(null),
+    b: React.useRef<HTMLButtonElement>(null),
   };
 
   const onStatUpdate = useStatUpdate(pushEvent, playerSelection, selectPlayer);
@@ -248,8 +252,9 @@ export function MediumStatsControls({
         </div>
         <div className="column is-4 has-text-centered">
           <button
+            ref={buttonRefs.b}
             className="button is-stat is-warning"
-            onClick={() => onShowFoulsModal?.()}
+            onClick={() => onShowFoulsModal()}
             disabled={liveState.state !== 'in_progress'}
           >
             <span className="shortcut">B</span>
