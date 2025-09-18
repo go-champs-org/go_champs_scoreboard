@@ -159,11 +159,11 @@ const styles = StyleSheet.create({
           width: '55px',
         },
         columnFouls: {
-          width: '85px',
           height: '100%',
+          display: 'flex',
           flexDirection: 'row',
-          justifyContent: 'flex-end',
-          alignItems: 'flex-end',
+          justifyContent: 'center',
+          alignItems: 'center',
           fouls: {
             display: 'flex',
             flexDirection: 'column',
@@ -354,6 +354,7 @@ export default function TeamBox({ type, team }: TeamProps) {
           type: teamPlayer.fouls[index]?.type || '',
           period: teamPlayer.fouls[index]?.period || 0,
           extra_action: teamPlayer.fouls[index]?.extra_action || '',
+          is_last_of_half: teamPlayer.fouls[index]?.is_last_of_half || false,
         })),
         license_number: teamPlayer.license_number || '',
         has_started: teamPlayer.has_started,
@@ -418,10 +419,12 @@ export default function TeamBox({ type, team }: TeamProps) {
           <View style={styles.teamContainer.table.row.columnBox}>
             <Text style={styles.teamContainer.table.content}>E.</Text>
           </View>
-          <View style={{
-            ...styles.teamContainer.table.row.columnFouls,
-            borderLeft: '1px solid #000',
-          }}>
+          <View
+            style={{
+              ...styles.teamContainer.table.row.columnFouls,
+              borderLeft: '1px solid #000',
+            }}
+          >
             <Text>Faltas</Text>
           </View>
         </View>
@@ -455,9 +458,9 @@ export default function TeamBox({ type, team }: TeamProps) {
                     player.has_started
                       ? styles.teamContainer.table.contentWithCircle
                       : {
-                        ...styles.teamContainer.table.content,
-                        ...textColorForPeriod(player.first_played_period),
-                      }
+                          ...styles.teamContainer.table.content,
+                          ...textColorForPeriod(player.first_played_period),
+                        }
                   }
                 >
                   X
@@ -473,6 +476,9 @@ export default function TeamBox({ type, team }: TeamProps) {
                   style={{
                     ...styles.teamContainer.table.row.columnFouls.fouls,
                     backgroundColor: index === 5 ? '#ddd' : 'transparent',
+                    borderRight: foul.is_last_of_half
+                      ? `2px solid ${BLUE}`
+                      : 'none',
                   }}
                 >
                   <Text
