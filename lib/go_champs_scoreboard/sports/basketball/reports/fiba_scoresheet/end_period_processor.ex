@@ -9,16 +9,18 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.EndPeriodP
   alias GoChampsScoreboard.Events.EventLog
 
   @spec process(EventLog.t(), FibaScoresheet.t()) :: FibaScoresheet.t()
-  def process(_event_log, data) do
+  def process(event_log, data) do
     updated_home_team =
       data
       |> FibaScoresheetManager.find_team("home")
       |> TeamManager.mark_score_as_last_of_period()
+      |> TeamManager.mark_fouls_as_last_of_half(event_log.game_clock_period)
 
     updated_away_team =
       data
       |> FibaScoresheetManager.find_team("away")
       |> TeamManager.mark_score_as_last_of_period()
+      |> TeamManager.mark_fouls_as_last_of_half(event_log.game_clock_period)
 
     data
     |> FibaScoresheetManager.update_team("home", updated_home_team)

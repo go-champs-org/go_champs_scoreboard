@@ -493,4 +493,568 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       assert updated_team.running_score[2].is_last_of_period == true
     end
   end
+
+  describe "mark_fouls_as_last_of_half/2" do
+    test "marks all fouls of players as last of half when given period is 2" do
+      foul1 = %FibaScoresheet.Foul{
+        type: "P",
+        period: 1,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      foul2 = %FibaScoresheet.Foul{
+        type: "T",
+        period: 2,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      player1 = %FibaScoresheet.Player{
+        id: "123",
+        name: "Player 1",
+        number: 12,
+        fouls: [foul1, foul2]
+      }
+
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [player1],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [foul1, foul2],
+        running_score: %{},
+        score: 0
+      }
+
+      updated_team = TeamManager.mark_fouls_as_last_of_half(team, 2)
+
+      updated_player = Enum.find(updated_team.players, fn p -> p.id == "123" end)
+      assert Enum.at(updated_player.fouls, 0).is_last_of_half == false
+      assert Enum.at(updated_player.fouls, 1).is_last_of_half == true
+    end
+
+    test "marks the last foul from earlier periods when player has no fouls in periods 3-4" do
+      foul1 = %FibaScoresheet.Foul{
+        type: "P",
+        period: 1,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      foul2 = %FibaScoresheet.Foul{
+        type: "T",
+        period: 2,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      player1 = %FibaScoresheet.Player{
+        id: "123",
+        name: "Player 1",
+        number: 12,
+        fouls: [foul1, foul2]
+      }
+
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [player1],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [foul1, foul2],
+        running_score: %{},
+        score: 0
+      }
+
+      updated_team = TeamManager.mark_fouls_as_last_of_half(team, 4)
+
+      updated_player = Enum.find(updated_team.players, fn p -> p.id == "123" end)
+      # Should mark the last foul chronologically (from period 2)
+      assert Enum.at(updated_player.fouls, 0).is_last_of_half == false
+      assert Enum.at(updated_player.fouls, 1).is_last_of_half == true
+    end
+
+    test "does not mark fouls when given period is 1" do
+      foul1 = %FibaScoresheet.Foul{
+        type: "P",
+        period: 1,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      foul2 = %FibaScoresheet.Foul{
+        type: "T",
+        period: 2,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      player1 = %FibaScoresheet.Player{
+        id: "123",
+        name: "Player 1",
+        number: 12,
+        fouls: [foul1, foul2]
+      }
+
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [player1],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [foul1, foul2],
+        running_score: %{},
+        score: 0
+      }
+
+      updated_team = TeamManager.mark_fouls_as_last_of_half(team, 1)
+
+      updated_player = Enum.find(updated_team.players, fn p -> p.id == "123" end)
+      assert Enum.at(updated_player.fouls, 0).is_last_of_half == false
+      assert Enum.at(updated_player.fouls, 1).is_last_of_half == false
+    end
+
+    test "does not mark fouls when given period is 3" do
+      foul1 = %FibaScoresheet.Foul{
+        type: "P",
+        period: 1,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      player1 = %FibaScoresheet.Player{
+        id: "123",
+        name: "Player 1",
+        number: 12,
+        fouls: [foul1]
+      }
+
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [player1],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [foul1],
+        running_score: %{},
+        score: 0
+      }
+
+      updated_team = TeamManager.mark_fouls_as_last_of_half(team, 3)
+
+      updated_player = Enum.find(updated_team.players, fn p -> p.id == "123" end)
+      assert Enum.at(updated_player.fouls, 0).is_last_of_half == false
+    end
+
+    test "marks only the last foul as last of half when player has multiple fouls in period 2" do
+      foul1 = %FibaScoresheet.Foul{
+        type: "P",
+        period: 2,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      foul2 = %FibaScoresheet.Foul{
+        type: "T",
+        period: 2,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      foul3 = %FibaScoresheet.Foul{
+        type: "U",
+        period: 2,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      player1 = %FibaScoresheet.Player{
+        id: "123",
+        name: "Player 1",
+        number: 12,
+        fouls: [foul1, foul2, foul3]
+      }
+
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [player1],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [foul1, foul2, foul3],
+        running_score: %{},
+        score: 0
+      }
+
+      updated_team = TeamManager.mark_fouls_as_last_of_half(team, 2)
+
+      updated_player = Enum.find(updated_team.players, fn p -> p.id == "123" end)
+      # Only the last foul in period 2 should be marked as last of half
+      assert Enum.at(updated_player.fouls, 0).is_last_of_half == false
+      assert Enum.at(updated_player.fouls, 1).is_last_of_half == false
+      assert Enum.at(updated_player.fouls, 2).is_last_of_half == true
+    end
+
+    test "marks the last foul from period 1 as last of half when player has no fouls in period 2" do
+      foul1 = %FibaScoresheet.Foul{
+        type: "P",
+        period: 1,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      foul2 = %FibaScoresheet.Foul{
+        type: "T",
+        period: 1,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      player1 = %FibaScoresheet.Player{
+        id: "123",
+        name: "Player 1",
+        number: 12,
+        fouls: [foul1, foul2]
+      }
+
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [player1],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [foul1, foul2],
+        running_score: %{},
+        score: 0
+      }
+
+      updated_team = TeamManager.mark_fouls_as_last_of_half(team, 2)
+
+      updated_player = Enum.find(updated_team.players, fn p -> p.id == "123" end)
+      # The last foul from period 1 should be marked as last of half since period 2 is ending
+      assert Enum.at(updated_player.fouls, 0).is_last_of_half == false
+      assert Enum.at(updated_player.fouls, 1).is_last_of_half == true
+    end
+
+    test "marks only the last foul as last of half when player has multiple fouls in period 4" do
+      foul1 = %FibaScoresheet.Foul{
+        type: "P",
+        period: 4,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      foul2 = %FibaScoresheet.Foul{
+        type: "T",
+        period: 4,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      foul3 = %FibaScoresheet.Foul{
+        type: "U",
+        period: 4,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      player1 = %FibaScoresheet.Player{
+        id: "123",
+        name: "Player 1",
+        number: 12,
+        fouls: [foul1, foul2, foul3]
+      }
+
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [player1],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [foul1, foul2, foul3],
+        running_score: %{},
+        score: 0
+      }
+
+      updated_team = TeamManager.mark_fouls_as_last_of_half(team, 4)
+
+      updated_player = Enum.find(updated_team.players, fn p -> p.id == "123" end)
+      # Only the last foul in period 4 should be marked as last of half
+      assert Enum.at(updated_player.fouls, 0).is_last_of_half == false
+      assert Enum.at(updated_player.fouls, 1).is_last_of_half == false
+      assert Enum.at(updated_player.fouls, 2).is_last_of_half == true
+    end
+
+    test "marks the last foul from period 3 as last of half when player has no fouls in period 4" do
+      foul1 = %FibaScoresheet.Foul{
+        type: "P",
+        period: 3,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      foul2 = %FibaScoresheet.Foul{
+        type: "T",
+        period: 3,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      player1 = %FibaScoresheet.Player{
+        id: "123",
+        name: "Player 1",
+        number: 12,
+        fouls: [foul1, foul2]
+      }
+
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [player1],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [foul1, foul2],
+        running_score: %{},
+        score: 0
+      }
+
+      updated_team = TeamManager.mark_fouls_as_last_of_half(team, 4)
+
+      updated_player = Enum.find(updated_team.players, fn p -> p.id == "123" end)
+      # The last foul from period 3 should be marked as last of half since period 4 is ending
+      assert Enum.at(updated_player.fouls, 0).is_last_of_half == false
+      assert Enum.at(updated_player.fouls, 1).is_last_of_half == true
+    end
+
+    test "prioritizes period 4 fouls over period 3 fouls when both exist" do
+      foul1 = %FibaScoresheet.Foul{
+        type: "P",
+        period: 3,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      foul2 = %FibaScoresheet.Foul{
+        type: "T",
+        period: 4,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      foul3 = %FibaScoresheet.Foul{
+        type: "U",
+        period: 3,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      player1 = %FibaScoresheet.Player{
+        id: "123",
+        name: "Player 1",
+        number: 12,
+        fouls: [foul1, foul2, foul3]
+      }
+
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [player1],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [foul1, foul2, foul3],
+        running_score: %{},
+        score: 0
+      }
+
+      updated_team = TeamManager.mark_fouls_as_last_of_half(team, 4)
+
+      updated_player = Enum.find(updated_team.players, fn p -> p.id == "123" end)
+      # Should mark the period 4 foul, not the later period 3 foul
+      assert Enum.at(updated_player.fouls, 0).is_last_of_half == false
+      assert Enum.at(updated_player.fouls, 1).is_last_of_half == true
+      assert Enum.at(updated_player.fouls, 2).is_last_of_half == false
+    end
+
+    test "marks coach fouls as last of half when period 2 ends" do
+      coach_foul1 = %FibaScoresheet.Foul{
+        type: "T",
+        period: 1,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      coach_foul2 = %FibaScoresheet.Foul{
+        type: "T",
+        period: 2,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      assistant_coach_foul = %FibaScoresheet.Foul{
+        type: "T",
+        period: 1,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [],
+        coach: %FibaScoresheet.Coach{
+          id: "coach-id",
+          name: "Coach 1",
+          fouls: [coach_foul1, coach_foul2]
+        },
+        assistant_coach: %FibaScoresheet.Coach{
+          id: "assistant-coach-id",
+          name: "Assistant Coach 1",
+          fouls: [assistant_coach_foul]
+        },
+        all_fouls: [],
+        running_score: %{},
+        score: 0
+      }
+
+      updated_team = TeamManager.mark_fouls_as_last_of_half(team, 2)
+
+      # Coach should have period 2 foul marked
+      assert Enum.at(updated_team.coach.fouls, 0).is_last_of_half == false
+      assert Enum.at(updated_team.coach.fouls, 1).is_last_of_half == true
+
+      # Assistant coach should have period 1 foul marked (fallback)
+      assert Enum.at(updated_team.assistant_coach.fouls, 0).is_last_of_half == true
+    end
+
+    test "marks coach fouls as last of half when period 4 ends" do
+      coach_foul = %FibaScoresheet.Foul{
+        type: "T",
+        period: 3,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      assistant_coach_foul1 = %FibaScoresheet.Foul{
+        type: "T",
+        period: 4,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      assistant_coach_foul2 = %FibaScoresheet.Foul{
+        type: "T",
+        period: 4,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [],
+        coach: %FibaScoresheet.Coach{
+          id: "coach-id",
+          name: "Coach 1",
+          fouls: [coach_foul]
+        },
+        assistant_coach: %FibaScoresheet.Coach{
+          id: "assistant-coach-id",
+          name: "Assistant Coach 1",
+          fouls: [assistant_coach_foul1, assistant_coach_foul2]
+        },
+        all_fouls: [],
+        running_score: %{},
+        score: 0
+      }
+
+      updated_team = TeamManager.mark_fouls_as_last_of_half(team, 4)
+
+      # Coach should have period 3 foul marked (fallback)
+      assert Enum.at(updated_team.coach.fouls, 0).is_last_of_half == true
+
+      # Assistant coach should have last period 4 foul marked
+      assert Enum.at(updated_team.assistant_coach.fouls, 0).is_last_of_half == false
+      assert Enum.at(updated_team.assistant_coach.fouls, 1).is_last_of_half == true
+    end
+
+    test "handles teams with both player and coach fouls correctly" do
+      player_foul = %FibaScoresheet.Foul{
+        type: "P",
+        period: 2,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      coach_foul = %FibaScoresheet.Foul{
+        type: "T",
+        period: 1,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      player1 = %FibaScoresheet.Player{
+        id: "123",
+        name: "Player 1",
+        number: 12,
+        fouls: [player_foul]
+      }
+
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [player1],
+        coach: %FibaScoresheet.Coach{
+          id: "coach-id",
+          name: "Coach 1",
+          fouls: [coach_foul]
+        },
+        assistant_coach: %FibaScoresheet.Coach{
+          id: "assistant-coach-id",
+          name: "Assistant Coach 1",
+          fouls: []
+        },
+        all_fouls: [],
+        running_score: %{},
+        score: 0
+      }
+
+      updated_team = TeamManager.mark_fouls_as_last_of_half(team, 2)
+
+      # Player should have period 2 foul marked
+      updated_player = Enum.find(updated_team.players, fn p -> p.id == "123" end)
+      assert Enum.at(updated_player.fouls, 0).is_last_of_half == true
+
+      # Coach should have period 1 foul marked (fallback)
+      assert Enum.at(updated_team.coach.fouls, 0).is_last_of_half == true
+
+      # Assistant coach should have no fouls
+      assert updated_team.assistant_coach.fouls == []
+    end
+
+    test "handles teams with nil coaches gracefully" do
+      player_foul = %FibaScoresheet.Foul{
+        type: "P",
+        period: 2,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      player1 = %FibaScoresheet.Player{
+        id: "123",
+        name: "Player 1",
+        number: 12,
+        fouls: [player_foul]
+      }
+
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [player1],
+        coach: nil,
+        assistant_coach: nil,
+        all_fouls: [],
+        running_score: %{},
+        score: 0
+      }
+
+      updated_team = TeamManager.mark_fouls_as_last_of_half(team, 2)
+
+      # Player should have period 2 foul marked
+      updated_player = Enum.find(updated_team.players, fn p -> p.id == "123" end)
+      assert Enum.at(updated_player.fouls, 0).is_last_of_half == true
+
+      # Coaches should remain nil
+      assert updated_team.coach == nil
+      assert updated_team.assistant_coach == nil
+    end
+  end
 end

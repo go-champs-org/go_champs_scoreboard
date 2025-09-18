@@ -11,6 +11,7 @@ export interface PlayerFoul {
   type: 'P' | 'T' | 'U' | 'D' | 'GD';
   period: number;
   extra_action?: '1' | '2' | '3' | 'C' | '';
+  is_last_of_half: boolean;
 }
 
 export interface Coach {
@@ -163,10 +164,10 @@ function Period({
 }: Period) {
   const quarterStyle = isQuarterCentered
     ? {
-        ...styles.periods.period.quarter,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }
+      ...styles.periods.period.quarter,
+      justifyContent: 'center',
+      alignItems: 'center',
+    }
     : styles.periods.period.quarter;
   return (
     <View style={styles.periods.period}>

@@ -180,12 +180,98 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
   def mark_score_as_last_of_period(team) do
     current_score = team.score
 
-    updated_running_score =
-      Map.put(team.running_score, current_score, %{
-        team.running_score[current_score]
-        | is_last_of_period: true
-      })
+    case team.running_score[current_score] do
+      nil ->
+        # No score to mark, return team as-is
+        team
 
-    %FibaScoresheet.Team{team | running_score: updated_running_score}
+      existing_score ->
+        updated_running_score =
+          Map.put(team.running_score, current_score, %{
+            existing_score
+            | is_last_of_period: true
+          })
+
+        %FibaScoresheet.Team{team | running_score: updated_running_score}
+    end
+  end
+
+  @doc """
+  Mark team fouls as last of half for both players and coaches.
+  """
+  @spec mark_fouls_as_last_of_half(FibaScoresheet.Team.t(), integer()) ::
+          FibaScoresheet.Team.t()
+  def mark_fouls_as_last_of_half(team, period) do
+    updated_players =
+      Enum.map(team.players, fn player ->
+        update_fouls_for_period(player, period, :player)
+      end)
+
+    updated_coach = update_fouls_for_period(team.coach, period, :coach)
+    updated_assistant_coach = update_fouls_for_period(team.assistant_coach, period, :coach)
+
+    %FibaScoresheet.Team{
+      team
+      | players: updated_players,
+        coach: updated_coach,
+        assistant_coach: updated_assistant_coach
+    }
+  end
+
+  defp update_fouls_for_period(person, period, person_type) do
+    if is_nil(person) or is_nil(person.fouls) do
+      person
+    else
+      case period do
+        2 ->
+          last_foul_index = find_last_foul_index(person.fouls, [2, 1])
+          updated_fouls = mark_foul_at_index(person.fouls, last_foul_index)
+          update_person_fouls(person, updated_fouls, person_type)
+
+        4 ->
+          last_foul_index = find_last_foul_index(person.fouls, [4, 3, 2, 1])
+          updated_fouls = mark_foul_at_index(person.fouls, last_foul_index)
+          update_person_fouls(person, updated_fouls, person_type)
+
+        _ ->
+          person
+      end
+    end
+  end
+
+  defp find_last_foul_index(fouls, period_priority) do
+    period_priority
+    |> Enum.find_value(fn period ->
+      fouls
+      |> Enum.with_index()
+      |> Enum.reverse()
+      |> Enum.find(fn {foul, _index} -> foul.period == period end)
+      |> case do
+        {_foul, index} -> index
+        nil -> nil
+      end
+    end)
+  end
+
+  defp mark_foul_at_index(fouls, last_foul_index) when is_integer(last_foul_index) do
+    fouls
+    |> Enum.with_index()
+    |> Enum.map(fn {foul, index} ->
+      if index == last_foul_index do
+        %FibaScoresheet.Foul{foul | is_last_of_half: true}
+      else
+        foul
+      end
+    end)
+  end
+
+  defp mark_foul_at_index(fouls, nil), do: fouls
+
+  defp update_person_fouls(person, updated_fouls, :player) do
+    %FibaScoresheet.Player{person | fouls: updated_fouls}
+  end
+
+  defp update_person_fouls(person, updated_fouls, :coach) do
+    %FibaScoresheet.Coach{person | fouls: updated_fouls}
   end
 end

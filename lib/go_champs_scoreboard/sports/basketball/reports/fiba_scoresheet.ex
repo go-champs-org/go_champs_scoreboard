@@ -13,13 +13,15 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
     @type t :: %__MODULE__{
             type: String.t(),
             period: Integer.t(),
-            extra_action: String.t()
+            extra_action: String.t(),
+            is_last_of_half: boolean()
           }
 
     defstruct [
       :type,
       :period,
-      :extra_action
+      :extra_action,
+      :is_last_of_half
     ]
 
     @doc """
