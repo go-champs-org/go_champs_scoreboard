@@ -180,19 +180,26 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
   def mark_score_as_last_of_period(team) do
     current_score = team.score
 
-    case team.running_score[current_score] do
+    case team.running_score do
       nil ->
-        # No score to mark, return team as-is
+        # No running_score map, return team as-is
         team
 
-      existing_score ->
-        updated_running_score =
-          Map.put(team.running_score, current_score, %{
-            existing_score
-            | is_last_of_period: true
-          })
+      running_score ->
+        case running_score[current_score] do
+          nil ->
+            # No score to mark, return team as-is
+            team
 
-        %FibaScoresheet.Team{team | running_score: updated_running_score}
+          existing_score ->
+            updated_running_score =
+              Map.put(running_score, current_score, %{
+                existing_score
+                | is_last_of_period: true
+              })
+
+            %FibaScoresheet.Team{team | running_score: updated_running_score}
+        end
     end
   end
 

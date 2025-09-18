@@ -43,10 +43,18 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateCoac
         "fouls_technical" -> "T"
       end
 
+    # Extract extra_action from metadata if present
+    extra_action =
+      case get_in(event_log.payload, ["metadata", "free-throws-awarded"]) do
+        nil -> nil
+        value -> value
+      end
+
     foul = %FibaScoresheet.Foul{
       type: foul_type,
       period: event_log.game_clock_period,
-      extra_action: nil
+      extra_action: extra_action,
+      is_last_of_half: false
     }
 
     team

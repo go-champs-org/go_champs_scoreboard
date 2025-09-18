@@ -492,6 +492,40 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
 
       assert updated_team.running_score[2].is_last_of_period == true
     end
+
+    test "handles teams with nil running_score gracefully" do
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [],
+        running_score: nil,
+        score: 0
+      }
+
+      updated_team = TeamManager.mark_score_as_last_of_period(team)
+
+      assert updated_team.running_score == nil
+      assert updated_team.score == 0
+    end
+
+    test "handles teams with empty running_score map" do
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [],
+        running_score: %{},
+        score: 5
+      }
+
+      updated_team = TeamManager.mark_score_as_last_of_period(team)
+
+      assert updated_team.running_score == %{}
+      assert updated_team.score == 5
+    end
   end
 
   describe "mark_fouls_as_last_of_half/2" do

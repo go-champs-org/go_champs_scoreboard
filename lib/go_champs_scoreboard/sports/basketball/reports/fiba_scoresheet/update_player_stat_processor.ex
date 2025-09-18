@@ -100,7 +100,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
     foul = %FibaScoresheet.Foul{
       type: foul_type,
       period: event_log.game_clock_period,
-      extra_action: extra_action
+      extra_action: extra_action,
+      is_last_of_half: false
     }
 
     team

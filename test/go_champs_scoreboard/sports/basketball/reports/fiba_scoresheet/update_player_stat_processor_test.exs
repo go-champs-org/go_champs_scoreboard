@@ -173,7 +173,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
         %FibaScoresheet.Foul{
           type: "P",
           extra_action: nil,
-          period: game_state.clock_state.period
+          period: game_state.clock_state.period,
+          is_last_of_half: false
         }
       ]
 
@@ -217,7 +218,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
         %FibaScoresheet.Foul{
           type: "T",
           extra_action: nil,
-          period: game_state.clock_state.period
+          period: game_state.clock_state.period,
+          is_last_of_half: false
         }
       ]
 
@@ -264,7 +266,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
         %FibaScoresheet.Foul{
           type: "P",
           extra_action: "3",
-          period: game_state.clock_state.period
+          period: game_state.clock_state.period,
+          is_last_of_half: false
         }
       ]
 
@@ -308,7 +311,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
         %FibaScoresheet.Foul{
           type: "U",
           extra_action: nil,
-          period: game_state.clock_state.period
+          period: game_state.clock_state.period,
+          is_last_of_half: false
         }
       ]
 
@@ -352,7 +356,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
         %FibaScoresheet.Foul{
           type: "D",
           extra_action: nil,
-          period: game_state.clock_state.period
+          period: game_state.clock_state.period,
+          is_last_of_half: false
         }
       ]
 
@@ -396,7 +401,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
         %FibaScoresheet.Foul{
           type: "GD",
           extra_action: nil,
-          period: game_state.clock_state.period
+          period: game_state.clock_state.period,
+          is_last_of_half: false
         }
       ]
 
