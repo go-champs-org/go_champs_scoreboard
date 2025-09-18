@@ -75,8 +75,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Basketball do
     Stat.new("total_fouls_technical", :calculated, [], &Statistics.calc_team_technical_fouls/1)
   ]
 
-  @spec bootstrap() :: %{String.t() => number()}
-  def bootstrap() do
+  @spec bootstrap_player_stats() :: %{String.t() => number()}
+  def bootstrap_player_stats() do
     Enum.reduce(@player_stats, %{}, fn stat, player_stats ->
       Map.merge(player_stats, %{stat.key => 0})
     end)

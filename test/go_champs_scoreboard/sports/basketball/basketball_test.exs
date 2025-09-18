@@ -2,7 +2,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
   use ExUnit.Case
   alias GoChampsScoreboard.Sports.Basketball.Basketball
 
-  describe "bootstrap" do
+  describe "bootstrap_player_stats" do
     test "returns a map with all player stats" do
       expected = %{
         "assists" => 0,
@@ -41,7 +41,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
         "turnovers" => 0
       }
 
-      assert expected == Basketball.bootstrap()
+      assert expected == Basketball.bootstrap_player_stats()
     end
   end
 

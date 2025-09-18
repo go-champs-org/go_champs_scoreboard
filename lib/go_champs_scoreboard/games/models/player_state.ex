@@ -20,7 +20,7 @@ defmodule GoChampsScoreboard.Games.Models.PlayerState do
         number \\ "0",
         license_number \\ "",
         state \\ :available,
-        stats_values \\ Basketball.bootstrap()
+        stats_values \\ Basketball.bootstrap_player_stats()
       ) do
     %__MODULE__{
       id: id,

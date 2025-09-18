@@ -14,7 +14,13 @@ defmodule GoChampsScoreboard.Games.Models.CoachState do
   defstruct [:id, :name, :type, :state, :stats_values]
 
   @spec new(String.t(), String.t(), type(), state(), map()) :: t()
-  def new(id, name, type, state \\ :available, stats_values \\ Basketball.bootstrap()) do
+  def new(
+        id,
+        name,
+        type,
+        state \\ :available,
+        stats_values \\ Basketball.bootstrap_player_stats()
+      ) do
     %__MODULE__{
       id: id,
       name: name,
