@@ -73,8 +73,8 @@ const styles = StyleSheet.create({
         border: `1px solid ${RED}`,
         borderRadius: '50px',
         color: BLUE,
-        paddingLeft: '3px',
-        paddingRight: '2px',
+        paddingLeft: '4px',
+        paddingRight: '4px',
         paddingTop: '1px',
         margin: '1px',
         maxLines: 1,
@@ -107,12 +107,11 @@ const styles = StyleSheet.create({
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          borderRight: '1px solid #000',
           borderLeft: '1px solid #000',
         },
         columnFouls: {
-          flex: '1 1 65px',
-          maxWidth: '65px',
+          flex: '1 1 85px',
+          maxWidth: '85px',
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'center',
@@ -124,7 +123,7 @@ const styles = StyleSheet.create({
             alignItems: 'center',
             width: '15px',
             height: '100%',
-            border: '1px solid #000',
+            borderLeft: '1px solid #000',
             position: 'relative',
             type: {
               position: 'absolute',
@@ -144,7 +143,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         flex: '1 1 auto',
-        height: '20px',
+        height: '16px',
         alignItems: 'center',
         justifyContent: 'space-between',
         borderBottom: '1px solid #000',
@@ -160,7 +159,7 @@ const styles = StyleSheet.create({
           width: '55px',
         },
         columnFouls: {
-          width: '45px',
+          width: '85px',
           height: '100%',
           flexDirection: 'row',
           justifyContent: 'flex-end',
@@ -170,9 +169,8 @@ const styles = StyleSheet.create({
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-            width: '13px',
+            width: '14px',
             height: '100%',
-            borderRight: '1px solid #000',
             borderLeft: '1px solid #000',
           },
         },
@@ -332,11 +330,12 @@ export interface TeamProps {
 }
 
 function createRenderCoach(coach: Coach) {
-  const coachFouls = Array.from({ length: 3 })
+  const coachFouls = Array.from({ length: 4 })
     .fill({})
     .map((_, index) => ({
       type: coach.fouls[index]?.type || '',
       period: coach.fouls[index]?.period || 0,
+      extra_action: coach.fouls[index]?.extra_action || '',
     }));
   return coach
     ? { ...coach, fouls: coachFouls }
@@ -346,7 +345,7 @@ function createRenderCoach(coach: Coach) {
 export default function TeamBox({ type, team }: TeamProps) {
   const renderPlayers = Array.from({ length: 12 }).map((_, index) => {
     const teamPlayer = team.players[index] || null;
-    const fouls = Array.from({ length: 5 }).fill({});
+    const fouls = Array.from({ length: 6 }).fill({});
     if (teamPlayer) {
       return {
         name: teamPlayer.name,
@@ -373,6 +372,11 @@ export default function TeamBox({ type, team }: TeamProps) {
       is_captain: false,
       first_played_period: 0,
     };
+  });
+  const sortedRenderPlayers = renderPlayers.sort((a, b) => {
+    if (a.number === null) return 1;
+    if (b.number === null) return -1;
+    return a.number - b.number;
   });
 
   const renderCoach = createRenderCoach(team.coach);
@@ -414,11 +418,14 @@ export default function TeamBox({ type, team }: TeamProps) {
           <View style={styles.teamContainer.table.row.columnBox}>
             <Text style={styles.teamContainer.table.content}>E.</Text>
           </View>
-          <View style={styles.teamContainer.table.row.columnFouls}>
+          <View style={{
+            ...styles.teamContainer.table.row.columnFouls,
+            borderLeft: '1px solid #000',
+          }}>
             <Text>Faltas</Text>
           </View>
         </View>
-        {renderPlayers.map((player, index) => (
+        {sortedRenderPlayers.map((player, index) => (
           <View key={index} style={styles.teamContainer.table.row}>
             <View style={styles.teamContainer.table.row.columnLic}>
               <Text style={styles.teamContainer.table.content}>
@@ -448,9 +455,9 @@ export default function TeamBox({ type, team }: TeamProps) {
                     player.has_started
                       ? styles.teamContainer.table.contentWithCircle
                       : {
-                          ...styles.teamContainer.table.content,
-                          ...textColorForPeriod(player.first_played_period),
-                        }
+                        ...styles.teamContainer.table.content,
+                        ...textColorForPeriod(player.first_played_period),
+                      }
                   }
                 >
                   X
@@ -463,7 +470,10 @@ export default function TeamBox({ type, team }: TeamProps) {
               {player.fouls.map((foul, index) => (
                 <View
                   key={index}
-                  style={styles.teamContainer.table.row.columnFouls.fouls}
+                  style={{
+                    ...styles.teamContainer.table.row.columnFouls.fouls,
+                    backgroundColor: index === 5 ? '#ddd' : 'transparent',
+                  }}
                 >
                   <Text
                     style={{
@@ -500,7 +510,10 @@ export default function TeamBox({ type, team }: TeamProps) {
             {renderCoach.fouls.map((foul, index) => (
               <View
                 key={index}
-                style={styles.teamContainer.table.coachRow.columnFouls.fouls}
+                style={{
+                  ...styles.teamContainer.table.coachRow.columnFouls.fouls,
+                  backgroundColor: index === 3 ? '#ddd' : 'transparent',
+                }}
               >
                 <Text
                   style={{
@@ -525,7 +538,10 @@ export default function TeamBox({ type, team }: TeamProps) {
             {renderAssistantCoach.fouls.map((foul, index) => (
               <View
                 key={index}
-                style={styles.teamContainer.table.coachRow.columnFouls.fouls}
+                style={{
+                  ...styles.teamContainer.table.coachRow.columnFouls.fouls,
+                  backgroundColor: index === 3 ? '#ddd' : 'transparent',
+                }}
               >
                 <Text
                   style={{
