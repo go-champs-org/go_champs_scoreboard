@@ -19,7 +19,7 @@ defmodule GoChampsScoreboard.Games.Models.CoachState do
         name,
         type,
         state \\ :available,
-        stats_values \\ Basketball.bootstrap_player_stats()
+        stats_values \\ Basketball.bootstrap_coach_stats()
       ) do
     %__MODULE__{
       id: id,

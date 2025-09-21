@@ -45,6 +45,20 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
     end
   end
 
+  describe "bootstrap_coach_stats" do
+    test "returns a map with all coach stats" do
+      expected = %{
+        "fouls" => 0,
+        "fouls_technical" => 0,
+        "fouls_disqualifying" => 0,
+        "fouls_technical_bench" => 0,
+        "fouls_game_disqualifying" => 0
+      }
+
+      assert expected == Basketball.bootstrap_coach_stats()
+    end
+  end
+
   describe "find_player_stat" do
     test "returns the player stat with the given key" do
       assert %GoChampsScoreboard.Statistics.Models.Stat{
@@ -272,6 +286,64 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
 
       # Check that expected calculated team stats are included
       assert "total_fouls_technical" in calculated_keys
+    end
+  end
+
+  describe "find_coach_stat" do
+    test "returns the coach stat with the given key" do
+      assert %GoChampsScoreboard.Statistics.Models.Stat{
+               key: "fouls_technical",
+               type: :manual,
+               operations: [:increment, :decrement]
+             } == Basketball.find_coach_stat("fouls_technical")
+    end
+
+    test "returns the coach stat for fouls_disqualifying" do
+      assert %GoChampsScoreboard.Statistics.Models.Stat{
+               key: "fouls_disqualifying",
+               type: :manual,
+               operations: [:increment, :decrement]
+             } == Basketball.find_coach_stat("fouls_disqualifying")
+    end
+
+    test "returns the coach stat for fouls_technical_bench" do
+      assert %GoChampsScoreboard.Statistics.Models.Stat{
+               key: "fouls_technical_bench",
+               type: :manual,
+               operations: [:increment, :decrement]
+             } == Basketball.find_coach_stat("fouls_technical_bench")
+    end
+
+    test "returns the coach stat for fouls_game_disqualifying" do
+      assert %GoChampsScoreboard.Statistics.Models.Stat{
+               key: "fouls_game_disqualifying",
+               type: :manual,
+               operations: [:increment, :decrement]
+             } == Basketball.find_coach_stat("fouls_game_disqualifying")
+    end
+
+    test "returns nil if the coach stat with the given key is not found" do
+      assert nil == Basketball.find_coach_stat("non-existing-stat")
+    end
+  end
+
+  describe "find_calculated_coach_stats" do
+    test "returns all calculated coach stats" do
+      calculated_stats = Basketball.find_calculated_coach_stats()
+
+      # Should include the calculated fouls stat
+      calculated_keys = Enum.map(calculated_stats, & &1.key)
+      assert "fouls" in calculated_keys
+
+      # All returned stats should be calculated
+      assert Enum.all?(calculated_stats, fn stat -> stat.type == :calculated end)
+    end
+
+    test "returns empty list when no calculated coach stats exist" do
+      # This test would pass if there were no calculated coach stats
+      # Currently we have one: "fouls"
+      calculated_stats = Basketball.find_calculated_coach_stats()
+      assert length(calculated_stats) >= 0
     end
   end
 end

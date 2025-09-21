@@ -45,11 +45,11 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinition do
       ) do
     coach_stat =
       current_game.sport_id
-      |> Sports.find_player_stat(stat_id)
+      |> Sports.find_coach_stat(stat_id)
 
     calculated_coach_stats =
       current_game.sport_id
-      |> Sports.find_calculated_player_stats()
+      |> Sports.find_calculated_coach_stats()
 
     updated_coach =
       current_game

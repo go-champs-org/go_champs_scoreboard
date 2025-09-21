@@ -12,6 +12,8 @@ defmodule GoChampsScoreboard.GameStateFixtures do
     ProtestState
   }
 
+  alias GoChampsScoreboard.Sports.Basketball.Basketball
+
   @doc """
   Creates a default game state fixture for testing purposes.
 
@@ -231,19 +233,13 @@ defmodule GoChampsScoreboard.GameStateFixtures do
           id: "coach-id",
           name: "First coach",
           type: :head_coach,
-          stats_values: %{
-            "fouls_personal" => 0,
-            "fouls_technical" => 0
-          }
+          stats_values: Basketball.bootstrap_coach_stats()
         },
         %CoachState{
           id: "assistant-coach-id",
           name: "Assistant coach",
           type: :assistant_coach,
-          stats_values: %{
-            "fouls_personal" => 0,
-            "fouls_technical" => 0
-          }
+          stats_values: Basketball.bootstrap_coach_stats()
         }
       ],
       away_players: [
@@ -273,19 +269,13 @@ defmodule GoChampsScoreboard.GameStateFixtures do
           id: "away-coach-id",
           name: "Away coach",
           type: :head_coach,
-          stats_values: %{
-            "fouls_personal" => 0,
-            "fouls_technical" => 0
-          }
+          stats_values: Basketball.bootstrap_coach_stats()
         },
         %CoachState{
           id: "away-assistant-coach-id",
           name: "Away assistant coach",
           type: :assistant_coach,
-          stats_values: %{
-            "fouls_personal" => 0,
-            "fouls_technical" => 0
-          }
+          stats_values: Basketball.bootstrap_coach_stats()
         }
       ],
       officials: [

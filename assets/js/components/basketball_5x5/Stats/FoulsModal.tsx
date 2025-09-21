@@ -267,10 +267,17 @@ function useFoulUpdate(
         (foulType, metadata) => {
           if (!personSelection) return;
 
-          pushEvent('update-player-stat', {
+          const eventType =
+            personSelection.personType === 'coach'
+              ? 'update-coach-stat'
+              : 'update-player-stat';
+          const idField =
+            personSelection.personType === 'coach' ? 'coach-id' : 'player-id';
+
+          pushEvent(eventType, {
             ['stat-id']: foulType,
             operation: 'increment',
-            ['player-id']: personSelection.personId,
+            [idField]: personSelection.personId,
             ['team-type']: personSelection.teamType,
             ...(metadata && { metadata }),
           });
@@ -302,7 +309,7 @@ function FoulButtons({ personSelection, onFoulRecord }: FoulButtonsProps) {
       statId: 'fouls_unsportsmanlike',
       label: t('basketball.stats.controls.unsportsmanlikeFoul'),
       quickAction: () => onFoulRecord('fouls_unsportsmanlike'),
-      availableFor: ['player', 'coach'],
+      availableFor: ['player'],
       popUpButtons: [
         {
           label: t('basketball.stats.controls.oneFreeThrow'),
@@ -327,7 +334,10 @@ function FoulButtons({ personSelection, onFoulRecord }: FoulButtonsProps) {
         },
         {
           label: t('basketball.stats.controls.canceledFreeThrows'),
-          onClick: () => onFoulRecord('fouls_unsportsmanlike'),
+          onClick: () =>
+            onFoulRecord('fouls_unsportsmanlike', {
+              'free-throws-awarded': 'C',
+            }),
         },
       ],
     },
@@ -355,7 +365,10 @@ function FoulButtons({ personSelection, onFoulRecord }: FoulButtonsProps) {
         },
         {
           label: t('basketball.stats.controls.canceledFreeThrows'),
-          onClick: () => onFoulRecord('fouls_disqualifying'),
+          onClick: () =>
+            onFoulRecord('fouls_disqualifying', {
+              'free-throws-awarded': 'C',
+            }),
         },
       ],
     },
@@ -389,7 +402,10 @@ function FoulButtons({ personSelection, onFoulRecord }: FoulButtonsProps) {
         },
         {
           label: t('basketball.stats.controls.canceledFreeThrows'),
-          onClick: () => onFoulRecord('fouls_game_disqualifying'),
+          onClick: () =>
+            onFoulRecord('fouls_game_disqualifying', {
+              'free-throws-awarded': 'C',
+            }),
         },
       ],
     },
@@ -413,38 +429,39 @@ function FoulButtons({ personSelection, onFoulRecord }: FoulButtonsProps) {
         },
         {
           label: t('basketball.stats.controls.canceledFreeThrows'),
-          onClick: () => onFoulRecord('fouls_technical'),
+          onClick: () =>
+            onFoulRecord('fouls_technical', { 'free-throws-awarded': 'C' }),
         },
       ],
     },
     {
       key: 'benchTechnical',
-      statId: 'fouls_technical',
+      statId: 'fouls_technical_bench',
       label: t('basketball.stats.controls.benchTechnicalFoul'),
       quickAction: () =>
-        onFoulRecord('fouls_technical', { 'bench-foul': true }),
+        onFoulRecord('fouls_technical_bench', { 'bench-foul': true }),
       availableFor: ['coach'],
       popUpButtons: [
         {
           label: t('basketball.stats.controls.oneFreeThrow'),
           onClick: () =>
-            onFoulRecord('fouls_technical', {
+            onFoulRecord('fouls_technical_bench', {
               'free-throws-awarded': '1',
-              'bench-foul': true,
             }),
         },
         {
           label: t('basketball.stats.controls.twoFreeThrows'),
           onClick: () =>
-            onFoulRecord('fouls_technical', {
+            onFoulRecord('fouls_technical_bench', {
               'free-throws-awarded': '2',
-              'bench-foul': true,
             }),
         },
         {
           label: t('basketball.stats.controls.canceledFreeThrows'),
           onClick: () =>
-            onFoulRecord('fouls_technical', { 'bench-foul': true }),
+            onFoulRecord('fouls_technical_bench', {
+              'free-throws-awarded': 'C',
+            }),
         },
       ],
     },
@@ -462,7 +479,6 @@ function FoulButtons({ personSelection, onFoulRecord }: FoulButtonsProps) {
           onClick: () =>
             onFoulRecord('fouls_disqualifying', {
               'free-throws-awarded': '1',
-              'fight-related': true,
             }),
         },
         {
@@ -470,7 +486,6 @@ function FoulButtons({ personSelection, onFoulRecord }: FoulButtonsProps) {
           onClick: () =>
             onFoulRecord('fouls_disqualifying', {
               'free-throws-awarded': '2',
-              'fight-related': true,
             }),
         },
         {
@@ -478,13 +493,12 @@ function FoulButtons({ personSelection, onFoulRecord }: FoulButtonsProps) {
           onClick: () =>
             onFoulRecord('fouls_disqualifying', {
               'free-throws-awarded': '3',
-              'fight-related': true,
             }),
         },
         {
           label: t('basketball.stats.controls.canceledFreeThrows'),
           onClick: () =>
-            onFoulRecord('fouls_disqualifying', { 'fight-related': true }),
+            onFoulRecord('fouls_disqualifying', { 'free-throws-awarded': 'C' }),
         },
       ],
     },

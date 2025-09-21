@@ -2428,7 +2428,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       event2 =
         GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
           "7488a646-e31f-11e4-aace-600308960668",
-          10,
+          5,
           1,
           payload
         )
@@ -2436,7 +2436,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       event3 =
         GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
           "7488a646-e31f-11e4-aace-600308960668",
-          10,
+          2,
           1,
           payload
         )
@@ -2463,13 +2463,11 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
         end
       )
 
-      # Mock EventLogCache.refresh to verify it's called
       expect(EventLogCacheMock, :refresh, fn game_id ->
         assert game_id == "7488a646-e31f-11e4-aace-600308960668"
         :ok
       end)
 
-      # Mock EventLogCache.get to simulate the cache retrieval
       expect(EventLogCacheMock, :get, fn game_id ->
         assert game_id == "7488a646-e31f-11e4-aace-600308960668"
         {:ok, []}

@@ -69,11 +69,26 @@ defmodule GoChampsScoreboard.Sports.Basketball.Basketball do
     Stat.new("turnovers", :manual, [:increment, :decrement])
   ]
 
+  @coach_stats [
+    Stat.new("fouls", :calculated, [], &Statistics.calc_coach_fouls/1),
+    Stat.new("fouls_technical", :manual, [:increment, :decrement]),
+    Stat.new("fouls_disqualifying", :manual, [:increment, :decrement]),
+    Stat.new("fouls_technical_bench", :manual, [:increment, :decrement]),
+    Stat.new("fouls_game_disqualifying", :manual, [:increment, :decrement])
+  ]
+
   @team_stats [
     Stat.new("timeouts", :manual, [:increment, :decrement]),
     Stat.new("fouls_technical", :manual, [:increment, :decrement]),
     Stat.new("total_fouls_technical", :calculated, [], &Statistics.calc_team_technical_fouls/1)
   ]
+
+  @spec bootstrap_coach_stats() :: %{String.t() => number()}
+  def bootstrap_coach_stats() do
+    Enum.reduce(@coach_stats, %{}, fn stat, coach_stats ->
+      Map.merge(coach_stats, %{stat.key => 0})
+    end)
+  end
 
   @spec bootstrap_player_stats() :: %{String.t() => number()}
   def bootstrap_player_stats() do
@@ -102,6 +117,16 @@ defmodule GoChampsScoreboard.Sports.Basketball.Basketball do
   @spec find_player_stat_by_type([atom()]) :: [Stat.t()]
   def find_player_stat_by_type(types) when is_list(types) do
     Enum.filter(@player_stats, fn stat -> stat.type in types end)
+  end
+
+  @spec find_coach_stat(String.t()) :: Stat.t()
+  def find_coach_stat(stat_id) do
+    Enum.find(@coach_stats, fn stat -> stat.key == stat_id end)
+  end
+
+  @spec find_calculated_coach_stats() :: [Stat.t()]
+  def find_calculated_coach_stats() do
+    Enum.filter(@coach_stats, fn stat -> stat.type == :calculated end)
   end
 
   @spec find_team_stat(String.t()) :: Stat.t()

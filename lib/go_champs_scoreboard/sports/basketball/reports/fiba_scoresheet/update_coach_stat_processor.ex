@@ -6,10 +6,10 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateCoac
 
   # Non-scoring stats that need special handling
   @foul_stats [
-    "fouls_personal",
     "fouls_technical",
-    "fouls_unsportsmanlike",
-    "fouls_disqualifying"
+    "fouls_disqualifying",
+    "fouls_technical_bench",
+    "fouls_game_disqualifying"
   ]
 
   @spec process(EventLog.t(), FibaScoresheet.t()) :: FibaScoresheet.t()
@@ -39,8 +39,10 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateCoac
 
     foul_type =
       case stat_id do
-        "fouls_personal" -> "P"
-        "fouls_technical" -> "T"
+        "fouls_technical" -> "C"
+        "fouls_disqualifying" -> "D"
+        "fouls_technical_bench" -> "B"
+        "fouls_game_disqualifying" -> "GD"
       end
 
     # Extract extra_action from metadata if present

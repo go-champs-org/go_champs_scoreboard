@@ -1,4 +1,5 @@
 defmodule GoChampsScoreboard.Sports.Basketball.Statistics do
+  alias GoChampsScoreboard.Games.Models.CoachState
   alias GoChampsScoreboard.Games.Models.PlayerState
   alias GoChampsScoreboard.Games.Models.TeamState
 
@@ -81,6 +82,16 @@ defmodule GoChampsScoreboard.Sports.Basketball.Statistics do
     technical_fouls = Map.get(team_state.stats_values, "fouls_technical", 0)
 
     total_technical_fouls_players + technical_fouls
+  end
+
+  @spec calc_coach_fouls(CoachState.t()) :: float()
+  def calc_coach_fouls(coach_state) do
+    fouls_technical = Map.get(coach_state.stats_values, "fouls_technical", 0)
+    fouls_disqualifying = Map.get(coach_state.stats_values, "fouls_disqualifying", 0)
+    fouls_game_disqualifying = Map.get(coach_state.stats_values, "fouls_game_disqualifying", 0)
+    fouls_technical_bench = Map.get(coach_state.stats_values, "fouls_technical_bench", 0)
+
+    fouls_technical + fouls_disqualifying + fouls_game_disqualifying + fouls_technical_bench
   end
 
   defp calc_percentage(made, missed) do

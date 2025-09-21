@@ -172,6 +172,18 @@ const styles = StyleSheet.create({
             width: '14px',
             height: '100%',
             borderLeft: '1px solid #000',
+            position: 'relative',
+            type: {
+              position: 'absolute',
+              top: '1px',
+              left: '1px',
+            },
+            extraAction: {
+              position: 'absolute',
+              bottom: '1px',
+              right: '1px',
+              fontSize: '5px',
+            },
           },
         },
       },
@@ -329,6 +341,21 @@ export interface TeamProps {
   team: Team;
 }
 
+function defineFoulBorders(
+  foul: any,
+  currentIndex: number,
+  hasGameEnded: boolean = false,
+) {
+  const borderLeft =
+    foul.period >= 3 && currentIndex === 0
+      ? `2px solid ${BLUE}`
+      : '1px solid #000';
+
+  const borderRight = foul.is_last_of_half ? `2px solid ${BLUE}` : 'none';
+
+  return { borderLeft, borderRight };
+}
+
 function createRenderCoach(coach: Coach) {
   const coachFouls = Array.from({ length: 4 })
     .fill({})
@@ -476,9 +503,7 @@ export default function TeamBox({ type, team }: TeamProps) {
                   style={{
                     ...styles.teamContainer.table.row.columnFouls.fouls,
                     backgroundColor: index === 5 ? '#ddd' : 'transparent',
-                    borderRight: foul.is_last_of_half
-                      ? `2px solid ${BLUE}`
-                      : 'none',
+                    ...defineFoulBorders(foul, index, false),
                   }}
                 >
                   <Text
@@ -519,16 +544,29 @@ export default function TeamBox({ type, team }: TeamProps) {
                 style={{
                   ...styles.teamContainer.table.coachRow.columnFouls.fouls,
                   backgroundColor: index === 3 ? '#ddd' : 'transparent',
+                  ...defineFoulBorders(foul, index, false),
                 }}
               >
                 <Text
                   style={{
-                    ...styles.teamContainer.table.content,
+                    ...styles.teamContainer.table.coachRow.columnFouls.fouls
+                      .type,
                     ...textColorForPeriod(foul.period),
                   }}
                 >
                   {foul.type}
                 </Text>
+                {foul.extra_action && (
+                  <Text
+                    style={{
+                      ...styles.teamContainer.table.coachRow.columnFouls.fouls
+                        .extraAction,
+                      ...textColorForPeriod(foul.period),
+                    }}
+                  >
+                    {foul.extra_action}
+                  </Text>
+                )}
               </View>
             ))}
           </View>
@@ -547,16 +585,29 @@ export default function TeamBox({ type, team }: TeamProps) {
                 style={{
                   ...styles.teamContainer.table.coachRow.columnFouls.fouls,
                   backgroundColor: index === 3 ? '#ddd' : 'transparent',
+                  ...defineFoulBorders(foul, index, false),
                 }}
               >
                 <Text
                   style={{
-                    ...styles.teamContainer.table.content,
+                    ...styles.teamContainer.table.coachRow.columnFouls.fouls
+                      .type,
                     ...textColorForPeriod(foul.period),
                   }}
                 >
                   {foul.type}
                 </Text>
+                {foul.extra_action && (
+                  <Text
+                    style={{
+                      ...styles.teamContainer.table.coachRow.columnFouls.fouls
+                        .extraAction,
+                      ...textColorForPeriod(foul.period),
+                    }}
+                  >
+                    {foul.extra_action}
+                  </Text>
+                )}
               </View>
             ))}
           </View>

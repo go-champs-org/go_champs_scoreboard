@@ -13,7 +13,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinitionTest do
                  "operation" => "increment",
                  "team-type" => "home",
                  "coach-id" => "123",
-                 "stat-id" => "field_goals_made"
+                 "stat-id" => "fouls_technical"
                })
     end
   end
@@ -30,7 +30,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinitionTest do
                  "operation" => "increment",
                  "team-type" => "home",
                  "coach-id" => "123",
-                 "stat-id" => "field_goals_made"
+                 "stat-id" => "fouls_technical"
                })
     end
   end
@@ -42,9 +42,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinitionTest do
           %{
             id: "123",
             stats_values: %{
-              "field_goals_made" => 1,
-              "points" => 2,
-              "rebounds" => 0
+              "fouls_technical" => 1
             }
           }
         ]
@@ -62,7 +60,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinitionTest do
         "operation" => "increment",
         "team-type" => "home",
         "coach-id" => "123",
-        "stat-id" => "field_goals_made"
+        "stat-id" => "fouls_technical"
       }
 
       event = UpdateCoachStatDefinition.create("some-game-id", 10, 1, payload)
@@ -73,9 +71,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinitionTest do
             %{
               id: "123",
               stats_values: %{
-                "field_goals_made" => 2,
-                "points" => 4,
-                "rebounds" => 0
+                "fouls_technical" => 2
               }
             }
           ]

@@ -5,17 +5,14 @@ defmodule GoChampsScoreboard.Sports.SportsTest do
 
   describe "find_player_stat_by_type/2" do
     test "delegates to Basketball.Basketball.find_player_stat_by_type for basketball sport" do
-      # Test with calculated stats
       calculated_stats = Sports.find_player_stat_by_type("basketball", [:calculated])
       assert length(calculated_stats) == 9
       assert Enum.all?(calculated_stats, fn stat -> stat.type == :calculated end)
 
-      # Test with manual stats
       manual_stats = Sports.find_player_stat_by_type("basketball", [:manual])
       assert length(manual_stats) > 0
       assert Enum.all?(manual_stats, fn stat -> stat.type == :manual end)
 
-      # Test with automatic stats
       automatic_stats = Sports.find_player_stat_by_type("basketball", [:automatic])
       assert length(automatic_stats) == 1
       assert Enum.all?(automatic_stats, fn stat -> stat.type == :automatic end)
@@ -39,6 +36,44 @@ defmodule GoChampsScoreboard.Sports.SportsTest do
     test "returns empty list when given empty types list" do
       result = Sports.find_player_stat_by_type("basketball", [])
       assert result == []
+    end
+  end
+
+  describe "find_coach_stat/2" do
+    test "delegates to Basketball.Basketball.find_coach_stat for basketball sport" do
+      technical_foul_stat = Sports.find_coach_stat("basketball", "fouls_technical")
+      assert technical_foul_stat.key == "fouls_technical"
+      assert technical_foul_stat.type == :manual
+      assert technical_foul_stat.operations == [:increment, :decrement]
+
+      disqualifying_foul_stat = Sports.find_coach_stat("basketball", "fouls_disqualifying")
+      assert disqualifying_foul_stat.key == "fouls_disqualifying"
+      assert disqualifying_foul_stat.type == :manual
+
+      bench_foul_stat = Sports.find_coach_stat("basketball", "fouls_technical_bench")
+      assert bench_foul_stat.key == "fouls_technical_bench"
+      assert bench_foul_stat.type == :manual
+
+      game_disq_stat = Sports.find_coach_stat("basketball", "fouls_game_disqualifying")
+      assert game_disq_stat.key == "fouls_game_disqualifying"
+      assert game_disq_stat.type == :manual
+    end
+
+    test "returns nil for non-existent coach stat" do
+      result = Sports.find_coach_stat("basketball", "non-existing-coach-stat")
+      assert result == nil
+    end
+  end
+
+  describe "find_calculated_coach_stats/1" do
+    test "delegates to Basketball.Basketball.find_calculated_coach_stats for basketball sport" do
+      calculated_stats = Sports.find_calculated_coach_stats("basketball")
+
+      assert length(calculated_stats) > 0
+      assert Enum.all?(calculated_stats, fn stat -> stat.type == :calculated end)
+
+      calculated_keys = Enum.map(calculated_stats, & &1.key)
+      assert "fouls" in calculated_keys
     end
   end
 end

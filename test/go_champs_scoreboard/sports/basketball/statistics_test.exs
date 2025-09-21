@@ -167,4 +167,19 @@ defmodule GoChampsScoreboard.Sports.Basketball.StatisticsTest do
       assert Statistics.calc_team_technical_fouls(team_state) == 2
     end
   end
+
+  describe "calc_coach_fouls" do
+    test "returns the number of technical fouls for the coach" do
+      coach_state = %GoChampsScoreboard.Games.Models.CoachState{
+        stats_values: %{
+          "fouls_technical" => 2,
+          "fouls_disqualifying" => 1,
+          "fouls_technical_bench" => 1,
+          "fouls_game_disqualifying" => 2
+        }
+      }
+
+      assert Statistics.calc_coach_fouls(coach_state) == 6
+    end
+  end
 end
