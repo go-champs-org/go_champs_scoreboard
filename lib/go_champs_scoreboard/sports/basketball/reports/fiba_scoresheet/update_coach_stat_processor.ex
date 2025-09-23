@@ -8,6 +8,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateCoac
   @foul_stats [
     "fouls_technical",
     "fouls_disqualifying",
+    "fouls_disqualifying_fighting",
     "fouls_technical_bench",
     "fouls_game_disqualifying"
   ]
@@ -41,6 +42,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateCoac
       case stat_id do
         "fouls_technical" -> "C"
         "fouls_disqualifying" -> "D"
+        "fouls_disqualifying_fighting" -> "F"
         "fouls_technical_bench" -> "B"
         "fouls_game_disqualifying" -> "GD"
       end

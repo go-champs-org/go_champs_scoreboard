@@ -409,6 +409,43 @@ function FoulButtons({ personSelection, onFoulRecord }: FoulButtonsProps) {
         },
       ],
     },
+    {
+      key: 'fightDisqualifying',
+      statId: 'fouls_disqualifying_fighting',
+      label: t('basketball.stats.controls.fightDisqualifyingFoul'),
+      quickAction: () => onFoulRecord('fouls_disqualifying_fighting'),
+      availableFor: ['player', 'coach'],
+      popUpButtons: [
+        {
+          label: t('basketball.stats.controls.oneFreeThrow'),
+          onClick: () =>
+            onFoulRecord('fouls_disqualifying_fighting', {
+              'free-throws-awarded': '1',
+            }),
+        },
+        {
+          label: t('basketball.stats.controls.twoFreeThrows'),
+          onClick: () =>
+            onFoulRecord('fouls_disqualifying_fighting', {
+              'free-throws-awarded': '2',
+            }),
+        },
+        {
+          label: t('basketball.stats.controls.threeFreeThrows'),
+          onClick: () =>
+            onFoulRecord('fouls_disqualifying_fighting', {
+              'free-throws-awarded': '3',
+            }),
+        },
+        {
+          label: t('basketball.stats.controls.canceledFreeThrows'),
+          onClick: () =>
+            onFoulRecord('fouls_disqualifying_fighting', {
+              'free-throws-awarded': 'C',
+            }),
+        },
+      ],
+    },
     // Coach-specific fouls
     {
       key: 'coachTechnical',
@@ -462,43 +499,6 @@ function FoulButtons({ personSelection, onFoulRecord }: FoulButtonsProps) {
             onFoulRecord('fouls_technical_bench', {
               'free-throws-awarded': 'C',
             }),
-        },
-      ],
-    },
-    // Player-specific fouls
-    {
-      key: 'fightDisqualifying',
-      statId: 'fouls_disqualifying',
-      label: t('basketball.stats.controls.fightDisqualifyingFoul'),
-      quickAction: () =>
-        onFoulRecord('fouls_disqualifying', { 'fight-related': true }),
-      availableFor: ['player'],
-      popUpButtons: [
-        {
-          label: t('basketball.stats.controls.oneFreeThrow'),
-          onClick: () =>
-            onFoulRecord('fouls_disqualifying', {
-              'free-throws-awarded': '1',
-            }),
-        },
-        {
-          label: t('basketball.stats.controls.twoFreeThrows'),
-          onClick: () =>
-            onFoulRecord('fouls_disqualifying', {
-              'free-throws-awarded': '2',
-            }),
-        },
-        {
-          label: t('basketball.stats.controls.threeFreeThrows'),
-          onClick: () =>
-            onFoulRecord('fouls_disqualifying', {
-              'free-throws-awarded': '3',
-            }),
-        },
-        {
-          label: t('basketball.stats.controls.canceledFreeThrows'),
-          onClick: () =>
-            onFoulRecord('fouls_disqualifying', { 'free-throws-awarded': 'C' }),
         },
       ],
     },

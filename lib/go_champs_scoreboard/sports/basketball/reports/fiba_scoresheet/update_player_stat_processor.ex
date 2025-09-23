@@ -18,6 +18,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
     "fouls_technical",
     "fouls_unsportsmanlike",
     "fouls_disqualifying",
+    "fouls_disqualifying_fighting",
     "fouls_game_disqualifying"
   ]
 
@@ -87,6 +88,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
         "fouls_technical" -> "T"
         "fouls_unsportsmanlike" -> "U"
         "fouls_disqualifying" -> "D"
+        "fouls_disqualifying_fighting" -> "F"
         "fouls_game_disqualifying" -> "GD"
       end
 

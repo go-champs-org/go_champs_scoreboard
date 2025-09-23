@@ -411,5 +411,80 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
       assert player.fouls == expected_fouls
       assert result_scoresheet.team_a.all_fouls == expected_fouls
     end
+
+    test "returns a fiba scoresheet data player fouls when event log payload with fouls_disqualifying_fighting operation is increment and team-type is home" do
+      # Create a mock event log directly to avoid game state complexities
+      event_log = %GoChampsScoreboard.Events.EventLog{
+        key: "update-player-stat",
+        game_id: "test-game-id",
+        timestamp: DateTime.utc_now(),
+        game_clock_period: 2,
+        game_clock_time: 480,
+        payload: %{
+          "operation" => "increment",
+          "team-type" => "home",
+          "player-id" => "123",
+          "stat-id" => "fouls_disqualifying_fighting"
+        },
+        inserted_at: DateTime.utc_now(),
+        updated_at: DateTime.utc_now()
+      }
+
+      team_a_players = [
+        %FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: []}
+      ]
+
+      fiba_scoresheet =
+        fiba_scoresheet_fixture(game_id: event_log.game_id, team_a_players: team_a_players)
+
+      result_scoresheet =
+        UpdatePlayerStatProcessor.process(event_log, fiba_scoresheet)
+
+      expected_fouls = [
+        %FibaScoresheet.Foul{
+          type: "F",
+          extra_action: nil,
+          period: 2,
+          is_last_of_half: false
+        }
+      ]
+
+      [player] = result_scoresheet.team_a.players
+
+      assert player.fouls == expected_fouls
+      assert result_scoresheet.team_a.all_fouls == expected_fouls
+    end
+
+    test "returns unchanged fiba scoresheet when event log payload has non-scoring/non-foul stat-id" do
+      # Create a mock event log directly to avoid the event handler validation
+      event_log = %GoChampsScoreboard.Events.EventLog{
+        key: "update-player-stat",
+        game_id: "test-game-id",
+        timestamp: DateTime.utc_now(),
+        game_clock_period: 1,
+        game_clock_time: 600,
+        payload: %{
+          "operation" => "increment",
+          "team-type" => "home",
+          "player-id" => "123",
+          "stat-id" => "rebounds"
+        },
+        inserted_at: DateTime.utc_now(),
+        updated_at: DateTime.utc_now()
+      }
+
+      team_a_players = [
+        %FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: []}
+      ]
+
+      original_fiba_scoresheet =
+        fiba_scoresheet_fixture(game_id: event_log.game_id, team_a_players: team_a_players)
+
+      result_scoresheet =
+        UpdatePlayerStatProcessor.process(event_log, original_fiba_scoresheet)
+
+      # Should be unchanged since it's not a scoring or foul stat
+      assert result_scoresheet == original_fiba_scoresheet
+    end
   end
 end
