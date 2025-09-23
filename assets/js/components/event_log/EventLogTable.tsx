@@ -61,7 +61,6 @@ function EventLogRow({
       className={`${isDeleting ? 'is-deleting' : ''} ${
         canEdit ? 'is-clickable' : ''
       }`}
-      onClick={handleRowClick}
       style={{
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         transform: isDeleting
@@ -73,10 +72,10 @@ function EventLogRow({
         cursor: canEdit ? 'pointer' : 'default',
       }}
     >
-      <td>{eventLog.game_clock_period}</td>
-      <td>{formatTime(eventLog.game_clock_time)}</td>
-      <td>{eventKeyToString(eventLog.key, t)}</td>
-      <td>
+      <td onClick={handleRowClick}>{eventLog.game_clock_period}</td>
+      <td onClick={handleRowClick}>{formatTime(eventLog.game_clock_time)}</td>
+      <td onClick={handleRowClick}>{eventKeyToString(eventLog.key, t)}</td>
+      <td onClick={handleRowClick}>
         <EventLogPayload eventLog={eventLog} gameState={gameState} />
       </td>
       <td>

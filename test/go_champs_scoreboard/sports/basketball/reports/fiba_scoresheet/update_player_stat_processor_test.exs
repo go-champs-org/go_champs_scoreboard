@@ -413,7 +413,6 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
     end
 
     test "returns a fiba scoresheet data player fouls when event log payload with fouls_disqualifying_fighting operation is increment and team-type is home" do
-      # Create a mock event log directly to avoid game state complexities
       event_log = %GoChampsScoreboard.Events.EventLog{
         key: "update-player-stat",
         game_id: "test-game-id",
@@ -456,7 +455,6 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
     end
 
     test "returns unchanged fiba scoresheet when event log payload has non-scoring/non-foul stat-id" do
-      # Create a mock event log directly to avoid the event handler validation
       event_log = %GoChampsScoreboard.Events.EventLog{
         key: "update-player-stat",
         game_id: "test-game-id",

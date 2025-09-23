@@ -399,8 +399,16 @@ function FibaScoresheet({ scoresheetData }: FibaScoresheetProps) {
             <View
               style={styles.main.teamsAndRunningScoreContainer.containerLeft}
             >
-              <TeamBox type="A" team={scoresheetData.team_a} />
-              <TeamBox type="B" team={scoresheetData.team_b} />
+              <TeamBox
+                type="A"
+                team={scoresheetData.team_a}
+                isGameEnded={!!scoresheetData.info.actual_end_datetime}
+              />
+              <TeamBox
+                type="B"
+                team={scoresheetData.team_b}
+                isGameEnded={!!scoresheetData.info.actual_end_datetime}
+              />
               <OfficialsBox
                 scorer={scoresheetData.scorer}
                 assistantScorer={scoresheetData.assistant_scorer}

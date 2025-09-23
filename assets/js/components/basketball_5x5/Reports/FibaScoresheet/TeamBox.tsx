@@ -61,6 +61,15 @@ const styles = StyleSheet.create({
             left: '1px',
             fontSize: '14px',
           },
+          unused: {
+            position: 'absolute',
+            top: '3px',
+            left: '0',
+            width: '100%',
+            height: '5px',
+            borderTop: `2px solid ${BLUE}`,
+            borderBottom: `2px solid ${BLUE}`,
+          },
         },
       },
     },
@@ -195,12 +204,61 @@ const styles = StyleSheet.create({
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
+      unused: {
+        width: '100%',
+        height: '5px',
+        borderTop: `2px solid ${BLUE}`,
+        borderBottom: `2px solid ${BLUE}`,
+      },
     },
   },
 });
 
-function PeriodFouls({ period, team }: { period: number; team: Team }) {
+function FoulBox({
+  boxNumber,
+  periodFouls,
+  period,
+  isGameEnded = false,
+}: {
+  boxNumber: number;
+  periodFouls: any[];
+  period: number;
+  isGameEnded?: boolean;
+}) {
+  const usedFouls = periodFouls.length >= boxNumber;
+  return (
+    <View style={styles.teamContainer.teamFoulBoxes.fouls.box}>
+      <Text>{boxNumber}</Text>
+      {usedFouls ? (
+        <Text
+          style={{
+            ...styles.teamContainer.teamFoulBoxes.fouls.box.x,
+            ...textColorForPeriod(period),
+          }}
+        >
+          X
+        </Text>
+      ) : (
+        isGameEnded &&
+        !usedFouls && (
+          <View style={styles.teamContainer.teamFoulBoxes.fouls.box.unused} />
+        )
+      )}
+    </View>
+  );
+}
+
+function PeriodFouls({
+  period,
+  team,
+  isGameEnded,
+}: {
+  period: number;
+  team: Team;
+  isGameEnded?: boolean;
+}) {
   const periodFouls = team.all_fouls.filter((foul) => foul.period === period);
+
   return (
     <View style={styles.teamContainer.teamFoulBoxes}>
       <View style={styles.teamContainer.teamFoulBoxes.periodContainer}>
@@ -210,80 +268,43 @@ function PeriodFouls({ period, team }: { period: number; team: Team }) {
         </Text>
       </View>
       <View style={styles.teamContainer.teamFoulBoxes.fouls}>
-        <View style={styles.teamContainer.teamFoulBoxes.fouls.box}>
-          <Text>1</Text>
-          {periodFouls.length >= 1 && (
-            <Text
-              style={{
-                ...styles.teamContainer.teamFoulBoxes.fouls.box.x,
-                ...textColorForPeriod(period),
-              }}
-            >
-              X
-            </Text>
-          )}
-        </View>
-        <View style={styles.teamContainer.teamFoulBoxes.fouls.box}>
-          <Text>2</Text>
-          {periodFouls.length >= 2 && (
-            <Text
-              style={{
-                ...styles.teamContainer.teamFoulBoxes.fouls.box.x,
-                ...textColorForPeriod(period),
-              }}
-            >
-              X
-            </Text>
-          )}
-        </View>
-        <View style={styles.teamContainer.teamFoulBoxes.fouls.box}>
-          <Text>3</Text>
-          {periodFouls.length >= 3 && (
-            <Text
-              style={{
-                ...styles.teamContainer.teamFoulBoxes.fouls.box.x,
-                ...textColorForPeriod(period),
-              }}
-            >
-              X
-            </Text>
-          )}
-        </View>
-        <View style={styles.teamContainer.teamFoulBoxes.fouls.box}>
-          <Text>4</Text>
-          {periodFouls.length >= 4 && (
-            <Text
-              style={{
-                ...styles.teamContainer.teamFoulBoxes.fouls.box.x,
-                ...textColorForPeriod(period),
-              }}
-            >
-              X
-            </Text>
-          )}
-        </View>
+        {[1, 2, 3, 4].map((boxNumber) => (
+          <FoulBox
+            key={boxNumber}
+            boxNumber={boxNumber}
+            periodFouls={periodFouls}
+            period={period}
+            isGameEnded={isGameEnded}
+          />
+        ))}
       </View>
     </View>
   );
 }
 
-function TeamFouls({ team }: { team: Team }) {
+function TeamFouls({
+  team,
+  isGameEnded = false,
+}: {
+  team: Team;
+  isGameEnded?: boolean;
+}) {
   return (
     <View>
       <View style={styles.teamContainer.header.row}>
         <View style={styles.teamContainer.header.row.column}>
-          <PeriodFouls period={1} team={team} />
+          <PeriodFouls period={1} team={team} isGameEnded={isGameEnded} />
         </View>
         <View style={styles.teamContainer.header.row.column}>
-          <PeriodFouls period={2} team={team} />
+          <PeriodFouls period={2} team={team} isGameEnded={isGameEnded} />
         </View>
       </View>
       <View style={styles.teamContainer.header.row}>
         <View style={styles.teamContainer.header.row.column}>
-          <PeriodFouls period={3} team={team} />
+          <PeriodFouls period={3} team={team} isGameEnded={isGameEnded} />
         </View>
         <View style={styles.teamContainer.header.row.column}>
-          <PeriodFouls period={4} team={team} />
+          <PeriodFouls period={4} team={team} isGameEnded={isGameEnded} />
         </View>
       </View>
     </View>
@@ -293,9 +314,11 @@ function TeamFouls({ team }: { team: Team }) {
 function TimeoutBoxList({
   timeouts,
   numberOfBoxes,
+  isGameEnded = false,
 }: {
   timeouts: Timeout[];
   numberOfBoxes: number;
+  isGameEnded?: boolean;
 }) {
   const renderTimeouts = Array.from({ length: numberOfBoxes }).map(
     (_, index) => timeouts[index] || null,
@@ -305,10 +328,12 @@ function TimeoutBoxList({
     <View style={styles.teamContainer.header.row}>
       {renderTimeouts.map((timeout, index) => (
         <View key={index} style={styles.teamContainer.square}>
-          {timeout && (
+          {timeout ? (
             <Text style={textColorForPeriod(timeout.period)}>
               {timeout.minute}
             </Text>
+          ) : (
+            isGameEnded && <View style={styles.teamContainer.square.unused} />
           )}
         </View>
       ))}
@@ -316,7 +341,13 @@ function TimeoutBoxList({
   );
 }
 
-function Timeouts({ team }: { team: Team }) {
+function Timeouts({
+  team,
+  isGameEnded,
+}: {
+  team: Team;
+  isGameEnded?: boolean;
+}) {
   const firstHalfTimeouts = team.timeouts.filter(
     (timeout) => timeout.period === 1 || timeout.period === 2,
   );
@@ -329,9 +360,21 @@ function Timeouts({ team }: { team: Team }) {
 
   return (
     <View>
-      <TimeoutBoxList timeouts={firstHalfTimeouts} numberOfBoxes={2} />
-      <TimeoutBoxList timeouts={secondHalfTimeouts} numberOfBoxes={3} />
-      <TimeoutBoxList timeouts={overtimeTimeouts} numberOfBoxes={3} />
+      <TimeoutBoxList
+        timeouts={firstHalfTimeouts}
+        numberOfBoxes={2}
+        isGameEnded={isGameEnded}
+      />
+      <TimeoutBoxList
+        timeouts={secondHalfTimeouts}
+        numberOfBoxes={3}
+        isGameEnded={isGameEnded}
+      />
+      <TimeoutBoxList
+        timeouts={overtimeTimeouts}
+        numberOfBoxes={3}
+        isGameEnded={isGameEnded}
+      />
     </View>
   );
 }
@@ -339,6 +382,7 @@ function Timeouts({ team }: { team: Team }) {
 export interface TeamProps {
   type: 'A' | 'B';
   team: Team;
+  isGameEnded?: boolean;
 }
 
 function defineFoulBorders(
@@ -363,13 +407,18 @@ function createRenderCoach(coach: Coach) {
       type: coach.fouls[index]?.type || '',
       period: coach.fouls[index]?.period || 0,
       extra_action: coach.fouls[index]?.extra_action || '',
+      is_last_of_half: coach.fouls[index]?.is_last_of_half || false,
     }));
   return coach
     ? { ...coach, fouls: coachFouls }
     : { name: '', id: '', fouls: coachFouls };
 }
 
-export default function TeamBox({ type, team }: TeamProps) {
+export default function TeamBox({
+  type,
+  team,
+  isGameEnded = false,
+}: TeamProps) {
   const renderPlayers = Array.from({ length: 12 }).map((_, index) => {
     const teamPlayer = team.players[index] || null;
     const fouls = Array.from({ length: 6 }).fill({});
@@ -422,11 +471,11 @@ export default function TeamBox({ type, team }: TeamProps) {
         <View style={styles.teamContainer.header.row}>
           <View style={styles.teamContainer.header.row.column}>
             <Text>Tempos Debitados</Text>
-            <Timeouts team={team} />
+            <Timeouts team={team} isGameEnded={isGameEnded} />
           </View>
           <View style={styles.teamContainer.header.row.column}>
             <Text>Faltas de Equipe </Text>
-            <TeamFouls team={team} />
+            <TeamFouls team={team} isGameEnded={isGameEnded} />
           </View>
         </View>
       </View>
