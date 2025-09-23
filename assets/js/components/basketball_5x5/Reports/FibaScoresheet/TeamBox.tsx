@@ -3,6 +3,13 @@ import { Text, View, StyleSheet } from '@react-pdf/renderer';
 import { Coach, Team, Timeout } from '../FibaScoresheet';
 import { textColorForPeriod, RED, BLUE } from './styles';
 
+const EMPTY_FOUL = {
+  type: '',
+  period: 0,
+  extra_action: '',
+  is_last_of_half: false,
+};
+
 const styles = StyleSheet.create({
   teamContainer: {
     borderBottom: '1px solid #000',
@@ -119,8 +126,8 @@ const styles = StyleSheet.create({
           borderLeft: '1px solid #000',
         },
         columnFouls: {
-          flex: '1 1 85px',
-          maxWidth: '85px',
+          flex: '1 1 90px',
+          maxWidth: '90px',
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'center',
@@ -130,7 +137,7 @@ const styles = StyleSheet.create({
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-            width: '15px',
+            width: '16px',
             height: '100%',
             borderLeft: '1px solid #000',
             position: 'relative',
@@ -144,6 +151,13 @@ const styles = StyleSheet.create({
               bottom: '1px',
               right: '1px',
               fontSize: '5px',
+            },
+            unused: {
+              position: 'absolute',
+              top: '6px',
+              width: '100%',
+              height: '2px',
+              borderTop: `2px solid ${BLUE}`,
             },
           },
         },
@@ -178,7 +192,7 @@ const styles = StyleSheet.create({
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-            width: '14px',
+            width: '15px',
             height: '100%',
             borderLeft: '1px solid #000',
             position: 'relative',
@@ -192,6 +206,13 @@ const styles = StyleSheet.create({
               bottom: '1px',
               right: '1px',
               fontSize: '5px',
+            },
+            unused: {
+              position: 'absolute',
+              top: '6px',
+              width: '100%',
+              height: '2px',
+              borderTop: `2px solid ${BLUE}`,
             },
           },
         },
@@ -385,13 +406,175 @@ export interface TeamProps {
   isGameEnded?: boolean;
 }
 
+function PlayerRow({
+  player,
+  isGameEnded = false,
+}: {
+  player: any;
+  isGameEnded?: boolean;
+}) {
+  return (
+    <View style={styles.teamContainer.table.row}>
+      <View style={styles.teamContainer.table.row.columnLic}>
+        <Text style={styles.teamContainer.table.content}>
+          {player.license_number}
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.teamContainer.table.row.column,
+          flexDirection: 'row',
+          justifyContent: 'start',
+        }}
+      >
+        <Text style={styles.teamContainer.table.content}>{player.name}</Text>
+      </View>
+      <View style={styles.teamContainer.table.row.columnBox}>
+        <Text style={styles.teamContainer.table.content}>
+          {player.number !== null ? player.number : ''}
+        </Text>
+      </View>
+      <View style={styles.teamContainer.table.row.columnBox}>
+        {player.has_played ? (
+          <Text
+            style={
+              player.has_started
+                ? styles.teamContainer.table.contentWithCircle
+                : {
+                    ...styles.teamContainer.table.content,
+                    ...textColorForPeriod(player.first_played_period),
+                  }
+            }
+          >
+            X
+          </Text>
+        ) : (
+          <></>
+        )}
+      </View>
+      <View style={styles.teamContainer.table.row.columnFouls}>
+        {player.fouls.map((foul, index) => (
+          <View
+            key={index}
+            style={{
+              ...styles.teamContainer.table.row.columnFouls.fouls,
+              backgroundColor: index === 5 ? '#ddd' : 'transparent',
+              ...defineFoulBorders(foul, index, false),
+            }}
+          >
+            {foul !== EMPTY_FOUL ? (
+              <>
+                <Text
+                  style={{
+                    ...styles.teamContainer.table.row.columnFouls.fouls.type,
+                    ...textColorForPeriod(foul.period),
+                  }}
+                >
+                  {foul.type}
+                </Text>
+                {foul.extra_action && (
+                  <Text
+                    style={{
+                      ...styles.teamContainer.table.row.columnFouls.fouls
+                        .extraAction,
+                      ...textColorForPeriod(foul.period),
+                    }}
+                  >
+                    {foul.extra_action}
+                  </Text>
+                )}
+              </>
+            ) : (
+              isGameEnded && (
+                <View
+                  style={
+                    styles.teamContainer.table.row.columnFouls.fouls.unused
+                  }
+                />
+              )
+            )}
+          </View>
+        ))}
+      </View>
+    </View>
+  );
+}
+
+function CoachRow({
+  coach,
+  type,
+  isGameEnded = false,
+}: {
+  coach: any;
+  type: 'head' | 'assistant';
+  isGameEnded?: boolean;
+}) {
+  const label = type === 'head' ? 'Técnico' : 'Ass. Técnico';
+
+  return (
+    <View style={styles.teamContainer.table.coachRow}>
+      <View style={styles.teamContainer.table.coachRow.label}>
+        <Text>{label}</Text>
+      </View>
+      <View style={styles.teamContainer.table.coachRow.name}>
+        <Text>{coach.name}</Text>
+      </View>
+      <View style={styles.teamContainer.table.coachRow.columnFouls}>
+        {coach.fouls.map((foul, index) => (
+          <View
+            key={index}
+            style={{
+              ...styles.teamContainer.table.coachRow.columnFouls.fouls,
+              backgroundColor: index === 3 ? '#ddd' : 'transparent',
+              ...defineFoulBorders(foul, index, false),
+            }}
+          >
+            {foul !== EMPTY_FOUL ? (
+              <>
+                <Text
+                  style={{
+                    ...styles.teamContainer.table.coachRow.columnFouls.fouls
+                      .type,
+                    ...textColorForPeriod(foul.period),
+                  }}
+                >
+                  {foul.type}
+                </Text>
+                {foul.extra_action && (
+                  <Text
+                    style={{
+                      ...styles.teamContainer.table.coachRow.columnFouls.fouls
+                        .extraAction,
+                      ...textColorForPeriod(foul.period),
+                    }}
+                  >
+                    {foul.extra_action}
+                  </Text>
+                )}
+              </>
+            ) : (
+              isGameEnded && (
+                <View
+                  style={
+                    styles.teamContainer.table.coachRow.columnFouls.fouls.unused
+                  }
+                />
+              )
+            )}
+          </View>
+        ))}
+      </View>
+    </View>
+  );
+}
+
 function defineFoulBorders(
   foul: any,
   currentIndex: number,
   hasGameEnded: boolean = false,
 ) {
   const borderLeft =
-    foul.period >= 3 && currentIndex === 0
+    (foul === EMPTY_FOUL || foul.period >= 3) && currentIndex === 0
       ? `2px solid ${BLUE}`
       : '1px solid #000';
 
@@ -403,12 +586,16 @@ function defineFoulBorders(
 function createRenderCoach(coach: Coach) {
   const coachFouls = Array.from({ length: 4 })
     .fill({})
-    .map((_, index) => ({
-      type: coach.fouls[index]?.type || '',
-      period: coach.fouls[index]?.period || 0,
-      extra_action: coach.fouls[index]?.extra_action || '',
-      is_last_of_half: coach.fouls[index]?.is_last_of_half || false,
-    }));
+    .map((_, index) =>
+      coach.fouls[index]
+        ? {
+            type: coach.fouls[index].type,
+            period: coach.fouls[index].period,
+            extra_action: coach.fouls[index].extra_action,
+            is_last_of_half: coach.fouls[index].is_last_of_half,
+          }
+        : EMPTY_FOUL,
+    );
   return coach
     ? { ...coach, fouls: coachFouls }
     : { name: '', id: '', fouls: coachFouls };
@@ -426,12 +613,16 @@ export default function TeamBox({
       return {
         name: teamPlayer.name,
         number: teamPlayer.number,
-        fouls: fouls.map((_, index) => ({
-          type: teamPlayer.fouls[index]?.type || '',
-          period: teamPlayer.fouls[index]?.period || 0,
-          extra_action: teamPlayer.fouls[index]?.extra_action || '',
-          is_last_of_half: teamPlayer.fouls[index]?.is_last_of_half || false,
-        })),
+        fouls: fouls.map((_, index) =>
+          teamPlayer.fouls[index]
+            ? {
+                type: teamPlayer.fouls[index].type,
+                period: teamPlayer.fouls[index].period,
+                extra_action: teamPlayer.fouls[index].extra_action,
+                is_last_of_half: teamPlayer.fouls[index].is_last_of_half,
+              }
+            : EMPTY_FOUL,
+        ),
         license_number: teamPlayer.license_number || '',
         has_started: teamPlayer.has_started,
         first_played_period: teamPlayer.first_played_period,
@@ -505,162 +696,14 @@ export default function TeamBox({
           </View>
         </View>
         {sortedRenderPlayers.map((player, index) => (
-          <View key={index} style={styles.teamContainer.table.row}>
-            <View style={styles.teamContainer.table.row.columnLic}>
-              <Text style={styles.teamContainer.table.content}>
-                {player.license_number}
-              </Text>
-            </View>
-            <View
-              style={{
-                ...styles.teamContainer.table.row.column,
-                flexDirection: 'row',
-                justifyContent: 'start',
-              }}
-            >
-              <Text style={styles.teamContainer.table.content}>
-                {player.name}
-              </Text>
-            </View>
-            <View style={styles.teamContainer.table.row.columnBox}>
-              <Text style={styles.teamContainer.table.content}>
-                {player.number !== null ? player.number : ''}
-              </Text>
-            </View>
-            <View style={styles.teamContainer.table.row.columnBox}>
-              {player.has_played ? (
-                <Text
-                  style={
-                    player.has_started
-                      ? styles.teamContainer.table.contentWithCircle
-                      : {
-                          ...styles.teamContainer.table.content,
-                          ...textColorForPeriod(player.first_played_period),
-                        }
-                  }
-                >
-                  X
-                </Text>
-              ) : (
-                <></>
-              )}
-            </View>
-            <View style={styles.teamContainer.table.row.columnFouls}>
-              {player.fouls.map((foul, index) => (
-                <View
-                  key={index}
-                  style={{
-                    ...styles.teamContainer.table.row.columnFouls.fouls,
-                    backgroundColor: index === 5 ? '#ddd' : 'transparent',
-                    ...defineFoulBorders(foul, index, false),
-                  }}
-                >
-                  <Text
-                    style={{
-                      ...styles.teamContainer.table.row.columnFouls.fouls.type,
-                      ...textColorForPeriod(foul.period),
-                    }}
-                  >
-                    {foul.type}
-                  </Text>
-                  {foul.extra_action && (
-                    <Text
-                      style={{
-                        ...styles.teamContainer.table.row.columnFouls.fouls
-                          .extraAction,
-                        ...textColorForPeriod(foul.period),
-                      }}
-                    >
-                      {foul.extra_action}
-                    </Text>
-                  )}
-                </View>
-              ))}
-            </View>
-          </View>
+          <PlayerRow key={index} player={player} isGameEnded={isGameEnded} />
         ))}
-        <View style={styles.teamContainer.table.coachRow}>
-          <View style={styles.teamContainer.table.coachRow.label}>
-            <Text>Técnico</Text>
-          </View>
-          <View style={styles.teamContainer.table.coachRow.name}>
-            <Text>{renderCoach.name}</Text>
-          </View>
-          <View style={styles.teamContainer.table.coachRow.columnFouls}>
-            {renderCoach.fouls.map((foul, index) => (
-              <View
-                key={index}
-                style={{
-                  ...styles.teamContainer.table.coachRow.columnFouls.fouls,
-                  backgroundColor: index === 3 ? '#ddd' : 'transparent',
-                  ...defineFoulBorders(foul, index, false),
-                }}
-              >
-                <Text
-                  style={{
-                    ...styles.teamContainer.table.coachRow.columnFouls.fouls
-                      .type,
-                    ...textColorForPeriod(foul.period),
-                  }}
-                >
-                  {foul.type}
-                </Text>
-                {foul.extra_action && (
-                  <Text
-                    style={{
-                      ...styles.teamContainer.table.coachRow.columnFouls.fouls
-                        .extraAction,
-                      ...textColorForPeriod(foul.period),
-                    }}
-                  >
-                    {foul.extra_action}
-                  </Text>
-                )}
-              </View>
-            ))}
-          </View>
-        </View>
-        <View style={styles.teamContainer.table.coachRow}>
-          <View style={styles.teamContainer.table.coachRow.label}>
-            <Text>Ass. Técnico</Text>
-          </View>
-          <View style={styles.teamContainer.table.coachRow.name}>
-            <Text>{renderAssistantCoach.name}</Text>
-          </View>
-          <View style={styles.teamContainer.table.coachRow.columnFouls}>
-            {renderAssistantCoach.fouls.map((foul, index) => (
-              <View
-                key={index}
-                style={{
-                  ...styles.teamContainer.table.coachRow.columnFouls.fouls,
-                  backgroundColor: index === 3 ? '#ddd' : 'transparent',
-                  ...defineFoulBorders(foul, index, false),
-                }}
-              >
-                <Text
-                  style={{
-                    ...styles.teamContainer.table.coachRow.columnFouls.fouls
-                      .type,
-                    ...textColorForPeriod(foul.period),
-                  }}
-                >
-                  {foul.type}
-                </Text>
-                {foul.extra_action && (
-                  <Text
-                    style={{
-                      ...styles.teamContainer.table.coachRow.columnFouls.fouls
-                        .extraAction,
-                      ...textColorForPeriod(foul.period),
-                    }}
-                  >
-                    {foul.extra_action}
-                  </Text>
-                )}
-              </View>
-            ))}
-          </View>
-        </View>
+        <CoachRow coach={renderCoach} type="head" isGameEnded={isGameEnded} />
+        <CoachRow
+          coach={renderAssistantCoach}
+          type="assistant"
+          isGameEnded={isGameEnded}
+        />
       </View>
     </View>
   );
