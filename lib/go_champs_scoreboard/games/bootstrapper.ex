@@ -40,12 +40,7 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
 
     game_id = Map.get(game_response, "id", game_state.id)
 
-    clock_state =
-      GameClockState.new(
-        @mock_initial_period_time,
-        @mock_initial_extra_period_time,
-        @mock_initial_period_time
-      )
+    clock_state = map_clock_state(view_settings_data["data"])
 
     live_state = map_live_state(game_response["live_state"])
 
@@ -133,6 +128,29 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
       data ->
         view = Map.get(data, "view", "basketball-medium")
         ViewSettingsState.new(view)
+    end
+  end
+
+  defp map_clock_state(view_settings_data) do
+    case view_settings_data do
+      nil ->
+        GameClockState.new(
+          @mock_initial_period_time,
+          @mock_initial_extra_period_time,
+          @mock_initial_period_time
+        )
+
+      data ->
+        initial_period_time = Map.get(data, "initial_period_time", @mock_initial_period_time)
+
+        initial_extra_period_time =
+          Map.get(data, "initial_extra_period_time", @mock_initial_extra_period_time)
+
+        GameClockState.new(
+          initial_period_time,
+          initial_extra_period_time,
+          initial_period_time
+        )
     end
   end
 

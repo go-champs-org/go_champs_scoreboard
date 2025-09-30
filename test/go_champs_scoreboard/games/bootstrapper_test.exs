@@ -194,10 +194,16 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
       }
     }
 
-    @response_setting_body %{
+    @response_setting_full_body %{
       "data" => %{
-        "view" => "basketball-basic"
+        "view" => "basketball-basic",
+        "initial_extra_period_time" => 200,
+        "initial_period_time" => 500
       }
+    }
+
+    @response_setting_empty_body %{
+      "data" => %{}
     }
 
     test "maps game id" do
@@ -301,7 +307,10 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
         assert url =~ "game-id/scoreboard-setting"
 
         {:ok,
-         %HTTPoison.Response{body: @response_setting_body |> Poison.encode!(), status_code: 200}}
+         %HTTPoison.Response{
+           body: @response_setting_full_body |> Poison.encode!(),
+           status_code: 200
+         }}
       end)
 
       game =
@@ -313,6 +322,39 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
 
       assert game.sport_id == "basketball"
       assert game.view_settings_state.view == "basketball-basic"
+      assert game.clock_state.initial_period_time == 500
+      assert game.clock_state.initial_extra_period_time == 200
+    end
+
+    test "maps default values when view settings are empty" do
+      expect(@http_client, :get, fn url, headers ->
+        assert url =~ "game-id"
+        assert headers == [{"Authorization", "Bearer token"}]
+
+        {:ok, %HTTPoison.Response{body: @response_body |> Poison.encode!(), status_code: 200}}
+      end)
+
+      expect(@http_client, :get, fn url ->
+        assert url =~ "game-id/scoreboard-setting"
+
+        {:ok,
+         %HTTPoison.Response{
+           body: @response_setting_empty_body |> Poison.encode!(),
+           status_code: 200
+         }}
+      end)
+
+      game =
+        Bootstrapper.bootstrap_from_go_champs(
+          GoChampsScoreboard.Games.Bootstrapper.bootstrap(),
+          "game-id",
+          "token"
+        )
+
+      assert game.sport_id == "basketball"
+      assert game.view_settings_state.view == "basketball-medium"
+      assert game.clock_state.initial_period_time == 600
+      assert game.clock_state.initial_extra_period_time == 300
     end
 
     test "maps game and team coaches" do
@@ -377,7 +419,10 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
         assert url =~ "game-id/scoreboard-setting"
 
         {:ok,
-         %HTTPoison.Response{body: @response_setting_body |> Poison.encode!(), status_code: 200}}
+         %HTTPoison.Response{
+           body: @response_setting_full_body |> Poison.encode!(),
+           status_code: 200
+         }}
       end)
 
       game =
