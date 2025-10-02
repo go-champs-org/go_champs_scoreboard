@@ -113,6 +113,30 @@ export const PLAYER_STATS = [
     labelTranslationKey: 'basketball.stats.labels.technicalFouls',
   },
   {
+    key: 'fouls_disqualifying',
+    type: 'manual',
+    view: ['basketball-medium'],
+    abbreviationTranslationKey:
+      'basketball.stats.abbreviations.disqualifyingFouls',
+    labelTranslationKey: 'basketball.stats.labels.disqualifyingFouls',
+  },
+  {
+    key: 'fouls_disqualifying_fighting',
+    type: 'manual',
+    view: ['basketball-medium'],
+    abbreviationTranslationKey:
+      'basketball.stats.abbreviations.disqualifyingFightingFouls',
+    labelTranslationKey: 'basketball.stats.labels.disqualifyingFightingFouls',
+  },
+  {
+    key: 'fouls_game_disqualifying',
+    type: 'manual',
+    view: ['basketball-medium'],
+    abbreviationTranslationKey:
+      'basketball.stats.abbreviations.gameDisqualifyingFouls',
+    labelTranslationKey: 'basketball.stats.labels.gameDisqualifyingFouls',
+  },
+  {
     key: 'free_throw_percentage',
     type: 'calculated',
     view: ['basketball-medium'],

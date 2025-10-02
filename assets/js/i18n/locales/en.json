@@ -74,7 +74,9 @@
             "selectOperation": "Select operation",
             "increment": "Increment (+)",
             "decrement": "Decrement (-)",
-            "set": "Set (=)"
+            "set": "Set (=)",
+            "freeThrowsAwarded": "Free Throws Awarded",
+            "noFreeThrows": "No free throws"
           },
           "coachStat": {
             "title": "Coach Statistic Update",
@@ -138,6 +140,9 @@
         "flagrantFouls": "F. FLT",
         "unsportsmanlikeFouls": "U. FLT",
         "technicalFouls": "T. FLT",
+        "disqualifyingFouls": "DQ. FLT",
+        "disqualifyingFightingFouls": "DQ.F. FLT",
+        "gameDisqualifyingFouls": "GDQ. FLT",
         "onePoint": "1 PT",
         "onePointPercentage": "1 PT %",
         "twoPoints": "2 PT",
@@ -184,6 +189,9 @@
         "unsportsmanlikeFouls": "Unsportsmanlike Fouls",
         "personalFouls": "Personal Fouls",
         "technicalFouls": "Technical Fouls",
+        "disqualifyingFouls": "Disqualifying Fouls",
+        "disqualifyingFightingFouls": "Disqualifying Fighting Fouls",
+        "gameDisqualifyingFouls": "Game Disqualifying Fouls",
         "freeThrowPercentage": "Free Throw Percentage",
         "freeThrowsAttempted": "Free Throws Attempted",
         "freeThrowsMissed": "Free Throws Missed",

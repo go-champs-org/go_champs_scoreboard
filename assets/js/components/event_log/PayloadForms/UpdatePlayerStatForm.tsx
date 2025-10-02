@@ -33,11 +33,25 @@ const UpdatePlayerStatForm: React.FC<UpdatePlayerStatFormProps> = ({
     selectedTeamType === 'home' ? gameState.home_team : gameState.away_team;
   const availablePlayers = selectedTeam?.players || [];
 
+  // Check if the selected stat is a foul type
+  const selectedStatId = initialPayload['stat-id'] || '';
+  const isFoulStat = selectedStatId.startsWith('fouls_');
+
   const handleInputChange = (field: string, value: any) => {
     onChange((prevPayload: any) => ({
       ...prevPayload,
       [field]: value,
       operation: 'increment',
+    }));
+  };
+
+  const handleMetadataChange = (metadataField: string, value: any) => {
+    onChange((prevPayload: any) => ({
+      ...prevPayload,
+      metadata: {
+        ...prevPayload.metadata,
+        [metadataField]: value,
+      },
     }));
   };
 
@@ -133,6 +147,46 @@ const UpdatePlayerStatForm: React.FC<UpdatePlayerStatFormProps> = ({
           </div>
         </div>
       </div>
+
+      {isFoulStat && (
+        <div className="column is-4">
+          <div className="field">
+            <label className="label has-text-white-ter">
+              {t(
+                'basketball.modals.eventLogs.payloadFields.playerStat.freeThrowsAwarded',
+              )}
+            </label>
+            <div className="control">
+              <div className="select is-fullwidth">
+                <select
+                  value={initialPayload.metadata?.['free-throws-awarded'] || ''}
+                  onChange={(e) =>
+                    handleMetadataChange('free-throws-awarded', e.target.value)
+                  }
+                >
+                  <option value="">
+                    {t(
+                      'basketball.modals.eventLogs.payloadFields.playerStat.noFreeThrows',
+                    )}
+                  </option>
+                  <option value="1">
+                    {t('basketball.stats.controls.oneFreeThrow')}
+                  </option>
+                  <option value="2">
+                    {t('basketball.stats.controls.twoFreeThrows')}
+                  </option>
+                  <option value="3">
+                    {t('basketball.stats.controls.threeFreeThrows')}
+                  </option>
+                  <option value="C">
+                    {t('basketball.stats.controls.canceledFreeThrows')}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
