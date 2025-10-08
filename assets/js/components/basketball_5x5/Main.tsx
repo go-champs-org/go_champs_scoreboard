@@ -49,18 +49,18 @@ function BasicView({ game_state, recent_events, pushEvent }: ViewProps) {
             name="use-new-players-control"
             fallback={
               <PlayersControls
-                team={game_state.away_team}
+                team={game_state.home_team}
                 pushEvent={pushEvent}
-                teamType="away"
+                teamType="home"
                 selectPlayer={setPlayerSelection}
                 selectedPlayer={playerSelection}
               />
             }
           >
             <NewPlayersControls
-              team={game_state.away_team}
+              team={game_state.home_team}
               pushEvent={pushEvent}
-              teamType="away"
+              teamType="home"
               selectPlayer={setPlayerSelection}
               selectedPlayer={playerSelection}
             />
@@ -82,18 +82,18 @@ function BasicView({ game_state, recent_events, pushEvent }: ViewProps) {
             name="use-new-players-control"
             fallback={
               <PlayersControls
-                team={game_state.home_team}
+                team={game_state.away_team}
                 pushEvent={pushEvent}
-                teamType="home"
+                teamType="away"
                 selectPlayer={setPlayerSelection}
                 selectedPlayer={playerSelection}
               />
             }
           >
             <NewPlayersControls
-              team={game_state.home_team}
+              team={game_state.away_team}
               pushEvent={pushEvent}
-              teamType="home"
+              teamType="away"
               selectPlayer={setPlayerSelection}
               selectedPlayer={playerSelection}
             />
@@ -132,7 +132,10 @@ function MediumView({ game_state, recent_events, pushEvent }: ViewProps) {
           <div className="columns is-multiline">
             <div className="column is-12">
               {game_state.clock_state.state === 'finished' ? (
-                <ProtestControls game_state={game_state} pushEvent={pushEvent} />
+                <ProtestControls
+                  game_state={game_state}
+                  pushEvent={pushEvent}
+                />
               ) : (
                 <ClockControls
                   away_team={game_state.away_team}
@@ -172,57 +175,6 @@ function MediumView({ game_state, recent_events, pushEvent }: ViewProps) {
             </div>
           </div>
         </div>
-
-        {/* <div className="column is-4">
-          <FeatureFlag name="use-new-players-control"
-            fallback={
-              <PlayersControls
-                team={game_state.away_team}
-                pushEvent={pushEvent}
-                teamType="away"
-                selectPlayer={setPlayerSelection}
-                selectedPlayer={playerSelection}
-              />}>
-            <NewPlayersControls
-              team={game_state.away_team}
-              pushEvent={pushEvent}
-              teamType="away"
-              selectPlayer={setPlayerSelection}
-              selectedPlayer={playerSelection}
-            />
-          </FeatureFlag>
-        </div>
-
-        <div className="column is-4">
-          <MediumStatsControls
-            liveState={game_state.live_state}
-            playerSelection={playerSelection}
-            pushEvent={pushEvent}
-            selectPlayer={setPlayerSelection}
-            gameState={game_state}
-            onShowFoulsModal={() => setShowFoulsModal(true)}
-          />
-        </div>
-
-        <div className="column is-4">
-          <FeatureFlag name="use-new-players-control"
-            fallback={
-              <PlayersControls
-                team={game_state.home_team}
-                pushEvent={pushEvent}
-                teamType="home"
-                selectPlayer={setPlayerSelection}
-                selectedPlayer={playerSelection}
-              />}>
-            <NewPlayersControls
-              team={game_state.home_team}
-              pushEvent={pushEvent}
-              teamType="home"
-              selectPlayer={setPlayerSelection}
-              selectedPlayer={playerSelection}
-            />
-          </FeatureFlag>
-        </div> */}
       </div>
       <FoulsModal
         gameState={game_state}

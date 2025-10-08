@@ -11,8 +11,8 @@ interface TeamControlsProps {
 export function BasicTeamControls({ team, teamType }: TeamControlsProps) {
   const { t } = useTranslation();
   const reverseClass =
-    teamType === 'home' ? 'is-flex-direction-row-reverse' : '';
-  const teamNameClass = teamType === 'home' ? 'is-justify-content-right' : '';
+    teamType === 'away' ? 'is-flex-direction-row-reverse' : '';
+  const teamNameClass = teamType === 'away' ? 'is-justify-content-right' : '';
   return (
     <div className="controls team-controls">
       <div className={`columns is-multiline ${reverseClass}`}>
@@ -93,7 +93,9 @@ function TeamControls({ team, teamType }: TeamControlsProps) {
   const teamNameClass = teamType === 'away' ? 'is-justify-content-right' : '';
   return (
     <div className="controls team-controls">
-      <span className={`caption ${teamType}`}>{teamType === 'home' ? 'Team A' : 'Team B'}</span>
+      <span className={`caption ${teamType}`}>
+        {teamType === 'home' ? 'Team A' : 'Team B'}
+      </span>
       <div className={`columns is-multiline ${reverseClass}`}>
         <div
           className={`column is-7 is-flex is-align-items-center ${teamNameClass}`}
@@ -118,9 +120,7 @@ function TeamControls({ team, teamType }: TeamControlsProps) {
           <div className="columns">
             <div className="column is-6">
               <div className="team-stat">
-                <p className="stat-label">
-                  Q. FALTAS:
-                </p>
+                <p className="stat-label">Q. FALTAS:</p>
                 <p className="stat-value">
                   {team.total_player_stats['rebounds'] || 0}
                 </p>
@@ -129,9 +129,7 @@ function TeamControls({ team, teamType }: TeamControlsProps) {
 
             <div className="column is-6">
               <div className="team-stat">
-                <p className="stat-label">
-                  Q. TEMPOS:
-                </p>
+                <p className="stat-label">Q. TEMPOS:</p>
                 <p className="stat-value">
                   {team.total_player_stats['assists'] || 0}
                 </p>
