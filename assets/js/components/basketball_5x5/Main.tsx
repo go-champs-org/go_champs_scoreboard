@@ -10,6 +10,7 @@ import { FeatureFlag } from '../../shared/FeatureFlags';
 import NewPlayersControls from './NewPlayersControls';
 import TeamControls from './TeamControls';
 import ClockControls from './ClockControls';
+import ProtestControls from './ProtestControls';
 
 export interface LiveReactBase {
   pushEvent: (event: string, payload: any) => void;
@@ -130,13 +131,17 @@ function MediumView({ game_state, recent_events, pushEvent }: ViewProps) {
         <div className="column is-4">
           <div className="columns is-multiline">
             <div className="column is-12">
-              <ClockControls
-                away_team={game_state.away_team}
-                clock_state={game_state.clock_state}
-                home_team={game_state.home_team}
-                live_state={game_state.live_state}
-                pushEvent={pushEvent}
-              />
+              {game_state.clock_state.state === 'finished' ? (
+                <ProtestControls game_state={game_state} pushEvent={pushEvent} />
+              ) : (
+                <ClockControls
+                  away_team={game_state.away_team}
+                  clock_state={game_state.clock_state}
+                  home_team={game_state.home_team}
+                  live_state={game_state.live_state}
+                  pushEvent={pushEvent}
+                />
+              )}
             </div>
             <div className="column is-12">
               <MediumStatsControls

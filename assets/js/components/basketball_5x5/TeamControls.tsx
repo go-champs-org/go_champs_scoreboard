@@ -93,6 +93,7 @@ function TeamControls({ team, teamType }: TeamControlsProps) {
   const teamNameClass = teamType === 'away' ? 'is-justify-content-right' : '';
   return (
     <div className="controls team-controls">
+      <span className={`caption ${teamType}`}>{teamType === 'home' ? 'Team A' : 'Team B'}</span>
       <div className={`columns is-multiline ${reverseClass}`}>
         <div
           className={`column is-7 is-flex is-align-items-center ${teamNameClass}`}
@@ -115,10 +116,10 @@ function TeamControls({ team, teamType }: TeamControlsProps) {
         </div>
         <div className="column is-12">
           <div className="columns">
-            <div className="column is-4">
+            <div className="column is-6">
               <div className="team-stat">
                 <p className="stat-label">
-                  {t('basketball.stats.abbreviations.rebounds')}:
+                  Q. FALTAS:
                 </p>
                 <p className="stat-value">
                   {team.total_player_stats['rebounds'] || 0}
@@ -126,24 +127,13 @@ function TeamControls({ team, teamType }: TeamControlsProps) {
               </div>
             </div>
 
-            <div className="column is-4">
+            <div className="column is-6">
               <div className="team-stat">
                 <p className="stat-label">
-                  {t('basketball.stats.abbreviations.assists')}:
+                  Q. TEMPOS:
                 </p>
                 <p className="stat-value">
                   {team.total_player_stats['assists'] || 0}
-                </p>
-              </div>
-            </div>
-
-            <div className="column is-4">
-              <div className="team-stat">
-                <p className="stat-label">
-                  {t('basketball.stats.abbreviations.turnovers')}:
-                </p>
-                <p className="stat-value">
-                  {team.total_player_stats['turnovers'] || 0}
                 </p>
               </div>
             </div>
