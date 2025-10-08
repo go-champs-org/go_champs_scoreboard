@@ -89,8 +89,8 @@ export function BasicTeamControls({ team, teamType }: TeamControlsProps) {
 function TeamControls({ team, teamType }: TeamControlsProps) {
   const { t } = useTranslation();
   const reverseClass =
-    teamType === 'home' ? 'is-flex-direction-row-reverse' : '';
-  const teamNameClass = teamType === 'home' ? 'is-justify-content-right' : '';
+    teamType === 'away' ? 'is-flex-direction-row-reverse' : '';
+  const teamNameClass = teamType === 'away' ? 'is-justify-content-right' : '';
   return (
     <div className="controls team-controls">
       <div className={`columns is-multiline ${reverseClass}`}>
@@ -124,24 +124,6 @@ function TeamControls({ team, teamType }: TeamControlsProps) {
                   {team.total_player_stats['rebounds'] || 0}
                 </p>
               </div>
-
-              <div className="team-stat">
-                <p className="stat-label">
-                  {t('basketball.stats.abbreviations.offensiveRebounds')}:
-                </p>
-                <p className="stat-value">
-                  {team.total_player_stats['rebounds_offensive'] || 0}
-                </p>
-              </div>
-
-              <div className="team-stat">
-                <p className="stat-label">
-                  {t('basketball.stats.abbreviations.defensiveRebounds')}:
-                </p>
-                <p className="stat-value">
-                  {team.total_player_stats['rebounds_defensive'] || 0}
-                </p>
-              </div>
             </div>
 
             <div className="column is-4">
@@ -153,24 +135,6 @@ function TeamControls({ team, teamType }: TeamControlsProps) {
                   {team.total_player_stats['assists'] || 0}
                 </p>
               </div>
-
-              <div className="team-stat">
-                <p className="stat-label">
-                  {t('basketball.stats.abbreviations.steals')}:
-                </p>
-                <p className="stat-value">
-                  {team.total_player_stats['steals'] || 0}
-                </p>
-              </div>
-
-              <div className="team-stat">
-                <p className="stat-label">
-                  {t('basketball.stats.abbreviations.blocks')}:
-                </p>
-                <p className="stat-value">
-                  {team.total_player_stats['blocks'] || 0}
-                </p>
-              </div>
             </div>
 
             <div className="column is-4">
@@ -180,24 +144,6 @@ function TeamControls({ team, teamType }: TeamControlsProps) {
                 </p>
                 <p className="stat-value">
                   {team.total_player_stats['turnovers'] || 0}
-                </p>
-              </div>
-
-              <div className="team-stat">
-                <p className="stat-label">
-                  {t('basketball.stats.abbreviations.personalFouls')}:
-                </p>
-                <p className="stat-value">
-                  {team.total_player_stats['fouls_personal'] || 0}
-                </p>
-              </div>
-
-              <div className="team-stat">
-                <p className="stat-label">
-                  {t('basketball.stats.abbreviations.technicalFouls')}:
-                </p>
-                <p className="stat-value">
-                  {team.total_player_stats['fouls_technical'] || 0}
                 </p>
               </div>
             </div>

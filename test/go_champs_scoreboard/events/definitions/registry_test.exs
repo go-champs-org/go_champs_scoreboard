@@ -7,6 +7,7 @@ defmodule GoChampsScoreboard.Events.Definitions.RegistryTest do
   alias GoChampsScoreboard.Events.Definitions.EndPeriodDefinition
   alias GoChampsScoreboard.Events.Definitions.LoadFromLastEventLogDefinition
   alias GoChampsScoreboard.Events.Definitions.ProtestGameDefinition
+  alias GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinition
 
   describe "get_definition/1" do
     test "returns StartGameDefinition for start-game key" do
@@ -28,6 +29,10 @@ defmodule GoChampsScoreboard.Events.Definitions.RegistryTest do
 
     test "returns ProtestGameDefinition for protest-game key" do
       assert {:ok, ProtestGameDefinition} = Registry.get_definition("protest-game")
+    end
+
+    test "returns UpdatePlayersStateDefinition for update-players-state key" do
+      assert {:ok, UpdatePlayersStateDefinition} = Registry.get_definition("update-players-state")
     end
 
     test "returns error for unknown key" do
@@ -54,6 +59,11 @@ defmodule GoChampsScoreboard.Events.Definitions.RegistryTest do
     test "protest-game event is registered" do
       assert {:ok, definition} = Registry.get_definition("protest-game")
       assert definition.key() == "protest-game"
+    end
+
+    test "update-players-state event is registered" do
+      assert {:ok, definition} = Registry.get_definition("update-players-state")
+      assert definition.key() == "update-players-state"
     end
   end
 end

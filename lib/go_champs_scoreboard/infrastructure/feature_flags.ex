@@ -7,7 +7,9 @@ defmodule GoChampsScoreboard.Infrastructure.FeatureFlags do
   """
 
   # Define default flags - these can also be loaded from a config or database
-  @flags %{}
+  @flags %{
+    "use-new-players-control" => true
+  }
 
   @doc """
   Returns all feature flags and their statuses.

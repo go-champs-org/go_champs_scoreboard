@@ -46,6 +46,17 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
      |> react_and_update_game_state(game_id, socket)}
   end
 
+  def handle_event("update-players-state", unsigned_params, socket) do
+    game_id = socket.assigns.game_state.result.id
+
+    {:ok, event} =
+      ValidatorCreator.validate_and_create("update-players-state", game_id, unsigned_params)
+
+    {:noreply,
+     event
+     |> react_and_update_game_state(game_id, socket)}
+  end
+
   def handle_event("update-team-stat", params, socket) do
     game_id = socket.assigns.game_state.result.id
     {:ok, event} = ValidatorCreator.validate_and_create("update-team-stat", game_id, params)
@@ -251,20 +262,21 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
   end
 
   def handle_params(%{"game_id" => game_id}, _url, socket) do
-    api_token = socket.assigns.api_token
+    # api_token = socket.assigns.api_token
 
-    case ApiClient.get_game(game_id, api_token) do
-      {:error, reason} ->
-        Logger.error("Failed to fetch game state: #{inspect(reason)}")
+    # case ApiClient.get_game(game_id, api_token) do
+    #   {:error, reason} ->
+    #     Logger.error("Failed to fetch game state: #{inspect(reason)}")
 
-        {:noreply,
-         push_navigate(socket,
-           to: ~p"/error"
-         )}
+    #     {:noreply,
+    #      push_navigate(socket,
+    #        to: ~p"/error"
+    #      )}
 
-      {:ok, _game_state} ->
-        {:noreply, socket}
-    end
+    #   {:ok, _game_state} ->
+    #     {:noreply, socket}
+    # end
+    {:noreply, socket}
   end
 
   defp react_and_update_game_state(event, game_id, socket) do

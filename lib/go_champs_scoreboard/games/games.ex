@@ -30,11 +30,11 @@ defmodule GoChampsScoreboard.Games.Games do
       {:ok, game} ->
         case game.live_state.state do
           :not_started ->
-            updated_game =
-              game
-              |> Bootstrapper.bootstrap_from_go_champs(game.id, go_champs_token)
+            # updated_game =
+            #   game
+            #   |> Bootstrapper.bootstrap_from_go_champs(game.id, go_champs_token)
 
-            GameStateCache.update(updated_game)
+            game
 
           :in_progress ->
             resource_manager.check_and_restart(game.id)
