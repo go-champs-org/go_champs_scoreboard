@@ -3,6 +3,7 @@ import { PlayerState, TeamState, TeamType } from '../../types';
 import { PlayerSelection } from './Main';
 import { default as PlayerButton } from './Players/Button';
 import { wherePlaying, whereNotPlaying, byPlayer } from './Players/utils';
+import { t } from 'i18next';
 
 interface NewPlayersControlsProps {
   team: TeamState;
@@ -148,7 +149,9 @@ function NewPlayersControls({
     <div className="players-controls controls" ref={playersControlsRef}>
       <div className="columns is-multiline">
         <div className="on-court column is-12 has-text-centered">
-          <span className="caption">On Court</span>
+          <span className="caption">
+            {t('basketball.players.onCourt').toUpperCase()}
+          </span>
           <div className="columns is-multiline is-centered">
             {playingPlayers.map((player) => (
               <div key={player.id} className="column is-4 has-text-centered">
@@ -169,10 +172,10 @@ function NewPlayersControls({
         <div className={`coach-controls column is-12 ${reverseClass}`}>
           <div>
             <button className="coach-button button" disabled>
-              ASS. TEC
+              {t('basketball.coaches.types.headCoachShort').toUpperCase()}
             </button>
             <button className="coach-button button" disabled>
-              TÉCNICO
+              {t('basketball.coaches.types.assistantCoachShort').toUpperCase()}
             </button>
           </div>
           <div className="substitution-controls">
@@ -207,7 +210,9 @@ function NewPlayersControls({
         </div>
 
         <div className="on-bench column is-12 has-text-centered">
-          <span className="caption">On Bench</span>
+          <span className="caption">
+            {t('basketball.players.onBench').toUpperCase()}
+          </span>
           <div className="columns is-multiline is-centered">
             {benchPlayers.map((player) => (
               <div key={player.id} className="column is-4 has-text-centered">
