@@ -117,21 +117,21 @@ function TeamControls({ team, teamType }: TeamControlsProps) {
           </p>
         </div>
         <div className="column is-12">
-          <div className="columns">
+          <div className={`columns ${reverseClass}`}>
             <div className="column is-6">
               <div className="team-stat">
-                <p className="stat-label">Q. FALTAS:</p>
+                <p className="stat-label">Q. TEMPOS:</p>
                 <p className="stat-value">
-                  {team.total_player_stats['rebounds'] || 0}
+                  {team.total_player_stats['assists'] || 0}
                 </p>
               </div>
             </div>
 
             <div className="column is-6">
               <div className="team-stat">
-                <p className="stat-label">Q. TEMPOS:</p>
+                <p className="stat-label">Q. FALTAS:</p>
                 <p className="stat-value">
-                  {team.total_player_stats['assists'] || 0}
+                  {team.total_player_stats['rebounds'] || 0}
                 </p>
               </div>
             </div>

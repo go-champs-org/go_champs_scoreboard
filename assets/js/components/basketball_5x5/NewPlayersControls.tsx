@@ -43,20 +43,28 @@ function NewPlayersControls({
       }
     };
 
+    const handleKeydown = (event: KeyboardEvent) => {
+      setSelectedPlayers([]);
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeydown);
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeydown);
     };
   }, []);
 
   const handlePlayerClick = (player: PlayerState) => {
     if (selectedPlayer === null && selectedPlayers.length === 0) {
-      selectPlayer({
-        playerId: player.id,
-        teamType: teamType,
-      });
       setSelectedPlayers([player]);
+      if (player.state === 'playing') {
+        selectPlayer({
+          playerId: player.id,
+          teamType: teamType,
+        });
+      }
     } else {
       selectPlayer(null);
 
@@ -80,10 +88,12 @@ function NewPlayersControls({
           }
         } else {
           setSelectedPlayers([player]);
-          selectPlayer({
-            playerId: player.id,
-            teamType: teamType,
-          });
+          if (player.state === 'playing') {
+            selectPlayer({
+              playerId: player.id,
+              teamType: teamType,
+            });
+          }
         }
       }
     }
@@ -158,8 +168,12 @@ function NewPlayersControls({
 
         <div className={`coach-controls column is-12 ${reverseClass}`}>
           <div>
-            <button className="coach-button button">ASS. TEC</button>
-            <button className="coach-button button">TÉCNICO</button>
+            <button className="coach-button button" disabled>
+              ASS. TEC
+            </button>
+            <button className="coach-button button" disabled>
+              TÉCNICO
+            </button>
           </div>
           <div className="substitution-controls">
             <button
