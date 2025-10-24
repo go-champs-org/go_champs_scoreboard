@@ -41,13 +41,11 @@ function NewPlayersControls({
         !playersControlsRef.current.contains(event.target as Node)
       ) {
         setSelectedPlayers([]);
-        selectPlayer(null);
       }
     };
 
     const handleKeydown = (event: KeyboardEvent) => {
       setSelectedPlayers([]);
-      selectPlayer(null);
     };
 
     document.addEventListener('mousedown', handleClickOutside);
