@@ -45,26 +45,13 @@ function BasicView({ game_state, recent_events, pushEvent }: ViewProps) {
         </div>
 
         <div className="column is-4">
-          <FeatureFlag
-            name="use-new-players-control"
-            fallback={
-              <PlayersControls
-                team={game_state.home_team}
-                pushEvent={pushEvent}
-                teamType="home"
-                selectPlayer={setPlayerSelection}
-                selectedPlayer={playerSelection}
-              />
-            }
-          >
-            <NewPlayersControls
-              team={game_state.home_team}
-              pushEvent={pushEvent}
-              teamType="home"
-              selectPlayer={setPlayerSelection}
-              selectedPlayer={playerSelection}
-            />
-          </FeatureFlag>
+          <NewPlayersControls
+            team={game_state.home_team}
+            pushEvent={pushEvent}
+            teamType="home"
+            selectPlayer={setPlayerSelection}
+            selectedPlayer={playerSelection}
+          />
         </div>
 
         <div className="column is-4">
@@ -78,26 +65,13 @@ function BasicView({ game_state, recent_events, pushEvent }: ViewProps) {
         </div>
 
         <div className="column is-4">
-          <FeatureFlag
-            name="use-new-players-control"
-            fallback={
-              <PlayersControls
-                team={game_state.away_team}
-                pushEvent={pushEvent}
-                teamType="away"
-                selectPlayer={setPlayerSelection}
-                selectedPlayer={playerSelection}
-              />
-            }
-          >
-            <NewPlayersControls
-              team={game_state.away_team}
-              pushEvent={pushEvent}
-              teamType="away"
-              selectPlayer={setPlayerSelection}
-              selectedPlayer={playerSelection}
-            />
-          </FeatureFlag>
+          <NewPlayersControls
+            team={game_state.away_team}
+            pushEvent={pushEvent}
+            teamType="away"
+            selectPlayer={setPlayerSelection}
+            selectedPlayer={playerSelection}
+          />
         </div>
       </div>
     </>
