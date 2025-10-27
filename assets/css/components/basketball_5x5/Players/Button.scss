@@ -1,0 +1,21 @@
+.player-button {
+  height: 50px;
+  width: 85px;
+  display: flex;
+  margin: auto;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  overflow: hidden;
+
+  .number {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .name {
+    font-size: 0.75rem;
+    text-align: center;
+    text-wrap: wrap;
+  }
+}

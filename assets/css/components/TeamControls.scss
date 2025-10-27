@@ -1,6 +1,22 @@
 @import '../colors.scss';
 
 .team-controls {
+  position: relative;
+
+  .caption {
+    position: absolute;
+    top: 0;
+    font-size: 0.75rem;
+
+    &.home {
+      left: 1.5rem;
+    }
+
+    &.away {
+      right: 1.5rem;
+    }
+  }
+
   .is-flex-direction-row-reverse {
     .logo-container .logo {
       left: 5px;

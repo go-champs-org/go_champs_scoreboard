@@ -11,8 +11,8 @@ interface TeamControlsProps {
 export function BasicTeamControls({ team, teamType }: TeamControlsProps) {
   const { t } = useTranslation();
   const reverseClass =
-    teamType === 'home' ? 'is-flex-direction-row-reverse' : '';
-  const teamNameClass = teamType === 'home' ? 'is-justify-content-right' : '';
+    teamType === 'away' ? 'is-flex-direction-row-reverse' : '';
+  const teamNameClass = teamType === 'away' ? 'is-justify-content-right' : '';
   return (
     <div className="controls team-controls">
       <div className={`columns is-multiline ${reverseClass}`}>
@@ -89,10 +89,15 @@ export function BasicTeamControls({ team, teamType }: TeamControlsProps) {
 function TeamControls({ team, teamType }: TeamControlsProps) {
   const { t } = useTranslation();
   const reverseClass =
-    teamType === 'home' ? 'is-flex-direction-row-reverse' : '';
-  const teamNameClass = teamType === 'home' ? 'is-justify-content-right' : '';
+    teamType === 'away' ? 'is-flex-direction-row-reverse' : '';
+  const teamNameClass = teamType === 'away' ? 'is-justify-content-right' : '';
+  const teamCaption =
+    teamType === 'home'
+      ? t('basketball.teams.teamA')
+      : t('basketball.teams.teamB');
   return (
     <div className="controls team-controls">
+      <span className={`caption ${teamType}`}>{teamCaption}</span>
       <div className={`columns is-multiline ${reverseClass}`}>
         <div
           className={`column is-7 is-flex is-align-items-center ${teamNameClass}`}
@@ -114,7 +119,7 @@ function TeamControls({ team, teamType }: TeamControlsProps) {
           </p>
         </div>
         <div className="column is-12">
-          <div className="columns">
+          <div className={`columns ${reverseClass}`}>
             <div className="column is-4">
               <div className="team-stat">
                 <p className="stat-label">

@@ -239,6 +239,8 @@
       }
     },
     "players": {
+      "onCourt": "Em Quadra",
+      "onBench": "No Banco",
       "controls": {
         "substitute": "Substituir",
         "cancel": "Cancelar"
@@ -278,7 +280,9 @@
       },
       "types": {
         "headCoach": "Técnico Principal",
-        "assistantCoach": "Técnico Assistente"
+        "headCoachShort": "Técnico",
+        "assistantCoach": "Técnico Assistente",
+        "assistantCoachShort": "Ass. Téc"
       }
     },
     "officials": {
@@ -309,6 +313,10 @@
       "alerts": {
         "enterName": "Por favor, insira o nome do árbitro"
       }
+    },
+    "teams": {
+      "teamA": "Equipe A",
+      "teamB": "Equipe B"
     }
   },
   "eventKeys": {

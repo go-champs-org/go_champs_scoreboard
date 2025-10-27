@@ -239,6 +239,8 @@
       }
     },
     "players": {
+      "onCourt": "On Court",
+      "onBench": "On Bench",
       "controls": {
         "substitute": "Substitute",
         "cancel": "Cancel"
@@ -278,7 +280,9 @@
       },
       "types": {
         "headCoach": "Head Coach",
-        "assistantCoach": "Assistant Coach"
+        "headCoachShort": "Coach",
+        "assistantCoach": "Assistant Coach",
+        "assistantCoachShort": "Ass. Coach"
       }
     },
     "officials": {
@@ -309,6 +313,10 @@
       "alerts": {
         "enterName": "Please enter an official name"
       }
+    },
+    "teams": {
+      "teamA": "Team A",
+      "teamB": "Team B"
     }
   },
   "eventKeys": {
