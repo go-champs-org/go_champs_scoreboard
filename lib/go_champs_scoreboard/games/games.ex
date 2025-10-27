@@ -34,7 +34,7 @@ defmodule GoChampsScoreboard.Games.Games do
               game
               |> Bootstrapper.bootstrap_from_go_champs(game.id, go_champs_token)
 
-            game
+            GameStateCache.update(updated_game)
 
           :in_progress ->
             resource_manager.check_and_restart(game.id)
