@@ -40,7 +40,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
           datetime: datetime,
           tournament_name: "Tournament Name",
           actual_start_datetime: actual_start_datetime,
-          actual_end_datetime: actual_end_datetime
+          actual_end_datetime: actual_end_datetime,
+          initial_period_time: game_state.clock_state.initial_period_time
         },
         team_a: %FibaScoresheet.Team{
           name: "Some home team",

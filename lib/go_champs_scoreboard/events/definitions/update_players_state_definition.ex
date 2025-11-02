@@ -45,6 +45,8 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinition do
           "state" => state
         }
       }) do
+    IO.inspect("heyy")
+    IO.inspect(state)
     new_state = String.to_existing_atom(state)
 
     current_team = Teams.find_team(current_game, team_type)
