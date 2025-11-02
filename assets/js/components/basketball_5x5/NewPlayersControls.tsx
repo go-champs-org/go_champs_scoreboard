@@ -73,7 +73,11 @@ function NewPlayersControls({
         setSelectedPlayers([player]);
       } else {
         const firstSelectedPlayer = selectedPlayers[0];
-        const sameState = player.state === firstSelectedPlayer.state;
+        const sameState =
+          (player.state === 'playing' &&
+            firstSelectedPlayer.state === 'playing') ||
+          (player.state !== 'playing' &&
+            firstSelectedPlayer.state !== 'playing');
 
         if (sameState) {
           const isAlreadySelected = selectedPlayers.some(
