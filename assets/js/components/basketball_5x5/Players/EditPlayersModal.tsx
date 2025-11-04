@@ -28,6 +28,15 @@ function BasicPlayersTable({
         <table className="table is-fullwidth">
           <thead>
             <tr>
+              <th
+                style={{
+                  minWidth: '85px',
+                  maxWidth: '85px',
+                  textAlign: 'center',
+                }}
+              >
+                {t('basketball.players.modal.remove')}
+              </th>
               <th style={{ minWidth: '65px', maxWidth: '65px' }}>#</th>
               <th style={{ minWidth: '140px', maxWidth: '140px' }}>
                 {t('basketball.players.modal.name')}
@@ -95,15 +104,6 @@ function BasicPlayersTable({
               >
                 {t('basketball.stats.abbreviations.steals')}
               </th>
-              <th
-                style={{
-                  minWidth: '85px',
-                  maxWidth: '85px',
-                  textAlign: 'center',
-                }}
-              >
-                {t('basketball.players.modal.delete')}
-              </th>
             </tr>
           </thead>
           <tbody>
@@ -142,6 +142,12 @@ function MediumPlayersTable({
       <table className="table is-fullwidth">
         <thead>
           <tr>
+            <th style={{ minWidth: '85px', maxWidth: '85px' }}>
+              {t('basketball.players.modal.remove')}
+            </th>
+            <th style={{ minWidth: '75px', maxWidth: '75px' }}>
+              {t('basketball.players.modal.licenseNumber')}
+            </th>
             <th style={{ minWidth: '65px', maxWidth: '65px' }}>#</th>
             <th style={{ minWidth: '140px', maxWidth: '140px' }}>
               {t('basketball.players.modal.name')}
@@ -190,12 +196,6 @@ function MediumPlayersTable({
             </th>
             <th style={{ minWidth: '65px', maxWidth: '65px' }}>
               {t('basketball.stats.abbreviations.unsportsmanlikeFoulsShort')}
-            </th>
-            <th style={{ minWidth: '65px', maxWidth: '65px' }}>
-              {t('basketball.players.modal.licenseNumber')}
-            </th>
-            <th style={{ minWidth: '85px', maxWidth: '85px' }}>
-              {t('basketball.players.modal.delete')}
             </th>
           </tr>
         </thead>

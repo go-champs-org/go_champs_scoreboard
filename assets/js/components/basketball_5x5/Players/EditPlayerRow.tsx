@@ -128,6 +128,15 @@ export function BasicEditPlayerRow({
   };
   return (
     <tr key={player.id}>
+      <td>
+        <DoubleClickButton
+          className="button is-warning is-small is-fullwidth"
+          onClick={onRemovePlayer}
+          disabled={player.state === 'not_available'}
+        >
+          &#10008;
+        </DoubleClickButton>
+      </td>
       <td
         style={{
           maxWidth: '30px',
@@ -142,6 +151,7 @@ export function BasicEditPlayerRow({
               className="input is-small"
               type="text"
               value={value}
+              placeholder="00"
               onChange={onChange}
               disabled={player.state === 'not_available'}
             />
@@ -211,15 +221,6 @@ export function BasicEditPlayerRow({
           teamType={teamType}
         />
       </td>
-      <td>
-        <DoubleClickButton
-          className="button is-warning is-small"
-          onClick={onRemovePlayer}
-          disabled={player.state === 'not_available'}
-        >
-          &#10008;
-        </DoubleClickButton>
-      </td>
     </tr>
   );
 }
@@ -250,6 +251,31 @@ function MediumEditPlayerRow({
   return (
     <tr key={player.id}>
       <td>
+        <DoubleClickButton
+          className="button is-warning is-small is-fullwidth"
+          onClick={onRemovePlayer}
+          disabled={player.state === 'not_available'}
+        >
+          &#10008;
+        </DoubleClickButton>
+      </td>
+      <td>
+        <FormField
+          initialValue={player.license_number}
+          onChange={onUpdateLicenseNumber}
+          render={(value, onChange) => (
+            <input
+              className="input is-small"
+              type="text"
+              value={value}
+              placeholder="AB12"
+              onChange={onChange}
+              disabled={player.state === 'not_available'}
+            />
+          )}
+        />
+      </td>
+      <td>
         <FormField
           initialValue={player.number}
           onChange={onUpdatePlayerNumber}
@@ -258,6 +284,7 @@ function MediumEditPlayerRow({
               className="input is-small"
               type="text"
               value={value}
+              placeholder="00"
               onChange={onChange}
               disabled={player.state === 'not_available'}
             />
@@ -390,30 +417,6 @@ function MediumEditPlayerRow({
           pushEvent={pushEvent}
           teamType={teamType}
         />
-      </td>
-      <td>
-        <FormField
-          initialValue={player.license_number}
-          onChange={onUpdateLicenseNumber}
-          render={(value, onChange) => (
-            <input
-              className="input is-small"
-              type="text"
-              value={value}
-              onChange={onChange}
-              disabled={player.state === 'not_available'}
-            />
-          )}
-        />
-      </td>
-      <td>
-        <DoubleClickButton
-          className="button is-warning is-small"
-          onClick={onRemovePlayer}
-          disabled={player.state === 'not_available'}
-        >
-          &#10008;
-        </DoubleClickButton>
       </td>
     </tr>
   );

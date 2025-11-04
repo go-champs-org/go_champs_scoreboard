@@ -253,7 +253,7 @@
         "addPlayer": "Add player",
         "licenseNumber": "Lic #",
         "name": "Name",
-        "delete": "Delete"
+        "remove": "Remove"
       }
     },
     "protest": {
