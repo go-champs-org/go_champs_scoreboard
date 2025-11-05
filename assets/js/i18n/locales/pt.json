@@ -298,12 +298,12 @@
       },
       "types": {
         "scorer": "Apontador",
-        "assistantScorer": "Auxiliar de Apontador",
+        "assistantScorer": "Representante",
         "timekeeper": "Cronometrista",
         "shotClockOperator": "Operador dos 24 segundos",
         "crewChief": "Árbitro Principal",
-        "umpire1": "Árbitro 1",
-        "umpire2": "Árbitro 2"
+        "umpire1": "Fiscal 1",
+        "umpire2": "Fiscal 2"
       },
       "placeholders": {
         "officialName": "Nome do árbitro",

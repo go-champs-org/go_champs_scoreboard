@@ -298,7 +298,7 @@
       },
       "types": {
         "scorer": "Scorer",
-        "assistantScorer": "Assistant Scorer",
+        "assistantScorer": "Representative",
         "timekeeper": "Timekeeper",
         "shotClockOperator": "Shot Clock Operator",
         "crewChief": "Crew Chief",
