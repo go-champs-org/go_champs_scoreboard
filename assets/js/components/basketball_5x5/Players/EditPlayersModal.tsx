@@ -28,6 +28,7 @@ function BasicPlayersTable({
         <table className="table is-fullwidth">
           <thead>
             <tr>
+              <th></th>
               <th
                 style={{
                   minWidth: '85px',
@@ -109,13 +110,15 @@ function BasicPlayersTable({
           <tbody>
             {showAddPlayerRow && (
               <AddPlayerRow
+                numberOfLeadingColumns={2}
                 teamType={teamType}
                 pushEvent={pushEvent}
                 onConfirmAction={() => setShowAddPlayerRow(false)}
               />
             )}
-            {team.players.map((player) => (
+            {team.players.map((player, index) => (
               <BasicEditPlayerRow
+                rowNumber={index + 1}
                 key={player.id}
                 player={player}
                 teamType={teamType}
@@ -142,6 +145,7 @@ function MediumPlayersTable({
       <table className="table is-fullwidth">
         <thead>
           <tr>
+            <th></th>
             <th style={{ minWidth: '85px', maxWidth: '85px' }}>
               {t('basketball.players.modal.remove')}
             </th>
@@ -202,13 +206,15 @@ function MediumPlayersTable({
         <tbody>
           {showAddPlayerRow && (
             <AddPlayerRow
+              numberOfLeadingColumns={3}
               teamType={teamType}
               pushEvent={pushEvent}
               onConfirmAction={() => setShowAddPlayerRow(false)}
             />
           )}
-          {team.players.map((player) => (
+          {team.players.map((player, index) => (
             <MediumEditPlayerRow
+              rowNumber={index + 1}
               key={player.id}
               player={player}
               teamType={teamType}

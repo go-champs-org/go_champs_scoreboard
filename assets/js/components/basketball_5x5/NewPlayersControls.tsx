@@ -1,5 +1,11 @@
 import React, { useEffect } from 'react';
-import { PlayerState, TeamState, TeamType } from '../../types';
+import {
+  LiveState,
+  LiveStateStates,
+  PlayerState,
+  TeamState,
+  TeamType,
+} from '../../types';
 import { PlayerSelection } from './Main';
 import { default as PlayerButton } from './Players/Button';
 import { wherePlaying, whereNotPlaying, byPlayer } from './Players/utils';
@@ -11,6 +17,7 @@ interface NewPlayersControlsProps {
   teamType: TeamType;
   selectPlayer: (playerSelection: PlayerSelection | null) => void;
   selectedPlayer: PlayerSelection | null;
+  liveState: LiveState;
 }
 
 function NewPlayersControls({
@@ -19,6 +26,7 @@ function NewPlayersControls({
   teamType,
   selectPlayer,
   selectedPlayer,
+  liveState,
 }: NewPlayersControlsProps) {
   const playersControlsRef = React.useRef<HTMLDivElement>(null);
   const [selectedPlayers, setSelectedPlayers] = React.useState<PlayerState[]>(
@@ -162,6 +170,7 @@ function NewPlayersControls({
                 <PlayerButton
                   player={player}
                   onClick={() => handlePlayerClick(player)}
+                  disabled={liveState.state === LiveStateStates.NOT_STARTED}
                   isSelected={
                     (player.id === selectedPlayer?.playerId &&
                       selectedPlayer?.teamType === teamType) ||
@@ -223,6 +232,7 @@ function NewPlayersControls({
                 <PlayerButton
                   player={player}
                   onClick={() => handlePlayerClick(player)}
+                  disabled={liveState.state === LiveStateStates.NOT_STARTED}
                   isSelected={
                     (player.id === selectedPlayer?.playerId &&
                       selectedPlayer?.teamType === teamType) ||

@@ -103,6 +103,7 @@ function NameCell({ player }: { player: PlayerState }) {
 }
 
 interface EditPlayerRowProps {
+  rowNumber: number;
   key: string;
   player: PlayerState;
   teamType: TeamType;
@@ -110,6 +111,7 @@ interface EditPlayerRowProps {
 }
 
 export function BasicEditPlayerRow({
+  rowNumber,
   player,
   teamType,
   pushEvent,
@@ -128,6 +130,7 @@ export function BasicEditPlayerRow({
   };
   return (
     <tr key={player.id}>
+      <td>{rowNumber}</td>
       <td>
         <DoubleClickButton
           className="button is-warning is-small is-fullwidth"
@@ -226,6 +229,7 @@ export function BasicEditPlayerRow({
 }
 
 function MediumEditPlayerRow({
+  rowNumber,
   player,
   teamType,
   pushEvent,
@@ -250,6 +254,7 @@ function MediumEditPlayerRow({
   };
   return (
     <tr key={player.id}>
+      <td>{rowNumber}</td>
       <td>
         <DoubleClickButton
           className="button is-warning is-small is-fullwidth"

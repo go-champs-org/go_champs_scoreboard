@@ -51,6 +51,7 @@ function BasicView({ game_state, recent_events, pushEvent }: ViewProps) {
             teamType="home"
             selectPlayer={setPlayerSelection}
             selectedPlayer={playerSelection}
+            liveState={game_state.live_state}
           />
         </div>
 
@@ -71,6 +72,7 @@ function BasicView({ game_state, recent_events, pushEvent }: ViewProps) {
             teamType="away"
             selectPlayer={setPlayerSelection}
             selectedPlayer={playerSelection}
+            liveState={game_state.live_state}
           />
         </div>
       </div>
@@ -97,6 +99,7 @@ function MediumView({ game_state, recent_events, pushEvent }: ViewProps) {
                 selectedPlayer={playerSelection}
                 team={game_state.home_team}
                 teamType="home"
+                liveState={game_state.live_state}
               />
             </div>
           </div>
@@ -145,6 +148,7 @@ function MediumView({ game_state, recent_events, pushEvent }: ViewProps) {
                 selectedPlayer={playerSelection}
                 team={game_state.away_team}
                 teamType="away"
+                liveState={game_state.live_state}
               />
             </div>
           </div>

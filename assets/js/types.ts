@@ -85,8 +85,17 @@ export interface OfficialState {
   federation?: string;
 }
 
+export const LiveStateStates = {
+  NOT_STARTED: 'not_started',
+  IN_PROGRESS: 'in_progress',
+  ENDED: 'ended',
+} as const;
+
+export type LiveStateState =
+  (typeof LiveStateStates)[keyof typeof LiveStateStates];
+
 export interface LiveState {
-  state: 'not_started' | 'in_progress' | 'ended';
+  state: LiveStateState;
   started_at: string;
   ended_at: string;
 }

@@ -4,12 +4,14 @@ import { TeamType } from '../../../types';
 import FormField from '../../FormField';
 
 interface AddPlayerRowProps {
+  numberOfLeadingColumns: number;
   teamType: TeamType;
   pushEvent: (event: string, data: any) => void;
   onConfirmAction: () => void;
 }
 
 function AddPlayerRow({
+  numberOfLeadingColumns,
   teamType,
   pushEvent,
   onConfirmAction,
@@ -32,6 +34,9 @@ function AddPlayerRow({
 
   return (
     <tr>
+      {[...Array(numberOfLeadingColumns)].map((_, index) => (
+        <td key={index}></td>
+      ))}
       <td>
         <FormField
           initialValue={''}
