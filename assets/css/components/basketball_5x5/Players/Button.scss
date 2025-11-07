@@ -1,21 +1,36 @@
+@import '../../../colors.scss';
+
 .player-button {
   height: 50px;
   width: 85px;
   display: flex;
+  position: relative;
   margin: auto;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   overflow: hidden;
 
-  .number {
-    font-size: 1.5rem;
-    font-weight: bold;
+  .content {
+    .number {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .name {
+      font-size: 0.75rem;
+      text-align: center;
+      text-wrap: wrap;
+    }
   }
 
-  .name {
-    font-size: 0.75rem;
-    text-align: center;
-    text-wrap: wrap;
+  .fouls {
+    position: absolute;
+    background-color: $red;
+    border-bottom-right-radius: 5px;
+    padding: 0 5px;
+    font-size: 0.65rem;
+    top: 0;
+    left: 0;
   }
 }

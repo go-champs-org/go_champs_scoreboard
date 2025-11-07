@@ -16,7 +16,7 @@ function Button({
   disabled = false,
   className = '',
 }: ButtonProps) {
-  const fouls = 4;
+  const fouls = player.stats_values['fouls'] || 0;
   return (
     <button
       className={`player-button button ${
@@ -31,6 +31,7 @@ function Button({
         ) : (
           <span className="name">{player.name}</span>
         )}
+        {fouls > 0 && <span className="fouls">{fouls}</span>}
       </div>
     </button>
   );
