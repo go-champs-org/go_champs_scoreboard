@@ -2,24 +2,30 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import PopUpButton from '../../PopUpButton';
 
-interface PlayerAdditionalFoulButtonProps {
+interface AdditionalFoulButtonProps {
+  type: 'player' | 'coach';
   disabled: boolean;
   label: string;
   shortcut: string;
   onStatUpdate: (stat: string, metadata?: any) => void;
 }
 
-function PlayerAdditionalFoulButton({
+function AdditionalFoulButton({
+  type,
   disabled,
   label,
   shortcut,
   onStatUpdate,
-}: PlayerAdditionalFoulButtonProps) {
+}: AdditionalFoulButtonProps) {
   const { t } = useTranslation();
 
   const handleQuickClick = () => {
-    // Default action for quick click - could be most common foul
-    onStatUpdate('fouls_unsportsmanlike');
+    // Default action for quick click
+    if (type === 'player') {
+      onStatUpdate('fouls_unsportsmanlike');
+    } else {
+      onStatUpdate('fouls_technical');
+    }
   };
 
   const handleFoulWithoutFreeThrows = (
@@ -41,9 +47,9 @@ function PlayerAdditionalFoulButton({
     closePanel();
   };
 
-  const popUpPanel = (panelRef: { close: () => void }) => (
-    <div className="player-additional-foul-button-pop-up-panel">
-      <div>
+  const renderPlayerFouls = (panelRef: { close: () => void }) => (
+    <div className="additional-foul-button-pop-up-panel columns">
+      <div className="column">
         <button
           className="button is-fullwidth is-small is-warning"
           onClick={() =>
@@ -112,7 +118,7 @@ function PlayerAdditionalFoulButton({
           F
         </button>
       </div>
-      <div>
+      <div className="column">
         <button
           className="button is-fullwidth is-small is-danger"
           onClick={() =>
@@ -168,6 +174,170 @@ function PlayerAdditionalFoulButton({
     </div>
   );
 
+  const renderCoachFouls = (panelRef: { close: () => void }) => (
+    <div className="additional-foul-button-pop-up-panel">
+      <div>
+        <button
+          className="button is-fullwidth is-small is-warning"
+          onClick={() =>
+            handleFoulWithFreeThrows('fouls_technical', '1', panelRef.close)
+          }
+        >
+          C1
+        </button>
+        <button
+          className="button is-fullwidth is-small is-warning"
+          onClick={() =>
+            handleFoulWithFreeThrows('fouls_technical', 'C', panelRef.close)
+          }
+        >
+          CC
+        </button>
+        <button
+          className="button is-fullwidth is-small is-info"
+          onClick={() =>
+            handleFoulWithoutFreeThrows('fouls_technical_bench', panelRef.close)
+          }
+        >
+          B
+        </button>
+        <button
+          className="button is-fullwidth is-small is-info"
+          onClick={() =>
+            handleFoulWithFreeThrows(
+              'fouls_technical_bench',
+              '1',
+              panelRef.close,
+            )
+          }
+        >
+          B1
+        </button>
+        <button
+          className="button is-fullwidth is-small is-info"
+          onClick={() =>
+            handleFoulWithFreeThrows(
+              'fouls_technical_bench',
+              '2',
+              panelRef.close,
+            )
+          }
+        >
+          B2
+        </button>
+        <button
+          className="button is-fullwidth is-small is-info"
+          onClick={() =>
+            handleFoulWithFreeThrows(
+              'fouls_technical_bench',
+              'C',
+              panelRef.close,
+            )
+          }
+        >
+          BC
+        </button>
+      </div>
+      <div>
+        <button
+          className="button is-fullwidth is-small is-primary"
+          onClick={() =>
+            handleFoulWithoutFreeThrows(
+              'fouls_technical_bench_disqualifying',
+              panelRef.close,
+            )
+          }
+        >
+          BD
+        </button>
+        <button
+          className="button is-fullwidth is-small is-primary"
+          onClick={() =>
+            handleFoulWithFreeThrows(
+              'fouls_technical_bench_disqualifying',
+              '1',
+              panelRef.close,
+            )
+          }
+        >
+          BD1
+        </button>
+        <button
+          className="button is-fullwidth is-small is-primary"
+          onClick={() =>
+            handleFoulWithFreeThrows(
+              'fouls_technical_bench_disqualifying',
+              '2',
+              panelRef.close,
+            )
+          }
+        >
+          BD2
+        </button>
+        <button
+          className="button is-fullwidth is-small is-danger"
+          onClick={() =>
+            handleFoulWithoutFreeThrows('fouls_disqualifying', panelRef.close)
+          }
+        >
+          D
+        </button>
+        <button
+          className="button is-fullwidth is-small is-danger"
+          onClick={() =>
+            handleFoulWithFreeThrows('fouls_disqualifying', '1', panelRef.close)
+          }
+        >
+          D1
+        </button>
+        <button
+          className="button is-fullwidth is-small is-danger"
+          onClick={() =>
+            handleFoulWithFreeThrows('fouls_disqualifying', '2', panelRef.close)
+          }
+        >
+          D2
+        </button>
+        <button
+          className="button is-fullwidth is-small is-danger"
+          onClick={() =>
+            handleFoulWithFreeThrows('fouls_disqualifying', 'C', panelRef.close)
+          }
+        >
+          DC
+        </button>
+        <button
+          className="button is-fullwidth is-small is-dark"
+          onClick={() =>
+            handleFoulWithoutFreeThrows(
+              'fouls_disqualifying_fighting',
+              panelRef.close,
+            )
+          }
+        >
+          F
+        </button>
+        <button
+          className="button is-fullwidth is-small is-black"
+          onClick={() =>
+            handleFoulWithoutFreeThrows(
+              'fouls_game_disqualifying',
+              panelRef.close,
+            )
+          }
+        >
+          GD
+        </button>
+      </div>
+    </div>
+  );
+
+  const popUpPanel = (panelRef: { close: () => void }) => {
+    return type === 'player'
+      ? renderPlayerFouls(panelRef)
+      : renderCoachFouls(panelRef);
+  };
+
   return (
     <PopUpButton
       popUpPanel={popUpPanel}
@@ -183,4 +353,4 @@ function PlayerAdditionalFoulButton({
   );
 }
 
-export default PlayerAdditionalFoulButton;
+export default AdditionalFoulButton;

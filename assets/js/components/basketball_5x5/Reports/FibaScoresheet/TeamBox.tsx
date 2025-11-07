@@ -416,7 +416,7 @@ function PlayerRow({
   return (
     <View style={styles.teamContainer.table.row}>
       <View style={styles.teamContainer.table.row.columnLic}>
-        <Text style={styles.teamContainer.table.content}>
+        <Text style={{ ...styles.teamContainer.table.content, margin: 0 }}>
           {player.license_number}
         </Text>
       </View>

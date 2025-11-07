@@ -1,0 +1,14 @@
+.additional-foul-button {
+  &-pop-up-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    .column {
+      padding: 0 6px;
+
+      .button {
+        margin: 6px 0;
+      }
+    }
+  }
+}

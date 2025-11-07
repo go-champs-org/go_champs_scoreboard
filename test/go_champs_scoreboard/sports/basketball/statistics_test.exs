@@ -175,6 +175,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.StatisticsTest do
           "fouls_technical" => 2,
           "fouls_disqualifying" => 1,
           "fouls_technical_bench" => 1,
+          "fouls_technical_bench_disqualifying" => 1,
           "fouls_game_disqualifying" => 2
         }
       }

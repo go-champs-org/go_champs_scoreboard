@@ -54,6 +54,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
         "fouls_disqualifying" => 0,
         "fouls_disqualifying_fighting" => 0,
         "fouls_technical_bench" => 0,
+        "fouls_technical_bench_disqualifying" => 0,
         "fouls_game_disqualifying" => 0
       }
 
