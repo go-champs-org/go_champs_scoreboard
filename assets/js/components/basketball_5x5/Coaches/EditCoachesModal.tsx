@@ -34,13 +34,23 @@ function CoachesTable({
                 {t('basketball.coaches.modal.type')}
               </th>
               <th style={{ minWidth: '65px', maxWidth: '65px' }}>
-                {t('basketball.stats.abbreviations.personalFoulsShort')}
-              </th>
-              <th style={{ minWidth: '65px', maxWidth: '65px' }}>
                 {t('basketball.stats.abbreviations.technicalFoulsShort')}
               </th>
               <th style={{ minWidth: '65px', maxWidth: '65px' }}>
-                {t('basketball.stats.abbreviations.flagrantFoulsShort')}
+                {t('basketball.stats.abbreviations.disqualifyingFoulsShort')}
+              </th>
+              <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+                {t(
+                  'basketball.stats.abbreviations.disqualifyingFightingFoulsShort',
+                )}
+              </th>
+              <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+                {t('basketball.stats.abbreviations.technicalBenchFoulsShort')}
+              </th>
+              <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+                {t(
+                  'basketball.stats.abbreviations.technicalBenchDisqualifyingFoulsShort',
+                )}
               </th>
               <th style={{ minWidth: '50px', maxWidth: '50px' }}>
                 {t('basketball.coaches.modal.actions')}

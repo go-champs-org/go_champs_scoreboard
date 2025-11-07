@@ -1,6 +1,7 @@
 import React from 'react';
 import { CoachState, TeamType } from '../../../types';
 import DoubleClickButton from '../../DoubleClickButton';
+import { t } from 'i18next';
 
 interface StatInputProps {
   teamType: TeamType;
@@ -91,6 +92,10 @@ function EditCoachRow({ coach, teamType, pushEvent }: EditCoachRowProps) {
       ['coach-id']: coach.id,
     });
   };
+  const typeLabelResource =
+    coach.type === 'head_coach'
+      ? 'basketball.coaches.types.headCoach'
+      : 'basketball.coaches.types.assistantCoach';
   return (
     <tr key={coach.id}>
       <td
@@ -100,15 +105,7 @@ function EditCoachRow({ coach, teamType, pushEvent }: EditCoachRowProps) {
       >
         {coach.name}
       </td>
-      <td>{coach.type}</td>
-      <td>
-        <StatInput
-          coach={coach}
-          statKey="fouls_personal"
-          pushEvent={pushEvent}
-          teamType={teamType}
-        />
-      </td>
+      <td>{t(typeLabelResource)}</td>
       <td>
         <StatInput
           coach={coach}
@@ -120,7 +117,31 @@ function EditCoachRow({ coach, teamType, pushEvent }: EditCoachRowProps) {
       <td>
         <StatInput
           coach={coach}
-          statKey="fouls_unsportsmanlike"
+          statKey="fouls_disqualifying"
+          pushEvent={pushEvent}
+          teamType={teamType}
+        />
+      </td>
+      <td>
+        <StatInput
+          coach={coach}
+          statKey="fouls_disqualifying_fighting"
+          pushEvent={pushEvent}
+          teamType={teamType}
+        />
+      </td>
+      <td>
+        <StatInput
+          coach={coach}
+          statKey="fouls_technical_bench"
+          pushEvent={pushEvent}
+          teamType={teamType}
+        />
+      </td>
+      <td>
+        <StatInput
+          coach={coach}
+          statKey="fouls_technical_bench_disqualifying"
           pushEvent={pushEvent}
           teamType={teamType}
         />

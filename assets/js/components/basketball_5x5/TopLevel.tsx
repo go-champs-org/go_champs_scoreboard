@@ -100,13 +100,20 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
         </p>
         {game_state.view_settings_state.view !== 'basketball-basic' && (
           <p className="level-item">
-            <a
+            <button
               className="button is-info is-small"
-              href={`/scoreboard/report_viewer/${game_state.id}`}
-              target="_blank"
+              disabled={game_state.live_state.state === 'not_started'}
+              onClick={() => {
+                if (game_state.live_state.state !== 'not_started') {
+                  window.open(
+                    `/scoreboard/report_viewer/${game_state.id}`,
+                    '_blank',
+                  );
+                }
+              }}
             >
               {t('basketball.navigation.fibaScoresheet')}
-            </a>
+            </button>
           </p>
         )}
         <Modal
