@@ -7,8 +7,14 @@ interface PopUpButtonOption {
   disabled?: boolean;
 }
 
+interface PopUpButtonPanelRef {
+  close: () => void;
+}
+
 interface PopUpButtonProps {
-  popUpPanel?: React.ReactNode;
+  popUpPanel?:
+    | React.ReactNode
+    | ((panelRef: PopUpButtonPanelRef) => React.ReactNode);
   popUpButtons?: PopUpButtonOption[];
   popUpDirection?: 'top' | 'bottom' | 'left' | 'right';
   onQuickClick: () => void;
@@ -189,6 +195,12 @@ function PopUpButton(props: PopUpButtonProps) {
 
   const renderPopupContent = () => {
     if (popUpPanel) {
+      if (typeof popUpPanel === 'function') {
+        const panelRef: PopUpButtonPanelRef = {
+          close: () => setIsOpen(false),
+        };
+        return popUpPanel(panelRef);
+      }
       return popUpPanel;
     }
 

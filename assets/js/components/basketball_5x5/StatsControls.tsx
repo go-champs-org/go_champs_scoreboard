@@ -5,6 +5,7 @@ import { invokeButtonClickRef } from '../../shared/invokeButtonClick';
 import { LiveState } from '../../types';
 import { useTranslation } from '../../hooks/useTranslation';
 import FoulButton from './Stats/FoulButton';
+import PlayerAdditionalFoulButton from './Stats/PlayerAdditionalFoulButton';
 
 interface StatsControlsProps {
   pushEvent: (event: string, payload: any) => void;
@@ -251,15 +252,12 @@ export function MediumStatsControls({
           />
         </div>
         <div className="column is-4 has-text-centered">
-          <button
-            ref={buttonRefs.b}
-            className="button is-stat is-warning"
-            onClick={() => onShowFoulsModal()}
-            disabled={liveState.state !== 'in_progress'}
-          >
-            <span className="shortcut">B</span>
-            {t('basketball.stats.controls.moreFouls')}
-          </button>
+          <PlayerAdditionalFoulButton
+            label={t('basketball.stats.controls.moreFouls')}
+            shortcut="B"
+            disabled={buttonsDisabled}
+            onStatUpdate={onStatUpdate}
+          />
         </div>
       </div>
     </div>
