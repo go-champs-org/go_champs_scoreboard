@@ -8,18 +8,21 @@ interface CoachFoulsPanelProps {
     freeThrows: string,
     closePanel: () => void,
   ) => void;
+  firstButtonRef: React.RefObject<HTMLButtonElement | null>;
 }
 
 function CoachFoulsPanel({
   panelRef,
   onFoulWithoutFreeThrows,
   onFoulWithFreeThrows,
+  firstButtonRef,
 }: CoachFoulsPanelProps) {
   return (
     <div className="additional-foul-button-pop-up-panel columns">
       <div className="column">
         <button
           className="button is-fullwidth is-small is-warning"
+          ref={firstButtonRef}
           onClick={() =>
             onFoulWithFreeThrows('fouls_technical', '1', panelRef.close)
           }

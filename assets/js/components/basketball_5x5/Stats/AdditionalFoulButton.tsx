@@ -49,13 +49,17 @@ function AdditionalFoulButton({
     closePanel();
   };
 
-  const popUpPanel = (panelRef: { close: () => void }) => {
+  const popUpPanel = (
+    panelRef: { close: () => void },
+    firstButtonRef: React.RefObject<HTMLButtonElement | null>,
+  ) => {
     if (type === 'player') {
       return (
         <PlayerFoulsPanel
           panelRef={panelRef}
           onFoulWithoutFreeThrows={handleFoulWithoutFreeThrows}
           onFoulWithFreeThrows={handleFoulWithFreeThrows}
+          firstButtonRef={firstButtonRef}
         />
       );
     } else {
@@ -64,6 +68,7 @@ function AdditionalFoulButton({
           panelRef={panelRef}
           onFoulWithoutFreeThrows={handleFoulWithoutFreeThrows}
           onFoulWithFreeThrows={handleFoulWithFreeThrows}
+          firstButtonRef={firstButtonRef}
         />
       );
     }

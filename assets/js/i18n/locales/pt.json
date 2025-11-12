@@ -236,10 +236,14 @@
         "technicalFoul": "F. TÉCNICA (T)",
         "unsportsmanlikeFoul": "F. ANT. (U)",
         "moreFouls": "MAIS FALTAS",
-        "oneFreeThrow": "+1 LL",
-        "twoFreeThrows": "+2 LL",
-        "threeFreeThrows": "+3 LL",
-        "canceledFreeThrows": "LL Cancelado"
+        "personalFoulNoFreeThrow": "SEM LL (P)",
+        "personalFoulOneFreeThrow": "+1 LL (P1)",
+        "personalFoulTwoFreeThrows": "+2 LL (P2)",
+        "personalFoulThreeFreeThrows": "+3 LL (P3)",
+        "personalFoulCanceledFreeThrows": "LL Cancelado (PC)",
+        "technicalFoulNoFreeThrow": "SEM LL (T)",
+        "technicalFoulOneFreeThrow": "+1 LL (T1)",
+        "technicalFoulCanceledFreeThrows": "LL Cancelado (TC)"
       }
     },
     "players": {

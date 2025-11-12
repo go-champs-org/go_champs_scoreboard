@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import PopUpButton from '../../PopUpButton';
 
 interface FoulButtonProps {
-  statId: 'fouls_personal' | 'fouls_technical' | 'fouls_unsportsmanlike';
+  statId: 'fouls_personal' | 'fouls_technical';
   disabled: boolean;
   label: string;
   shortcut: string;
@@ -23,30 +23,57 @@ function FoulButton({
     onStatUpdate(statId);
   };
 
-  const handleFreeThrowOption = (freeThrows: string) => {
-    onStatUpdate(statId, {
-      ['free-throws-awarded']: freeThrows,
-    });
+  const handleFreeThrowOption = (freeThrows?: string) => {
+    if (freeThrows) {
+      onStatUpdate(statId, {
+        ['free-throws-awarded']: freeThrows,
+      });
+    }
+    onStatUpdate(statId);
   };
 
-  const popUpButtons = [
-    {
-      label: t('basketball.stats.controls.oneFreeThrow'),
-      onClick: () => handleFreeThrowOption('1'),
-    },
-    {
-      label: t('basketball.stats.controls.twoFreeThrows'),
-      onClick: () => handleFreeThrowOption('2'),
-    },
-    {
-      label: t('basketball.stats.controls.threeFreeThrows'),
-      onClick: () => handleFreeThrowOption('3'),
-    },
-    {
-      label: t('basketball.stats.controls.canceledFreeThrows'),
-      onClick: () => handleFreeThrowOption('C'),
-    },
-  ];
+  const popUpButtons =
+    statId === 'fouls_personal'
+      ? [
+          {
+            label: t('basketball.stats.controls.personalFoulNoFreeThrow'),
+            onClick: () => handleFreeThrowOption(),
+          },
+          {
+            label: t('basketball.stats.controls.personalFoulOneFreeThrow'),
+            onClick: () => handleFreeThrowOption('1'),
+          },
+          {
+            label: t('basketball.stats.controls.personalFoulTwoFreeThrows'),
+            onClick: () => handleFreeThrowOption('2'),
+          },
+          {
+            label: t('basketball.stats.controls.personalFoulThreeFreeThrows'),
+            onClick: () => handleFreeThrowOption('3'),
+          },
+          {
+            label: t(
+              'basketball.stats.controls.personalFoulCanceledFreeThrows',
+            ),
+            onClick: () => handleFreeThrowOption('C'),
+          },
+        ]
+      : [
+          {
+            label: t('basketball.stats.controls.technicalFoulNoFreeThrow'),
+            onClick: () => handleFreeThrowOption(),
+          },
+          {
+            label: t('basketball.stats.controls.technicalFoulOneFreeThrow'),
+            onClick: () => handleFreeThrowOption('1'),
+          },
+          {
+            label: t(
+              'basketball.stats.controls.technicalFoulCanceledFreeThrows',
+            ),
+            onClick: () => handleFreeThrowOption('C'),
+          },
+        ];
 
   return (
     <PopUpButton
@@ -55,6 +82,7 @@ function FoulButton({
       className="button is-stat is-warning"
       onQuickClick={handleQuickClick}
       disabled={disabled}
+      holdDuration={0}
     >
       <span className="shortcut">{shortcut}</span>
       {label}

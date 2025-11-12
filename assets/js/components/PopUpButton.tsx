@@ -9,6 +9,7 @@ interface PopUpButtonOption {
 
 interface PopUpButtonPanelRef {
   close: () => void;
+  firstButtonRef: React.RefObject<HTMLButtonElement | null>;
 }
 
 interface PopUpButtonProps {
@@ -198,6 +199,7 @@ function PopUpButton(props: PopUpButtonProps) {
       if (typeof popUpPanel === 'function') {
         const panelRef: PopUpButtonPanelRef = {
           close: () => setIsOpen(false),
+          firstButtonRef,
         };
         return popUpPanel(panelRef);
       }
