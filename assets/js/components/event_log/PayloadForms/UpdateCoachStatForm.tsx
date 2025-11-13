@@ -1,15 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GameState } from '../../../types';
-import { getManualPlayerStatsForView } from '../../basketball_5x5/constants';
 
-interface UpdatePlayerStatFormProps {
+interface UpdateCoachStatFormProps {
   onChange: (updateFn: (prevPayload: any) => any) => void;
   gameState: GameState;
   initialPayload?: Record<string, any>;
 }
 
-const UpdatePlayerStatForm: React.FC<UpdatePlayerStatFormProps> = ({
+// Coach stats available for manual updates
+const COACH_STATS = [
+  {
+    key: 'fouls_technical',
+    labelTranslationKey: 'basketball.stats.labels.technicalFouls',
+  },
+  {
+    key: 'fouls_disqualifying',
+    labelTranslationKey: 'basketball.stats.labels.disqualifyingFouls',
+  },
+  {
+    key: 'fouls_disqualifying_fighting',
+    labelTranslationKey: 'basketball.stats.labels.disqualifyingFightingFouls',
+  },
+  {
+    key: 'fouls_technical_bench',
+    labelTranslationKey: 'basketball.stats.labels.technicalBenchFouls',
+  },
+  {
+    key: 'fouls_technical_bench_disqualifying',
+    labelTranslationKey:
+      'basketball.stats.labels.technicalBenchDisqualifyingFouls',
+  },
+  {
+    key: 'fouls_game_disqualifying',
+    labelTranslationKey: 'basketball.stats.labels.gameDisqualifyingFouls',
+  },
+];
+
+const UpdateCoachStatForm: React.FC<UpdateCoachStatFormProps> = ({
   onChange,
   gameState,
   initialPayload = {},
@@ -26,12 +54,9 @@ const UpdatePlayerStatForm: React.FC<UpdatePlayerStatFormProps> = ({
     }
   }, [initialPayload, onChange]);
 
-  const manualStats = getManualPlayerStatsForView(
-    gameState.view_settings_state.view,
-  );
   const selectedTeam =
     selectedTeamType === 'home' ? gameState.home_team : gameState.away_team;
-  const availablePlayers = selectedTeam?.players || [];
+  const availableCoaches = selectedTeam?.coaches || [];
 
   // Check if the selected stat is a foul type
   const selectedStatId = initialPayload['stat-id'] || '';
@@ -58,7 +83,7 @@ const UpdatePlayerStatForm: React.FC<UpdatePlayerStatFormProps> = ({
   const handleTeamChange = (teamType: 'home' | 'away' | '') => {
     setSelectedTeamType(teamType);
     handleInputChange('team-type', teamType);
-    handleInputChange('player-id', '');
+    handleInputChange('coach-id', '');
   };
 
   return (
@@ -66,7 +91,7 @@ const UpdatePlayerStatForm: React.FC<UpdatePlayerStatFormProps> = ({
       <div className="column is-4">
         <div className="field">
           <label className="label has-text-white-ter">
-            {t('basketball.modals.eventLogs.payloadFields.playerStat.teamType')}
+            {t('basketball.modals.eventLogs.payloadFields.coachStat.teamType')}
           </label>
           <div className="control">
             <div className="select is-fullwidth">
@@ -78,7 +103,7 @@ const UpdatePlayerStatForm: React.FC<UpdatePlayerStatFormProps> = ({
               >
                 <option value="">
                   {t(
-                    'basketball.modals.eventLogs.payloadFields.playerStat.selectTeam',
+                    'basketball.modals.eventLogs.payloadFields.coachStat.selectTeam',
                   )}
                 </option>
                 <option value="away">{gameState.away_team.name}</option>
@@ -92,27 +117,27 @@ const UpdatePlayerStatForm: React.FC<UpdatePlayerStatFormProps> = ({
       <div className="column is-4">
         <div className="field">
           <label className="label has-text-white-ter">
-            {t('basketball.modals.eventLogs.payloadFields.playerStat.playerId')}
+            {t('basketball.modals.eventLogs.payloadFields.coachStat.coachId')}
           </label>
           <div className="control">
             <div className="select is-fullwidth">
               <select
                 disabled={!selectedTeamType}
-                value={initialPayload['player-id'] || ''}
-                onChange={(e) => handleInputChange('player-id', e.target.value)}
+                value={initialPayload['coach-id'] || ''}
+                onChange={(e) => handleInputChange('coach-id', e.target.value)}
               >
                 <option value="">
                   {selectedTeamType
                     ? t(
-                        'basketball.modals.eventLogs.payloadFields.playerStat.selectPlayer',
+                        'basketball.modals.eventLogs.payloadFields.coachStat.selectCoach',
                       )
                     : t(
-                        'basketball.modals.eventLogs.payloadFields.playerStat.selectTeamFirst',
+                        'basketball.modals.eventLogs.payloadFields.coachStat.selectTeamFirst',
                       )}
                 </option>
-                {availablePlayers.map((player) => (
-                  <option key={player.id} value={player.id}>
-                    {player.number} - {player.name}
+                {availableCoaches.map((coach) => (
+                  <option key={coach.id} value={coach.id}>
+                    {coach.name}
                   </option>
                 ))}
               </select>
@@ -124,7 +149,7 @@ const UpdatePlayerStatForm: React.FC<UpdatePlayerStatFormProps> = ({
       <div className="column is-4">
         <div className="field">
           <label className="label has-text-white-ter">
-            {t('basketball.modals.eventLogs.payloadFields.playerStat.statType')}
+            {t('basketball.modals.eventLogs.payloadFields.coachStat.statType')}
           </label>
           <div className="control">
             <div className="select is-fullwidth">
@@ -134,10 +159,10 @@ const UpdatePlayerStatForm: React.FC<UpdatePlayerStatFormProps> = ({
               >
                 <option value="">
                   {t(
-                    'basketball.modals.eventLogs.payloadFields.playerStat.selectStatType',
+                    'basketball.modals.eventLogs.payloadFields.coachStat.selectStatType',
                   )}
                 </option>
-                {manualStats.map((stat) => (
+                {COACH_STATS.map((stat) => (
                   <option key={stat.key} value={stat.key}>
                     {t(stat.labelTranslationKey)}
                   </option>
@@ -153,7 +178,7 @@ const UpdatePlayerStatForm: React.FC<UpdatePlayerStatFormProps> = ({
           <div className="field">
             <label className="label has-text-white-ter">
               {t(
-                'basketball.modals.eventLogs.payloadFields.playerStat.freeThrowsAwarded',
+                'basketball.modals.eventLogs.payloadFields.coachStat.freeThrowsAwarded',
               )}
             </label>
             <div className="control">
@@ -166,7 +191,7 @@ const UpdatePlayerStatForm: React.FC<UpdatePlayerStatFormProps> = ({
                 >
                   <option value="">
                     {t(
-                      'basketball.modals.eventLogs.payloadFields.playerStat.noFreeThrows',
+                      'basketball.modals.eventLogs.payloadFields.coachStat.noFreeThrows',
                     )}
                   </option>
                   <option value="1">+1</option>
@@ -183,4 +208,4 @@ const UpdatePlayerStatForm: React.FC<UpdatePlayerStatFormProps> = ({
   );
 };
 
-export default UpdatePlayerStatForm;
+export default UpdateCoachStatForm;

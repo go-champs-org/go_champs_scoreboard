@@ -80,7 +80,10 @@
           },
           "coachStat": {
             "title": "Atualização de Estatística de Técnico",
+            "teamType": "Time",
             "coachId": "ID do Técnico",
+            "selectTeam": "Selecione um time",
+            "selectCoach": "Selecione um técnico",
             "coachIdPlaceholder": "Digite o ID do técnico",
             "statType": "Tipo de Estatística",
             "selectStatType": "Selecione uma estatística",
@@ -90,7 +93,9 @@
             "selectOperation": "Selecione a operação",
             "increment": "Incrementar (+)",
             "decrement": "Decrementar (-)",
-            "set": "Definir (=)"
+            "freeThrowsAwarded": "Lances Livres Concedidos",
+            "set": "Definir (=)",
+            "noFreeThrows": "Nenhum lance livre"
           },
           "teamStat": {
             "title": "Atualização de Estatística de Time",
@@ -195,7 +200,9 @@
         "technicalFouls": "Faltas Técnicas",
         "disqualifyingFouls": "Faltas Desqualificantes",
         "disqualifyingFightingFouls": "Faltas Desqualificantes de Briga",
-        "gameDisqualifyingFouls": "Faltas Desqualificantes de Jogo",
+        "technicalBenchFouls": "Faltas Técnicas de Banco (B)",
+        "technicalBenchDisqualifyingFouls": "Faltas Técnicas Desqualificantes de Banco (B Circulado)",
+        "gameDisqualifyingFouls": "Faltas Desqualificantes de Jogo (GD)",
         "freeThrowPercentage": "Percentual de Lances Livres",
         "freeThrowsAttempted": "Lances Livres Tentados",
         "freeThrowsMissed": "Lances Livres Errados",
