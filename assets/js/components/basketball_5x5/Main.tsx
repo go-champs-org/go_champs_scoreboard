@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import { EventLog, GameState, TeamType } from '../../types';
 import { BasicStatsControls, MediumStatsControls } from './StatsControls';
 import TopLevel from './TopLevel';
-import PlayersControls from './PlayersControls';
 import EndLiveModal from './EndLiveModal';
-import MediumTopControls, { BasicTopControls } from './TopControls';
+import { BasicTopControls } from './TopControls';
 import FoulsModal from './Stats/FoulsModal';
-import { FeatureFlag } from '../../shared/FeatureFlags';
-import NewPlayersControls from './NewPlayersControls';
+import PlayersControls from './PlayersControls';
 import TeamControls from './TeamControls';
 import ClockControls from './ClockControls';
 import ProtestControls from './ProtestControls';
@@ -45,7 +43,7 @@ function BasicView({ game_state, recent_events, pushEvent }: ViewProps) {
         </div>
 
         <div className="column is-4">
-          <NewPlayersControls
+          <PlayersControls
             team={game_state.home_team}
             pushEvent={pushEvent}
             teamType="home"
@@ -66,7 +64,7 @@ function BasicView({ game_state, recent_events, pushEvent }: ViewProps) {
         </div>
 
         <div className="column is-4">
-          <NewPlayersControls
+          <PlayersControls
             team={game_state.away_team}
             pushEvent={pushEvent}
             teamType="away"
@@ -93,7 +91,7 @@ function MediumView({ game_state, recent_events, pushEvent }: ViewProps) {
               <TeamControls team={game_state.home_team} teamType="home" />
             </div>
             <div className="column is-12">
-              <NewPlayersControls
+              <PlayersControls
                 pushEvent={pushEvent}
                 selectPlayer={setPlayerSelection}
                 selectedPlayer={playerSelection}
@@ -142,7 +140,7 @@ function MediumView({ game_state, recent_events, pushEvent }: ViewProps) {
               <TeamControls team={game_state.away_team} teamType="away" />
             </div>
             <div className="column is-12">
-              <NewPlayersControls
+              <PlayersControls
                 pushEvent={pushEvent}
                 selectPlayer={setPlayerSelection}
                 selectedPlayer={playerSelection}

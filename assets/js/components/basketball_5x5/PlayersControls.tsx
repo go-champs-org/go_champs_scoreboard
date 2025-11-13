@@ -1,159 +1,24 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-
-import { PlayerState, TeamState, TeamType } from '../../types';
+import React, { useEffect } from 'react';
+import {
+  LiveState,
+  LiveStateStates,
+  PlayerState,
+  TeamState,
+  TeamType,
+} from '../../types';
 import { PlayerSelection } from './Main';
-
-interface PlayingPlayersProps {
-  players: PlayerState[];
-  teamType: TeamType;
-  selectPlayer: (playerSelection: PlayerSelection) => void;
-  selectedPlayer?: PlayerSelection;
-  onSubstituteClick: (playerId: string) => void;
-}
-
-function renderPlayerButtonText(player: PlayerState) {
-  if (!player.number) {
-    return `${player.name}`;
-  }
-
-  return `${player.number} - ${player.name}`;
-}
-
-function PlayingPlayers({
-  players,
-  teamType,
-  selectPlayer,
-  selectedPlayer,
-  onSubstituteClick,
-}: PlayingPlayersProps) {
-  const { t } = useTranslation();
-  const subButtonDisabled =
-    selectedPlayer === null || selectedPlayer?.teamType !== teamType;
-  return (
-    <div className="controls">
-      <div className="columns is-multiline">
-        {players.map((player) => (
-          <div key={player.id} className="column is-12">
-            <button
-              className={`button is-fullwidth ${
-                player.id === selectedPlayer?.playerId ? 'is-dark' : ''
-              }`}
-              onClick={() =>
-                selectPlayer({ playerId: player.id, teamType: teamType })
-              }
-            >
-              {renderPlayerButtonText(player)}
-            </button>
-          </div>
-        ))}
-        <div className="column is-12"></div>
-        <div className="column is-12">
-          <button
-            className="button is-warning is-fullwidth"
-            onClick={onSubstituteClick}
-            disabled={subButtonDisabled}
-          >
-            {t('basketball.players.controls.substitute')}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-interface BenchPlayersProps {
-  players: PlayerState[];
-  selectedPlayer: PlayerSelection;
-  teamType: TeamType;
-  onPlayerClick: (playerId: string) => void;
-  onCancelClick: () => void;
-}
-
-function BenchPlayers({
-  players,
-  selectedPlayer,
-  teamType,
-  onPlayerClick,
-  onCancelClick,
-}: BenchPlayersProps) {
-  const { t } = useTranslation();
-  const playerButtonDisabled =
-    selectedPlayer === null || selectedPlayer.teamType !== teamType;
-  return (
-    <div className="controls">
-      <div className="columns is-multiline">
-        {players.map((player) => (
-          <div key={player.id} className="column is-12">
-            <button
-              disabled={playerButtonDisabled}
-              className="button is-fullwidth"
-              onClick={() => onPlayerClick(player.id)}
-            >
-              {renderPlayerButtonText(player)}
-            </button>
-          </div>
-        ))}
-        <div className="column is-12"></div>
-        <div className="column is-12">
-          <button
-            className="button is-warning is-fullwidth"
-            onClick={onCancelClick}
-          >
-            {t('basketball.players.controls.cancel')}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-interface NotStartingPlayersProps {
-  players: PlayerState[];
-  teamType: TeamType;
-  onPlayerClick: (playerSelection: PlayerSelection) => void;
-}
-
-function NotStartingPlayers({
-  players,
-  teamType,
-  onPlayerClick,
-}: NotStartingPlayersProps) {
-  const { t } = useTranslation();
-  return (
-    <div className="controls">
-      <div className="columns is-multiline">
-        <div className="column is-12 has-text-centered">
-          <span className="title is-3 has-text-warning">
-            {t('basketball.players.instructions.selectStarting')}
-          </span>
-        </div>
-        {players.map((player) => (
-          <div key={player.id} className="column is-12">
-            <button
-              className="button is-fullwidth"
-              onClick={() =>
-                onPlayerClick({ playerId: player.id, teamType: teamType })
-              }
-            >
-              {renderPlayerButtonText(player)}
-            </button>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+import { default as PlayerButton } from './Players/Button';
+import { wherePlaying, whereNotPlaying, byPlayer } from './Players/utils';
+import { t } from 'i18next';
 
 interface PlayersControlsProps {
   team: TeamState;
   pushEvent: (event: string, payload: any) => void;
   teamType: TeamType;
   selectPlayer: (playerSelection: PlayerSelection | null) => void;
-  selectedPlayer: PlayerSelection;
+  selectedPlayer: PlayerSelection | null;
+  liveState: LiveState;
 }
-
-type PlayerView = 'playing' | 'bench' | 'not_started';
 
 function PlayersControls({
   team,
@@ -161,63 +26,225 @@ function PlayersControls({
   teamType,
   selectPlayer,
   selectedPlayer,
+  liveState,
 }: PlayersControlsProps) {
-  const playingPlayers = team.players.filter(
-    (player) => player.state === 'playing',
+  const playersControlsRef = React.useRef<HTMLDivElement>(null);
+  const [selectedPlayers, setSelectedPlayers] = React.useState<PlayerState[]>(
+    [],
   );
-  const benchPlayers = team.players.filter(
-    (player) => player.state !== 'playing' && player.state !== 'not_available',
-  );
-  const initialView = playingPlayers.length < 5 ? 'not_started' : 'playing';
-  const [playerView, setPlayerView] = React.useState<PlayerView>(initialView);
-  React.useEffect(() => {
-    setPlayerView(initialView);
-  }, [initialView]);
-  const onSubstitute = (playerId: string) => {
-    pushEvent('substitute-player', {
-      ['team-type']: teamType,
-      ['playing-player-id']: selectedPlayer.playerId,
-      ['bench-player-id']: playerId,
-    });
-    setPlayerView('playing');
-    selectPlayer(null);
-  };
-  const onPlayerStartUp = (selectPlayer: PlayerSelection) => {
-    pushEvent('substitute-player', {
-      ['team-type']: selectPlayer.teamType,
-      ['playing-player-id']: null,
-      ['bench-player-id']: selectPlayer.playerId,
-    });
+  const [benchPlayers, setBenchPlayers] = React.useState<PlayerState[]>([]);
+  const [playingPlayers, setPlayingPlayers] = React.useState<PlayerState[]>([]);
+
+  useEffect(() => {
+    const bench = team.players.filter(whereNotPlaying).sort(byPlayer);
+    const playing = team.players.filter(wherePlaying).sort(byPlayer);
+
+    setBenchPlayers(bench);
+    setPlayingPlayers(playing);
+  }, [team.players]);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        playersControlsRef.current &&
+        !playersControlsRef.current.contains(event.target as Node)
+      ) {
+        setSelectedPlayers([]);
+      }
+    };
+
+    const handleKeydown = (event: KeyboardEvent) => {
+      setSelectedPlayers([]);
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeydown);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeydown);
+    };
+  }, []);
+
+  const handlePlayerClick = (player: PlayerState) => {
+    if (selectedPlayer === null && selectedPlayers.length === 0) {
+      setSelectedPlayers([player]);
+      if (player.state === 'playing') {
+        selectPlayer({
+          playerId: player.id,
+          teamType: teamType,
+        });
+      }
+    } else {
+      selectPlayer(null);
+
+      if (selectedPlayers.length === 0) {
+        setSelectedPlayers([player]);
+      } else {
+        const firstSelectedPlayer = selectedPlayers[0];
+        const sameState =
+          (player.state === 'playing' &&
+            firstSelectedPlayer.state === 'playing') ||
+          (player.state !== 'playing' &&
+            firstSelectedPlayer.state !== 'playing');
+
+        if (sameState) {
+          const isAlreadySelected = selectedPlayers.some(
+            (p) => p.id === player.id,
+          );
+
+          if (isAlreadySelected) {
+            setSelectedPlayers(
+              selectedPlayers.filter((p) => p.id !== player.id),
+            );
+          } else {
+            setSelectedPlayers([...selectedPlayers, player]);
+          }
+        } else {
+          setSelectedPlayers([player]);
+          if (player.state === 'playing') {
+            selectPlayer({
+              playerId: player.id,
+              teamType: teamType,
+            });
+          }
+        }
+      }
+    }
   };
 
+  const onSubIn = () => {
+    if (selectedPlayers.length === 0) return;
+
+    const playerIds = selectedPlayers.map((p) => p.id);
+
+    pushEvent('update-players-state', {
+      'team-type': teamType,
+      'player-ids': playerIds,
+      state: 'playing',
+    });
+
+    setSelectedPlayers([]);
+    selectPlayer(null);
+  };
+
+  const onSubOut = () => {
+    if (selectedPlayers.length === 0) return;
+
+    const playerIds = selectedPlayers.map((p) => p.id);
+
+    pushEvent('update-players-state', {
+      'team-type': teamType,
+      'player-ids': playerIds,
+      state: 'bench',
+    });
+
+    setSelectedPlayers([]);
+    selectPlayer(null);
+  };
+
+  const onClearPlayeringPlayers = () => {
+    const playerIds = playingPlayers.map((p) => p.id);
+
+    pushEvent('update-players-state', {
+      'team-type': teamType,
+      'player-ids': playerIds,
+      state: 'bench',
+    });
+
+    setSelectedPlayers([]);
+    selectPlayer(null);
+  };
+  const reverseClass =
+    teamType === 'away' ? 'is-flex-direction-row-reverse' : '';
+
   return (
-    <>
-      {playerView === 'playing' && (
-        <PlayingPlayers
-          players={playingPlayers}
-          selectPlayer={selectPlayer}
-          selectedPlayer={selectedPlayer}
-          teamType={teamType}
-          onSubstituteClick={() => setPlayerView('bench')}
-        />
-      )}
-      {playerView === 'bench' && (
-        <BenchPlayers
-          players={benchPlayers}
-          selectedPlayer={selectedPlayer}
-          teamType={teamType}
-          onCancelClick={() => setPlayerView('playing')}
-          onPlayerClick={onSubstitute}
-        />
-      )}
-      {playerView === 'not_started' && (
-        <NotStartingPlayers
-          teamType={teamType}
-          players={benchPlayers}
-          onPlayerClick={onPlayerStartUp}
-        />
-      )}
-    </>
+    <div className="players-controls controls" ref={playersControlsRef}>
+      <div className="columns is-multiline">
+        <div className="on-court column is-12 has-text-centered">
+          <span className="caption">
+            {t('basketball.players.onCourt').toUpperCase()}
+          </span>
+          <div className="columns is-multiline is-centered">
+            {playingPlayers.map((player) => (
+              <div key={player.id} className="column is-4 has-text-centered">
+                <PlayerButton
+                  player={player}
+                  onClick={() => handlePlayerClick(player)}
+                  disabled={liveState.state === LiveStateStates.NOT_STARTED}
+                  isSelected={
+                    (player.id === selectedPlayer?.playerId &&
+                      selectedPlayer?.teamType === teamType) ||
+                    selectedPlayers.some((p) => p.id === player.id)
+                  }
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className={`coach-controls column is-12 ${reverseClass}`}>
+          <div>
+            <button className="coach-button button" disabled>
+              {t('basketball.coaches.types.headCoachShort').toUpperCase()}
+            </button>
+            <button className="coach-button button" disabled>
+              {t('basketball.coaches.types.assistantCoachShort').toUpperCase()}
+            </button>
+          </div>
+          <div className="substitution-controls">
+            <button
+              className="button is-warning"
+              onClick={onSubIn}
+              disabled={
+                selectedPlayers.length === 0 ||
+                selectedPlayers[0].state === 'playing'
+              }
+            >
+              ↑
+            </button>
+            <button
+              className="button is-warning"
+              onClick={onSubOut}
+              disabled={
+                selectedPlayers.length === 0 ||
+                selectedPlayers[0].state === 'bench'
+              }
+            >
+              ↓
+            </button>
+            <button
+              className="button is-warning"
+              onClick={onClearPlayeringPlayers}
+              disabled={playingPlayers.length === 0}
+            >
+              ↓↓
+            </button>
+          </div>
+        </div>
+
+        <div className="on-bench column is-12 has-text-centered">
+          <span className="caption">
+            {t('basketball.players.onBench').toUpperCase()}
+          </span>
+          <div className="columns is-multiline is-centered">
+            {benchPlayers.map((player) => (
+              <div key={player.id} className="column is-4 has-text-centered">
+                <PlayerButton
+                  player={player}
+                  onClick={() => handlePlayerClick(player)}
+                  disabled={liveState.state === LiveStateStates.NOT_STARTED}
+                  isSelected={
+                    (player.id === selectedPlayer?.playerId &&
+                      selectedPlayer?.teamType === teamType) ||
+                    selectedPlayers.some((p) => p.id === player.id)
+                  }
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
