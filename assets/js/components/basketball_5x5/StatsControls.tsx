@@ -73,11 +73,39 @@ function useKeyboardShortcuts(
     document.addEventListener('keydown', listener);
     return () => document.removeEventListener('keydown', listener);
   }, [buttonRefs, selectEntity]);
-} // Custom hook for buttons disabled state
-function useButtonsDisabled(liveState: LiveState, selection: Selection | null) {
+} // Custom hook for base buttons disabled state
+function useBaseButtonsDisabled(
+  liveState: LiveState,
+  selection: Selection | null,
+) {
   return React.useMemo(
     () => liveState.state !== 'in_progress' || selection === null,
     [liveState.state, selection],
+  );
+}
+
+// Custom hook for buttons disabled state
+function useButtonsDisabled(liveState: LiveState, selection: Selection | null) {
+  return useBaseButtonsDisabled(liveState, selection);
+}
+
+// Custom hook for additional foul button disabled state
+function useAdditionalFoulButtonDisabled(
+  liveState: LiveState,
+  selection: Selection | null,
+) {
+  return useBaseButtonsDisabled(liveState, selection);
+}
+
+// Custom hook for regular stat buttons disabled state (considers coach selection)
+function useStatButtonsDisabled(
+  liveState: LiveState,
+  selection: Selection | null,
+) {
+  const baseDisabled = useBaseButtonsDisabled(liveState, selection);
+  return React.useMemo(
+    () => baseDisabled || selection?.kind === 'coach',
+    [baseDisabled, selection?.kind],
   );
 }
 
@@ -107,7 +135,11 @@ export function MediumStatsControls({
 
   const onStatUpdate = useStatUpdate(pushEvent, selection, selectEntity);
   useKeyboardShortcuts(buttonRefs, selectEntity);
-  const buttonsDisabled = useButtonsDisabled(liveState, selection);
+  const statButtonsDisabled = useStatButtonsDisabled(liveState, selection);
+  const additionalFoulButtonDisabled = useAdditionalFoulButtonDisabled(
+    liveState,
+    selection,
+  );
   return (
     <div className="controls">
       <div className="columns is-multiline">
@@ -116,7 +148,7 @@ export function MediumStatsControls({
             ref={buttonRefs['1']}
             className="button is-stat is-success"
             onClick={() => onStatUpdate('free_throws_made')}
-            disabled={buttonsDisabled}
+            disabled={statButtonsDisabled}
           >
             <span className="shortcut">1</span>
             {t('basketball.stats.controls.onePt')}
@@ -127,7 +159,7 @@ export function MediumStatsControls({
             ref={buttonRefs['2']}
             className="button is-stat is-success"
             onClick={() => onStatUpdate('field_goals_made')}
-            disabled={buttonsDisabled}
+            disabled={statButtonsDisabled}
           >
             <span className="shortcut">2</span>
             {t('basketball.stats.controls.twoPts')}
@@ -138,7 +170,7 @@ export function MediumStatsControls({
             ref={buttonRefs['3']}
             className="button is-stat is-success"
             onClick={() => onStatUpdate('three_point_field_goals_made')}
-            disabled={buttonsDisabled}
+            disabled={statButtonsDisabled}
           >
             <span className="shortcut">3</span>
             {t('basketball.stats.controls.threePts')}
@@ -149,7 +181,7 @@ export function MediumStatsControls({
             ref={buttonRefs.q}
             className="button is-stat is-danger"
             onClick={() => onStatUpdate('free_throws_missed')}
-            disabled={buttonsDisabled}
+            disabled={statButtonsDisabled}
           >
             <span className="shortcut">Q</span>
             {t('basketball.stats.controls.missOnePt')}
@@ -160,7 +192,7 @@ export function MediumStatsControls({
             ref={buttonRefs.w}
             className="button is-stat is-danger"
             onClick={() => onStatUpdate('field_goals_missed')}
-            disabled={buttonsDisabled}
+            disabled={statButtonsDisabled}
           >
             <span className="shortcut">W</span>
             {t('basketball.stats.controls.missTwoPts')}
@@ -171,7 +203,7 @@ export function MediumStatsControls({
             ref={buttonRefs.e}
             className="button is-stat is-danger"
             onClick={() => onStatUpdate('three_point_field_goals_missed')}
-            disabled={buttonsDisabled}
+            disabled={statButtonsDisabled}
           >
             <span className="shortcut">E</span>
             {t('basketball.stats.controls.missThreePts')}
@@ -182,7 +214,7 @@ export function MediumStatsControls({
             ref={buttonRefs.a}
             className="button is-stat is-info"
             onClick={() => onStatUpdate('rebounds_offensive')}
-            disabled={buttonsDisabled}
+            disabled={statButtonsDisabled}
           >
             <span className="shortcut">A</span>
             {t('basketball.stats.controls.oneRebOff')}
@@ -193,7 +225,7 @@ export function MediumStatsControls({
             ref={buttonRefs.s}
             className="button is-stat is-info"
             onClick={() => onStatUpdate('steals')}
-            disabled={buttonsDisabled}
+            disabled={statButtonsDisabled}
           >
             <span className="shortcut">S</span>
             {t('basketball.stats.controls.oneStl')}
@@ -204,7 +236,7 @@ export function MediumStatsControls({
             ref={buttonRefs.d}
             className="button is-stat is-info"
             onClick={() => onStatUpdate('rebounds_defensive')}
-            disabled={buttonsDisabled}
+            disabled={statButtonsDisabled}
           >
             <span className="shortcut">D</span>
             {t('basketball.stats.controls.oneRebDef')}
@@ -215,7 +247,7 @@ export function MediumStatsControls({
             ref={buttonRefs.z}
             className="button is-stat is-info"
             onClick={() => onStatUpdate('assists')}
-            disabled={buttonsDisabled}
+            disabled={statButtonsDisabled}
           >
             <span className="shortcut">Z</span>
             {t('basketball.stats.controls.oneAss')}
@@ -226,7 +258,7 @@ export function MediumStatsControls({
             ref={buttonRefs.x}
             className="button is-stat is-info"
             onClick={() => onStatUpdate('blocks')}
-            disabled={buttonsDisabled}
+            disabled={statButtonsDisabled}
           >
             <span className="shortcut">X</span>
             {t('basketball.stats.controls.oneBlk')}
@@ -237,7 +269,7 @@ export function MediumStatsControls({
             ref={buttonRefs.c}
             className="button is-stat is-danger"
             onClick={() => onStatUpdate('turnovers')}
-            disabled={buttonsDisabled}
+            disabled={statButtonsDisabled}
           >
             <span className="shortcut">C</span>
             {t('basketball.stats.controls.oneTo')}
@@ -246,7 +278,7 @@ export function MediumStatsControls({
         <div className="column is-4 has-text-centered">
           <FoulButton
             statId="fouls_personal"
-            disabled={buttonsDisabled}
+            disabled={statButtonsDisabled}
             label={t('basketball.stats.controls.personalFoul')}
             shortcut="T"
             onStatUpdate={onStatUpdate}
@@ -255,7 +287,7 @@ export function MediumStatsControls({
         <div className="column is-4 has-text-centered">
           <FoulButton
             statId="fouls_technical"
-            disabled={buttonsDisabled}
+            disabled={statButtonsDisabled}
             label={t('basketball.stats.controls.technicalFoul')}
             shortcut="G"
             onStatUpdate={onStatUpdate}
@@ -266,7 +298,7 @@ export function MediumStatsControls({
             label={t('basketball.stats.controls.moreFouls')}
             shortcut="B"
             type={selection?.kind === 'coach' ? 'coach' : 'player'}
-            disabled={buttonsDisabled}
+            disabled={additionalFoulButtonDisabled}
             onStatUpdate={onStatUpdate}
           />
         </div>
