@@ -82,7 +82,16 @@ function CoachFoulsPanel({
             )
           }
         >
-          BD
+          <span
+            style={{
+              border: '1px solid black',
+              borderRadius: '50px',
+              padding: '0 5px',
+              margin: '-1px 0',
+            }}
+          >
+            B
+          </span>
         </button>
         <button
           className="button is-fullwidth is-small is-primary"
@@ -94,7 +103,16 @@ function CoachFoulsPanel({
             )
           }
         >
-          BD1
+          <span
+            style={{
+              border: '1px solid black',
+              borderRadius: '50px',
+              padding: '0 3px',
+              margin: '-1px 0',
+            }}
+          >
+            B1
+          </span>
         </button>
         <button
           className="button is-fullwidth is-small is-primary"
@@ -106,7 +124,16 @@ function CoachFoulsPanel({
             )
           }
         >
-          BD2
+          <span
+            style={{
+              border: '1px solid black',
+              borderRadius: '50px',
+              padding: '0 2px',
+              margin: '-1px 0',
+            }}
+          >
+            B2
+          </span>
         </button>
         <button
           className="button is-fullwidth is-small is-primary"
@@ -118,7 +145,16 @@ function CoachFoulsPanel({
             )
           }
         >
-          BDC
+          <span
+            style={{
+              border: '1px solid black',
+              borderRadius: '50px',
+              padding: '0 2px',
+              margin: '-1px 0',
+            }}
+          >
+            BC
+          </span>
         </button>
       </div>
       <div className="column">
