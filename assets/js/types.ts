@@ -133,6 +133,13 @@ export interface EventLogUpdatePlayerStatPayload {
 
 export type TeamType = 'home' | 'away';
 
+// Unified selection interface for players and coaches
+export interface Selection {
+  kind: 'player' | 'coach';
+  id: string;
+  teamType: TeamType;
+}
+
 export const DEFAULT_GAME_STATE = {
   id: '',
   away_team: {
@@ -170,7 +177,7 @@ export const DEFAULT_GAME_STATE = {
   },
   officials: [],
   protest: {
-    team_id: '',
+    team_type: 'home',
     player_id: '',
     state: 'no_protest',
   },

@@ -28,8 +28,9 @@ function FoulButton({
       onStatUpdate(statId, {
         ['free-throws-awarded']: freeThrows,
       });
+    } else {
+      onStatUpdate(statId);
     }
-    onStatUpdate(statId);
   };
 
   const popUpButtons =

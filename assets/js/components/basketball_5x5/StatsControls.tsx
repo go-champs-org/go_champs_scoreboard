@@ -1,5 +1,5 @@
 import React from 'react';
-import { PlayerSelection } from './Main';
+import { Selection } from '../../types';
 import debounce from '../../debounce';
 import { invokeButtonClickRef } from '../../shared/invokeButtonClick';
 import { LiveState } from '../../types';
@@ -9,8 +9,8 @@ import AdditionalFoulButton from './Stats/AdditionalFoulButton';
 
 interface StatsControlsProps {
   pushEvent: (event: string, payload: any) => void;
-  playerSelection: PlayerSelection;
-  selectPlayer: (playerSelection: PlayerSelection | null) => void;
+  selection: Selection | null;
+  selectEntity: (selection: Selection | null) => void;
   liveState: LiveState;
   onShowFoulsModal: () => void;
 }
@@ -18,29 +18,41 @@ interface StatsControlsProps {
 // Custom hook for stat update logic
 function useStatUpdate(
   pushEvent: (event: string, payload: any) => void,
-  playerSelection: PlayerSelection,
-  selectPlayer: (playerSelection: PlayerSelection | null) => void,
+  selection: Selection | null,
+  selectEntity: (selection: Selection | null) => void,
 ) {
   return React.useMemo(
     () =>
       debounce<(stat: string, metadata?: any) => void>((stat, metadata) => {
-        pushEvent('update-player-stat', {
-          ['stat-id']: stat,
-          operation: 'increment',
-          ['player-id']: playerSelection.playerId,
-          ['team-type']: playerSelection.teamType,
-          ...(metadata && { metadata }),
-        });
-        selectPlayer(null);
+        if (!selection) return;
+
+        if (selection.kind === 'coach') {
+          pushEvent('update-coach-stat', {
+            ['stat-id']: stat,
+            operation: 'increment',
+            ['coach-id']: selection.id,
+            ['team-type']: selection.teamType,
+            ...(metadata && { metadata }),
+          });
+        } else {
+          pushEvent('update-player-stat', {
+            ['stat-id']: stat,
+            operation: 'increment',
+            ['player-id']: selection.id,
+            ['team-type']: selection.teamType,
+            ...(metadata && { metadata }),
+          });
+        }
+        selectEntity(null);
       }, 100),
-    [pushEvent, playerSelection, selectPlayer],
+    [pushEvent, selection, selectEntity],
   );
 }
 
 // Custom hook for keyboard listeners
 function useKeyboardShortcuts(
-  buttonRefs: Record<string, React.RefObject<HTMLButtonElement>>,
-  selectPlayer: (playerSelection: PlayerSelection | null) => void,
+  buttonRefs: Record<string, React.RefObject<HTMLButtonElement | null>>,
+  selectEntity: (selection: Selection | null) => void,
 ) {
   React.useEffect(() => {
     const listener = (event: KeyboardEvent) => {
@@ -49,32 +61,30 @@ function useKeyboardShortcuts(
 
       const { key } = event;
       if (key === 'Escape') {
-        selectPlayer(null);
+        selectEntity(null);
       } else if (key in buttonRefs) {
-        invokeButtonClickRef(buttonRefs[key as keyof typeof buttonRefs]);
+        const ref = buttonRefs[key as keyof typeof buttonRefs];
+        if (ref.current) {
+          invokeButtonClickRef(ref as React.RefObject<HTMLButtonElement>);
+        }
       }
     };
 
     document.addEventListener('keydown', listener);
     return () => document.removeEventListener('keydown', listener);
-  }, [selectPlayer, buttonRefs]);
-}
-
-// Custom hook for buttons disabled state
-function useButtonsDisabled(
-  liveState: LiveState,
-  playerSelection: PlayerSelection,
-) {
+  }, [buttonRefs, selectEntity]);
+} // Custom hook for buttons disabled state
+function useButtonsDisabled(liveState: LiveState, selection: Selection | null) {
   return React.useMemo(
-    () => liveState.state !== 'in_progress' || playerSelection === null,
-    [liveState.state, playerSelection],
+    () => liveState.state !== 'in_progress' || selection === null,
+    [liveState.state, selection],
   );
 }
 
 export function MediumStatsControls({
   pushEvent,
-  playerSelection,
-  selectPlayer,
+  selection,
+  selectEntity,
   liveState,
   onShowFoulsModal,
 }: StatsControlsProps) {
@@ -95,9 +105,9 @@ export function MediumStatsControls({
     b: React.useRef<HTMLButtonElement>(null),
   };
 
-  const onStatUpdate = useStatUpdate(pushEvent, playerSelection, selectPlayer);
-  useKeyboardShortcuts(buttonRefs, selectPlayer);
-  const buttonsDisabled = useButtonsDisabled(liveState, playerSelection);
+  const onStatUpdate = useStatUpdate(pushEvent, selection, selectEntity);
+  useKeyboardShortcuts(buttonRefs, selectEntity);
+  const buttonsDisabled = useButtonsDisabled(liveState, selection);
   return (
     <div className="controls">
       <div className="columns is-multiline">
@@ -255,7 +265,7 @@ export function MediumStatsControls({
           <AdditionalFoulButton
             label={t('basketball.stats.controls.moreFouls')}
             shortcut="B"
-            type="player"
+            type={selection?.kind === 'coach' ? 'coach' : 'player'}
             disabled={buttonsDisabled}
             onStatUpdate={onStatUpdate}
           />
@@ -267,8 +277,8 @@ export function MediumStatsControls({
 
 export function BasicStatsControls({
   pushEvent,
-  playerSelection,
-  selectPlayer,
+  selection,
+  selectEntity,
   liveState,
   onShowFoulsModal = () => {},
 }: StatsControlsProps) {
@@ -283,9 +293,9 @@ export function BasicStatsControls({
     s: React.useRef<HTMLButtonElement>(null),
   };
 
-  const onStatUpdate = useStatUpdate(pushEvent, playerSelection, selectPlayer);
-  useKeyboardShortcuts(buttonRefs, selectPlayer);
-  const buttonsDisabled = useButtonsDisabled(liveState, playerSelection);
+  const onStatUpdate = useStatUpdate(pushEvent, selection, selectEntity);
+  useKeyboardShortcuts(buttonRefs, selectEntity);
+  const buttonsDisabled = useButtonsDisabled(liveState, selection);
   return (
     <div className="controls">
       <div className="columns is-multiline">

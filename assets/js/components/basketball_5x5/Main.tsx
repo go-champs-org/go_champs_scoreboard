@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { EventLog, GameState, TeamType } from '../../types';
+import { EventLog, GameState, TeamType, Selection } from '../../types';
 import { BasicStatsControls, MediumStatsControls } from './StatsControls';
 import TopLevel from './TopLevel';
 import EndLiveModal from './EndLiveModal';
@@ -16,11 +16,6 @@ export interface LiveReactBase {
   handleEvent: (event: string, callback: (payload: any) => void) => void;
 }
 
-export interface PlayerSelection {
-  playerId: string;
-  teamType: TeamType;
-}
-
 interface MainProps extends LiveReactBase {
   game_state: GameState;
   recent_events: EventLog[];
@@ -30,11 +25,17 @@ interface ViewProps {
   game_state: GameState;
   recent_events: EventLog[];
   pushEvent: (event: string, payload: any) => void;
+  selection: Selection | null;
+  setSelection: (selection: Selection | null) => void;
 }
 
-function BasicView({ game_state, recent_events, pushEvent }: ViewProps) {
-  const [playerSelection, setPlayerSelection] = useState<PlayerSelection>(null);
-
+function BasicView({
+  game_state,
+  recent_events,
+  pushEvent,
+  selection,
+  setSelection,
+}: ViewProps) {
   return (
     <>
       <div className="columns is-multiline">
@@ -47,8 +48,8 @@ function BasicView({ game_state, recent_events, pushEvent }: ViewProps) {
             team={game_state.home_team}
             pushEvent={pushEvent}
             teamType="home"
-            selectPlayer={setPlayerSelection}
-            selectedPlayer={playerSelection}
+            selectEntity={setSelection}
+            selection={selection}
             liveState={game_state.live_state}
           />
         </div>
@@ -56,10 +57,10 @@ function BasicView({ game_state, recent_events, pushEvent }: ViewProps) {
         <div className="column is-4">
           <BasicStatsControls
             liveState={game_state.live_state}
-            playerSelection={playerSelection}
+            selection={selection}
             pushEvent={pushEvent}
-            selectPlayer={setPlayerSelection}
-            gameState={game_state}
+            selectEntity={setSelection}
+            onShowFoulsModal={() => {}}
           />
         </div>
 
@@ -68,8 +69,8 @@ function BasicView({ game_state, recent_events, pushEvent }: ViewProps) {
             team={game_state.away_team}
             pushEvent={pushEvent}
             teamType="away"
-            selectPlayer={setPlayerSelection}
-            selectedPlayer={playerSelection}
+            selectEntity={setSelection}
+            selection={selection}
             liveState={game_state.live_state}
           />
         </div>
@@ -78,8 +79,13 @@ function BasicView({ game_state, recent_events, pushEvent }: ViewProps) {
   );
 }
 
-function MediumView({ game_state, recent_events, pushEvent }: ViewProps) {
-  const [playerSelection, setPlayerSelection] = useState<PlayerSelection>(null);
+function MediumView({
+  game_state,
+  recent_events,
+  pushEvent,
+  selection,
+  setSelection,
+}: ViewProps) {
   const [showFoulsModal, setShowFoulsModal] = useState(false);
 
   return (
@@ -93,8 +99,8 @@ function MediumView({ game_state, recent_events, pushEvent }: ViewProps) {
             <div className="column is-12">
               <PlayersControls
                 pushEvent={pushEvent}
-                selectPlayer={setPlayerSelection}
-                selectedPlayer={playerSelection}
+                selectEntity={setSelection}
+                selection={selection}
                 team={game_state.home_team}
                 teamType="home"
                 liveState={game_state.live_state}
@@ -124,10 +130,9 @@ function MediumView({ game_state, recent_events, pushEvent }: ViewProps) {
             <div className="column is-12">
               <MediumStatsControls
                 liveState={game_state.live_state}
-                playerSelection={playerSelection}
+                selection={selection}
                 pushEvent={pushEvent}
-                selectPlayer={setPlayerSelection}
-                gameState={game_state}
+                selectEntity={setSelection}
                 onShowFoulsModal={() => setShowFoulsModal(true)}
               />
             </div>
@@ -142,8 +147,8 @@ function MediumView({ game_state, recent_events, pushEvent }: ViewProps) {
             <div className="column is-12">
               <PlayersControls
                 pushEvent={pushEvent}
-                selectPlayer={setPlayerSelection}
-                selectedPlayer={playerSelection}
+                selectEntity={setSelection}
+                selection={selection}
                 team={game_state.away_team}
                 teamType="away"
                 liveState={game_state.live_state}
@@ -164,6 +169,7 @@ function MediumView({ game_state, recent_events, pushEvent }: ViewProps) {
 
 function Main({ game_state, recent_events, pushEvent }: MainProps) {
   const showEndLiveModal = game_state.live_state.state === 'ended';
+  const [selection, setSelection] = useState<Selection | null>(null);
 
   return (
     <>
@@ -174,12 +180,16 @@ function Main({ game_state, recent_events, pushEvent }: MainProps) {
           game_state={game_state}
           recent_events={recent_events}
           pushEvent={pushEvent}
+          selection={selection}
+          setSelection={setSelection}
         />
       ) : (
         <MediumView
           game_state={game_state}
           recent_events={recent_events}
           pushEvent={pushEvent}
+          selection={selection}
+          setSelection={setSelection}
         />
       )}
 

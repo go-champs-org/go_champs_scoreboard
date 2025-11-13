@@ -5,9 +5,10 @@ import {
   PlayerState,
   TeamState,
   TeamType,
+  Selection,
 } from '../../types';
-import { PlayerSelection } from './Main';
 import { default as PlayerButton } from './Players/Button';
+import { default as CoachButton } from './Coaches/Button';
 import { wherePlaying, whereNotPlaying, byPlayer } from './Players/utils';
 import { t } from 'i18next';
 
@@ -15,8 +16,8 @@ interface PlayersControlsProps {
   team: TeamState;
   pushEvent: (event: string, payload: any) => void;
   teamType: TeamType;
-  selectPlayer: (playerSelection: PlayerSelection | null) => void;
-  selectedPlayer: PlayerSelection | null;
+  selectEntity: (selection: Selection | null) => void;
+  selection: Selection | null;
   liveState: LiveState;
 }
 
@@ -24,8 +25,8 @@ function PlayersControls({
   team,
   pushEvent,
   teamType,
-  selectPlayer,
-  selectedPlayer,
+  selectEntity,
+  selection,
   liveState,
 }: PlayersControlsProps) {
   const playersControlsRef = React.useRef<HTMLDivElement>(null);
@@ -66,16 +67,17 @@ function PlayersControls({
   }, []);
 
   const handlePlayerClick = (player: PlayerState) => {
-    if (selectedPlayer === null && selectedPlayers.length === 0) {
+    if (selection === null && selectedPlayers.length === 0) {
       setSelectedPlayers([player]);
       if (player.state === 'playing') {
-        selectPlayer({
-          playerId: player.id,
+        selectEntity({
+          kind: 'player',
+          id: player.id,
           teamType: teamType,
         });
       }
     } else {
-      selectPlayer(null);
+      selectEntity(null);
 
       if (selectedPlayers.length === 0) {
         setSelectedPlayers([player]);
@@ -102,14 +104,35 @@ function PlayersControls({
         } else {
           setSelectedPlayers([player]);
           if (player.state === 'playing') {
-            selectPlayer({
-              playerId: player.id,
+            selectEntity({
+              kind: 'player',
+              id: player.id,
               teamType: teamType,
             });
           }
         }
       }
     }
+  };
+
+  const handleCoachClick = (coachType: 'head_coach' | 'assistant_coach') => {
+    // Find the actual coach from the team
+    const coach = team.coaches.find((c) => c.type === coachType);
+
+    if (!coach) {
+      // Don't proceed if coach not found
+      console.warn(`Coach of type ${coachType} not found in team`);
+      return;
+    }
+
+    // Clear any player selections
+    setSelectedPlayers([]);
+
+    selectEntity({
+      kind: 'coach',
+      id: coach.id,
+      teamType: teamType,
+    });
   };
 
   const onSubIn = () => {
@@ -124,7 +147,7 @@ function PlayersControls({
     });
 
     setSelectedPlayers([]);
-    selectPlayer(null);
+    selectEntity(null);
   };
 
   const onSubOut = () => {
@@ -139,7 +162,7 @@ function PlayersControls({
     });
 
     setSelectedPlayers([]);
-    selectPlayer(null);
+    selectEntity(null);
   };
 
   const onClearPlayeringPlayers = () => {
@@ -152,7 +175,7 @@ function PlayersControls({
     });
 
     setSelectedPlayers([]);
-    selectPlayer(null);
+    selectEntity(null);
   };
   const reverseClass =
     teamType === 'away' ? 'is-flex-direction-row-reverse' : '';
@@ -172,8 +195,9 @@ function PlayersControls({
                   onClick={() => handlePlayerClick(player)}
                   disabled={liveState.state === LiveStateStates.NOT_STARTED}
                   isSelected={
-                    (player.id === selectedPlayer?.playerId &&
-                      selectedPlayer?.teamType === teamType) ||
+                    (player.id === selection?.id &&
+                      selection?.teamType === teamType &&
+                      selection?.kind === 'player') ||
                     selectedPlayers.some((p) => p.id === player.id)
                   }
                 />
@@ -184,12 +208,28 @@ function PlayersControls({
 
         <div className={`coach-controls column is-12 ${reverseClass}`}>
           <div>
-            <button className="coach-button button" disabled>
-              {t('basketball.coaches.types.headCoachShort').toUpperCase()}
-            </button>
-            <button className="coach-button button" disabled>
-              {t('basketball.coaches.types.assistantCoachShort').toUpperCase()}
-            </button>
+            <CoachButton
+              coach={team.coaches.find((c) => c.type === 'head_coach')}
+              coachType="head_coach"
+              onClick={() => handleCoachClick('head_coach')}
+              isSelected={
+                selection?.kind === 'coach' &&
+                team.coaches.find((c) => c.type === 'head_coach')?.id ===
+                  selection?.id
+              }
+              liveState={liveState}
+            />
+            <CoachButton
+              coach={team.coaches.find((c) => c.type === 'assistant_coach')}
+              coachType="assistant_coach"
+              onClick={() => handleCoachClick('assistant_coach')}
+              isSelected={
+                selection?.kind === 'coach' &&
+                team.coaches.find((c) => c.type === 'assistant_coach')?.id ===
+                  selection?.id
+              }
+              liveState={liveState}
+            />
           </div>
           <div className="substitution-controls">
             <button
@@ -234,8 +274,9 @@ function PlayersControls({
                   onClick={() => handlePlayerClick(player)}
                   disabled={liveState.state === LiveStateStates.NOT_STARTED}
                   isSelected={
-                    (player.id === selectedPlayer?.playerId &&
-                      selectedPlayer?.teamType === teamType) ||
+                    (player.id === selection?.id &&
+                      selection?.teamType === teamType &&
+                      selection?.kind === 'player') ||
                     selectedPlayers.some((p) => p.id === player.id)
                   }
                 />
