@@ -21,10 +21,18 @@ defmodule GoChampsScoreboard.Sports.Basketball.Statistics do
 
   @spec calc_player_fouls(PlayerState.t()) :: float()
   def calc_player_fouls(player_state) do
+    fouls_disqualifying = Map.get(player_state.stats_values, "fouls_disqualifying", 0)
+
+    fouls_disqualifying_fighting =
+      Map.get(player_state.stats_values, "fouls_disqualifying_fighting", 0)
+
+    fouls_flagrant = Map.get(player_state.stats_values, "fouls_flagrant", 0)
     personal_fouls = Map.get(player_state.stats_values, "fouls_personal", 0)
     technical_fouls = Map.get(player_state.stats_values, "fouls_technical", 0)
+    fouls_unsportsmanlike = Map.get(player_state.stats_values, "fouls_unsportsmanlike", 0)
 
-    personal_fouls + technical_fouls
+    personal_fouls + technical_fouls + fouls_flagrant + fouls_disqualifying +
+      fouls_disqualifying_fighting + fouls_unsportsmanlike
   end
 
   @spec calc_player_free_throw_percentage(PlayerState.t()) :: float()

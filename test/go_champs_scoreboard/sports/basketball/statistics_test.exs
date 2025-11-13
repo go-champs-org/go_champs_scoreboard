@@ -40,7 +40,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.StatisticsTest do
   end
 
   describe "calc_player_fouls" do
-    test "returns them sum of personal-fouls and technical-fouls" do
+    test "returns the sum of personal fouls and technical fouls" do
       player_state = %GoChampsScoreboard.Games.Models.PlayerState{
         stats_values: %{
           "fouls_personal" => 3,
@@ -48,6 +48,60 @@ defmodule GoChampsScoreboard.Sports.Basketball.StatisticsTest do
         }
       }
 
+      assert Statistics.calc_player_fouls(player_state) == 4
+    end
+
+    test "returns 0 when no fouls are recorded" do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        stats_values: %{}
+      }
+
+      assert Statistics.calc_player_fouls(player_state) == 0
+    end
+
+    test "handles missing foul fields gracefully" do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        stats_values: %{
+          "fouls_personal" => 2,
+          # technical fouls missing
+          "other_stat" => 5
+        }
+      }
+
+      assert Statistics.calc_player_fouls(player_state) == 2
+    end
+
+    test "calc_player_fouls includes all foul types when present" do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        stats_values: %{
+          "fouls_personal" => 1,
+          "fouls_technical" => 2,
+          "fouls_flagrant" => 1,
+          "fouls_disqualifying" => 1,
+          "fouls_disqualifying_fighting" => 1,
+          "fouls_unsportsmanlike" => 1,
+          # Other unrelated stats
+          "points" => 15,
+          "rebounds_total" => 8
+        }
+      }
+
+      # Should sum ALL foul types
+      assert Statistics.calc_player_fouls(player_state) == 7
+    end
+
+    test "calc_player_fouls with typical game scenario" do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        stats_values: %{
+          "fouls_personal" => 3,
+          "fouls_technical" => 1,
+          # No other fouls
+          "points" => 20,
+          "rebounds_total" => 5
+        }
+      }
+
+      # Typical scenario: personal fouls + technical foul
       assert Statistics.calc_player_fouls(player_state) == 4
     end
   end
