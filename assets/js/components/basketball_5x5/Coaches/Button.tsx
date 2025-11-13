@@ -17,7 +17,23 @@ function CoachButton({
   isSelected,
   liveState,
 }: CoachButtonProps) {
+  const fouls = coach?.stats_values['fouls'] || 0;
   const isDisabled = liveState.state === LiveStateStates.NOT_STARTED || !coach; // Disable if no coach exists
+  const [isAnimating, setIsAnimating] = React.useState(false);
+  const previousFouls = React.useRef(fouls);
+
+  // Trigger animation when fouls value changes
+  React.useEffect(() => {
+    if (fouls !== previousFouls.current && fouls > 0) {
+      setIsAnimating(true);
+      const timer = setTimeout(() => {
+        setIsAnimating(false);
+      }, 1000); // 1 second animation
+
+      return () => clearTimeout(timer);
+    }
+    previousFouls.current = fouls;
+  }, [fouls]);
 
   const getCoachLabel = () => {
     const typeKey =
@@ -35,7 +51,14 @@ function CoachButton({
       onClick={onClick}
       title={coach ? coach.name : `No ${coachType.replace('_', ' ')} assigned`}
     >
-      {getCoachLabel()}
+      <div className="content">
+        {getCoachLabel()}
+        {fouls > 0 && (
+          <span className={`fouls ${isAnimating ? 'fouls-animate' : ''}`}>
+            {fouls}
+          </span>
+        )}
+      </div>
     </button>
   );
 }

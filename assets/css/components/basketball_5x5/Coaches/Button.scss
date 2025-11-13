@@ -1,0 +1,43 @@
+@import '../../../colors.scss';
+
+.coach-button {
+  height: 40px;
+  width: 85px;
+  overflow: hidden;
+
+  .content {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
+
+  .fouls {
+    position: absolute;
+    background-color: $red;
+    border-bottom-right-radius: 5px;
+    padding: 0 5px;
+    font-size: 0.65rem;
+    top: 0;
+    left: 0;
+    transition: transform 0.1s ease-in-out;
+
+    &.fouls-animate {
+      animation: foul-update-animation 1s ease-in-out;
+    }
+  }
+}
+
+@keyframes foul-update-animation {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.3);
+  }
+  75% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
