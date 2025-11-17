@@ -189,7 +189,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateCoac
 
       expected_fouls = [
         %FibaScoresheet.Foul{
-          type: "B",
+          type: "BD",
           extra_action: nil,
           period: game_state.clock_state.period,
           is_last_of_half: false

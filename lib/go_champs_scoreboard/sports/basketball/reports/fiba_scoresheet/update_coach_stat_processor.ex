@@ -45,7 +45,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateCoac
         "fouls_disqualifying" -> "D"
         "fouls_disqualifying_fighting" -> "F"
         "fouls_technical_bench" -> "B"
-        "fouls_technical_bench_disqualifying" -> "B"
+        "fouls_technical_bench_disqualifying" -> "BD"
         "fouls_game_disqualifying" -> "GD"
       end
 

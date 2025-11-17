@@ -1,14 +1,18 @@
 export const BLUE = '#3185FC';
 export const RED = '#A4031F';
 
+export const colorForPeriod = (period: number) => {
+  return period === 1 || period === 3 ? BLUE : RED;
+};
+
 export const textColorForPeriod = (period: number) => {
   return {
-    color: period === 1 || period === 3 ? RED : BLUE,
+    color: colorForPeriod(period),
   };
 };
 
 export const backgroundColorForPeriod = (period: number) => {
   return {
-    backgroundColor: period === 1 || period === 3 ? RED : BLUE,
+    backgroundColor: colorForPeriod(period),
   };
 };

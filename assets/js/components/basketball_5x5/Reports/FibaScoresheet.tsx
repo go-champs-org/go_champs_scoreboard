@@ -14,9 +14,16 @@ export interface PlayerFoul {
   is_last_of_half: boolean;
 }
 
+export interface CoachFoul {
+  type: 'C' | 'D' | 'F' | 'B' | 'BD' | 'GD';
+  period: number;
+  extra_action?: '1' | '2' | '3' | 'C' | '';
+  is_last_of_half: boolean;
+}
+
 export interface Coach {
   name: string;
-  fouls: PlayerFoul[];
+  fouls: CoachFoul[];
 }
 
 export interface Player {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, StyleSheet } from '@react-pdf/renderer';
-import { Coach, Team, Timeout } from '../FibaScoresheet';
-import { textColorForPeriod, RED, BLUE } from './styles';
+import { Coach, CoachFoul, Team, Timeout } from '../FibaScoresheet';
+import { textColorForPeriod, RED, BLUE, colorForPeriod } from './styles';
 
 const EMPTY_FOUL = {
   type: '',
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
             extraAction: {
               position: 'absolute',
               bottom: '1px',
-              right: '1px',
+              right: '3px',
               fontSize: '5px',
             },
             unused: {
@@ -234,6 +234,28 @@ const styles = StyleSheet.create({
     },
   },
 });
+
+function borderForFoul(foul: CoachFoul) {
+  if (foul.type === 'BD') {
+    return {
+      margin: '0 -1px',
+      padding: '1px 3px',
+      border: `1px`,
+      borderColor: colorForPeriod(foul.period),
+      borderRadius: '50px',
+    };
+  }
+
+  return {};
+}
+
+function foulContent(foul: CoachFoul) {
+  if (foul.type === 'BD') {
+    return 'B';
+  }
+
+  return foul.type;
+}
 
 function FoulBox({
   boxNumber,
@@ -536,9 +558,10 @@ function CoachRow({
                     ...styles.teamContainer.table.coachRow.columnFouls.fouls
                       .type,
                     ...textColorForPeriod(foul.period),
+                    ...borderForFoul(foul),
                   }}
                 >
-                  {foul.type}
+                  {foulContent(foul)}
                 </Text>
                 {foul.extra_action && (
                   <Text
