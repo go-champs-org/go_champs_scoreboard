@@ -57,7 +57,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
               name: "Player 1",
               number: 12,
               fouls: [],
-              is_captain: nil,
+              is_captain: false,
               has_played: nil,
               has_started: nil
             },
@@ -66,7 +66,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
               name: "Player 2",
               number: 23,
               fouls: [],
-              is_captain: nil,
+              is_captain: false,
               has_played: nil,
               has_started: nil
             }
@@ -84,7 +84,15 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
             name: "Away assistant coach",
             fouls: []
           },
-          players: [%FibaScoresheet.Player{id: "456", name: "Player 2", number: 23, fouls: []}],
+          players: [
+            %FibaScoresheet.Player{
+              id: "456",
+              name: "Player 2",
+              number: 23,
+              fouls: [],
+              is_captain: false
+            }
+          ],
           all_fouls: [],
           timeouts: [],
           running_score: %{},

@@ -186,7 +186,8 @@ defmodule GoChampsScoreboard.EventsFixtures do
         },
         name: "Home Player 12",
         number: 12,
-        state: :available
+        state: :available,
+        is_captain: false
       }
     ]
 
@@ -200,7 +201,8 @@ defmodule GoChampsScoreboard.EventsFixtures do
         },
         name: "Away Player 22",
         number: 22,
-        state: :available
+        state: :available,
+        is_captain: false
       }
     ]
 

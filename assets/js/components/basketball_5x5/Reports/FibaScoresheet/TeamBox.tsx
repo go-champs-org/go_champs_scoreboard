@@ -117,6 +117,29 @@ const styles = StyleSheet.create({
           maxWidth: '100%',
           overflow: 'hidden',
         },
+        columnName: {
+          margin: '2px',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          width: '100%',
+          maxWidth: '100%',
+          overflow: 'hidden',
+          playerName: {
+            flex: '1 1 auto',
+            maxLines: 1,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            minWidth: 0,
+          },
+          playerCaptain: {
+            width: '29px',
+            fontStyle: 'italic',
+            flexShrink: 0,
+            whiteSpace: 'nowrap',
+          },
+        },
         columnBox: {
           flex: '1 1 16px',
           maxWidth: '16px',
@@ -449,7 +472,16 @@ function PlayerRow({
           justifyContent: 'start',
         }}
       >
-        <Text style={styles.teamContainer.table.content}>{player.name}</Text>
+        <View style={styles.teamContainer.table.row.columnName}>
+          <Text style={styles.teamContainer.table.row.columnName.playerName}>
+            {player.name}
+          </Text>
+          {player.is_captain && (
+            <Text
+              style={styles.teamContainer.table.row.columnName.playerCaptain}
+            >{`(CAP.)`}</Text>
+          )}
+        </View>
       </View>
       <View style={styles.teamContainer.table.row.columnBox}>
         <Text style={styles.teamContainer.table.content}>

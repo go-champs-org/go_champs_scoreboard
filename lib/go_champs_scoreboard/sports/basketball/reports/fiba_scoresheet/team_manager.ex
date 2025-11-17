@@ -43,7 +43,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       number: player.number,
       fouls: [],
       license_number: Map.get(player, :license_number, ""),
-      is_captain: nil,
+      is_captain: player.is_captain,
       has_played: nil,
       has_started: nil
     }

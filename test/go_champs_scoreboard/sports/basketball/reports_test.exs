@@ -20,7 +20,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.ReportsTest do
                  id: "123",
                  name: "Home Player 12",
                  number: 12,
-                 fouls: []
+                 fouls: [],
+                 is_captain: false
                }
              ]
 
@@ -44,7 +45,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.ReportsTest do
                  id: "456",
                  name: "Away Player 22",
                  number: 22,
-                 fouls: []
+                 fouls: [],
+                 is_captain: false
                }
              ]
     end

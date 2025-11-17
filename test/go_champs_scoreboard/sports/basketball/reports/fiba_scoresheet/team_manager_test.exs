@@ -11,8 +11,15 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       team_state = %{
         name: "Some team",
         players: [
-          %{id: "123", name: "Player 1", number: 12, state: :available},
-          %{id: "456", name: "Player 2", number: 23, state: :available, license_number: "CD34"}
+          %{id: "123", name: "Player 1", number: 12, state: :available, is_captain: true},
+          %{
+            id: "456",
+            name: "Player 2",
+            number: 23,
+            state: :available,
+            license_number: "CD34",
+            is_captain: false
+          }
         ]
       }
 
@@ -24,14 +31,16 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
             name: "Player 1",
             number: 12,
             fouls: [],
-            license_number: ""
+            license_number: "",
+            is_captain: true
           },
           %FibaScoresheet.Player{
             id: "456",
             name: "Player 2",
             number: 23,
             fouls: [],
-            license_number: "CD34"
+            license_number: "CD34",
+            is_captain: false
           }
         ],
         coach: %FibaScoresheet.Coach{
@@ -57,8 +66,15 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       team_state = %{
         name: "Some team",
         players: [
-          %{id: "123", name: "Player 1", number: 12, state: :available, license_number: "AB12"},
-          %{id: "456", name: "Player 2", number: 23, state: :not_available}
+          %{
+            id: "123",
+            name: "Player 1",
+            number: 12,
+            state: :available,
+            license_number: "AB12",
+            is_captain: false
+          },
+          %{id: "456", name: "Player 2", number: 23, state: :not_available, is_captain: false}
         ]
       }
 
@@ -70,7 +86,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
             name: "Player 1",
             number: 12,
             fouls: [],
-            license_number: "AB12"
+            license_number: "AB12",
+            is_captain: false
           }
         ],
         coach: %FibaScoresheet.Coach{
