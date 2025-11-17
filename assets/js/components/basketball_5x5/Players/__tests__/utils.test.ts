@@ -13,6 +13,7 @@ describe('Players utils', () => {
     license_number: '',
     state,
     stats_values: {},
+    is_captain: false,
   });
 
   describe('wherePlaying', () => {

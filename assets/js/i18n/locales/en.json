@@ -267,6 +267,7 @@
         "title": "Edit Players",
         "addPlayer": "Add player",
         "licenseNumber": "Lic #",
+        "captain": "Cap",
         "name": "Name",
         "remove": "Remove"
       }

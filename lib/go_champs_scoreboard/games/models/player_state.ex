@@ -9,18 +9,20 @@ defmodule GoChampsScoreboard.Games.Models.PlayerState do
           number: String.t(),
           license_number: String.t() | nil,
           state: state(),
-          stats_values: map()
+          stats_values: map(),
+          is_captain: boolean()
         }
-  defstruct [:id, :name, :number, :license_number, :state, :stats_values]
+  defstruct [:id, :name, :number, :license_number, :state, :stats_values, :is_captain]
 
-  @spec new(String.t(), String.t(), String.t(), String.t(), state(), map()) :: t()
+  @spec new(String.t(), String.t(), String.t(), String.t(), state(), map(), boolean()) :: t()
   def new(
         id,
         name,
         number \\ "0",
         license_number \\ "",
         state \\ :available,
-        stats_values \\ Basketball.bootstrap_player_stats()
+        stats_values \\ Basketball.bootstrap_player_stats(),
+        is_captain \\ false
       ) do
     %__MODULE__{
       id: id,
@@ -28,7 +30,8 @@ defmodule GoChampsScoreboard.Games.Models.PlayerState do
       number: number,
       license_number: license_number,
       state: state,
-      stats_values: stats_values
+      stats_values: stats_values,
+      is_captain: is_captain
     }
   end
 
@@ -40,7 +43,8 @@ defmodule GoChampsScoreboard.Games.Models.PlayerState do
             number: number,
             license_number: license_number,
             state: state,
-            stats_values: stats_values
+            stats_values: stats_values,
+            is_captain: is_captain
           },
           _options
         ) do
@@ -50,7 +54,8 @@ defmodule GoChampsScoreboard.Games.Models.PlayerState do
         name: name,
         number: number,
         license_number: license_number,
-        stats_values: stats_values
+        stats_values: stats_values,
+        is_captain: if(is_nil(is_captain), do: false, else: is_captain)
       }
     end
   end

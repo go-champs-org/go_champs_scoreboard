@@ -36,6 +36,7 @@ export const DEFAULT_PLAYER_STATE: PlayerState = {
   number: '',
   license_number: '',
   stats_values: {},
+  is_captain: false,
 };
 
 export interface PlayerState {
@@ -51,6 +52,7 @@ export interface PlayerState {
   number: string;
   license_number: string;
   stats_values: { [key: string]: number };
+  is_captain: boolean;
 }
 
 export interface TeamState {

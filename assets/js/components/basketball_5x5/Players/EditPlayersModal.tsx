@@ -156,6 +156,7 @@ function MediumPlayersTable({
             <th style={{ minWidth: '140px', maxWidth: '140px' }}>
               {t('basketball.players.modal.name')}
             </th>
+            <th>{t('basketball.players.modal.captain')}</th>
             <th style={{ minWidth: '65px', maxWidth: '65px' }}>
               + 1 {t('basketball.stats.abbreviations.points')}
             </th>

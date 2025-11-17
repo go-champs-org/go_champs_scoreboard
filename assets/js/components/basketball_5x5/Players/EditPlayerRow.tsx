@@ -2,6 +2,7 @@ import React from 'react';
 
 import { PlayerState, TeamType } from '../../../types';
 import FormField from '../../FormField';
+import CheckboxFormField from '../../CheckboxFormField';
 import DoubleClickButton from '../../DoubleClickButton';
 
 interface StatInputProps {
@@ -246,6 +247,12 @@ function MediumEditPlayerRow({
       player: { ...player, license_number: value },
     });
   };
+  const onUpdateIsCaptain = (value: boolean) => {
+    pushEvent('update-player-in-team', {
+      ['team-type']: teamType,
+      player: { ...player, is_captain: value },
+    });
+  };
   const onRemovePlayer = () => {
     pushEvent('remove-player-in-team', {
       ['team-type']: teamType,
@@ -302,6 +309,18 @@ function MediumEditPlayerRow({
         }}
       >
         <NameCell player={player} />
+      </td>
+      <td
+        style={{
+          verticalAlign: 'middle',
+        }}
+      >
+        <CheckboxFormField
+          initialValue={player.is_captain}
+          onChange={onUpdateIsCaptain}
+          disabled={player.state === 'not_available'}
+          className="captain-checkbox"
+        />
       </td>
       <td>
         <StatInput

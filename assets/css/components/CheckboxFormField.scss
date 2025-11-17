@@ -1,0 +1,107 @@
+@import '../colors.scss';
+
+.checkbox-form-field {
+  position: relative;
+  display: inline-block;
+
+  .checkbox-input {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid $white-dark;
+    border-radius: 4px;
+    background-color: transparent;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: $tertiary70;
+      box-shadow: 0 0 5px rgba(79, 193, 215, 0.3);
+    }
+
+    &:checked {
+      background-color: $tertiary70;
+      border-color: $tertiary70;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 6px;
+        width: 6px;
+        height: 10px;
+        border: solid $dark;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+      }
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      border-color: $dark-light;
+
+      &:hover {
+        border-color: $dark-light;
+        box-shadow: none;
+      }
+
+      &:checked {
+        background-color: $dark-light;
+        border-color: $dark-light;
+      }
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $tertiary70;
+      box-shadow: 0 0 0 2px rgba(79, 193, 215, 0.2);
+    }
+  }
+
+  .checkbox-label {
+    margin-left: 8px;
+    cursor: pointer;
+    user-select: none;
+    color: $white;
+
+    &.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// For use in tables
+.table .checkbox-form-field {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .checkbox-input {
+    margin: 0;
+  }
+}
+
+// Captain checkbox specific styling
+.captain-checkbox {
+  .checkbox-input:checked {
+    background-color: $green-light;
+    border-color: $green-light;
+
+    &::after {
+      border-color: $white;
+    }
+  }
+
+  &:hover .checkbox-input:not(:disabled) {
+    border-color: $green-light;
+    box-shadow: 0 0 5px rgba(61, 112, 104, 0.3);
+  }
+
+  .checkbox-label {
+    font-weight: bold;
+    color: $green-light;
+  }
+}

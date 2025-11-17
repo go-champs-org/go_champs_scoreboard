@@ -37,15 +37,35 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayerInTeamDefinition do
       game_state
       |> Teams.find_player(team_type, player.id)
 
-    updated_player = Map.merge(current_player, player)
+    {final_game_state, updated_player} =
+      handle_captain_update(game_state, team_type, current_player, player)
 
     updated_team =
-      game_state
+      final_game_state
       |> Teams.find_team(team_type)
       |> Teams.update_player_in_team(updated_player)
 
-    game_state
+    final_game_state
     |> Games.update_team(team_type, updated_team)
+  end
+
+  @spec handle_captain_update(GameState.t(), String.t(), map(), map()) :: {GameState.t(), map()}
+  defp handle_captain_update(game_state, team_type, current_player, player_updates) do
+    if Map.get(player_updates, :is_captain) == true do
+      team = Teams.find_team(game_state, team_type)
+
+      uncaptained_team = %{
+        team
+        | players: Enum.map(team.players, &Map.put(&1, :is_captain, false))
+      }
+
+      game_state_with_uncaptained_team =
+        Games.update_team(game_state, team_type, uncaptained_team)
+
+      {game_state_with_uncaptained_team, Map.merge(current_player, player_updates)}
+    else
+      {game_state, Map.merge(current_player, player_updates)}
+    end
   end
 
   @impl true

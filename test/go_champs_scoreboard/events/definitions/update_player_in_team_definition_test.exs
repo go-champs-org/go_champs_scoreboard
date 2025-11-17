@@ -103,4 +103,127 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayerInTeamDefinitionTest
     assert player.number == 24
     assert player.license_number == "KB24"
   end
+
+  describe "captain handling" do
+    test "sets player as captain when is_captain is true" do
+      game_state = %GameState{
+        id: "1",
+        away_team: %TeamState{
+          players: []
+        },
+        home_team: %TeamState{
+          players: [
+            %PlayerState{id: "player-1", name: "Player 1", number: 1, is_captain: false},
+            %PlayerState{id: "player-2", name: "Player 2", number: 2, is_captain: false}
+          ]
+        }
+      }
+
+      update_player_payload = %{
+        "team-type" => "home",
+        "player" => %{
+          "id" => "player-1",
+          "is_captain" => true
+        }
+      }
+
+      event = UpdatePlayerInTeamDefinition.create(game_state.id, 10, 1, update_player_payload)
+      updated_game = UpdatePlayerInTeamDefinition.handle(game_state, event)
+
+      captain_player = Enum.find(updated_game.home_team.players, &(&1.id == "player-1"))
+      other_player = Enum.find(updated_game.home_team.players, &(&1.id == "player-2"))
+
+      assert captain_player.is_captain == true
+      assert other_player.is_captain == false
+    end
+
+    test "removes captain status from previous captain when setting new captain" do
+      game_state = %GameState{
+        id: "1",
+        away_team: %TeamState{
+          players: []
+        },
+        home_team: %TeamState{
+          players: [
+            %PlayerState{id: "player-1", name: "Player 1", number: 1, is_captain: true},
+            %PlayerState{id: "player-2", name: "Player 2", number: 2, is_captain: false}
+          ]
+        }
+      }
+
+      update_player_payload = %{
+        "team-type" => "home",
+        "player" => %{
+          "id" => "player-2",
+          "is_captain" => true
+        }
+      }
+
+      event = UpdatePlayerInTeamDefinition.create(game_state.id, 10, 1, update_player_payload)
+      updated_game = UpdatePlayerInTeamDefinition.handle(game_state, event)
+
+      old_captain = Enum.find(updated_game.home_team.players, &(&1.id == "player-1"))
+      new_captain = Enum.find(updated_game.home_team.players, &(&1.id == "player-2"))
+
+      assert old_captain.is_captain == false
+      assert new_captain.is_captain == true
+    end
+
+    test "removes captain status when is_captain is false" do
+      game_state = %GameState{
+        id: "1",
+        away_team: %TeamState{
+          players: []
+        },
+        home_team: %TeamState{
+          players: [
+            %PlayerState{id: "player-1", name: "Player 1", number: 1, is_captain: true}
+          ]
+        }
+      }
+
+      update_player_payload = %{
+        "team-type" => "home",
+        "player" => %{
+          "id" => "player-1",
+          "is_captain" => false
+        }
+      }
+
+      event = UpdatePlayerInTeamDefinition.create(game_state.id, 10, 1, update_player_payload)
+      updated_game = UpdatePlayerInTeamDefinition.handle(game_state, event)
+
+      player = Enum.find(updated_game.home_team.players, &(&1.id == "player-1"))
+      assert player.is_captain == false
+    end
+
+    test "does not affect captain status when is_captain is not provided" do
+      game_state = %GameState{
+        id: "1",
+        away_team: %TeamState{
+          players: []
+        },
+        home_team: %TeamState{
+          players: [
+            %PlayerState{id: "player-1", name: "Player 1", number: 1, is_captain: true}
+          ]
+        }
+      }
+
+      update_player_payload = %{
+        "team-type" => "home",
+        "player" => %{
+          "id" => "player-1",
+          "name" => "Updated Player 1"
+        }
+      }
+
+      event = UpdatePlayerInTeamDefinition.create(game_state.id, 10, 1, update_player_payload)
+      updated_game = UpdatePlayerInTeamDefinition.handle(game_state, event)
+
+      player = Enum.find(updated_game.home_team.players, &(&1.id == "player-1"))
+      assert player.is_captain == true
+      assert player.name == "Updated Player 1"
+    end
+  end
 end
