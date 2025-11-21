@@ -122,6 +122,16 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameState do
     %{team | stats_values: updated_stats}
   end
 
+  defp update_team_period_stats(team, restored_state, team_type) do
+    restored_team = Teams.find_team(restored_state, team_type)
+
+    # Handle case where period_stats might be nil
+    restored_period_stats = restored_team.period_stats || %{}
+
+    # Copy period_stats as-is since they represent historical data
+    %{team | period_stats: restored_period_stats}
+  end
+
   defp get_valid_stat_keys do
     %{
       player: Basketball.find_player_stat_by_type([:manual, :calculated]) |> extract_keys(),
@@ -136,6 +146,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameState do
     |> update_team_players_in_game_state(restored_state, team_type, valid_keys.player)
     |> update_team_total_player_stats(restored_state, team_type, valid_keys.player)
     |> update_team_stats(restored_state, team_type, valid_keys.team)
+    |> update_team_period_stats(restored_state, team_type)
   end
 
   defp copy_team_stats_from_source(target_game_state, source_game_state, team_type) do
@@ -198,6 +209,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameState do
     target_team
     |> Map.put(:total_player_stats, source_team.total_player_stats || %{})
     |> Map.put(:stats_values, source_team.stats_values || %{})
+    |> Map.put(:period_stats, source_team.period_stats || %{})
   end
 
   @spec protest_game(GameState.t(), map()) :: GameState.t()

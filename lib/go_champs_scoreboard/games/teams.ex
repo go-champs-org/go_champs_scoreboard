@@ -190,4 +190,42 @@ defmodule GoChampsScoreboard.Games.Teams do
       | stats_values: Map.replace(team_state.stats_values, stat.key, new_value)
     }
   end
+
+  @spec calculate_period_stats(TeamState.t(), integer()) :: TeamState.t()
+  def calculate_period_stats(team, current_period) do
+    # Convert current_period to string for consistent key format
+    current_period_key = to_string(current_period)
+
+    # Use team stats_values for calculation (timeouts, fouls_technical, etc.)
+    current_totals = team.stats_values
+    existing_periods = team.period_stats || %{}
+
+    # Calculate what the totals were at the END of previous periods
+    # Handle both string and integer period keys for backward compatibility
+    previous_periods_total =
+      existing_periods
+      |> Enum.filter(fn {period_key, _stats} ->
+        period_int =
+          case period_key do
+            key when is_integer(key) -> key
+            key when is_binary(key) -> String.to_integer(key)
+          end
+
+        period_int < current_period
+      end)
+      |> Enum.reduce(%{}, fn {_period, stats}, acc ->
+        Map.merge(acc, stats, fn _key, v1, v2 -> v1 + v2 end)
+      end)
+
+    # Current period stats = Current totals - Previous totals
+    current_period_stats =
+      Map.merge(current_totals, previous_periods_total, fn _key, current, previous ->
+        current - previous
+      end)
+
+    # Update period_stats with the new period using string key
+    updated_period_stats = Map.put(existing_periods, current_period_key, current_period_stats)
+
+    %{team | period_stats: updated_period_stats}
+  end
 end

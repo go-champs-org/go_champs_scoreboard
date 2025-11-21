@@ -375,6 +375,73 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameStateTest do
       # Original value, not 200 from snapshot
       assert result.home_team.stats_values["invalid_team_stat"] == 99
     end
+
+    test "maps period_stats from snapshot" do
+      # Create original game state with some period stats
+      original_game_state = %GameStateModel{
+        basketball_game_state_fixture()
+        | home_team: %TeamState{
+            basketball_game_state_fixture().home_team
+            | period_stats: %{
+                "1" => %{"timeouts" => 1, "fouls_technical" => 0},
+                "2" => %{"timeouts" => 0, "fouls_technical" => 1}
+              }
+          }
+      }
+
+      # Create snapshot with updated period stats
+      snapshot_game_state = %GameStateModel{
+        basketball_game_state_fixture()
+        | home_team: %TeamState{
+            basketball_game_state_fixture().home_team
+            | period_stats: %{
+                "1" => %{"timeouts" => 2, "fouls_technical" => 1},
+                "2" => %{"timeouts" => 1, "fouls_technical" => 0},
+                "3" => %{"timeouts" => 0, "fouls_technical" => 2}
+              }
+          }
+      }
+
+      mock_snapshot = %GameSnapshot{state: snapshot_game_state}
+
+      result = GameState.map_from_snapshot(original_game_state, mock_snapshot)
+
+      # Period stats should be completely replaced from snapshot
+      assert result.home_team.period_stats == %{
+               "1" => %{"timeouts" => 2, "fouls_technical" => 1},
+               "2" => %{"timeouts" => 1, "fouls_technical" => 0},
+               "3" => %{"timeouts" => 0, "fouls_technical" => 2}
+             }
+    end
+
+    test "handles nil period_stats from snapshot gracefully" do
+      # Create original game state with some period stats
+      original_game_state = %GameStateModel{
+        basketball_game_state_fixture()
+        | home_team: %TeamState{
+            basketball_game_state_fixture().home_team
+            | period_stats: %{
+                "1" => %{"timeouts" => 1, "fouls_technical" => 0}
+              }
+          }
+      }
+
+      # Create snapshot with nil period stats
+      snapshot_game_state = %GameStateModel{
+        basketball_game_state_fixture()
+        | home_team: %TeamState{
+            basketball_game_state_fixture().home_team
+            | period_stats: nil
+          }
+      }
+
+      mock_snapshot = %GameSnapshot{state: snapshot_game_state}
+
+      result = GameState.map_from_snapshot(original_game_state, mock_snapshot)
+
+      # Period stats should be set to empty map when snapshot has nil
+      assert result.home_team.period_stats == %{}
+    end
   end
 
   describe "copy_all_stats_from_game_state/2" do
@@ -587,6 +654,68 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameStateTest do
       assert result.home_team.stats_values["timeouts"] == 3
       assert result.home_team.stats_values["fouls_technical"] == 2
       assert result.home_team.stats_values["points"] == 85
+    end
+
+    test "copies period_stats from source to target game state" do
+      # Create source game state with period stats
+      source_game_state = %GameStateModel{
+        basketball_game_state_fixture()
+        | home_team: %TeamState{
+            basketball_game_state_fixture().home_team
+            | period_stats: %{
+                "1" => %{"timeouts" => 2, "fouls_technical" => 1},
+                "2" => %{"timeouts" => 0, "fouls_technical" => 3},
+                "3" => %{"timeouts" => 1, "fouls_technical" => 0}
+              }
+          }
+      }
+
+      # Create target game state with different period stats
+      target_game_state = %GameStateModel{
+        basketball_game_state_fixture()
+        | home_team: %TeamState{
+            basketball_game_state_fixture().home_team
+            | period_stats: %{
+                "1" => %{"timeouts" => 1, "fouls_technical" => 0}
+              }
+          }
+      }
+
+      result = GameState.copy_all_stats_from_game_state(source_game_state, target_game_state)
+
+      # Period stats should be completely replaced from source
+      assert result.home_team.period_stats == %{
+               "1" => %{"timeouts" => 2, "fouls_technical" => 1},
+               "2" => %{"timeouts" => 0, "fouls_technical" => 3},
+               "3" => %{"timeouts" => 1, "fouls_technical" => 0}
+             }
+    end
+
+    test "handles nil period_stats in source game state" do
+      # Create source game state with nil period stats
+      source_game_state = %GameStateModel{
+        basketball_game_state_fixture()
+        | home_team: %TeamState{
+            basketball_game_state_fixture().home_team
+            | period_stats: nil
+          }
+      }
+
+      # Create target game state with some period stats
+      target_game_state = %GameStateModel{
+        basketball_game_state_fixture()
+        | home_team: %TeamState{
+            basketball_game_state_fixture().home_team
+            | period_stats: %{
+                "1" => %{"timeouts" => 1, "fouls_technical" => 0}
+              }
+          }
+      }
+
+      result = GameState.copy_all_stats_from_game_state(source_game_state, target_game_state)
+
+      # Period stats should be set to empty map when source has nil
+      assert result.home_team.period_stats == %{}
     end
   end
 

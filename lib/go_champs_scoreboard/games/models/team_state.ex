@@ -10,9 +10,19 @@ defmodule GoChampsScoreboard.Games.Models.TeamState do
           total_player_stats: map(),
           stats_values: map(),
           tri_code: String.t(),
-          logo_url: String.t()
+          logo_url: String.t(),
+          period_stats: map()
         }
-  defstruct [:name, :players, :coaches, :total_player_stats, :stats_values, :tri_code, :logo_url]
+  defstruct [
+    :name,
+    :players,
+    :coaches,
+    :total_player_stats,
+    :stats_values,
+    :tri_code,
+    :logo_url,
+    :period_stats
+  ]
 
   @spec new(String.t(), list(PlayerState.t()), map()) :: t()
   def new(
@@ -34,7 +44,8 @@ defmodule GoChampsScoreboard.Games.Models.TeamState do
       total_player_stats: total_player_stats,
       stats_values: final_stats_values,
       tri_code: tri_code,
-      logo_url: logo_url
+      logo_url: logo_url,
+      period_stats: %{}
     }
   end
 end

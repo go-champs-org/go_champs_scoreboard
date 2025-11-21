@@ -58,16 +58,18 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateTeamStatDefinitionTest do
         ],
         total_player_stats: %{},
         stats_values: %{
-          "fouls_technical" => 1,
-          "total_fouls_technical" => 1
-        }
+          "fouls_technical" => 0,
+          "total_fouls_technical" => 0
+        },
+        period_stats: %{}
       },
       away_team: %{
         players: [
           %{id: "456", stats_values: %{}}
         ],
         total_player_stats: %{},
-        stats_values: %{}
+        stats_values: %{},
+        period_stats: %{}
       },
       sport_id: "basketball"
     }
@@ -91,8 +93,11 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateTeamStatDefinitionTest do
           ],
           total_player_stats: %{},
           stats_values: %{
-            "fouls_technical" => 2,
-            "total_fouls_technical" => 2
+            "fouls_technical" => 1,
+            "total_fouls_technical" => 1
+          },
+          period_stats: %{
+            "1" => %{"fouls_technical" => 1, "total_fouls_technical" => 1}
           }
         },
         away_team: %{
@@ -100,7 +105,8 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateTeamStatDefinitionTest do
             %{id: "456", stats_values: %{}}
           ],
           total_player_stats: %{},
-          stats_values: %{}
+          stats_values: %{},
+          period_stats: %{}
         },
         sport_id: "basketball"
       }

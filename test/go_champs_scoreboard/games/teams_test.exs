@@ -601,4 +601,185 @@ defmodule GoChampsScoreboard.Games.TeamsTest do
              } == Teams.update_calculated_stats_values(team_state, team_stats)
     end
   end
+
+  describe "calculate_period_stats" do
+    test "calculates period stats for the first period correctly" do
+      team_state = %TeamState{
+        stats_values: %{"timeouts" => 2, "fouls_technical" => 1},
+        period_stats: %{}
+      }
+
+      result = Teams.calculate_period_stats(team_state, 1)
+
+      assert %{
+               period_stats: %{
+                 "1" => %{"timeouts" => 2, "fouls_technical" => 1}
+               }
+             } = result
+    end
+
+    test "calculates period stats for subsequent periods using differential approach" do
+      team_state = %TeamState{
+        stats_values: %{"timeouts" => 3, "fouls_technical" => 2},
+        period_stats: %{
+          "1" => %{"timeouts" => 2, "fouls_technical" => 1}
+        }
+      }
+
+      result = Teams.calculate_period_stats(team_state, 2)
+
+      assert %{
+               period_stats: %{
+                 "1" => %{"timeouts" => 2, "fouls_technical" => 1},
+                 "2" => %{"timeouts" => 1, "fouls_technical" => 1}
+               }
+             } = result
+    end
+
+    test "handles multiple periods correctly" do
+      team_state = %TeamState{
+        stats_values: %{"timeouts" => 4, "fouls_technical" => 3},
+        period_stats: %{
+          "1" => %{"timeouts" => 1, "fouls_technical" => 0},
+          "2" => %{"timeouts" => 2, "fouls_technical" => 1}
+        }
+      }
+
+      result = Teams.calculate_period_stats(team_state, 3)
+
+      assert %{
+               period_stats: %{
+                 "1" => %{"timeouts" => 1, "fouls_technical" => 0},
+                 "2" => %{"timeouts" => 2, "fouls_technical" => 1},
+                 "3" => %{"timeouts" => 1, "fouls_technical" => 2}
+               }
+             } = result
+    end
+
+    test "handles stat corrections with negative values" do
+      team_state = %TeamState{
+        stats_values: %{"timeouts" => 2, "fouls_technical" => 1},
+        period_stats: %{
+          "1" => %{"timeouts" => 2, "fouls_technical" => 1},
+          "2" => %{"timeouts" => 1, "fouls_technical" => 1}
+        }
+      }
+
+      result = Teams.calculate_period_stats(team_state, 3)
+
+      assert %{
+               period_stats: %{
+                 "1" => %{"timeouts" => 2, "fouls_technical" => 1},
+                 "2" => %{"timeouts" => 1, "fouls_technical" => 1},
+                 "3" => %{"timeouts" => -1, "fouls_technical" => -1}
+               }
+             } = result
+    end
+
+    test "adds period even when no stats change" do
+      team_state = %TeamState{
+        stats_values: %{"timeouts" => 2, "fouls_technical" => 1},
+        period_stats: %{
+          "1" => %{"timeouts" => 2, "fouls_technical" => 1}
+        }
+      }
+
+      result = Teams.calculate_period_stats(team_state, 2)
+
+      assert %{
+               period_stats: %{
+                 "1" => %{"timeouts" => 2, "fouls_technical" => 1},
+                 "2" => %{"timeouts" => 0, "fouls_technical" => 0}
+               }
+             } = result
+    end
+
+    test "handles nil period_stats gracefully" do
+      team_state = %TeamState{
+        stats_values: %{"timeouts" => 1, "fouls_technical" => 0},
+        period_stats: nil
+      }
+
+      result = Teams.calculate_period_stats(team_state, 1)
+
+      assert %{
+               period_stats: %{
+                 "1" => %{"timeouts" => 1}
+               }
+             } = result
+    end
+
+    test "handles only zero stats for periods" do
+      team_state = %TeamState{
+        stats_values: %{"timeouts" => 0, "fouls_technical" => 0},
+        period_stats: %{}
+      }
+
+      result = Teams.calculate_period_stats(team_state, 1)
+
+      assert %{
+               period_stats: %{
+                 "1" => %{"timeouts" => 0, "fouls_technical" => 0}
+               }
+             } = result
+    end
+
+    test "handles out-of-order period calculations" do
+      team_state = %TeamState{
+        stats_values: %{"timeouts" => 3, "fouls_technical" => 2},
+        period_stats: %{
+          "1" => %{"timeouts" => 1, "fouls_technical" => 1},
+          "3" => %{"timeouts" => 1, "fouls_technical" => 0}
+        }
+      }
+
+      result = Teams.calculate_period_stats(team_state, 2)
+
+      # Period 2 = current_totals - (period 1 totals) = {timeouts: 3, fouls: 2} - {timeouts: 1, fouls: 1}
+      assert %{
+               period_stats: %{
+                 "1" => %{"timeouts" => 1, "fouls_technical" => 1},
+                 "2" => %{"timeouts" => 2, "fouls_technical" => 1},
+                 "3" => %{"timeouts" => 1, "fouls_technical" => 0}
+               }
+             } = result
+    end
+
+    test "updates existing period stats when recalculating same period" do
+      team_state = %TeamState{
+        stats_values: %{"timeouts" => 2, "fouls_technical" => 1},
+        period_stats: %{
+          "1" => %{"timeouts" => 1, "fouls_technical" => 1}
+        }
+      }
+
+      result = Teams.calculate_period_stats(team_state, 1)
+
+      assert %{
+               period_stats: %{
+                 "1" => %{"timeouts" => 2, "fouls_technical" => 1}
+               }
+             } = result
+    end
+
+    test "handles string period keys and converts to consistent format" do
+      team_state = %TeamState{
+        stats_values: %{"timeouts" => 3, "fouls_technical" => 2},
+        period_stats: %{
+          "1" => %{"timeouts" => 1, "fouls_technical" => 1},
+          "2" => %{"timeouts" => 1, "fouls_technical" => 0}
+        }
+      }
+
+      result = Teams.calculate_period_stats(team_state, 3)
+
+      assert %{
+               period_stats: %{
+                 "1" => %{"timeouts" => 1, "fouls_technical" => 1},
+                 "2" => %{"timeouts" => 1, "fouls_technical" => 0},
+                 "3" => %{"timeouts" => 1, "fouls_technical" => 1}
+               }
+             } = result
+    end
+  end
 end
