@@ -51,6 +51,7 @@ function Button({
             {fouls}
           </span>
         )}
+        {player.is_captain && <span className="captain-indicator">C</span>}
       </div>
     </button>
   );

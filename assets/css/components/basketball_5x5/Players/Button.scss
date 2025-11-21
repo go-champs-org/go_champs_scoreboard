@@ -38,6 +38,17 @@
       animation: foul-update-animation 1s ease-in-out;
     }
   }
+
+  .captain-indicator {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: $tertiary70;
+    border-bottom-left-radius: 5px;
+    color: $black;
+    padding: 0 5px;
+    font-size: 0.65rem;
+  }
 }
 
 @keyframes foul-update-animation {
