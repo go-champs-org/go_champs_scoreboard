@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         label: {
-          width: '45px',
+          width: '55px',
         },
         value: {
           flex: '1',
@@ -59,6 +59,11 @@ function HeaderBox({
     year: 'numeric',
     timeZone: 'UTC', // This forces UTC timezone
   });
+  const time = new Date(datetime).toLocaleTimeString('pt-BR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'UTC', // This forces UTC timezone
+  });
   return (
     <View style={styles.headerBox}>
       <View style={styles.headerBox.row}>
@@ -74,17 +79,17 @@ function HeaderBox({
         </View>
         <View style={styles.headerBox.row.column}>
           <View style={styles.headerBox.row.column.label}>
-            <Text>Data</Text>
+            <Text>Data - Hora I</Text>
           </View>
           <View style={styles.headerBox.row.column.value}>
-            <Text>{date}</Text>
+            <Text>{`${date} - ${time}`}</Text>
           </View>
         </View>
         <View
           style={{
             ...styles.headerBox.row.column,
             flex: '1 0 auto',
-            width: '60px',
+            width: '70px',
           }}
         >
           <View style={styles.headerBox.row.column.label}>
@@ -120,7 +125,7 @@ function HeaderBox({
           style={{
             ...styles.headerBox.row.column,
             flex: '1 0 auto',
-            width: '60px',
+            width: '70px',
           }}
         >
           <View style={styles.headerBox.row.column.label}>

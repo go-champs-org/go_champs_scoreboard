@@ -398,7 +398,7 @@ function FibaScoresheet({ scoresheetData }: FibaScoresheetProps) {
               crewChiefName={scoresheetData.crew_chief.name}
               umpire1Name={scoresheetData.umpire_1.name}
               umpire2Name={scoresheetData.umpire_2.name}
-              datetime={scoresheetData.info.datetime}
+              datetime={scoresheetData.info.actual_start_datetime}
               location={scoresheetData.info.location}
             />
           </View>
