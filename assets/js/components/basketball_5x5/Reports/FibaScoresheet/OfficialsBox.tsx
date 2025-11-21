@@ -69,17 +69,6 @@ function OfficialsBox({
       </View>
       <View style={styles.officialsBox.row}>
         <View style={styles.officialsBox.row.label}>
-          <Text>Representante</Text>
-        </View>
-        <View style={styles.officialsBox.row.name}>
-          <Text style={styles.officialsBox.row.name.content}>
-            {assistantScorer.name}
-          </Text>
-        </View>
-        <View style={styles.officialsBox.row.signatureBox}></View>
-      </View>
-      <View style={styles.officialsBox.row}>
-        <View style={styles.officialsBox.row.label}>
           <Text>Cronometrista</Text>
         </View>
         <View style={styles.officialsBox.row.name}>
@@ -96,6 +85,17 @@ function OfficialsBox({
         <View style={styles.officialsBox.row.name}>
           <Text style={styles.officialsBox.row.name.content}>
             {shotClockOperator.name}
+          </Text>
+        </View>
+        <View style={styles.officialsBox.row.signatureBox}></View>
+      </View>
+      <View style={styles.officialsBox.row}>
+        <View style={styles.officialsBox.row.label}>
+          <Text>Representante</Text>
+        </View>
+        <View style={styles.officialsBox.row.name}>
+          <Text style={styles.officialsBox.row.name.content}>
+            {assistantScorer.name}
           </Text>
         </View>
         <View style={styles.officialsBox.row.signatureBox}></View>
