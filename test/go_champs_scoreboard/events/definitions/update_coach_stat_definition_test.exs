@@ -45,12 +45,14 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinitionTest do
               "fouls_technical" => 1
             }
           }
-        ]
+        ],
+        total_coach_stats: %{}
       },
       away_team: %{
         coaches: [
           %{id: "456", stats_values: %{}}
-        ]
+        ],
+        total_coach_stats: %{}
       },
       sport_id: "basketball"
     }
@@ -74,12 +76,16 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinitionTest do
                 "fouls_technical" => 2
               }
             }
-          ]
+          ],
+          total_coach_stats: %{
+            "fouls_technical" => 2
+          }
         },
         away_team: %{
           coaches: [
             %{id: "456", stats_values: %{}}
-          ]
+          ],
+          total_coach_stats: %{}
         },
         sport_id: "basketball"
       }

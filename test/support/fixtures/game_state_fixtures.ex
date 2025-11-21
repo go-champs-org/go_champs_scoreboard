@@ -233,12 +233,14 @@ defmodule GoChampsScoreboard.GameStateFixtures do
           id: "coach-id",
           name: "First coach",
           type: :head_coach,
+          state: :available,
           stats_values: Basketball.bootstrap_coach_stats()
         },
         %CoachState{
           id: "assistant-coach-id",
           name: "Assistant coach",
           type: :assistant_coach,
+          state: :available,
           stats_values: Basketball.bootstrap_coach_stats()
         }
       ],
@@ -269,12 +271,14 @@ defmodule GoChampsScoreboard.GameStateFixtures do
           id: "away-coach-id",
           name: "Away coach",
           type: :head_coach,
+          state: :available,
           stats_values: Basketball.bootstrap_coach_stats()
         },
         %CoachState{
           id: "away-assistant-coach-id",
           name: "Away assistant coach",
           type: :assistant_coach,
+          state: :available,
           stats_values: Basketball.bootstrap_coach_stats()
         }
       ],

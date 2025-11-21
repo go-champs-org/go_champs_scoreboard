@@ -8,6 +8,7 @@ defmodule GoChampsScoreboard.Games.Models.TeamState do
           players: list(PlayerState.t()),
           coaches: list(CoachState.t()),
           total_player_stats: map(),
+          total_coach_stats: map(),
           stats_values: map(),
           tri_code: String.t(),
           logo_url: String.t(),
@@ -18,6 +19,7 @@ defmodule GoChampsScoreboard.Games.Models.TeamState do
     :players,
     :coaches,
     :total_player_stats,
+    :total_coach_stats,
     :stats_values,
     :tri_code,
     :logo_url,
@@ -32,7 +34,8 @@ defmodule GoChampsScoreboard.Games.Models.TeamState do
         stats_values \\ nil,
         tri_code \\ "",
         logo_url \\ "",
-        coaches \\ []
+        coaches \\ [],
+        total_coach_stats \\ %{}
       ) do
     final_stats_values =
       if is_nil(stats_values), do: Basketball.bootstrap_team_stats(), else: stats_values
@@ -42,6 +45,7 @@ defmodule GoChampsScoreboard.Games.Models.TeamState do
       players: players,
       coaches: coaches,
       total_player_stats: total_player_stats,
+      total_coach_stats: total_coach_stats,
       stats_values: final_stats_values,
       tri_code: tri_code,
       logo_url: logo_url,

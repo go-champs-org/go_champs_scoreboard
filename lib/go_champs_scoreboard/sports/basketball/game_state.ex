@@ -45,12 +45,11 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameState do
   end
 
   defp update_team_players_in_game_state(
-         current_game_state,
+         current_team,
          restored_state,
          team_type,
          valid_stat_keys
        ) do
-    current_team = Teams.find_team(current_game_state, team_type)
     restored_team = Teams.find_team(restored_state, team_type)
 
     current_players = current_team.players || []
@@ -74,6 +73,35 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameState do
     updated_team
   end
 
+  defp update_team_coaches_in_game_state(
+         current_team,
+         restored_state,
+         team_type,
+         valid_stat_keys
+       ) do
+    restored_team = Teams.find_team(restored_state, team_type)
+
+    current_coaches = current_team.coaches || []
+    restored_coaches = restored_team.coaches || []
+
+    updated_team =
+      current_coaches
+      |> Enum.reduce(current_team, fn current_coach, acc_team ->
+        case Enum.find(restored_coaches, &(&1.id == current_coach.id)) do
+          nil ->
+            acc_team
+
+          restored_coach ->
+            updated_coach =
+              update_coach_from_snapshot(current_coach, restored_coach, valid_stat_keys)
+
+            Teams.update_coach_in_team(acc_team, updated_coach)
+        end
+      end)
+
+    updated_team
+  end
+
   defp update_player_from_snapshot(current_player, restored_player, valid_stat_keys) do
     filtered_stats_values =
       restored_player.stats_values
@@ -89,6 +117,37 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameState do
     }
   end
 
+  defp update_coach_from_snapshot(current_coach, restored_coach, valid_stat_keys) do
+    filtered_stats_values =
+      restored_coach.stats_values
+      |> Enum.filter(fn {key, _value} -> MapSet.member?(valid_stat_keys, key) end)
+      |> Enum.into(%{})
+
+    updated_stats_values = Map.merge(current_coach.stats_values, filtered_stats_values)
+
+    # Get the restored coach's state, handling both struct and map cases
+    restored_state =
+      cond do
+        is_struct(restored_coach) -> restored_coach.state || :available
+        is_map(restored_coach) -> Map.get(restored_coach, :state, :available)
+        true -> :available
+      end
+
+    # Get current coach state safely
+    current_state =
+      cond do
+        is_struct(current_coach) -> current_coach.state || :available
+        is_map(current_coach) -> Map.get(current_coach, :state, :available)
+        true -> :available
+      end
+
+    # Use restored state if available, otherwise keep current state
+    final_state = restored_state || current_state
+
+    Map.put(current_coach, :state, final_state)
+    |> Map.put(:stats_values, updated_stats_values)
+  end
+
   defp update_team_total_player_stats(team, restored_state, team_type, valid_stat_keys) do
     restored_team = Teams.find_team(restored_state, team_type)
 
@@ -102,6 +161,21 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameState do
     updated_total_stats = Map.merge(team.total_player_stats, filtered_restored_stats)
 
     %{team | total_player_stats: updated_total_stats}
+  end
+
+  defp update_team_total_coach_stats(team, restored_state, team_type, valid_stat_keys) do
+    restored_team = Teams.find_team(restored_state, team_type)
+
+    restored_total_stats = restored_team.total_coach_stats || %{}
+
+    filtered_restored_stats =
+      restored_total_stats
+      |> Enum.filter(fn {key, _value} -> MapSet.member?(valid_stat_keys, key) end)
+      |> Enum.into(%{})
+
+    updated_total_stats = Map.merge(team.total_coach_stats, filtered_restored_stats)
+
+    %{team | total_coach_stats: updated_total_stats}
   end
 
   defp update_team_stats(team, restored_state, team_type, valid_stat_keys) do
@@ -135,6 +209,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameState do
   defp get_valid_stat_keys do
     %{
       player: Basketball.find_player_stat_by_type([:manual, :calculated]) |> extract_keys(),
+      coach: Basketball.find_coach_stat_by_type([:manual, :calculated]) |> extract_keys(),
       team: Basketball.find_team_stat_by_type([:manual, :calculated]) |> extract_keys()
     }
   end
@@ -142,9 +217,13 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameState do
   defp extract_keys(stats), do: stats |> Enum.map(& &1.key) |> MapSet.new()
 
   defp update_team_from_snapshot(game_state, restored_state, team_type, valid_keys) do
-    game_state
+    current_team = Teams.find_team(game_state, team_type)
+
+    current_team
     |> update_team_players_in_game_state(restored_state, team_type, valid_keys.player)
+    |> update_team_coaches_in_game_state(restored_state, team_type, valid_keys.coach)
     |> update_team_total_player_stats(restored_state, team_type, valid_keys.player)
+    |> update_team_total_coach_stats(restored_state, team_type, valid_keys.coach)
     |> update_team_stats(restored_state, team_type, valid_keys.team)
     |> update_team_period_stats(restored_state, team_type)
   end
@@ -208,6 +287,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameState do
   defp copy_team_level_stats_from_source(target_team, source_team) do
     target_team
     |> Map.put(:total_player_stats, source_team.total_player_stats || %{})
+    |> Map.put(:total_coach_stats, source_team.total_coach_stats || %{})
     |> Map.put(:stats_values, source_team.stats_values || %{})
     |> Map.put(:period_stats, source_team.period_stats || %{})
   end

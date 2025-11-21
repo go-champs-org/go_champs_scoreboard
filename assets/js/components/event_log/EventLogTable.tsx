@@ -34,7 +34,8 @@ function EventLogRow({
   const { t } = useTranslation();
   const canDelete =
     eventLog.key === 'update-player-stat' ||
-    eventLog.key === 'update-team-stat';
+    eventLog.key === 'update-team-stat' ||
+    eventLog.key === 'update-coach-stat';
 
   const canEdit =
     eventLog.key === 'update-player-stat' ||

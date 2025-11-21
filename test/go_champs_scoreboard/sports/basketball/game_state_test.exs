@@ -331,6 +331,222 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameStateTest do
       assert updated_player2.stats_values["invalid_stat"] == 50
     end
 
+    test "updates total_coach_stats correctly from snapshot with valid stat keys only" do
+      # Create original game state with coaches that have total_coach_stats
+      original_coach1 = %CoachState{
+        id: "coach-1",
+        name: "Head Coach",
+        type: :head_coach,
+        state: :available,
+        stats_values: %{
+          "fouls_technical" => 2,
+          "fouls_disqualifying" => 1,
+          "invalid_stat" => 100
+        }
+      }
+
+      original_coach2 = %CoachState{
+        id: "coach-2",
+        name: "Assistant Coach",
+        type: :assistant_coach,
+        state: :available,
+        stats_values: %{
+          "fouls_technical" => 1,
+          "fouls_disqualifying" => 0,
+          "invalid_stat" => 50
+        }
+      }
+
+      original_game_state = %GameStateModel{
+        basketball_game_state_fixture()
+        | home_team: %TeamState{
+            basketball_game_state_fixture().home_team
+            | coaches: [original_coach1, original_coach2],
+              total_coach_stats: %{
+                "fouls_technical" => 3,
+                "fouls_disqualifying" => 1,
+                "invalid_stat" => 150
+              }
+          }
+      }
+
+      # Create snapshot with updated coach stats
+      snapshot_coach1 = %CoachState{
+        id: "coach-1",
+        name: "Head Coach",
+        type: :head_coach,
+        state: :available,
+        stats_values: %{
+          # manual - should update
+          "fouls_technical" => 4,
+          # manual - should update
+          "fouls_disqualifying" => 2,
+          # invalid - should not update
+          "invalid_stat" => 200
+        }
+      }
+
+      snapshot_coach2 = %CoachState{
+        id: "coach-2",
+        name: "Assistant Coach",
+        type: :assistant_coach,
+        state: :available,
+        stats_values: %{
+          # manual - should update
+          "fouls_technical" => 2,
+          # manual - should update
+          "fouls_disqualifying" => 1,
+          # invalid - should not update
+          "invalid_stat" => 300
+        }
+      }
+
+      snapshot_game_state = %GameStateModel{
+        original_game_state
+        | home_team: %TeamState{
+            original_game_state.home_team
+            | coaches: [snapshot_coach1, snapshot_coach2],
+              total_coach_stats: %{
+                "fouls_technical" => 6,
+                "fouls_disqualifying" => 3,
+                "invalid_stat" => 500
+              }
+          }
+      }
+
+      mock_snapshot = %GameSnapshot{state: snapshot_game_state}
+
+      result = GameState.map_from_snapshot(original_game_state, mock_snapshot)
+
+      # Verify total_coach_stats is correctly updated with only valid stats
+      assert result.home_team.total_coach_stats["fouls_technical"] == 6
+      assert result.home_team.total_coach_stats["fouls_disqualifying"] == 3
+
+      # Invalid stat should remain from original (not updated from snapshot, but preserved)
+      # Original value, not 500 from snapshot
+      assert result.home_team.total_coach_stats["invalid_stat"] == 150
+
+      updated_coach1 = Enum.find(result.home_team.coaches, &(&1.id == "coach-1"))
+      updated_coach2 = Enum.find(result.home_team.coaches, &(&1.id == "coach-2"))
+
+      # Coaches now get updated in map_from_snapshot with matching IDs from snapshot
+      # Valid stats should be updated from snapshot
+      assert updated_coach1.stats_values["fouls_technical"] == 4
+      assert updated_coach1.stats_values["fouls_disqualifying"] == 2
+      # Should keep original
+      assert updated_coach1.stats_values["invalid_stat"] == 100
+
+      assert updated_coach2.stats_values["fouls_technical"] == 2
+      assert updated_coach2.stats_values["fouls_disqualifying"] == 1
+      # Should keep original
+      assert updated_coach2.stats_values["invalid_stat"] == 50
+    end
+
+    test "updates coaches' state and valid stats_values from snapshot" do
+      # Create original game state with some coaches
+      original_coach = %CoachState{
+        id: "coach-1",
+        name: "Original Coach",
+        type: :head_coach,
+        state: :available,
+        stats_values: %{
+          "fouls_technical" => 1,
+          "fouls_disqualifying" => 0,
+          # This should not be updated from snapshot
+          "invalid_stat" => 999
+        }
+      }
+
+      original_game_state = %GameStateModel{
+        basketball_game_state_fixture()
+        | home_team: %TeamState{
+            basketball_game_state_fixture().home_team
+            | coaches: [original_coach]
+          }
+      }
+
+      # Create snapshot with updated coach data
+      snapshot_coach = %CoachState{
+        id: "coach-1",
+        name: "Snapshot Coach",
+        type: :assistant_coach,
+        state: :not_available,
+        stats_values: %{
+          # manual - should update
+          "fouls_technical" => 3,
+          # manual - should update
+          "fouls_disqualifying" => 1,
+          # invalid - should not update
+          "invalid_stat" => 777
+        }
+      }
+
+      snapshot_game_state = %GameStateModel{
+        original_game_state
+        | home_team: %TeamState{
+            original_game_state.home_team
+            | coaches: [snapshot_coach]
+          }
+      }
+
+      mock_snapshot = %GameSnapshot{state: snapshot_game_state}
+
+      result = GameState.map_from_snapshot(original_game_state, mock_snapshot)
+
+      # Coach state should be updated
+      updated_coach = List.first(result.home_team.coaches)
+      assert updated_coach.state == :not_available
+
+      # Valid stats should be updated
+      assert updated_coach.stats_values["fouls_technical"] == 3
+      assert updated_coach.stats_values["fouls_disqualifying"] == 1
+
+      # Invalid stats should keep original value
+      assert updated_coach.stats_values["invalid_stat"] == 999
+
+      # Note: name and type are not updated by snapshot mapping (only state and stats_values)
+      assert updated_coach.name == "Original Coach"
+      assert updated_coach.type == :head_coach
+    end
+
+    test "handles coaches not present in snapshot" do
+      original_coach = %CoachState{
+        id: "coach-not-in-snapshot",
+        name: "Original Coach",
+        type: :head_coach,
+        state: :available,
+        stats_values: %{"fouls_technical" => 2}
+      }
+
+      original_game_state = %GameStateModel{
+        basketball_game_state_fixture()
+        | home_team: %TeamState{
+            basketball_game_state_fixture().home_team
+            | coaches: [original_coach]
+          }
+      }
+
+      # Snapshot has no matching coach
+      snapshot_game_state = %GameStateModel{
+        original_game_state
+        | home_team: %TeamState{
+            original_game_state.home_team
+            | # No coaches in snapshot
+              coaches: []
+          }
+      }
+
+      mock_snapshot = %GameSnapshot{state: snapshot_game_state}
+
+      result = GameState.map_from_snapshot(original_game_state, mock_snapshot)
+
+      # Coach should remain unchanged since not found in snapshot
+      updated_coach = List.first(result.home_team.coaches)
+      assert updated_coach.id == "coach-not-in-snapshot"
+      assert updated_coach.state == :available
+      assert updated_coach.stats_values["fouls_technical"] == 2
+    end
+
     test "updates team stats correctly from snapshot with valid stat keys only" do
       # Create original game state with team stats
       original_game_state = %GameStateModel{
@@ -654,6 +870,49 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameStateTest do
       assert result.home_team.stats_values["timeouts"] == 3
       assert result.home_team.stats_values["fouls_technical"] == 2
       assert result.home_team.stats_values["points"] == 85
+    end
+
+    test "copies total_coach_stats from source to target game state" do
+      # Create source game state with coach stats
+      source_game_state = %GameStateModel{
+        basketball_game_state_fixture()
+        | home_team: %TeamState{
+            basketball_game_state_fixture().home_team
+            | total_coach_stats: %{
+                "fouls_technical" => 4,
+                "fouls_disqualifying" => 2,
+                "fouls" => 6
+              },
+              # Remove players to focus on coach stats
+              players: [],
+              # Remove coaches to focus on team stats
+              coaches: []
+          }
+      }
+
+      # Create target game state with different coach stats
+      target_game_state = %GameStateModel{
+        basketball_game_state_fixture()
+        | home_team: %TeamState{
+            basketball_game_state_fixture().home_team
+            | total_coach_stats: %{
+                "fouls_technical" => 1,
+                "fouls_disqualifying" => 0,
+                "fouls" => 1
+              },
+              # Remove players to focus on coach stats
+              players: [],
+              # Remove coaches to focus on team stats
+              coaches: []
+          }
+      }
+
+      result = GameState.copy_all_stats_from_game_state(source_game_state, target_game_state)
+
+      # Assert that team total_coach_stats are copied from source
+      assert result.home_team.total_coach_stats["fouls_technical"] == 4
+      assert result.home_team.total_coach_stats["fouls_disqualifying"] == 2
+      assert result.home_team.total_coach_stats["fouls"] == 6
     end
 
     test "copies period_stats from source to target game state" do

@@ -61,6 +61,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinition do
       current_game
       |> Teams.find_team(team_type)
       |> Teams.update_coach_in_team(updated_coach)
+      |> Teams.calculate_team_total_coach_stats()
 
     current_game
     |> Games.update_team(team_type, updated_team)

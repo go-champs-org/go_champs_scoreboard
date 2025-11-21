@@ -555,6 +555,77 @@ defmodule GoChampsScoreboard.Games.TeamsTest do
     end
   end
 
+  describe "calculate_team_total_coach_stats" do
+    test "returns a team state with total_coach_stats with the sum of all coaches stats" do
+      team = %TeamState{
+        name: "Brazil",
+        total_coach_stats: %{},
+        coaches: [
+          %CoachState{
+            id: 1,
+            name: "Tite",
+            type: :head_coach,
+            stats_values: %{
+              "technical_fouls" => 2,
+              "timeouts_called" => 3
+            }
+          },
+          %CoachState{
+            id: 2,
+            name: "Assistant Coach",
+            type: :assistant_coach,
+            stats_values: %{
+              "technical_fouls" => 1,
+              "timeouts_called" => 1
+            }
+          }
+        ]
+      }
+
+      result = Teams.calculate_team_total_coach_stats(team)
+
+      assert result.total_coach_stats == %{
+               "technical_fouls" => 3,
+               "timeouts_called" => 4
+             }
+
+      # Verify other fields remain unchanged
+      assert result.name == "Brazil"
+      assert length(result.coaches) == 2
+    end
+
+    test "returns empty map when no coaches present" do
+      team = %TeamState{
+        name: "Brazil",
+        total_coach_stats: %{},
+        coaches: []
+      }
+
+      result = Teams.calculate_team_total_coach_stats(team)
+
+      assert result.total_coach_stats == %{}
+    end
+
+    test "handles coaches with empty stats_values" do
+      team = %TeamState{
+        name: "Brazil",
+        total_coach_stats: %{},
+        coaches: [
+          %CoachState{
+            id: 1,
+            name: "Tite",
+            type: :head_coach,
+            stats_values: %{}
+          }
+        ]
+      }
+
+      result = Teams.calculate_team_total_coach_stats(team)
+
+      assert result.total_coach_stats == %{}
+    end
+  end
+
   describe "update_manual_stats_values" do
     test "updates the team state with the new value" do
       team_state = %{

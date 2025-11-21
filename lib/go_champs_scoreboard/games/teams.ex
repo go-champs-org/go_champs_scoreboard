@@ -138,6 +138,18 @@ defmodule GoChampsScoreboard.Games.Teams do
     end)
   end
 
+  @spec calculate_team_total_coach_stats(TeamState.t()) :: TeamState.t()
+  def calculate_team_total_coach_stats(team) do
+    team
+    |> Map.update!(:total_coach_stats, fn _ ->
+      Enum.reduce(team.coaches, %{}, fn coach, acc ->
+        Map.merge(acc, coach.stats_values, fn _key, acc_key_value, coach_key_value ->
+          acc_key_value + coach_key_value
+        end)
+      end)
+    end)
+  end
+
   @spec update_manual_stats_values(TeamState.t(), Stat.t(), String.t()) :: TeamState.t()
   def update_manual_stats_values(team_state, team_stat, operation) do
     new_stat_value =
