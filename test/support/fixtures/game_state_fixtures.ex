@@ -334,6 +334,7 @@ defmodule GoChampsScoreboard.GameStateFixtures do
         }
       ],
       info_state: %InfoState{
+        number: "ABC123",
         location: "Game Location",
         datetime: datetime,
         tournament_name: "Tournament Name",

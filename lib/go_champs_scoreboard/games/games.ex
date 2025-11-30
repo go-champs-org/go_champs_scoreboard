@@ -1,5 +1,6 @@
 defmodule GoChampsScoreboard.Games.Games do
   alias GoChampsScoreboard.Games.Models.ProtestState
+  alias GoChampsScoreboard.Games.Models.InfoState
   alias GoChampsScoreboard.Events.Definitions.EndGameLiveModeDefinition
   alias GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition
   alias GoChampsScoreboard.Events.ValidatorCreator
@@ -146,5 +147,10 @@ defmodule GoChampsScoreboard.Games.Games do
   @spec update_protest_state(GameState.t(), ProtestState.t()) :: GameState.t()
   def update_protest_state(game_state, protest_state) do
     %{game_state | protest: protest_state}
+  end
+
+  @spec update_info(GameState.t(), InfoState.t()) :: GameState.t()
+  def update_info(game_state, info_state) do
+    %{game_state | info: info_state}
   end
 end

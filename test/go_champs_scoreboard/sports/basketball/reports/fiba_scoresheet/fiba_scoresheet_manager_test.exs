@@ -35,7 +35,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
       expected = %FibaScoresheet{
         game_id: event_log.game_id,
         info: %FibaScoresheet.Info{
-          game_id: event_log.game_id,
+          number: "ABC123",
           location: "Game Location",
           datetime: datetime,
           tournament_name: "Tournament Name",

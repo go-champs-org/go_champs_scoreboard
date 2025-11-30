@@ -35,7 +35,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
   @spec bootstrap_info(GameState.t()) :: FibaScoresheet.Info.t()
   defp bootstrap_info(game_state) do
     %FibaScoresheet.Info{
-      game_id: game_state.id,
+      number: game_state.info.number,
       location: game_state.info.location,
       datetime: game_state.info.datetime,
       tournament_name: game_state.info.tournament_name,

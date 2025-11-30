@@ -191,7 +191,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
     """
 
     @type t :: %__MODULE__{
-            game_id: String.t(),
+            number: String.t(),
             location: String.t(),
             datetime: DateTime.t(),
             tournament_name: String.t(),
@@ -201,7 +201,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
           }
 
     defstruct [
-      :game_id,
+      :number,
       :location,
       :datetime,
       :tournament_name,

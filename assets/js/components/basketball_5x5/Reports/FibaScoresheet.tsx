@@ -75,7 +75,7 @@ export interface Team {
 }
 
 export interface Info {
-  game_id: string;
+  number: string;
   location: string;
   datetime: string;
   tournament_name: string;
@@ -394,7 +394,7 @@ function FibaScoresheet({ scoresheetData }: FibaScoresheetProps) {
         <View style={styles.main}>
           <View style={styles.main.header}>
             <HeaderBox
-              gameId={scoresheetData.game_id}
+              number={scoresheetData.info.number}
               crewChiefName={scoresheetData.crew_chief.name}
               umpire1Name={scoresheetData.umpire_1.name}
               umpire2Name={scoresheetData.umpire_2.name}

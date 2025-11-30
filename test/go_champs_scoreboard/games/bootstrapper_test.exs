@@ -439,6 +439,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
       assert game.info.tournament_id == "tournament-id"
       assert game.info.tournament_name == "Tournament Name"
       assert game.info.location == "Stadium A"
+      assert game.info.number == "game-id"
     end
   end
 end

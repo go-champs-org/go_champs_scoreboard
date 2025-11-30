@@ -168,6 +168,7 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
       end
 
     location = Map.get(game_response, "location", "")
+    game_id = Map.get(game_response, "id", "")
     tournament_info = get_in(game_response, ["phase", "tournament"]) || %{}
     tournament_id = Map.get(tournament_info, "id", "")
     tournament_name = Map.get(tournament_info, "name", "")
@@ -176,7 +177,8 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
       datetime,
       tournament_id: tournament_id,
       tournament_name: tournament_name,
-      location: location
+      location: location,
+      number: game_id
     )
   end
 end

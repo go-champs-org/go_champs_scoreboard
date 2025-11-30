@@ -39,14 +39,14 @@ const styles = StyleSheet.create({
 interface HeaderBoxProps {
   location: string;
   datetime: string;
-  gameId: string;
+  number: string;
   crewChiefName: string;
   umpire1Name: string;
   umpire2Name: string;
 }
 
 function HeaderBox({
-  gameId,
+  number,
   crewChiefName,
   umpire1Name,
   umpire2Name,
@@ -96,7 +96,7 @@ function HeaderBox({
             <Text>Jogo Id</Text>
           </View>
           <View style={styles.headerBox.row.column.value}>
-            <Text>{gameId}</Text>
+            <Text>{number}</Text>
           </View>
         </View>
       </View>

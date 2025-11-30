@@ -331,4 +331,70 @@ defmodule GoChampsScoreboard.Games.GamesTest do
     {:ok, game_json} = Redix.command(:games_cache, ["GET", "game_state:#{game_id}"])
     GameState.from_json(game_json)
   end
+
+  describe "update_info/2" do
+    test "updates game state with new info" do
+      alias GoChampsScoreboard.Games.Models.InfoState
+
+      original_datetime = DateTime.utc_now()
+
+      game_state = %GameState{
+        id: "game-id",
+        info: %InfoState{
+          datetime: original_datetime,
+          tournament_id: "tournament-1",
+          tournament_name: "Tournament Name",
+          location: "Old Stadium",
+          number: "OLD123"
+        }
+      }
+
+      new_info = %InfoState{
+        datetime: original_datetime,
+        tournament_id: "tournament-1",
+        tournament_name: "Tournament Name",
+        location: "New Stadium",
+        number: "NEW456"
+      }
+
+      updated_game_state = Games.update_info(game_state, new_info)
+
+      assert updated_game_state.info == new_info
+      assert updated_game_state.id == "game-id"
+    end
+
+    test "completely replaces info state" do
+      alias GoChampsScoreboard.Games.Models.InfoState
+
+      original_datetime = DateTime.utc_now()
+      new_datetime = DateTime.add(original_datetime, 3600)
+
+      game_state = %GameState{
+        id: "game-id",
+        info: %InfoState{
+          datetime: original_datetime,
+          tournament_id: "old-tournament",
+          tournament_name: "Old Tournament",
+          location: "Old Stadium",
+          number: "OLD123"
+        }
+      }
+
+      new_info = %InfoState{
+        datetime: new_datetime,
+        tournament_id: "new-tournament",
+        tournament_name: "New Tournament",
+        location: "New Stadium",
+        number: "NEW456"
+      }
+
+      updated_game_state = Games.update_info(game_state, new_info)
+
+      assert updated_game_state.info.datetime == new_datetime
+      assert updated_game_state.info.tournament_id == "new-tournament"
+      assert updated_game_state.info.tournament_name == "New Tournament"
+      assert updated_game_state.info.location == "New Stadium"
+      assert updated_game_state.info.number == "NEW456"
+    end
+  end
 end
