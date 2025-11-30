@@ -35,10 +35,38 @@
     }
   }
 
+  .team-name p {
+    text-wrap-mode: nowrap;
+    overflow: hidden;
+  }
+
+  .team-stats {
+    transition: background-color 0.5s linear;
+    border-radius: 5px;
+    cursor: pointer;
+    &:hover {
+      background-color: gray;
+    }
+  }
+
   .team-stat {
     color: $white-dark;
     display: flex;
     margin: 0.5rem 0;
     justify-content: space-between;
+
+    .stat-timeouts {
+      span {
+        padding: 0.25rem 0.5rem;
+
+        &.consumed {
+          background-color: $red;
+        }
+
+        &.remaining {
+          background-color: $green;
+        }
+      }
+    }
   }
 }
