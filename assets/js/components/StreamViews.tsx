@@ -114,16 +114,16 @@ function StreamViews({ game_data }: StreamViewsProps) {
         <div className="columns is-multiline is-vcentered">
           <div className="column has-text-centered away">
             <TeamScore
-              team={game_state.away_team}
-              score={game_state.away_team.total_player_stats['points'] || 0}
-              defaultColor="#970c10"
+              team={game_state.home_team}
+              score={game_state.home_team.total_player_stats['points'] || 0}
+              defaultColor="#2b5615"
             />
           </div>
           <div className="column has-text-centered home">
             <TeamScore
-              team={game_state.home_team}
-              score={game_state.home_team.total_player_stats['points'] || 0}
-              defaultColor="#2b5615"
+              team={game_state.away_team}
+              score={game_state.away_team.total_player_stats['points'] || 0}
+              defaultColor="#970c10"
             />
           </div>
           <div className="column is-3 has-text-centered period">
