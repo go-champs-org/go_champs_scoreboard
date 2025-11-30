@@ -200,17 +200,22 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinitionTest
 
     test "updates multiple players state from bench to playing" do
       game_state = %GameState{
+        sport_id: "basketball",
+        clock_state: %GoChampsScoreboard.Games.Models.GameClockState{
+          initial_period_time: 600,
+          period: 1
+        },
         away_team: %TeamState{
           players: [
             %PlayerState{
               id: "player-1",
               state: :bench,
-              stats_values: %{"rebounds" => 3}
+              stats_values: %{"game_played" => 0, "rebounds" => 3}
             },
             %PlayerState{
               id: "player-2",
               state: :bench,
-              stats_values: %{"assists" => 2}
+              stats_values: %{"game_played" => 0, "assists" => 2}
             },
             %PlayerState{
               id: "player-3",
@@ -238,10 +243,10 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinitionTest
       # Check updated players
       assert player_1.state == :playing
       # stats preserved
-      assert player_1.stats_values == %{"rebounds" => 3}
+      assert player_1.stats_values == %{"game_played" => 1, "rebounds" => 3}
       assert player_2.state == :playing
       # stats preserved
-      assert player_2.stats_values == %{"assists" => 2}
+      assert player_2.stats_values == %{"game_played" => 1, "assists" => 2}
 
       # Check unchanged player
       # unchanged
@@ -353,6 +358,158 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinitionTest
       assert player_2.state == :not_available
       # stats preserved
       assert player_2.stats_values == %{"minutes" => 25}
+    end
+
+    test "updates game_played stat when changing player state to playing" do
+      game_state = %GameState{
+        sport_id: "basketball",
+        clock_state: %GoChampsScoreboard.Games.Models.GameClockState{
+          initial_period_time: 600,
+          period: 1
+        },
+        home_team: %TeamState{
+          players: [
+            %PlayerState{
+              id: "player-1",
+              state: :bench,
+              stats_values: %{"game_played" => 0, "points" => 0}
+            },
+            %PlayerState{
+              id: "player-2",
+              state: :bench,
+              stats_values: %{"game_played" => 0, "assists" => 2}
+            }
+          ]
+        }
+      }
+
+      event_payload = %{
+        "team-type" => "home",
+        "player-ids" => ["player-1", "player-2"],
+        "state" => "playing"
+      }
+
+      # Event not at game start (time != initial_period_time)
+      event = UpdatePlayersStateDefinition.create(game_state.id, 500, 1, event_payload)
+      new_game_state = UpdatePlayersStateDefinition.handle(game_state, event)
+
+      player_1 = Enum.find(new_game_state.home_team.players, &(&1.id == "player-1"))
+      player_2 = Enum.find(new_game_state.home_team.players, &(&1.id == "player-2"))
+
+      # Both players should have game_played marked as checked
+      assert player_1.state == :playing
+      assert player_1.stats_values["game_played"] == 1
+      # other stats preserved
+      assert player_1.stats_values["points"] == 0
+
+      assert player_2.state == :playing
+      assert player_2.stats_values["game_played"] == 1
+      # other stats preserved
+      assert player_2.stats_values["assists"] == 2
+    end
+
+    test "updates game_played and game_started stats when changing player state to playing at game start" do
+      game_state = %GameState{
+        sport_id: "basketball",
+        clock_state: %GoChampsScoreboard.Games.Models.GameClockState{
+          initial_period_time: 600,
+          period: 1
+        },
+        home_team: %TeamState{
+          players: [
+            %PlayerState{
+              id: "player-1",
+              state: :bench,
+              stats_values: %{"game_played" => 0, "game_started" => 0, "points" => 0}
+            },
+            %PlayerState{
+              id: "player-2",
+              state: :bench,
+              stats_values: %{"game_played" => 0, "game_started" => 0, "rebounds" => 1}
+            }
+          ]
+        }
+      }
+
+      event_payload = %{
+        "team-type" => "home",
+        "player-ids" => ["player-1", "player-2"],
+        "state" => "playing"
+      }
+
+      # Event at game start (time == initial_period_time and period == 1)
+      event = UpdatePlayersStateDefinition.create(game_state.id, 600, 1, event_payload)
+      new_game_state = UpdatePlayersStateDefinition.handle(game_state, event)
+
+      player_1 = Enum.find(new_game_state.home_team.players, &(&1.id == "player-1"))
+      player_2 = Enum.find(new_game_state.home_team.players, &(&1.id == "player-2"))
+
+      # Both players should have game_played and game_started marked as checked
+      assert player_1.state == :playing
+      assert player_1.stats_values["game_played"] == 1
+      assert player_1.stats_values["game_started"] == 1
+      # other stats preserved
+      assert player_1.stats_values["points"] == 0
+
+      assert player_2.state == :playing
+      assert player_2.stats_values["game_played"] == 1
+      assert player_2.stats_values["game_started"] == 1
+      # other stats preserved
+      assert player_2.stats_values["rebounds"] == 1
+    end
+
+    test "does not update game_played or game_started stats when not changing to playing state" do
+      game_state = %GameState{
+        sport_id: "basketball",
+        clock_state: %GoChampsScoreboard.Games.Models.GameClockState{
+          initial_period_time: 600,
+          period: 1
+        },
+        home_team: %TeamState{
+          players: [
+            %PlayerState{
+              id: "player-1",
+              state: :playing,
+              stats_values: %{"game_played" => 1, "game_started" => 1, "points" => 5}
+            },
+            %PlayerState{
+              id: "player-2",
+              state: :bench,
+              stats_values: %{"game_played" => 0, "game_started" => 0, "assists" => 2}
+            }
+          ]
+        }
+      }
+
+      event_payload = %{
+        "team-type" => "home",
+        "player-ids" => ["player-1", "player-2"],
+        "state" => "bench"
+      }
+
+      # Event at game start but changing to bench (not playing)
+      event = UpdatePlayersStateDefinition.create(game_state.id, 600, 1, event_payload)
+      new_game_state = UpdatePlayersStateDefinition.handle(game_state, event)
+
+      player_1 = Enum.find(new_game_state.home_team.players, &(&1.id == "player-1"))
+      player_2 = Enum.find(new_game_state.home_team.players, &(&1.id == "player-2"))
+
+      # Stats should remain unchanged since not changing to playing
+      assert player_1.state == :bench
+      # unchanged
+      assert player_1.stats_values["game_played"] == 1
+      # unchanged
+      assert player_1.stats_values["game_started"] == 1
+      # other stats preserved
+      assert player_1.stats_values["points"] == 5
+
+      assert player_2.state == :bench
+      # unchanged
+      assert player_2.stats_values["game_played"] == 0
+      # unchanged
+      assert player_2.stats_values["game_started"] == 0
+      # other stats preserved
+      assert player_2.stats_values["assists"] == 2
     end
   end
 

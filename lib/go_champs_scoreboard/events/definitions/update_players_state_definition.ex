@@ -4,6 +4,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinition do
   alias GoChampsScoreboard.Events.Models.Event
   alias GoChampsScoreboard.Games.Models.GameState
   alias GoChampsScoreboard.Games.{Games, Teams, Players}
+  alias GoChampsScoreboard.Sports.Sports
   alias GoChampsScoreboard.Events.Models.StreamConfig
 
   @key "update-players-state"
@@ -39,6 +40,8 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinition do
   @impl true
   @spec handle(GameState.t(), Event.t()) :: GameState.t()
   def handle(current_game, %Event{
+        clock_state_time_at: clock_state_time_at,
+        clock_state_period_at: clock_state_period_at,
         payload: %{
           "team-type" => team_type,
           "player-ids" => player_ids,
@@ -52,8 +55,20 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinition do
     updated_team =
       player_ids
       |> Enum.reduce(current_team, fn player_id, acc_team ->
-        player = Teams.find_player(current_game, team_type, player_id)
-        updated_player = Players.update_state(player, new_state)
+        player =
+          Teams.find_player(current_game, team_type, player_id)
+          |> Players.update_state(new_state)
+
+        updated_player =
+          case new_state do
+            :playing ->
+              player
+              |> update_playing_stats(current_game, clock_state_time_at, clock_state_period_at)
+
+            _ ->
+              player
+          end
+
         Teams.update_player_in_team(acc_team, updated_player)
       end)
 
@@ -64,6 +79,25 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinition do
   @impl true
   @spec stream_config() :: StreamConfig.t()
   def stream_config, do: StreamConfig.new()
+
+  defp update_playing_stats(player, game_state, clock_state_time_at, clock_state_period_at) do
+    game_played_stat = Sports.find_player_stat(game_state.sport_id, "game_played")
+
+    is_game_start =
+      clock_state_time_at == game_state.clock_state.initial_period_time and
+        clock_state_period_at == 1
+
+    if is_game_start do
+      game_started_stat = Sports.find_player_stat(game_state.sport_id, "game_started")
+
+      player
+      |> Players.update_manual_stats_values(game_played_stat, "check")
+      |> Players.update_manual_stats_values(game_started_stat, "check")
+    else
+      player
+      |> Players.update_manual_stats_values(game_played_stat, "check")
+    end
+  end
 
   defp validate_team_type(%{"team-type" => team_type}) when team_type in ["home", "away"] do
     {:ok, team_type}
