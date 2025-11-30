@@ -44,7 +44,7 @@ export interface PlayerState {
     | 'playing'
     | 'bench'
     | 'injured'
-    | 'suspended'
+    | 'disqualified'
     | 'available'
     | 'not_available';
   id: string;

@@ -1,7 +1,7 @@
 defmodule GoChampsScoreboard.Games.Models.PlayerState do
   alias GoChampsScoreboard.Sports.Basketball.Basketball
 
-  @type state :: :playing | :bench | :injured | :suspended | :available | :not_available
+  @type state :: :playing | :bench | :injured | :disqualified | :available | :not_available
 
   @type t :: %__MODULE__{
           id: String.t(),

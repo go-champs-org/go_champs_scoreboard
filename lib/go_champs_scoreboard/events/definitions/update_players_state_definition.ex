@@ -121,13 +121,13 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinition do
   end
 
   defp validate_state(%{"state" => state})
-       when state in ["playing", "bench", "injured", "suspended", "available", "not_available"] do
+       when state in ["playing", "bench", "injured", "disqualified", "available", "not_available"] do
     {:ok, state}
   end
 
   defp validate_state(_payload) do
     {:error,
-     "Invalid or missing state. Must be one of: playing, bench, injured, suspended, available, not_available"}
+     "Invalid or missing state. Must be one of: playing, bench, injured, disqualified, available, not_available"}
   end
 
   defp validate_players_exist(game_state, team_type, player_ids) do

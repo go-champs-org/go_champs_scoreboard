@@ -102,7 +102,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinitionTest
       }
 
       assert {:error,
-              "Invalid or missing state. Must be one of: playing, bench, injured, suspended, available, not_available"} =
+              "Invalid or missing state. Must be one of: playing, bench, injured, disqualified, available, not_available"} =
                UpdatePlayersStateDefinition.validate(%GameState{}, payload)
     end
 
@@ -113,7 +113,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinitionTest
       }
 
       assert {:error,
-              "Invalid or missing state. Must be one of: playing, bench, injured, suspended, available, not_available"} =
+              "Invalid or missing state. Must be one of: playing, bench, injured, disqualified, available, not_available"} =
                UpdatePlayersStateDefinition.validate(%GameState{}, payload)
     end
 
@@ -294,7 +294,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinitionTest
       assert player_2.stats_values == %{"points" => 8}
     end
 
-    test "updates players to suspended state" do
+    test "updates players to disqualified state" do
       game_state = %GameState{
         away_team: %TeamState{
           players: [
@@ -310,14 +310,14 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinitionTest
       event_payload = %{
         "team-type" => "away",
         "player-ids" => ["player-1"],
-        "state" => "suspended"
+        "state" => "disqualified"
       }
 
       event = UpdatePlayersStateDefinition.create(game_state.id, 45, 4, event_payload)
       new_game_state = UpdatePlayersStateDefinition.handle(game_state, event)
 
       player_1 = Enum.find(new_game_state.away_team.players, &(&1.id == "player-1"))
-      assert player_1.state == :suspended
+      assert player_1.state == :disqualified
       # stats preserved
       assert player_1.stats_values == %{"fouls" => 4}
     end
