@@ -114,6 +114,14 @@ export interface ProtestState {
   state: 'no_protest' | 'protest_filed';
 }
 
+export interface InfoState {
+  location: string;
+  tournament_id: string;
+  tournament_name: string;
+  number: string;
+  datetime: string;
+}
+
 export interface GameState {
   id: string;
   away_team: TeamState;
@@ -124,6 +132,7 @@ export interface GameState {
   view_settings_state: ViewSettingsState;
   officials: OfficialState[];
   protest: ProtestState;
+  info: InfoState;
 }
 
 export interface EventLogUpdatePlayerStatPayload {

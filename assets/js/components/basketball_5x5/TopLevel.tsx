@@ -8,7 +8,7 @@ import EditCoachesModal from './Coaches/EditCoachesModal';
 import useConnectionState from '../../shared/useConnectionState';
 import { OnlineIcon, OfflineIcon } from '../../shared/ConnectionStatusesIcon';
 import EventLogModal from '../event_log/EventLogModal';
-import EditOfficialsModal from './Officials/EditOfficialsModal';
+import EditGameModal from './Officials/EditGameModal';
 import LanguageSwitcher from '../LanguageSwitcher';
 import { useTranslation } from '../../hooks/useTranslation';
 
@@ -22,8 +22,7 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
   const [showBoxScoreModal, setShowBoxScoreModal] = React.useState(false);
   const [showEditPlayersModal, setShowEditPlayersModal] = React.useState(false);
   const [showEditCoachesModal, setShowEditCoachesModal] = React.useState(false);
-  const [showEditOfficialsModal, setShowEditOfficialsModal] =
-    React.useState(false);
+  const [showEditGameModal, setShowEditGameModal] = React.useState(false);
   const [showEndLiveWarningModal, setShowEndLiveWarningModal] =
     React.useState(false);
   const onStartLive = () => {
@@ -84,9 +83,9 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
           <p className="level-item">
             <button
               className="button is-info is-small"
-              onClick={() => setShowEditOfficialsModal(true)}
+              onClick={() => setShowEditGameModal(true)}
             >
-              {t('basketball.navigation.editOfficials')}
+              {t('basketball.navigation.editGame')}
             </button>
           </p>
         )}
@@ -136,10 +135,10 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
           onCloseModal={() => setShowEditCoachesModal(false)}
           pushEvent={pushEvent}
         />
-        <EditOfficialsModal
+        <EditGameModal
           game_state={game_state}
-          showModal={showEditOfficialsModal}
-          onCloseModal={() => setShowEditOfficialsModal(false)}
+          showModal={showEditGameModal}
+          onCloseModal={() => setShowEditGameModal(false)}
           pushEvent={pushEvent}
         />
         <EventLogModal

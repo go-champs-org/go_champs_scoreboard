@@ -4,7 +4,7 @@
       "boxScore": "Estatísticas",
       "editPlayers": "Editar Jogadores",
       "editCoaches": "Editar Técnicos",
-      "editOfficials": "Editar Oficiais",
+      "editGame": "Editar Jogo",
       "eventLogs": "Eventos",
       "streamViews": "Telas para Stream (OBS)",
       "fibaScoresheet": "Súmula (Beta)",
@@ -301,9 +301,20 @@
         "assistantCoachShort": "Ass. Téc"
       }
     },
+    "game": {
+      "modal": {
+        "title": "Editar Jogo",
+        "officialsTab": "Oficiais",
+        "gameInfoTab": "Info do Jogo",
+        "location": "Local",
+        "number": "Número do Jogo",
+        "locationPlaceholder": "Digite o local do jogo",
+        "numberPlaceholder": "Digite o número do jogo",
+        "update": "Atualizar"
+      }
+    },
     "officials": {
       "modal": {
-        "title": "Editar Oficiais",
         "addOfficial": "Adicionar Oficial",
         "name": "Nome",
         "type": "Tipo",

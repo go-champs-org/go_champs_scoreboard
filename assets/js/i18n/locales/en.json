@@ -4,7 +4,7 @@
       "boxScore": "Box Score",
       "editPlayers": "Edit Players",
       "editCoaches": "Edit Coaches",
-      "editOfficials": "Edit Officials",
+      "editGame": "Edit Game",
       "eventLogs": "Event Logs",
       "streamViews": "Stream Views (OBS)",
       "fibaScoresheet": "Scoresheet (Beta)",
@@ -301,9 +301,20 @@
         "assistantCoachShort": "Ass. Coach"
       }
     },
+    "game": {
+      "modal": {
+        "title": "Edit Game",
+        "officialsTab": "Officials",
+        "gameInfoTab": "Game Info",
+        "location": "Location",
+        "number": "Game Number",
+        "locationPlaceholder": "Enter game location",
+        "numberPlaceholder": "Enter game number",
+        "update": "Update"
+      }
+    },
     "officials": {
       "modal": {
-        "title": "Edit Officials",
         "addOfficial": "Add Official",
         "name": "Name",
         "type": "Type",
