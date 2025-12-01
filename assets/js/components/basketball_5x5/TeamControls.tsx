@@ -8,146 +8,164 @@ interface TeamControlsProps {
   teamType: TeamType;
 }
 
-function TeamStats({ team }: { team: TeamState }) {
-  const { t } = useTranslation();
-  const [showTotals, setShowTotals] = React.useState(true);
-  const onToggleShow = () => setShowTotals(!showTotals);
-
-  if (!showTotals) {
-    return (
-      <div className="team-stats">
-        <div className="columns">
-          <div className="column is-9">
-            <div className="team-stat">
-              <p className="stat-label">{'1 Half timeouts'}:</p>
-              <div className="stat-timeouts">
-                <span className="consumed">USED: 1</span>
-                <span className="remaining">REM: 1</span>
-              </div>
-            </div>
-            <div className="team-stat">
-              <p className="stat-label">{'2 Half timeouts'}:</p>
-              <p className="stat-value">
-                {team.total_player_stats['rebounds'] || 0}
-              </p>
-            </div>
-            <div className="team-stat">
-              <p className="stat-label">{'Extra timeouts'}:</p>
-              <p className="stat-value">
-                {team.total_player_stats['rebounds'] || 0}
-              </p>
-            </div>
-          </div>
-
-          <div className="column is-3">
-            <div className="team-stat">
-              <p className="stat-label">{'Q. F'}:</p>
-              <p className="stat-value">
-                {team.total_player_stats['rebounds'] || 0}
-              </p>
-            </div>
-            <div className="team-stat">
-              <p className="stat-label">{'Q. P'}:</p>
-              <p className="stat-value">
-                {team.total_player_stats['rebounds'] || 0}
-              </p>
-            </div>
+function QuarterStats({ team }: { team: TeamState }) {
+  return (
+    <div className="columns">
+      <div className="column is-9">
+        <div className="team-stat">
+          <p className="stat-label">{'1 Half timeouts'}:</p>
+          <div className="stat-timeouts">
+            <span className="consumed">USED: 1</span>
+            <span className="remaining">REM: 1</span>
           </div>
         </div>
+        <div className="team-stat">
+          <p className="stat-label">{'2 Half timeouts'}:</p>
+          <p className="stat-value">
+            {team.total_player_stats['rebounds'] || 0}
+          </p>
+        </div>
+        <div className="team-stat">
+          <p className="stat-label">{'Extra timeouts'}:</p>
+          <p className="stat-value">
+            {team.total_player_stats['rebounds'] || 0}
+          </p>
+        </div>
       </div>
-    );
-  }
+
+      <div className="column is-3">
+        <div className="team-stat">
+          <p className="stat-label">{'Q. F'}:</p>
+          <p className="stat-value">
+            {team.total_player_stats['rebounds'] || 0}
+          </p>
+        </div>
+        <div className="team-stat">
+          <p className="stat-label">{'Q. P'}:</p>
+          <p className="stat-value">
+            {team.total_player_stats['rebounds'] || 0}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TotalStatsValues({ team }: { team: TeamState }) {
+  const { t } = useTranslation();
 
   return (
-    <div className="team-stats">
-      <div className="columns">
-        <div className="column is-4">
-          <div className="team-stat">
-            <p className="stat-label">
-              {t('basketball.stats.abbreviations.rebounds')}:
-            </p>
-            <p className="stat-value">
-              {team.total_player_stats['rebounds'] || 0}
-            </p>
-          </div>
-
-          <div className="team-stat">
-            <p className="stat-label">
-              {t('basketball.stats.abbreviations.offensiveRebounds')}:
-            </p>
-            <p className="stat-value">
-              {team.total_player_stats['rebounds_offensive'] || 0}
-            </p>
-          </div>
-
-          <div className="team-stat">
-            <p className="stat-label">
-              {t('basketball.stats.abbreviations.defensiveRebounds')}:
-            </p>
-            <p className="stat-value">
-              {team.total_player_stats['rebounds_defensive'] || 0}
-            </p>
-          </div>
+    <div className="columns">
+      <div className="column is-4">
+        <div className="team-stat">
+          <p className="stat-label">
+            {t('basketball.stats.abbreviations.rebounds')}:
+          </p>
+          <p className="stat-value">
+            {team.total_player_stats['rebounds'] || 0}
+          </p>
         </div>
 
-        <div className="column is-4">
-          <div className="team-stat">
-            <p className="stat-label">
-              {t('basketball.stats.abbreviations.assists')}:
-            </p>
-            <p className="stat-value">
-              {team.total_player_stats['assists'] || 0}
-            </p>
-          </div>
-
-          <div className="team-stat">
-            <p className="stat-label">
-              {t('basketball.stats.abbreviations.steals')}:
-            </p>
-            <p className="stat-value">
-              {team.total_player_stats['steals'] || 0}
-            </p>
-          </div>
-
-          <div className="team-stat">
-            <p className="stat-label">
-              {t('basketball.stats.abbreviations.blocks')}:
-            </p>
-            <p className="stat-value">
-              {team.total_player_stats['blocks'] || 0}
-            </p>
-          </div>
+        <div className="team-stat">
+          <p className="stat-label">
+            {t('basketball.stats.abbreviations.offensiveRebounds')}:
+          </p>
+          <p className="stat-value">
+            {team.total_player_stats['rebounds_offensive'] || 0}
+          </p>
         </div>
 
-        <div className="column is-4">
-          <div className="team-stat">
-            <p className="stat-label">
-              {t('basketball.stats.abbreviations.turnovers')}:
-            </p>
-            <p className="stat-value">
-              {team.total_player_stats['turnovers'] || 0}
-            </p>
-          </div>
-
-          <div className="team-stat">
-            <p className="stat-label">
-              {t('basketball.stats.abbreviations.personalFouls')}:
-            </p>
-            <p className="stat-value">
-              {team.total_player_stats['fouls_personal'] || 0}
-            </p>
-          </div>
-
-          <div className="team-stat">
-            <p className="stat-label">
-              {t('basketball.stats.abbreviations.technicalFouls')}:
-            </p>
-            <p className="stat-value">
-              {team.total_player_stats['fouls_technical'] || 0}
-            </p>
-          </div>
+        <div className="team-stat">
+          <p className="stat-label">
+            {t('basketball.stats.abbreviations.defensiveRebounds')}:
+          </p>
+          <p className="stat-value">
+            {team.total_player_stats['rebounds_defensive'] || 0}
+          </p>
         </div>
       </div>
+
+      <div className="column is-4">
+        <div className="team-stat">
+          <p className="stat-label">
+            {t('basketball.stats.abbreviations.assists')}:
+          </p>
+          <p className="stat-value">
+            {team.total_player_stats['assists'] || 0}
+          </p>
+        </div>
+
+        <div className="team-stat">
+          <p className="stat-label">
+            {t('basketball.stats.abbreviations.steals')}:
+          </p>
+          <p className="stat-value">{team.total_player_stats['steals'] || 0}</p>
+        </div>
+
+        <div className="team-stat">
+          <p className="stat-label">
+            {t('basketball.stats.abbreviations.blocks')}:
+          </p>
+          <p className="stat-value">{team.total_player_stats['blocks'] || 0}</p>
+        </div>
+      </div>
+
+      <div className="column is-4">
+        <div className="team-stat">
+          <p className="stat-label">
+            {t('basketball.stats.abbreviations.turnovers')}:
+          </p>
+          <p className="stat-value">
+            {team.total_player_stats['turnovers'] || 0}
+          </p>
+        </div>
+
+        <div className="team-stat">
+          <p className="stat-label">
+            {t('basketball.stats.abbreviations.personalFouls')}:
+          </p>
+          <p className="stat-value">
+            {team.total_player_stats['fouls_personal'] || 0}
+          </p>
+        </div>
+
+        <div className="team-stat">
+          <p className="stat-label">
+            {t('basketball.stats.abbreviations.technicalFouls')}:
+          </p>
+          <p className="stat-value">
+            {team.total_player_stats['fouls_technical'] || 0}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TeamStats({ team }: { team: TeamState }) {
+  const [showTotals, setShowTotals] = React.useState(true);
+  const [isAnimating, setIsAnimating] = React.useState(false);
+
+  const handleToggle = () => {
+    if (isAnimating) return;
+
+    setIsAnimating(true);
+    setTimeout(() => {
+      setShowTotals(!showTotals);
+      setIsAnimating(false);
+    }, 150); // Half of the animation duration
+  };
+
+  return (
+    <div
+      className={`team-stats ${isAnimating ? 'is-sliding' : ''}`}
+      onClick={handleToggle}
+    >
+      {showTotals ? (
+        <TotalStatsValues team={team} />
+      ) : (
+        <QuarterStats team={team} />
+      )}
     </div>
   );
 }
