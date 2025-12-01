@@ -141,7 +141,11 @@ function QuarterStats({
               <p className="stat-label">
                 {t('basketball.quarterStats.quarterFouls')}:
               </p>
-              <p className="stat-value quarter-stat-value">
+              <p
+                className={`stat-value quarter-stat-value ${
+                  currentQuarterStats.fouls >= 5 ? 'high-fouls' : ''
+                }`}
+              >
                 {currentQuarterStats.fouls}
               </p>
             </div>

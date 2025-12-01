@@ -101,6 +101,11 @@
             justify-content: center;
             font-weight: 700;
             font-size: 0.75rem;
+
+            &.high-fouls {
+              background-color: $red;
+              color: white;
+            }
           }
         }
       }
