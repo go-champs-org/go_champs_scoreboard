@@ -344,6 +344,15 @@
     "teams": {
       "teamA": "Team A",
       "teamB": "Team B"
+    },
+    "quarterStats": {
+      "firstHalfTimeouts": "1st Half Timeouts",
+      "secondHalfTimeouts": "2nd Half Timeouts",
+      "extraTimeouts": "Extra Timeouts",
+      "quarterFouls": "Quarter F.",
+      "quarterPoints": "Quarter P.",
+      "used": "Used",
+      "remaining": "Rem"
     }
   },
   "eventKeys": {

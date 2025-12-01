@@ -1,50 +1,159 @@
 import React from 'react';
 import { useTranslation } from '../../hooks/useTranslation';
 
-import { TeamState, TeamType } from '../../types';
+import { GameClockState, TeamState, TeamType } from '../../types';
 
 interface TeamControlsProps {
   team: TeamState;
   teamType: TeamType;
+  clock_state: GameClockState;
 }
 
-function QuarterStats({ team }: { team: TeamState }) {
+// Calculate timeout stats from period_stats
+const calculateTimeoutStats = (
+  periodStats: Record<string, any> = {},
+  currentPeriod: number,
+) => {
+  // First half (periods 1, 2) - can use 2 timeouts
+  const firstHalfUsed =
+    (periodStats['1']?.timeouts || 0) + (periodStats['2']?.timeouts || 0);
+  const firstHalfRemaining = Math.max(0, 2 - firstHalfUsed);
+
+  // Second half (periods 3, 4) - can use 3 timeouts
+  const secondHalfUsed =
+    (periodStats['3']?.timeouts || 0) + (periodStats['4']?.timeouts || 0);
+  const secondHalfRemaining = Math.max(0, 3 - secondHalfUsed);
+
+  // Extra time (period 5 and beyond) - calculate used
+  let extraUsed = 0;
+  for (let period = 5; period <= 10; period++) {
+    extraUsed += periodStats[period.toString()]?.timeouts || 0;
+  }
+
+  // For extraRemaining: if current period has 0 timeouts, set to 1, otherwise 0
+  const currentPeriodTimeouts =
+    periodStats[currentPeriod.toString()]?.timeouts || 0;
+  const extraRemaining =
+    currentPeriod >= 5 && currentPeriodTimeouts === 0 ? 1 : 0;
+
+  return {
+    firstHalf: { used: firstHalfUsed, remaining: firstHalfRemaining },
+    secondHalf: { used: secondHalfUsed, remaining: secondHalfRemaining },
+    extra: { used: extraUsed, remaining: extraRemaining },
+  };
+};
+
+// Calculate current quarter stats from period_stats
+const calculateCurrentQuarterStats = (
+  periodStats: Record<string, any> = {},
+  currentPeriod: number,
+) => {
+  const currentPeriodString = currentPeriod.toString();
+
+  const currentQuarterFouls = periodStats[currentPeriodString]?.fouls || 0;
+  const currentQuarterPoints = periodStats[currentPeriodString]?.points || 0;
+
+  return { fouls: currentQuarterFouls, points: currentQuarterPoints };
+};
+
+function QuarterStats({
+  team,
+  clock_state,
+}: {
+  team: TeamState;
+  clock_state: GameClockState;
+}) {
+  const { t } = useTranslation();
+
+  const timeoutStats = calculateTimeoutStats(
+    team.period_stats,
+    clock_state.period,
+  );
+  const currentQuarterStats = calculateCurrentQuarterStats(
+    team.period_stats,
+    clock_state.period,
+  );
+
   return (
-    <div className="columns">
-      <div className="column is-9">
-        <div className="team-stat">
-          <p className="stat-label">{'1 Half timeouts'}:</p>
-          <div className="stat-timeouts">
-            <span className="consumed">USED: 1</span>
-            <span className="remaining">REM: 1</span>
+    <div className="quarter-stats-container">
+      <div className="columns is-mobile">
+        <div className="column is-8">
+          <div className="timeout-section">
+            <div className="timeout-item">
+              <div className="team-stat">
+                <p className="stat-label">
+                  {t('basketball.quarterStats.firstHalfTimeouts')}:
+                </p>
+                <div className="stat-timeouts">
+                  <span className="timeout-badge consumed">
+                    {t('basketball.quarterStats.used')}:{' '}
+                    {timeoutStats.firstHalf.used}
+                  </span>
+                  <span className="timeout-badge remaining">
+                    {t('basketball.quarterStats.remaining')}:{' '}
+                    {timeoutStats.firstHalf.remaining}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="timeout-item">
+              <div className="team-stat">
+                <p className="stat-label">
+                  {t('basketball.quarterStats.secondHalfTimeouts')}:
+                </p>
+                <div className="stat-timeouts">
+                  <span className="timeout-badge consumed">
+                    {t('basketball.quarterStats.used')}:{' '}
+                    {timeoutStats.secondHalf.used}
+                  </span>
+                  <span className="timeout-badge remaining">
+                    {t('basketball.quarterStats.remaining')}:{' '}
+                    {timeoutStats.secondHalf.remaining}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="timeout-item">
+              <div className="team-stat">
+                <p className="stat-label">
+                  {t('basketball.quarterStats.extraTimeouts')}:
+                </p>
+                <div className="stat-timeouts">
+                  {timeoutStats.extra.used > 0 && (
+                    <span className="timeout-badge consumed">
+                      {t('basketball.quarterStats.used')}:{' '}
+                      {timeoutStats.extra.used}
+                    </span>
+                  )}
+                  <span className="timeout-badge remaining">
+                    {t('basketball.quarterStats.remaining')}:{' '}
+                    {timeoutStats.extra.remaining}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="team-stat">
-          <p className="stat-label">{'2 Half timeouts'}:</p>
-          <p className="stat-value">
-            {team.total_player_stats['rebounds'] || 0}
-          </p>
-        </div>
-        <div className="team-stat">
-          <p className="stat-label">{'Extra timeouts'}:</p>
-          <p className="stat-value">
-            {team.total_player_stats['rebounds'] || 0}
-          </p>
-        </div>
-      </div>
 
-      <div className="column is-3">
-        <div className="team-stat">
-          <p className="stat-label">{'Q. F'}:</p>
-          <p className="stat-value">
-            {team.total_player_stats['rebounds'] || 0}
-          </p>
-        </div>
-        <div className="team-stat">
-          <p className="stat-label">{'Q. P'}:</p>
-          <p className="stat-value">
-            {team.total_player_stats['rebounds'] || 0}
-          </p>
+        <div className="column is-4">
+          <div className="quarter-stats-section">
+            <div className="team-stat quarter-stat">
+              <p className="stat-label">
+                {t('basketball.quarterStats.quarterFouls')}:
+              </p>
+              <p className="stat-value quarter-stat-value">
+                {currentQuarterStats.fouls}
+              </p>
+            </div>
+            <div className="team-stat quarter-stat">
+              <p className="stat-label">
+                {t('basketball.quarterStats.quarterPoints')}:
+              </p>
+              <p className="stat-value quarter-stat-value">
+                {currentQuarterStats.points}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -142,8 +251,14 @@ function TotalStatsValues({ team }: { team: TeamState }) {
   );
 }
 
-function TeamStats({ team }: { team: TeamState }) {
-  const [showTotals, setShowTotals] = React.useState(true);
+function TeamStats({
+  team,
+  clock_state,
+}: {
+  team: TeamState;
+  clock_state: GameClockState;
+}) {
+  const [showTotals, setShowTotals] = React.useState(false);
   const [isAnimating, setIsAnimating] = React.useState(false);
 
   const handleToggle = () => {
@@ -164,7 +279,7 @@ function TeamStats({ team }: { team: TeamState }) {
       {showTotals ? (
         <TotalStatsValues team={team} />
       ) : (
-        <QuarterStats team={team} />
+        <QuarterStats team={team} clock_state={clock_state} />
       )}
     </div>
   );
@@ -248,7 +363,7 @@ export function BasicTeamControls({ team, teamType }: TeamControlsProps) {
   );
 }
 
-function TeamControls({ team, teamType }: TeamControlsProps) {
+function TeamControls({ team, clock_state, teamType }: TeamControlsProps) {
   const { t } = useTranslation();
   const reverseClass =
     teamType === 'away' ? 'is-flex-direction-row-reverse' : '';
@@ -281,7 +396,7 @@ function TeamControls({ team, teamType }: TeamControlsProps) {
           </p>
         </div>
         <div className="column is-12">
-          <TeamStats team={team} />
+          <TeamStats team={team} clock_state={clock_state} />
         </div>
       </div>
     </div>

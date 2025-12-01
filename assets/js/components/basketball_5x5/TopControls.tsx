@@ -13,10 +13,18 @@ export function BasicTopControls({ game_state }: TopControlsProps) {
   return (
     <div className="columns is-multiline">
       <div className="column is-6">
-        <BasicTeamControls team={game_state.home_team} teamType="home" />
+        <BasicTeamControls
+          team={game_state.home_team}
+          clock_state={game_state.clock_state}
+          teamType="home"
+        />
       </div>
       <div className="column is-6">
-        <BasicTeamControls team={game_state.away_team} teamType="away" />
+        <BasicTeamControls
+          team={game_state.away_team}
+          clock_state={game_state.clock_state}
+          teamType="away"
+        />
       </div>
     </div>
   );
@@ -26,7 +34,11 @@ function MediumTopControls({ game_state, pushEvent }: TopControlsProps) {
   return (
     <div className="columns is-multiline">
       <div className="column is-4">
-        <TeamControls team={game_state.away_team} teamType="away" />
+        <TeamControls
+          team={game_state.away_team}
+          clock_state={game_state.clock_state}
+          teamType="away"
+        />
       </div>
 
       <div className="column is-4">
@@ -45,7 +57,11 @@ function MediumTopControls({ game_state, pushEvent }: TopControlsProps) {
 
       <div className="column is-4">
         <div className="panel">
-          <TeamControls team={game_state.home_team} teamType="home" />
+          <TeamControls
+            team={game_state.home_team}
+            clock_state={game_state.clock_state}
+            teamType="home"
+          />
         </div>
       </div>
     </div>

@@ -96,7 +96,11 @@ function MediumView({
         <div className="column is-4">
           <div className="columns is-multiline">
             <div className="column is-12">
-              <TeamControls team={game_state.home_team} teamType="home" />
+              <TeamControls
+                team={game_state.home_team}
+                teamType="home"
+                clock_state={game_state.clock_state}
+              />
             </div>
             <div className="column is-12">
               <PlayersControls
@@ -145,7 +149,11 @@ function MediumView({
         <div className="column is-4">
           <div className="columns is-multiline">
             <div className="column is-12">
-              <TeamControls team={game_state.away_team} teamType="away" />
+              <TeamControls
+                team={game_state.away_team}
+                teamType="away"
+                clock_state={game_state.clock_state}
+              />
             </div>
             <div className="column is-12">
               <PlayersControls

@@ -63,6 +63,7 @@ export interface TeamState {
   tri_code: string;
   logo_url: string;
   coaches: CoachState[];
+  period_stats: { [key: string]: { [key: string]: number } };
 }
 
 export interface GameClockState {
