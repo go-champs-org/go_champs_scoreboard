@@ -35,6 +35,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition do
   def handle(
         current_game,
         %Event{
+          clock_state_period_at: period,
           payload: %{
             "operation" => op,
             "stat-id" => stat_id,
@@ -51,6 +52,10 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition do
       current_game.sport_id
       |> Sports.find_calculated_player_stats()
 
+    calculated_team_stats =
+      current_game.sport_id
+      |> Sports.find_calculated_team_stats()
+
     updated_player =
       current_game
       |> Teams.find_player(team_type, player_id)
@@ -62,6 +67,8 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition do
       |> Teams.find_team(team_type)
       |> Teams.update_player_in_team(updated_player)
       |> Teams.calculate_team_total_player_stats()
+      |> Teams.update_calculated_stats_values(calculated_team_stats)
+      |> Teams.calculate_period_stats(period)
 
     current_game
     |> Games.update_team(team_type, updated_team)

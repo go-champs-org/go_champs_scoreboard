@@ -52,13 +52,27 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinitionTest d
           "field_goals_made" => 1,
           "points" => 2,
           "rebounds" => 0
-        }
+        },
+        total_coach_stats: %{},
+        stats_values: %{
+          "points" => 2,
+          "fouls" => 0,
+          "total_fouls_technical" => 0
+        },
+        period_stats: %{}
       },
       away_team: %{
         players: [
           %{id: "456", stats_values: %{}}
         ],
-        total_player_stats: %{}
+        total_player_stats: %{},
+        total_coach_stats: %{},
+        stats_values: %{
+          "points" => 0,
+          "fouls" => 0,
+          "total_fouls_technical" => 0
+        },
+        period_stats: %{}
       },
       sport_id: "basketball"
     }
@@ -89,13 +103,33 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinitionTest d
             "field_goals_made" => 2,
             "points" => 4,
             "rebounds" => 0
+          },
+          total_coach_stats: %{},
+          stats_values: %{
+            "points" => 4,
+            "fouls" => 0,
+            "total_fouls_technical" => 0
+          },
+          period_stats: %{
+            "1" => %{
+              "points" => 4,
+              "fouls" => 0,
+              "total_fouls_technical" => 0
+            }
           }
         },
         away_team: %{
           players: [
             %{id: "456", stats_values: %{}}
           ],
-          total_player_stats: %{}
+          total_player_stats: %{},
+          total_coach_stats: %{},
+          stats_values: %{
+            "points" => 0,
+            "fouls" => 0,
+            "total_fouls_technical" => 0
+          },
+          period_stats: %{}
         },
         sport_id: "basketball"
       }

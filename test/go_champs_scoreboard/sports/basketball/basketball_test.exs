@@ -205,6 +205,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
       expected = %{
         "timeouts" => 0,
         "fouls_technical" => 0,
+        "points" => 0,
+        "fouls" => 0,
         "total_fouls_technical" => 0
       }
 
@@ -215,6 +217,19 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
   describe "find_calculated_team_stats" do
     test "returns all calculated team stats" do
       expected = [
+        %GoChampsScoreboard.Statistics.Models.Stat{
+          key: "points",
+          type: :calculated,
+          operations: [],
+          calculation_function:
+            &GoChampsScoreboard.Sports.Basketball.Statistics.calc_team_points/1
+        },
+        %GoChampsScoreboard.Statistics.Models.Stat{
+          key: "fouls",
+          type: :calculated,
+          operations: [],
+          calculation_function: &GoChampsScoreboard.Sports.Basketball.Statistics.calc_team_fouls/1
+        },
         %GoChampsScoreboard.Statistics.Models.Stat{
           key: "total_fouls_technical",
           type: :calculated,
@@ -252,9 +267,12 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
 
       # Test with calculated stats
       calculated_stats = Basketball.find_team_stat_by_type([:calculated])
-      assert length(calculated_stats) == 1
+      assert length(calculated_stats) == 3
       assert Enum.all?(calculated_stats, fn stat -> stat.type == :calculated end)
-      assert List.first(calculated_stats).key == "total_fouls_technical"
+      calculated_stat_keys = Enum.map(calculated_stats, & &1.key)
+      assert "points" in calculated_stat_keys
+      assert "fouls" in calculated_stat_keys
+      assert "total_fouls_technical" in calculated_stat_keys
     end
 
     test "returns stats matching multiple types" do

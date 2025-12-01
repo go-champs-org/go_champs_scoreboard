@@ -42,17 +42,35 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinitionTest do
           %{
             id: "123",
             stats_values: %{
-              "fouls_technical" => 1
+              "fouls_technical" => 1,
+              "fouls" => 1
             }
           }
         ],
-        total_coach_stats: %{}
+        total_coach_stats: %{
+          "fouls_technical" => 1,
+          "fouls" => 1
+        },
+        total_player_stats: %{},
+        stats_values: %{
+          "points" => 0,
+          "fouls" => 1,
+          "total_fouls_technical" => 0
+        },
+        period_stats: %{}
       },
       away_team: %{
         coaches: [
           %{id: "456", stats_values: %{}}
         ],
-        total_coach_stats: %{}
+        total_coach_stats: %{},
+        total_player_stats: %{},
+        stats_values: %{
+          "points" => 0,
+          "fouls" => 0,
+          "total_fouls_technical" => 0
+        },
+        period_stats: %{}
       },
       sport_id: "basketball"
     }
@@ -73,19 +91,41 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinitionTest do
             %{
               id: "123",
               stats_values: %{
-                "fouls_technical" => 2
+                "fouls_technical" => 2,
+                "fouls" => 2
               }
             }
           ],
           total_coach_stats: %{
-            "fouls_technical" => 2
+            "fouls_technical" => 2,
+            "fouls" => 2
+          },
+          total_player_stats: %{},
+          stats_values: %{
+            "points" => 0,
+            "fouls" => 2,
+            "total_fouls_technical" => 0
+          },
+          period_stats: %{
+            "1" => %{
+              "points" => 0,
+              "fouls" => 2,
+              "total_fouls_technical" => 0
+            }
           }
         },
         away_team: %{
           coaches: [
             %{id: "456", stats_values: %{}}
           ],
-          total_coach_stats: %{}
+          total_coach_stats: %{},
+          total_player_stats: %{},
+          stats_values: %{
+            "points" => 0,
+            "fouls" => 0,
+            "total_fouls_technical" => 0
+          },
+          period_stats: %{}
         },
         sport_id: "basketball"
       }

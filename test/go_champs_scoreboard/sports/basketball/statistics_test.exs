@@ -222,6 +222,61 @@ defmodule GoChampsScoreboard.Sports.Basketball.StatisticsTest do
     end
   end
 
+  describe "calc_team_points" do
+    test "returns the total player stats points" do
+      team_state = %GoChampsScoreboard.Games.Models.TeamState{
+        total_player_stats: %{
+          "points" => 85
+        }
+      }
+
+      assert Statistics.calc_team_points(team_state) == 85
+    end
+
+    test "returns 0 when no points in total_player_stats" do
+      team_state = %GoChampsScoreboard.Games.Models.TeamState{
+        total_player_stats: %{}
+      }
+
+      assert Statistics.calc_team_points(team_state) == 0
+    end
+  end
+
+  describe "calc_team_fouls" do
+    test "returns the sum of total player fouls and total coach fouls" do
+      team_state = %GoChampsScoreboard.Games.Models.TeamState{
+        total_player_stats: %{
+          "fouls" => 12
+        },
+        total_coach_stats: %{
+          "fouls" => 3
+        }
+      }
+
+      assert Statistics.calc_team_fouls(team_state) == 15
+    end
+
+    test "returns only player fouls when no coach fouls" do
+      team_state = %GoChampsScoreboard.Games.Models.TeamState{
+        total_player_stats: %{
+          "fouls" => 8
+        },
+        total_coach_stats: %{}
+      }
+
+      assert Statistics.calc_team_fouls(team_state) == 8
+    end
+
+    test "returns 0 when no fouls from either players or coaches" do
+      team_state = %GoChampsScoreboard.Games.Models.TeamState{
+        total_player_stats: %{},
+        total_coach_stats: %{}
+      }
+
+      assert Statistics.calc_team_fouls(team_state) == 0
+    end
+  end
+
   describe "calc_coach_fouls" do
     test "returns the number of technical fouls for the coach" do
       coach_state = %GoChampsScoreboard.Games.Models.CoachState{

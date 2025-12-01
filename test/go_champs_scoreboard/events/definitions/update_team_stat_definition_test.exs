@@ -57,6 +57,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateTeamStatDefinitionTest do
           }
         ],
         total_player_stats: %{},
+        total_coach_stats: %{},
         stats_values: %{
           "fouls_technical" => 0,
           "total_fouls_technical" => 0
@@ -68,6 +69,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateTeamStatDefinitionTest do
           %{id: "456", stats_values: %{}}
         ],
         total_player_stats: %{},
+        total_coach_stats: %{},
         stats_values: %{},
         period_stats: %{}
       },
@@ -92,6 +94,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateTeamStatDefinitionTest do
             }
           ],
           total_player_stats: %{},
+          total_coach_stats: %{},
           stats_values: %{
             "fouls_technical" => 1,
             "total_fouls_technical" => 1
@@ -105,6 +108,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateTeamStatDefinitionTest do
             %{id: "456", stats_values: %{}}
           ],
           total_player_stats: %{},
+          total_coach_stats: %{},
           stats_values: %{},
           period_stats: %{}
         },
