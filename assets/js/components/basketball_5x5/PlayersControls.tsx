@@ -19,6 +19,7 @@ interface PlayersControlsProps {
   selectEntity: (selection: Selection | null) => void;
   selection: Selection | null;
   liveState: LiveState;
+  maxNumberOfPlayerInCourt: number;
 }
 
 function PlayersControls({
@@ -28,6 +29,7 @@ function PlayersControls({
   selectEntity,
   selection,
   liveState,
+  maxNumberOfPlayerInCourt,
 }: PlayersControlsProps) {
   const playersControlsRef = React.useRef<HTMLDivElement>(null);
   const [selectedPlayers, setSelectedPlayers] = React.useState<PlayerState[]>(
@@ -237,7 +239,9 @@ function PlayersControls({
               onClick={onSubIn}
               disabled={
                 selectedPlayers.length === 0 ||
-                selectedPlayers[0].state === 'playing'
+                selectedPlayers[0].state === 'playing' ||
+                playingPlayers.length + selectedPlayers.length >
+                  maxNumberOfPlayerInCourt
               }
             >
               ↑

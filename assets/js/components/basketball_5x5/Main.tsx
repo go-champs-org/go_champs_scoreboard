@@ -51,6 +51,7 @@ function BasicView({
             selectEntity={setSelection}
             selection={selection}
             liveState={game_state.live_state}
+            maxNumberOfPlayerInCourt={5}
           />
         </div>
 
@@ -72,6 +73,7 @@ function BasicView({
             selectEntity={setSelection}
             selection={selection}
             liveState={game_state.live_state}
+            maxNumberOfPlayerInCourt={5}
           />
         </div>
       </div>
@@ -104,6 +106,7 @@ function MediumView({
                 team={game_state.home_team}
                 teamType="home"
                 liveState={game_state.live_state}
+                maxNumberOfPlayerInCourt={5}
               />
             </div>
           </div>
@@ -152,6 +155,7 @@ function MediumView({
                 team={game_state.away_team}
                 teamType="away"
                 liveState={game_state.live_state}
+                maxNumberOfPlayerInCourt={5}
               />
             </div>
           </div>
