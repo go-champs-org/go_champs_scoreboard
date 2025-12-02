@@ -308,6 +308,10 @@
         "gameInfoTab": "Game Info",
         "location": "Location",
         "number": "Game Number",
+        "startedAt": "Started At",
+        "finishedAt": "Finished At",
+        "date": "Date",
+        "time": "Time",
         "locationPlaceholder": "Enter game location",
         "numberPlaceholder": "Enter game number",
         "update": "Update"

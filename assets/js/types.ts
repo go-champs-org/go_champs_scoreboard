@@ -71,6 +71,8 @@ export interface GameClockState {
   time: number;
   period: number;
   state: 'not_started' | 'running' | 'paused' | 'stopped' | 'finished';
+  started_at: string;
+  finished_at: string;
 }
 
 export interface OfficialState {

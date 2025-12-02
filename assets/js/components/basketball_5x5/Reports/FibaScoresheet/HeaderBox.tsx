@@ -57,12 +57,10 @@ function HeaderBox({
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
-    timeZone: 'UTC', // This forces UTC timezone
   });
   const time = new Date(datetime).toLocaleTimeString('pt-BR', {
     hour: '2-digit',
     minute: '2-digit',
-    timeZone: 'UTC', // This forces UTC timezone
   });
   return (
     <View style={styles.headerBox}>

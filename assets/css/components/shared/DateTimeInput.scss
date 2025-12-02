@@ -1,0 +1,32 @@
+.datetime-input {
+  .field.is-grouped {
+    .control {
+      &.is-expanded {
+        flex: 1;
+        margin-right: 0.75rem;
+
+        &:last-child {
+          margin-right: 0;
+        }
+
+        .label.is-small {
+          margin-bottom: 0.25rem;
+          font-size: 0.875rem;
+          color: #4a4a4a;
+        }
+
+        .input[type='date'],
+        .input[type='time'] {
+          font-family: inherit;
+        }
+      }
+    }
+  }
+
+  &.is-disabled {
+    .input {
+      background-color: #f5f5f5;
+      cursor: not-allowed;
+    }
+  }
+}

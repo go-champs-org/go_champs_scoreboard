@@ -308,6 +308,10 @@
         "gameInfoTab": "Info do Jogo",
         "location": "Local",
         "number": "Número do Jogo",
+        "startedAt": "Iniciado Em",
+        "finishedAt": "Finalizado Em",
+        "date": "Data",
+        "time": "Hora",
         "locationPlaceholder": "Digite o local do jogo",
         "numberPlaceholder": "Digite o número do jogo",
         "update": "Atualizar"

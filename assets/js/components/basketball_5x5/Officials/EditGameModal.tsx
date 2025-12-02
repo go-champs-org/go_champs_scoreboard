@@ -5,6 +5,7 @@ import Modal from '../../Modal';
 import AddOfficialRow from './AddOfficialRow';
 import EditOfficialRow from './EditOfficialRow';
 import FormField from '../../FormField';
+import DateTimeInput from '../../shared/form/DateTimeInput';
 
 type TabType = 'officials' | 'gameInfo';
 
@@ -24,6 +25,18 @@ function GameInfoTab({ game_state, pushEvent }: GameInfoTabProps) {
   const handleNumberUpdate = (number: string) => {
     if (number !== (game_state.info.number || '')) {
       pushEvent('update-game-info', { number });
+    }
+  };
+
+  const handleStartedAtUpdate = (started_at: string | null) => {
+    if (started_at !== game_state.clock_state.started_at) {
+      pushEvent('update-clock-state-metadata', { started_at });
+    }
+  };
+
+  const handleFinishedAtUpdate = (finished_at: string | null) => {
+    if (finished_at !== game_state.clock_state.finished_at) {
+      pushEvent('update-clock-state-metadata', { finished_at });
     }
   };
 
@@ -63,6 +76,30 @@ function GameInfoTab({ game_state, pushEvent }: GameInfoTabProps) {
                 onChange={onChange}
               />
             )}
+          />
+        </div>
+      </div>
+
+      <div className="field">
+        <label className="label">{t('basketball.game.modal.startedAt')}</label>
+        <div className="control">
+          <DateTimeInput
+            value={game_state.clock_state.started_at}
+            onChange={handleStartedAtUpdate}
+            dateLabel={t('basketball.game.modal.date')}
+            timeLabel={t('basketball.game.modal.time')}
+          />
+        </div>
+      </div>
+
+      <div className="field">
+        <label className="label">{t('basketball.game.modal.finishedAt')}</label>
+        <div className="control">
+          <DateTimeInput
+            value={game_state.clock_state.finished_at}
+            onChange={handleFinishedAtUpdate}
+            dateLabel={t('basketball.game.modal.date')}
+            timeLabel={t('basketball.game.modal.time')}
           />
         </div>
       </div>
