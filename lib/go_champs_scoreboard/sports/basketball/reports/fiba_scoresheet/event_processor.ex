@@ -25,7 +25,6 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.EventProce
   end
 
   def process(event_log, data) when event_log.key == "update-clock-state" do
-    IO.inspect("Updating clock state")
     UpdateClockStateProcessor.process(event_log, data)
   end
 
