@@ -16,6 +16,7 @@ defmodule GoChampsScoreboard.Events.Definitions.Registry do
   alias GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition
   alias GoChampsScoreboard.Events.Definitions.SubstitutePlayerDefinition
   alias GoChampsScoreboard.Events.Definitions.UpdateClockStateDefinition
+  alias GoChampsScoreboard.Events.Definitions.UpdateClockStateMetadataDefinition
   alias GoChampsScoreboard.Events.Definitions.UpdateClockTimeAndPeriodDefinition
   alias GoChampsScoreboard.Events.Definitions.UpdateCoachInTeamDefinition
   alias GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinition
@@ -47,6 +48,7 @@ defmodule GoChampsScoreboard.Events.Definitions.Registry do
     UpdateCoachStatDefinition.key() => UpdateCoachStatDefinition,
     UpdateGameInfoDefinition.key() => UpdateGameInfoDefinition,
     UpdateClockStateDefinition.key() => UpdateClockStateDefinition,
+    UpdateClockStateMetadataDefinition.key() => UpdateClockStateMetadataDefinition,
     UpdateClockTimeAndPeriodDefinition.key() => UpdateClockTimeAndPeriodDefinition,
     UpdateOfficialInGameDefinition.key() => UpdateOfficialInGameDefinition,
     UpdatePlayerInTeamDefinition.key() => UpdatePlayerInTeamDefinition,
