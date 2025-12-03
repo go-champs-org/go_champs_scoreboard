@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     header: {
       display: 'flex',
       flexDirection: 'column',
-      padding: '5px',
+      padding: '7px 5px',
       borderBottom: '1px solid #000',
       row: {
         display: 'flex',
@@ -87,12 +87,12 @@ const styles = StyleSheet.create({
       },
       contentWithCircle: {
         border: `1px solid ${RED}`,
-        borderRadius: '50px',
+        borderRadius: '75px',
         color: BLUE,
-        paddingLeft: '4px',
-        paddingRight: '4px',
+        paddingLeft: '3px',
+        paddingRight: '3px',
         paddingTop: '1px',
-        margin: '1px',
+        margin: '2px 2px 1px',
         maxLines: 1,
       },
       row: {
@@ -116,6 +116,13 @@ const styles = StyleSheet.create({
           alignItems: 'center',
           maxWidth: '100%',
           overflow: 'hidden',
+          unused: {
+            position: 'absolute',
+            top: '6px',
+            width: '100%',
+            height: '2px',
+            borderTop: `2px solid ${BLUE}`,
+          },
         },
         columnName: {
           margin: '2px',
@@ -175,13 +182,6 @@ const styles = StyleSheet.create({
               right: '1px',
               fontSize: '5px',
             },
-            unused: {
-              position: 'absolute',
-              top: '6px',
-              width: '100%',
-              height: '2px',
-              borderTop: `2px solid ${BLUE}`,
-            },
           },
         },
       },
@@ -190,15 +190,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flex: '1 1 auto',
         height: '16px',
-        alignItems: 'center',
-        justifyContent: 'space-between',
         borderBottom: '1px solid #000',
         name: {
-          flex: '1',
-          flexDirection: 'column',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          flex: '1 1 auto',
           maxWidth: '100%',
           overflow: 'hidden',
-          textAlign: 'left',
         },
         label: {
           margin: '2px',
@@ -229,13 +228,6 @@ const styles = StyleSheet.create({
               bottom: '1px',
               right: '3px',
               fontSize: '5px',
-            },
-            unused: {
-              position: 'absolute',
-              top: '6px',
-              width: '100%',
-              height: '2px',
-              borderTop: `2px solid ${BLUE}`,
             },
           },
         },
@@ -451,19 +443,41 @@ export interface TeamProps {
   isGameEnded?: boolean;
 }
 
+function UnsedCell() {
+  return <View style={styles.teamContainer.table.row.column.unused} />;
+}
+
+function ConditionalCell({
+  isUnsed,
+  children,
+}: {
+  isUnsed: boolean;
+  children: React.ReactNode;
+}) {
+  if (isUnsed) {
+    return <UnsedCell />;
+  }
+  return <>{children}</>;
+}
+
 function PlayerRow({
   player,
   isGameEnded = false,
+  isFirstEmpty = false,
 }: {
   player: any;
   isGameEnded?: boolean;
+  isFirstEmpty?: boolean;
 }) {
+  const isFirstEmptyPlayerAndGameEnded = isFirstEmpty && isGameEnded;
   return (
     <View style={styles.teamContainer.table.row}>
       <View style={styles.teamContainer.table.row.columnLic}>
-        <Text style={{ ...styles.teamContainer.table.content, margin: 0 }}>
-          {player.license_number}
-        </Text>
+        <ConditionalCell isUnsed={isFirstEmptyPlayerAndGameEnded}>
+          <Text style={{ ...styles.teamContainer.table.content, margin: 0 }}>
+            {player.license_number}
+          </Text>
+        </ConditionalCell>
       </View>
       <View
         style={{
@@ -472,39 +486,45 @@ function PlayerRow({
           justifyContent: 'start',
         }}
       >
-        <View style={styles.teamContainer.table.row.columnName}>
-          <Text style={styles.teamContainer.table.row.columnName.playerName}>
-            {player.name}
+        <ConditionalCell isUnsed={isFirstEmptyPlayerAndGameEnded}>
+          <View style={styles.teamContainer.table.row.columnName}>
+            <Text style={styles.teamContainer.table.row.columnName.playerName}>
+              {player.name}
+            </Text>
+            {player.is_captain && (
+              <Text
+                style={styles.teamContainer.table.row.columnName.playerCaptain}
+              >{`(CAP.)`}</Text>
+            )}
+          </View>
+        </ConditionalCell>
+      </View>
+      <View style={styles.teamContainer.table.row.columnBox}>
+        <ConditionalCell isUnsed={isFirstEmptyPlayerAndGameEnded}>
+          <Text style={styles.teamContainer.table.content}>
+            {player.number !== null ? player.number : ''}
           </Text>
-          {player.is_captain && (
+        </ConditionalCell>
+      </View>
+      <View style={styles.teamContainer.table.row.columnBox}>
+        <ConditionalCell isUnsed={isFirstEmptyPlayerAndGameEnded}>
+          {player.has_played ? (
             <Text
-              style={styles.teamContainer.table.row.columnName.playerCaptain}
-            >{`(CAP.)`}</Text>
+              style={
+                player.has_started
+                  ? styles.teamContainer.table.contentWithCircle
+                  : {
+                      ...styles.teamContainer.table.content,
+                      ...textColorForPeriod(player.first_played_period),
+                    }
+              }
+            >
+              X
+            </Text>
+          ) : (
+            <></>
           )}
-        </View>
-      </View>
-      <View style={styles.teamContainer.table.row.columnBox}>
-        <Text style={styles.teamContainer.table.content}>
-          {player.number !== null ? player.number : ''}
-        </Text>
-      </View>
-      <View style={styles.teamContainer.table.row.columnBox}>
-        {player.has_played ? (
-          <Text
-            style={
-              player.has_started
-                ? styles.teamContainer.table.contentWithCircle
-                : {
-                    ...styles.teamContainer.table.content,
-                    ...textColorForPeriod(player.first_played_period),
-                  }
-            }
-          >
-            X
-          </Text>
-        ) : (
-          <></>
-        )}
+        </ConditionalCell>
       </View>
       <View style={styles.teamContainer.table.row.columnFouls}>
         {player.fouls.map((foul, index) => (
@@ -516,37 +536,33 @@ function PlayerRow({
               ...defineFoulBorders(foul, index, false),
             }}
           >
-            {foul !== EMPTY_FOUL ? (
-              <>
-                <Text
-                  style={{
-                    ...styles.teamContainer.table.row.columnFouls.fouls.type,
-                    ...textColorForPeriod(foul.period),
-                  }}
-                >
-                  {foul.type}
-                </Text>
-                {foul.extra_action && (
+            <ConditionalCell isUnsed={isFirstEmptyPlayerAndGameEnded}>
+              {foul !== EMPTY_FOUL ? (
+                <>
                   <Text
                     style={{
-                      ...styles.teamContainer.table.row.columnFouls.fouls
-                        .extraAction,
+                      ...styles.teamContainer.table.row.columnFouls.fouls.type,
                       ...textColorForPeriod(foul.period),
                     }}
                   >
-                    {foul.extra_action}
+                    {foul.type}
                   </Text>
-                )}
-              </>
-            ) : (
-              isGameEnded && (
-                <View
-                  style={
-                    styles.teamContainer.table.row.columnFouls.fouls.unused
-                  }
-                />
-              )
-            )}
+                  {foul.extra_action && (
+                    <Text
+                      style={{
+                        ...styles.teamContainer.table.row.columnFouls.fouls
+                          .extraAction,
+                        ...textColorForPeriod(foul.period),
+                      }}
+                    >
+                      {foul.extra_action}
+                    </Text>
+                  )}
+                </>
+              ) : (
+                isGameEnded && <UnsedCell />
+              )}
+            </ConditionalCell>
           </View>
         ))}
       </View>
@@ -564,14 +580,15 @@ function CoachRow({
   isGameEnded?: boolean;
 }) {
   const label = type === 'head' ? 'Técnico' : 'Ass. Técnico';
-
   return (
     <View style={styles.teamContainer.table.coachRow}>
       <View style={styles.teamContainer.table.coachRow.label}>
         <Text>{label}</Text>
       </View>
       <View style={styles.teamContainer.table.coachRow.name}>
-        <Text>{coach.name}</Text>
+        <ConditionalCell isUnsed={coach.name === ''}>
+          <Text>{coach.name}</Text>
+        </ConditionalCell>
       </View>
       <View style={styles.teamContainer.table.coachRow.columnFouls}>
         {coach.fouls.map((foul, index) => (
@@ -608,13 +625,7 @@ function CoachRow({
                 )}
               </>
             ) : (
-              isGameEnded && (
-                <View
-                  style={
-                    styles.teamContainer.table.coachRow.columnFouls.fouls.unused
-                  }
-                />
-              )
+              isGameEnded && <UnsedCell />
             )}
           </View>
         ))}
@@ -701,6 +712,10 @@ export default function TeamBox({
     if (b.number === null) return -1;
     return a.number - b.number;
   });
+  /** The index of the first player with an empty or whitespace-only name is used to know where to draw the end game line. */
+  const firstEmptyPlayerIndex = sortedRenderPlayers.findIndex(
+    (player) => player.name === '' || player.name.trim() === '',
+  );
 
   const renderCoach = createRenderCoach(team.coach);
   const renderAssistantCoach = createRenderCoach(team.assistant_coach);
@@ -751,7 +766,12 @@ export default function TeamBox({
           </View>
         </View>
         {sortedRenderPlayers.map((player, index) => (
-          <PlayerRow key={index} player={player} isGameEnded={isGameEnded} />
+          <PlayerRow
+            key={index}
+            player={player}
+            isGameEnded={isGameEnded}
+            isFirstEmpty={index === firstEmptyPlayerIndex}
+          />
         ))}
         <CoachRow coach={renderCoach} type="head" isGameEnded={isGameEnded} />
         <CoachRow

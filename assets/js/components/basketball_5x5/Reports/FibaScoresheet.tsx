@@ -87,8 +87,8 @@ const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',
     backgroundColor: '#FFFFFF',
-    padding: '10px',
-    fontSize: 9,
+    padding: '12px',
+    fontSize: 8,
   },
   title: {
     margin: 'auto',

@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         label: {
-          width: '55px',
+          width: '45px',
         },
         value: {
           flex: '1',
@@ -87,7 +87,7 @@ function HeaderBox({
           style={{
             ...styles.headerBox.row.column,
             flex: '1 0 auto',
-            width: '70px',
+            width: '50px',
           }}
         >
           <View style={styles.headerBox.row.column.label}>
@@ -123,7 +123,7 @@ function HeaderBox({
           style={{
             ...styles.headerBox.row.column,
             flex: '1 0 auto',
-            width: '70px',
+            width: '50px',
           }}
         >
           <View style={styles.headerBox.row.column.label}>
