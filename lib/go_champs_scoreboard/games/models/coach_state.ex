@@ -1,7 +1,7 @@
 defmodule GoChampsScoreboard.Games.Models.CoachState do
   alias GoChampsScoreboard.Sports.Basketball.Basketball
 
-  @type state :: :available | :not_available
+  @type state :: :available | :not_available | :disqualified
   @type type :: :head_coach | :assistant_coach
 
   @type t :: %__MODULE__{

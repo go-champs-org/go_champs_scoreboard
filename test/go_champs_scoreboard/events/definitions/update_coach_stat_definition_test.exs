@@ -132,5 +132,66 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinitionTest do
 
       assert UpdateCoachStatDefinition.handle(@initial_state, event) == expected_state
     end
+
+    test "disqualifies coach when fouls reach 3" do
+      initial_state = %GameState{
+        home_team: %{
+          coaches: [
+            %{
+              id: "coach-123",
+              state: :active,
+              stats_values: %{
+                "fouls_technical" => 2,
+                "fouls" => 2
+              }
+            }
+          ],
+          total_coach_stats: %{
+            "fouls_technical" => 2,
+            "fouls" => 2
+          },
+          total_player_stats: %{},
+          stats_values: %{
+            "points" => 0,
+            "fouls" => 2,
+            "total_fouls_technical" => 0
+          },
+          period_stats: %{}
+        },
+        away_team: %{
+          coaches: [],
+          total_coach_stats: %{},
+          total_player_stats: %{},
+          stats_values: %{
+            "points" => 0,
+            "fouls" => 0,
+            "total_fouls_technical" => 0
+          },
+          period_stats: %{}
+        },
+        sport_id: "basketball"
+      }
+
+      payload = %{
+        "operation" => "increment",
+        "team-type" => "home",
+        "coach-id" => "coach-123",
+        "stat-id" => "fouls_technical"
+      }
+
+      event = UpdateCoachStatDefinition.create("some-game-id", 10, 1, payload)
+      result = UpdateCoachStatDefinition.handle(initial_state, event)
+
+      # Verify the coach was updated and disqualified
+      home_coach = List.first(result.home_team.coaches)
+      assert home_coach.id == "coach-123"
+      assert home_coach.stats_values["fouls_technical"] == 3
+      assert home_coach.stats_values["fouls"] == 3
+      assert home_coach.state == :disqualified
+
+      # Verify team totals were calculated correctly
+      assert result.home_team.total_coach_stats["fouls_technical"] == 3
+      assert result.home_team.stats_values["fouls"] == 3
+    end
   end
 end

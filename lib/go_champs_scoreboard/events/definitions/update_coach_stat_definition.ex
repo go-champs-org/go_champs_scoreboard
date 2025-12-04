@@ -62,6 +62,8 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinition do
       |> Coaches.update_manual_stats_values(coach_stat, op)
       |> Coaches.update_calculated_stats_values(calculated_coach_stats)
 
+    updated_coach = Sports.update_coach_state(current_game.sport_id, updated_coach)
+
     updated_team =
       current_game
       |> Teams.find_team(team_type)

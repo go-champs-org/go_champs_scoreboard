@@ -1,5 +1,6 @@
 defmodule GoChampsScoreboard.Sports.Sports do
   alias GoChampsScoreboard.Games.Models.PlayerState
+  alias GoChampsScoreboard.Games.Models.CoachState
   alias GoChampsScoreboard.Games.Models.GameState
   alias GoChampsScoreboard.Sports.Basketball
   alias GoChampsScoreboard.Statistics.Models.Stat
@@ -39,6 +40,13 @@ defmodule GoChampsScoreboard.Sports.Sports do
 
   @spec update_player_state(String.t(), PlayerState.t()) :: PlayerState.t()
   def update_player_state(_, player), do: player
+
+  @spec update_coach_state(String.t(), CoachState.t()) :: CoachState.t()
+  def update_coach_state("basketball", coach),
+    do: Basketball.CoachState.update_coach_state(coach)
+
+  @spec update_coach_state(String.t(), CoachState.t()) :: CoachState.t()
+  def update_coach_state(_, coach), do: coach
 
   @spec advance_to(String.t(), GameClockState.t(), GameClockState.state()) :: GameClockState.t()
   def advance_to("basketball", clock_state, state) do

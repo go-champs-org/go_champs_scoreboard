@@ -83,4 +83,59 @@ defmodule GoChampsScoreboard.Games.CoachesTest do
              } == Coaches.update_calculated_stats_values(coach_state, coach_stats)
     end
   end
+
+  describe "update_state" do
+    test "updates the coach state with new state" do
+      coach_state = %{
+        id: "coach-123",
+        name: "Phil Jackson",
+        type: :head_coach,
+        state: :active,
+        stats_values: %{"fouls" => 2}
+      }
+
+      result = Coaches.update_state(coach_state, :disqualified)
+
+      assert result.state == :disqualified
+      assert result.id == "coach-123"
+      assert result.name == "Phil Jackson"
+      assert result.type == :head_coach
+      assert result.stats_values == %{"fouls" => 2}
+    end
+
+    test "adds state field if it doesn't exist" do
+      coach_state = %{
+        id: "coach-456",
+        name: "Doc Rivers",
+        type: :assistant_coach,
+        stats_values: %{"fouls_technical" => 1}
+      }
+
+      result = Coaches.update_state(coach_state, :disqualified)
+
+      assert result.state == :disqualified
+      assert result.id == "coach-456"
+      assert result.name == "Doc Rivers"
+      assert result.type == :assistant_coach
+      assert result.stats_values == %{"fouls_technical" => 1}
+    end
+
+    test "can change state from disqualified back to active" do
+      coach_state = %{
+        id: "coach-789",
+        name: "Steve Kerr",
+        type: :head_coach,
+        state: :disqualified,
+        stats_values: %{"fouls" => 3}
+      }
+
+      result = Coaches.update_state(coach_state, :active)
+
+      assert result.state == :active
+      assert result.id == "coach-789"
+      assert result.name == "Steve Kerr"
+      assert result.type == :head_coach
+      assert result.stats_values == %{"fouls" => 3}
+    end
+  end
 end

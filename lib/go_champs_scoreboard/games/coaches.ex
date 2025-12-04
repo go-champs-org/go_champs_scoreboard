@@ -32,6 +32,11 @@ defmodule GoChampsScoreboard.Games.Coaches do
     end)
   end
 
+  @spec update_state(CoachState.t(), CoachState.state()) :: CoachState.t()
+  def update_state(coach_state, coach_state_update) do
+    Map.put(coach_state, :state, coach_state_update)
+  end
+
   @spec update_calculated_stat_value(CoachState.t(), Stat.t()) :: CoachState.t()
   defp update_calculated_stat_value(coach_state, player_stat) do
     new_stat_value =
