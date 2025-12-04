@@ -33,6 +33,13 @@ defmodule GoChampsScoreboard.Sports.Sports do
   def find_calculated_team_stats("basketball"),
     do: Basketball.Basketball.find_calculated_team_stats()
 
+  @spec update_player_state(String.t(), PlayerState.t()) :: PlayerState.t()
+  def update_player_state("basketball", player),
+    do: Basketball.PlayerState.update_player_state(player)
+
+  @spec update_player_state(String.t(), PlayerState.t()) :: PlayerState.t()
+  def update_player_state(_, player), do: player
+
   @spec advance_to(String.t(), GameClockState.t(), GameClockState.state()) :: GameClockState.t()
   def advance_to("basketball", clock_state, state) do
     Basketball.GameClock.advance_to(clock_state, state)

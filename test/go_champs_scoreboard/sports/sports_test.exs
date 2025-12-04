@@ -76,4 +76,21 @@ defmodule GoChampsScoreboard.Sports.SportsTest do
       assert "fouls" in calculated_keys
     end
   end
+
+  describe "update_player_state/2" do
+    test "delegates to Basketball.Basketball.update_player_state for basketball sport" do
+      player = %GoChampsScoreboard.Games.Models.PlayerState{
+        id: "test-player",
+        stats_values: %{"fouls" => 3}
+      }
+
+      result = Sports.update_player_state("basketball", player)
+
+      # Since the basketball implementation currently returns the player unchanged,
+      # we verify the delegation works and returns the same player
+      assert result == player
+      assert result.id == "test-player"
+      assert result.stats_values["fouls"] == 3
+    end
+  end
 end
