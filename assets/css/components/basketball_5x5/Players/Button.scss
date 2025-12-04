@@ -27,6 +27,7 @@
   .fouls {
     position: absolute;
     background-color: $red;
+    color: $white;
     border-bottom-right-radius: 5px;
     padding: 0 5px;
     font-size: 0.65rem;
@@ -48,6 +49,17 @@
     color: $black;
     padding: 0 5px;
     font-size: 0.65rem;
+  }
+
+  &.is-disqualified {
+    border: 2px solid $red;
+
+    .content {
+      .number,
+      .name {
+        color: $red;
+      }
+    }
   }
 }
 

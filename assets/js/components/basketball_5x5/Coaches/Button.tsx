@@ -18,7 +18,9 @@ function CoachButton({
   liveState,
 }: CoachButtonProps) {
   const fouls = coach?.stats_values['fouls'] || 0;
-  const isDisabled = liveState.state === LiveStateStates.NOT_STARTED || !coach; // Disable if no coach exists
+  const isDisqualified = coach?.state === 'disqualified';
+  const isDisabled =
+    liveState.state === LiveStateStates.NOT_STARTED || !coach || isDisqualified; // Disable if no coach exists or is disqualified
   const [isAnimating, setIsAnimating] = React.useState(false);
   const previousFouls = React.useRef(fouls);
 
@@ -46,7 +48,12 @@ function CoachButton({
 
   return (
     <button
-      className={`coach-button button ${isSelected ? 'is-dark' : ''}`}
+      className={`coach-button button ${isSelected ? 'is-dark' : ''} ${
+        isDisqualified ? 'is-disqualified has-tooltip' : ''
+      }`}
+      data-tooltip={
+        isDisqualified ? t('basketball.coaches.disqualified') : undefined
+      }
       disabled={isDisabled}
       onClick={onClick}
       title={coach ? coach.name : `No ${coachType.replace('_', ' ')} assigned`}

@@ -257,6 +257,7 @@
     "players": {
       "onCourt": "Em Quadra",
       "onBench": "No Banco",
+      "disqualified": "Desqualificado",
       "controls": {
         "substitute": "Substituir",
         "cancel": "Cancelar"
@@ -288,6 +289,7 @@
       }
     },
     "coaches": {
+      "disqualified": "Desqualificado",
       "modal": {
         "title": "Editar Técnicos",
         "addCoach": "Adicionar Técnico",
@@ -351,9 +353,9 @@
       "teamB": "Equipe B"
     },
     "quarterStats": {
-      "firstHalfTimeouts": "Tempos 1º Tempo",
-      "secondHalfTimeouts": "Tempos 2º Tempo",
-      "extraTimeouts": "Tempos Extra",
+      "firstHalfTimeouts": "T. Téc 1º Tempo",
+      "secondHalfTimeouts": "T. Téc 2º Tempo",
+      "extraTimeouts": "T. Téc Extra",
       "quarterFouls": "FLT Q.",
       "quarterPoints": "PTS Q.",
       "used": "Usado",

@@ -257,6 +257,7 @@
     "players": {
       "onCourt": "On Court",
       "onBench": "On Bench",
+      "disqualified": "Disqualified",
       "controls": {
         "substitute": "Substitute",
         "cancel": "Cancel"
@@ -288,6 +289,7 @@
       }
     },
     "coaches": {
+      "disqualified": "Disqualified",
       "modal": {
         "title": "Edit Coaches",
         "addCoach": "Add Coach",

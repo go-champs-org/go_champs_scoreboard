@@ -1,5 +1,6 @@
 import React from 'react';
 import { PlayerState } from '../../../types';
+import { useTranslation } from '../../../hooks/useTranslation';
 
 interface ButtonProps {
   player: PlayerState;
@@ -16,9 +17,11 @@ function Button({
   disabled = false,
   className = '',
 }: ButtonProps) {
+  const { t } = useTranslation();
   const fouls = player.stats_values['fouls'] || 0;
   const [isAnimating, setIsAnimating] = React.useState(false);
   const previousFouls = React.useRef(fouls);
+  const isDisqualified = player.state === 'disqualified';
 
   // Trigger animation when fouls value changes
   React.useEffect(() => {
@@ -34,11 +37,14 @@ function Button({
   }, [fouls]);
   return (
     <button
-      className={`player-button button ${
-        isSelected ? 'is-dark' : ''
+      className={`player-button button ${isSelected ? 'is-dark' : ''} ${
+        isDisqualified ? 'is-disqualified has-tooltip' : ''
       } ${className}`}
+      data-tooltip={
+        isDisqualified ? t('basketball.players.disqualified') : undefined
+      }
       onClick={onClick}
-      disabled={disabled}
+      disabled={disabled || isDisqualified}
     >
       <div className="content">
         {player.number !== null ? (
