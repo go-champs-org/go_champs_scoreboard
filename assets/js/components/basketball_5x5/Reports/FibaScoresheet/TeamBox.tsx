@@ -384,17 +384,25 @@ function TimeoutBoxList({
 
   return (
     <View style={styles.teamContainer.header.row}>
-      {renderTimeouts.map((timeout, index) => (
-        <View key={index} style={styles.teamContainer.square}>
-          {timeout ? (
-            <Text style={textColorForPeriod(timeout.period)}>
-              {timeout.minute}
-            </Text>
-          ) : (
-            isGameEnded && <View style={styles.teamContainer.square.unused} />
-          )}
-        </View>
-      ))}
+      {renderTimeouts.map((timeout, index) => {
+        const isRegularTimeout = timeout && !timeout.lost;
+        const isLostTimeout = timeout?.lost;
+        const shouldShowUnusedCell = isLostTimeout || (!timeout && isGameEnded);
+
+        return (
+          <View key={index} style={styles.teamContainer.square}>
+            {isRegularTimeout ? (
+              <Text style={textColorForPeriod(timeout.period)}>
+                {timeout.minute}
+              </Text>
+            ) : (
+              shouldShowUnusedCell && (
+                <View style={styles.teamContainer.square.unused} />
+              )
+            )}
+          </View>
+        );
+      })}
     </View>
   );
 }

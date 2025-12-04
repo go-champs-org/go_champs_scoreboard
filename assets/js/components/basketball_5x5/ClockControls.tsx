@@ -14,6 +14,8 @@ interface ClockControlsProps {
 
 interface InGameClockControlsProps {
   clock_state: GameClockState;
+  away_team: TeamState;
+  home_team: TeamState;
   clockButtonsDisabled: boolean;
   isClockRunning: boolean;
   isTimeZero: boolean;
@@ -33,6 +35,34 @@ interface EndGameClockControlsProps {
     endGame: () => void;
   };
 }
+
+const LoseTimeoutButton = ({
+  teamType,
+  disabled,
+  pushEvent,
+}: {
+  teamType: string;
+  disabled: boolean;
+  pushEvent: (event: string, payload: any) => void;
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <button
+      className="button is-danger is-fullwidth"
+      onClick={() =>
+        pushEvent('update-team-stat', {
+          'stat-id': 'lost_timeouts',
+          'team-type': teamType,
+          operation: 'increment',
+        })
+      }
+      disabled={disabled}
+    >
+      {t('basketball.clock.loseTimeout')}
+    </button>
+  );
+};
 
 const TimeoutButton = ({
   teamType,
@@ -84,8 +114,65 @@ const TimeControl = ({
   </button>
 );
 
+const isTimeoutButtonDisabled = (
+  team: TeamState,
+  clock_state: GameClockState,
+  clockButtonsDisabled: boolean,
+): boolean => {
+  // Base disable condition
+  if (clockButtonsDisabled) return true;
+
+  const period = clock_state.period;
+
+  // First half (periods 1-2): max 2 timeouts
+  if (period === 1 || period === 2) {
+    const firstHalfTimeouts =
+      (team.period_stats['1']?.timeouts || 0) +
+      (team.period_stats['2']?.timeouts || 0);
+    return firstHalfTimeouts >= 2;
+  }
+
+  // Second half (periods 3-4): max 3 timeouts
+  if (period === 3 || period === 4) {
+    const secondHalfTimeouts =
+      (team.period_stats['3']?.timeouts || 0) +
+      (team.period_stats['4']?.timeouts || 0) +
+      (team.period_stats['3']?.lost_timeouts || 0) +
+      (team.period_stats['4']?.lost_timeouts || 0);
+    return secondHalfTimeouts >= 3;
+  }
+
+  // Overtime (period >= 5): max 1 timeout per overtime period
+  if (period >= 5) {
+    const overtimeTimeouts =
+      team.period_stats[period.toString()]?.timeouts || 0;
+    return overtimeTimeouts >= 1;
+  }
+
+  return false;
+};
+
+const shouldShowLoseTimeoutButton = (
+  team: TeamState,
+  clock_state: GameClockState,
+): boolean => {
+  const secondHalfTimeouts =
+    (team.period_stats['3']?.timeouts || 0) +
+    (team.period_stats['4']?.timeouts || 0) +
+    (team.period_stats['3']?.lost_timeouts || 0) +
+    (team.period_stats['4']?.lost_timeouts || 0);
+
+  return (
+    clock_state.period === 4 &&
+    clock_state.time <= 120 &&
+    secondHalfTimeouts === 0
+  );
+};
+
 function InGameClockControls({
   clock_state,
+  home_team,
+  away_team,
   clockButtonsDisabled,
   isClockRunning,
   isTimeZero,
@@ -99,11 +186,23 @@ function InGameClockControls({
   return (
     <div className="columns is-multiline">
       <div className="column is-4">
-        <TimeoutButton
-          teamType="home"
-          disabled={clockButtonsDisabled}
-          pushEvent={pushEvent}
-        />
+        {shouldShowLoseTimeoutButton(home_team, clock_state) ? (
+          <LoseTimeoutButton
+            teamType="home"
+            disabled={clockButtonsDisabled}
+            pushEvent={pushEvent}
+          />
+        ) : (
+          <TimeoutButton
+            teamType="home"
+            disabled={isTimeoutButtonDisabled(
+              home_team,
+              clock_state,
+              clockButtonsDisabled,
+            )}
+            pushEvent={pushEvent}
+          />
+        )}
       </div>
 
       <div className="column is-4">
@@ -111,11 +210,23 @@ function InGameClockControls({
       </div>
 
       <div className="column is-4">
-        <TimeoutButton
-          teamType="away"
-          disabled={clockButtonsDisabled}
-          pushEvent={pushEvent}
-        />
+        {shouldShowLoseTimeoutButton(away_team, clock_state) ? (
+          <LoseTimeoutButton
+            teamType="away"
+            disabled={clockButtonsDisabled}
+            pushEvent={pushEvent}
+          />
+        ) : (
+          <TimeoutButton
+            teamType="away"
+            disabled={isTimeoutButtonDisabled(
+              away_team,
+              clock_state,
+              clockButtonsDisabled,
+            )}
+            pushEvent={pushEvent}
+          />
+        )}
       </div>
 
       <div className="column is-2">
@@ -271,6 +382,8 @@ function ClockControls({
       ) : (
         <InGameClockControls
           clock_state={clock_state}
+          home_team={home_team}
+          away_team={away_team}
           clockButtonsDisabled={clockButtonsDisabled}
           isClockRunning={isClockRunning}
           isTimeZero={isTimeZero}

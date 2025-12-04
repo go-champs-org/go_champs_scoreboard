@@ -22,7 +22,13 @@ const calculateTimeoutStats = (
   // Second half (periods 3, 4) - can use 3 timeouts
   const secondHalfUsed =
     (periodStats['3']?.timeouts || 0) + (periodStats['4']?.timeouts || 0);
-  const secondHalfRemaining = Math.max(0, 3 - secondHalfUsed);
+  const secondHalfLost =
+    (periodStats['3']?.lost_timeouts || 0) +
+    (periodStats['4']?.lost_timeouts || 0);
+  const secondHalfRemaining = Math.max(
+    0,
+    3 - (secondHalfUsed + secondHalfLost),
+  );
 
   // Extra time (period 5 and beyond) - calculate used
   let extraUsed = 0;

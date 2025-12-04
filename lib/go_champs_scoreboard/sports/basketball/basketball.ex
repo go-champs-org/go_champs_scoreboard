@@ -82,6 +82,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Basketball do
 
   @team_stats [
     Stat.new("timeouts", :manual, [:increment, :decrement]),
+    Stat.new("lost_timeouts", :manual, [:increment, :decrement]),
     Stat.new("fouls_technical", :manual, [:increment, :decrement]),
     Stat.new("points", :calculated, [], &Statistics.calc_team_points/1),
     Stat.new("fouls", :calculated, [], &Statistics.calc_team_fouls/1),

@@ -40,6 +40,7 @@ export interface Player {
 export interface Timeout {
   minute: number;
   period: number;
+  lost: boolean;
 }
 
 export interface ScoreMark {

@@ -12,7 +12,8 @@
       "endLive": "Finalizar Ao Vivo"
     },
     "clock": {
-      "timeout": "Tempo Técnico",
+      "timeout": "T Téc.",
+      "loseTimeout": "Perder T. Téc.",
       "pause": "Pausar",
       "start": "Iniciar",
       "endQuarter": "Finalizar Quarto",

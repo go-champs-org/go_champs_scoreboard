@@ -13,6 +13,7 @@
     },
     "clock": {
       "timeout": "Timeout",
+      "loseTimeout": "Lose T.",
       "pause": "Pause",
       "start": "Start",
       "endQuarter": "End Quarter",

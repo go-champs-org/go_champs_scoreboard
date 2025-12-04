@@ -148,12 +148,14 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
 
     @type t :: %__MODULE__{
             period: Integer.t(),
-            minute: Integer.t()
+            minute: Integer.t(),
+            lost: boolean()
           }
 
     defstruct [
       :period,
-      :minute
+      :minute,
+      :lost
     ]
   end
 
