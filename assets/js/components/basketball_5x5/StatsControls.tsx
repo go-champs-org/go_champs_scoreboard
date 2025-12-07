@@ -12,7 +12,6 @@ interface StatsControlsProps {
   selection: Selection | null;
   selectEntity: (selection: Selection | null) => void;
   liveState: LiveState;
-  onShowFoulsModal: () => void;
 }
 
 // Custom hook for stat update logic
@@ -114,7 +113,6 @@ export function MediumStatsControls({
   selection,
   selectEntity,
   liveState,
-  onShowFoulsModal,
 }: StatsControlsProps) {
   const { t } = useTranslation();
   const buttonRefs = {
@@ -312,7 +310,6 @@ export function BasicStatsControls({
   selection,
   selectEntity,
   liveState,
-  onShowFoulsModal = () => {},
 }: StatsControlsProps) {
   const { t } = useTranslation();
   const buttonRefs = {

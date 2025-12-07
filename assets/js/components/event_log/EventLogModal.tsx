@@ -13,7 +13,11 @@ import EventLogTable from './EventLogTable';
 import EventLogForm from './EventLogForm';
 import { useTranslation } from 'react-i18next';
 import { EVENT_KEYS } from '../../constants';
-import { EVENT_KEYS_EDITABLE, getManualPlayerStatsForView, LIVE_MODE_EVENT_KEYS } from '../basketball_5x5/constants';
+import {
+  EVENT_KEYS_EDITABLE,
+  getManualPlayerStatsForView,
+  LIVE_MODE_EVENT_KEYS,
+} from '../basketball_5x5/constants';
 
 interface EventLogModalProps {
   game_state: GameState;

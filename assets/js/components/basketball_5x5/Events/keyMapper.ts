@@ -18,8 +18,10 @@ const KEY_TO_EVENT_TYPE_KEY: { [key: string]: string } = {
   [EVENT_KEYS.START_GAME_LIVE_MODE]: 'eventKeys.startGameLiveMode',
   [EVENT_KEYS.SUBSTITUTE_PLAYER]: 'eventKeys.substitutePlayer',
   [EVENT_KEYS.UPDATE_CLOCK_STATE]: 'eventKeys.updateClockState',
-  [EVENT_KEYS.UPDATE_CLOCK_STATE_METADATA]: 'eventKeys.updateClockStateMetadata',
-  [EVENT_KEYS.UPDATE_CLOCK_TIME_AND_PERIOD]: 'eventKeys.updateClockTimeAndPeriod',
+  [EVENT_KEYS.UPDATE_CLOCK_STATE_METADATA]:
+    'eventKeys.updateClockStateMetadata',
+  [EVENT_KEYS.UPDATE_CLOCK_TIME_AND_PERIOD]:
+    'eventKeys.updateClockTimeAndPeriod',
   [EVENT_KEYS.UPDATE_COACH_IN_TEAM]: 'eventKeys.updateCoachInTeam',
   [EVENT_KEYS.UPDATE_COACH_STAT]: 'eventKeys.updateCoachStat',
   [EVENT_KEYS.UPDATE_GAME_INFO]: 'eventKeys.updateGameInfo',

@@ -4,7 +4,6 @@ import { BasicStatsControls, MediumStatsControls } from './StatsControls';
 import TopLevel from './TopLevel';
 import EndLiveModal from './EndLiveModal';
 import { BasicTopControls } from './TopControls';
-import FoulsModal from './Stats/FoulsModal';
 import PlayersControls from './PlayersControls';
 import TeamControls from './TeamControls';
 import ClockControls from './ClockControls';
@@ -61,7 +60,6 @@ function BasicView({
             selection={selection}
             pushEvent={pushEvent}
             selectEntity={setSelection}
-            onShowFoulsModal={() => {}}
           />
         </div>
 
@@ -88,8 +86,6 @@ function MediumView({
   selection,
   setSelection,
 }: ViewProps) {
-  const [showFoulsModal, setShowFoulsModal] = useState(false);
-
   return (
     <>
       <div className="columns is-multiline">
@@ -140,7 +136,6 @@ function MediumView({
                 selection={selection}
                 pushEvent={pushEvent}
                 selectEntity={setSelection}
-                onShowFoulsModal={() => setShowFoulsModal(true)}
               />
             </div>
           </div>
@@ -169,12 +164,6 @@ function MediumView({
           </div>
         </div>
       </div>
-      <FoulsModal
-        gameState={game_state}
-        showModal={showFoulsModal}
-        onCloseModal={() => setShowFoulsModal(false)}
-        pushEvent={pushEvent}
-      />
     </>
   );
 }
