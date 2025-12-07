@@ -110,6 +110,33 @@ defmodule GoChampsScoreboardWeb.EventLogControllerTest do
                event["key"] == event_log.key
              end)
     end
+
+    test "lists events filtered by multiple keys using comma-separated values", %{
+      conn: conn,
+      event_log: event_log
+    } do
+      # Get all events to see what keys are available
+      all_events = EventLogs.get_all_by_game_id(event_log.game_id)
+      available_keys = Enum.map(all_events, & &1.key) |> Enum.uniq()
+
+      # Create a comma-separated string of the first two keys (if available)
+      multiple_keys =
+        case available_keys do
+          [key1, key2 | _] -> "#{key1},#{key2}"
+          [key1] -> key1
+          [] -> ""
+        end
+
+      conn = get(conn, ~p"/v1/games/#{event_log.game_id}/event-logs?key=#{multiple_keys}")
+      response_data = json_response(conn, 200)["data"]
+
+      # Verify all returned events have keys that match our filter
+      expected_keys = String.split(multiple_keys, ",", trim: true)
+
+      assert Enum.all?(response_data, fn event ->
+               event["key"] in expected_keys
+             end)
+    end
   end
 
   describe "create" do

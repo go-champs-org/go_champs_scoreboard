@@ -1,10 +1,17 @@
 import { EVENT_KEYS } from '../../constants';
 import { BasketballViews } from '../../types';
 
+export const LIVE_MODE_EVENT_KEYS = [
+  EVENT_KEYS.START_GAME_LIVE_MODE,
+  EVENT_KEYS.END_GAME_LIVE_MODE,
+  EVENT_KEYS.RESET_GAME_LIVE_MODE,
+];
+
 export const EVENT_KEYS_EDITABLE = [
   EVENT_KEYS.UPDATE_PLAYER_STAT,
+  EVENT_KEYS.UPDATE_PLAYERS_STATE,
   EVENT_KEYS.UPDATE_COACH_STAT,
-  // EVENT_KEYS.UPDATE_TEAM_STAT,
+  EVENT_KEYS.UPDATE_TEAM_STAT,
 ];
 
 export interface PlayerStat {

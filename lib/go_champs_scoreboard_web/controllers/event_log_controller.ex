@@ -12,7 +12,7 @@ defmodule GoChampsScoreboardWeb.EventLogController do
     filters =
       params
       |> Enum.filter(fn {k, _v} -> k != "game_id" end)
-      |> Enum.map(fn {k, v} -> {String.to_atom(k), v} end)
+      |> Enum.map(fn {k, v} -> {String.to_atom(k), parse_filter_value(k, v)} end)
       |> Keyword.put_new(:order, :desc)
 
     event_logs = EventLogs.get_all_by_game_id(game_id, filters)
@@ -79,4 +79,15 @@ defmodule GoChampsScoreboardWeb.EventLogController do
         {:ok, event_log}
     end
   end
+
+  # Helper function to parse filter values, particularly for the 'key' parameter
+  # Supports comma-separated values for multiple keys
+  defp parse_filter_value("key", value) when is_binary(value) do
+    case String.split(value, ",", trim: true) do
+      [single_key] -> single_key
+      multiple_keys -> multiple_keys
+    end
+  end
+
+  defp parse_filter_value(_key, value), do: value
 end

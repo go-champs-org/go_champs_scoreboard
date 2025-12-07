@@ -214,26 +214,21 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   - `opts`: Optional parameters to customize the query.
     - `:with_snapshot`: If true, preloads the snapshot associated with each event log.
     - `:game_clock_period`: Filters event logs by game clock period if provided.
-    - `:key`: Filters event logs by key if provided.
+    - `:key`: Filters event logs by key (string) or keys (list of strings) if provided.
     - `:order`: Determines the order of results. Accepts `:asc` (default) or `:desc`.
   ## Returns
   - A list of event logs associated with the specified game ID, sorted by the sport sort logic.
   ## Example
   ```
+  # Get all event logs
   iex> game_id = Ecto.UUID.generate()
   iex> event_logs = get_all_by_game_id(game_id)
-  iex> event_logs
-  [
-    %EventLog{
-      id: "some-uuid",
-      key: "event_key",
-      payload: %{"key" => "value"},
-      timestamp: ~N[2023-10-01 12:00:00],
-      game_clock_time: 120,
-      game_clock_period: 1
-    },
-    ...
-  ]
+
+  # Filter by single key
+  iex> player_events = get_all_by_game_id(game_id, key: "update-player-stat")
+
+  # Filter by multiple keys
+  iex> stat_events = get_all_by_game_id(game_id, key: ["update-player-stat", "update-coach-stat"])
   ```
   """
   @spec get_all_by_game_id(Ecto.UUID.t(), Keyword.t()) :: [EventLog.t()]
@@ -258,10 +253,15 @@ defmodule GoChampsScoreboard.Games.EventLogs do
 
       # Apply key filter if provided
       key_query =
-        if key do
-          from e in period_query, where: e.key == ^key
-        else
-          period_query
+        cond do
+          is_list(key) && length(key) > 0 ->
+            from e in period_query, where: e.key in ^key
+
+          is_binary(key) ->
+            from e in period_query, where: e.key == ^key
+
+          true ->
+            period_query
         end
 
       # Apply ordering based on the order option

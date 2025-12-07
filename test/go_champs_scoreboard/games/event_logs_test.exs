@@ -799,6 +799,201 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       assert Enum.at(event_logs, 0).id == event_log1.id
     end
 
+    test "retrieves all event logs for a specific game ID and filters by multiple event keys" do
+      game_id = "7488a646-e31f-11e4-aace-600308960668"
+
+      event1 =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          game_id,
+          10,
+          1,
+          %{}
+        )
+
+      event2 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_id,
+          9,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => "123",
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      event3 =
+        GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinition.create(
+          game_id,
+          8,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "coach-id" => "coach123",
+            "stat-id" => "fouls_technical"
+          }
+        )
+
+      event4 =
+        GoChampsScoreboard.Events.Definitions.UpdateTeamStatDefinition.create(
+          game_id,
+          7,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "stat-id" => "timeouts"
+          }
+        )
+
+      game_state = game_state_fixture()
+      {:ok, event_log1} = EventLogs.persist(event1, game_state)
+      {:ok, event_log2} = EventLogs.persist(event2, game_state)
+      {:ok, event_log3} = EventLogs.persist(event3, game_state)
+      {:ok, _event_log4} = EventLogs.persist(event4, game_state)
+
+      # Filter by multiple keys
+      event_logs =
+        EventLogs.get_all_by_game_id(game_id, key: ["start-game-live-mode", "update-coach-stat"])
+
+      assert length(event_logs) == 2
+      event_ids = Enum.map(event_logs, & &1.id)
+      assert event_log1.id in event_ids
+      assert event_log3.id in event_ids
+      refute event_log2.id in event_ids
+    end
+
+    test "handles empty list for key filter" do
+      game_id = "7488a646-e31f-11e4-aace-600308960668"
+
+      event1 =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          game_id,
+          10,
+          1,
+          %{}
+        )
+
+      event2 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_id,
+          9,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => "123",
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      game_state = game_state_fixture()
+      {:ok, _event_log1} = EventLogs.persist(event1, game_state)
+      {:ok, _event_log2} = EventLogs.persist(event2, game_state)
+
+      # Empty list should return all events (no filter applied)
+      event_logs = EventLogs.get_all_by_game_id(game_id, key: [])
+
+      assert length(event_logs) == 2
+    end
+
+    test "filters by single key in list format" do
+      game_id = "7488a646-e31f-11e4-aace-600308960668"
+
+      event1 =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          game_id,
+          10,
+          1,
+          %{}
+        )
+
+      event2 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_id,
+          9,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => "123",
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      game_state = game_state_fixture()
+      {:ok, event_log1} = EventLogs.persist(event1, game_state)
+      {:ok, _event_log2} = EventLogs.persist(event2, game_state)
+
+      # Single key in list format should work the same as string
+      event_logs_string = EventLogs.get_all_by_game_id(game_id, key: "start-game-live-mode")
+      event_logs_list = EventLogs.get_all_by_game_id(game_id, key: ["start-game-live-mode"])
+
+      assert length(event_logs_string) == 1
+      assert length(event_logs_list) == 1
+      assert Enum.at(event_logs_string, 0).id == event_log1.id
+      assert Enum.at(event_logs_list, 0).id == event_log1.id
+      assert event_logs_string == event_logs_list
+    end
+
+    test "combines multiple key filtering with other filters" do
+      game_id = "7488a646-e31f-11e4-aace-600308960668"
+
+      event1 =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          game_id,
+          10,
+          1,
+          %{}
+        )
+
+      event2 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_id,
+          9,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => "123",
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      event3 =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_id,
+          8,
+          2,
+          %{
+            "operation" => "increment",
+            "team-type" => "away",
+            "player-id" => "456",
+            "stat-id" => "rebounds"
+          }
+        )
+
+      game_state = game_state_fixture()
+      {:ok, _event_log1} = EventLogs.persist(event1, game_state)
+      {:ok, _event_log2} = EventLogs.persist(event2, game_state)
+      {:ok, _event_log3} = EventLogs.persist(event3, game_state)
+
+      # Filter by multiple keys AND period
+      event_logs =
+        EventLogs.get_all_by_game_id(game_id,
+          key: ["start-game-live-mode", "update-player-stat"],
+          game_clock_period: 1
+        )
+
+      assert length(event_logs) == 2
+      # Should only include events from period 1
+      Enum.each(event_logs, fn event_log ->
+        assert event_log.game_clock_period == 1
+      end)
+    end
+
     test "retrieves all event logs for a specific game ID and filters by game_clock_period" do
       game_id = "7488a646-e31f-11e4-aace-600308960668"
 

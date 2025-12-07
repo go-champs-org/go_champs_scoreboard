@@ -383,9 +383,12 @@
     "updateClockTimeAndPeriod": "Atualização Tempo",
     "updateCoachInTeam": "Atualizar Técnico na Equipe",
     "updateCoachStat": "Atualizar Estatística do Técnico",
+    "updateClockStateMetadata": "Atualizar Metadados do Cronômetro",
+    "updateGameInfo": "Atualizar Informações do Jogo",
     "updateOfficialInGame": "Atualizar Oficial do Jogo",
     "updatePlayerStat": "Atualizar Estatística do Atleta",
     "updatePlayerInTeam": "Atualizar Atleta na Equipe",
+    "updatePlayersState": "Atualizar Estado dos Atletas",
     "updateTeamStat": "Atualizar Estatística da Equipe"
   },
   "teams": {

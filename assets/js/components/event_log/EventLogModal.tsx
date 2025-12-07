@@ -13,7 +13,7 @@ import EventLogTable from './EventLogTable';
 import EventLogForm from './EventLogForm';
 import { useTranslation } from 'react-i18next';
 import { EVENT_KEYS } from '../../constants';
-import { getManualPlayerStatsForView } from '../basketball_5x5/constants';
+import { EVENT_KEYS_EDITABLE, getManualPlayerStatsForView, LIVE_MODE_EVENT_KEYS } from '../basketball_5x5/constants';
 
 interface EventLogModalProps {
   game_state: GameState;
@@ -153,9 +153,15 @@ function useEventLogs(
   const fetchEventLogs = async (period?: number | null) => {
     setLoading(true);
     try {
-      const filters = period
-        ? { game_clock_period: period.toString() }
-        : undefined;
+      const allFilterKeys = [...LIVE_MODE_EVENT_KEYS, ...EVENT_KEYS_EDITABLE];
+      const filters: any = {
+        key: allFilterKeys.join(','),
+      };
+
+      if (period) {
+        filters.game_clock_period = period.toString();
+      }
+
       const response = await eventLogsHttpClient.getEventLogs(gameId, filters);
       setEventLogs(response);
 

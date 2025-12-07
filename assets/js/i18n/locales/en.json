@@ -383,9 +383,12 @@
     "updateClockTimeAndPeriod": "Update Clock Time and Period",
     "updateCoachInTeam": "Update Coach in Team",
     "updateCoachStat": "Update Coach Stat",
+    "updateClockStateMetadata": "Update Clock State Metadata",
+    "updateGameInfo": "Update Game Info",
     "updateOfficialInGame": "Update Official in Game",
     "updatePlayerStat": "Update Player Stat",
     "updatePlayerInTeam": "Update Player in Team",
+    "updatePlayersState": "Update Players State",
     "updateTeamStat": "Update Team Stat"
   },
   "teams": {
