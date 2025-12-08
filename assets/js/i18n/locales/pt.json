@@ -111,6 +111,18 @@
             "increment": "Incrementar (+)",
             "decrement": "Decrementar (-)",
             "set": "Definir (=)"
+          },
+          "playersState": {
+            "title": "Atualização de Estado dos Atletas",
+            "state": "Estado",
+            "selectState": "Selecione o estado do atleta",
+            "players": "Atletas",
+            "maxPlayersOnCourt": "(Máx 5 atletas Em Quadra)",
+            "playersSelected": "selecionados",
+            "noPlayersAvailable": "Nenhum atleta disponível",
+            "injured": "Lesionado",
+            "available": "Disponível",
+            "notAvailable": "Não Disponível"
           }
         }
       },
@@ -388,7 +400,7 @@
     "updateOfficialInGame": "Atualizar Oficial do Jogo",
     "updatePlayerStat": "Atualizar Estatística do Atleta",
     "updatePlayerInTeam": "Atualizar Atleta na Equipe",
-    "updatePlayersState": "Atualizar Estado dos Atletas",
+    "updatePlayersState": "Substituição",
     "updateTeamStat": "Atualizar Estatística da Equipe"
   },
   "teams": {

@@ -5,6 +5,7 @@ import { formatTime } from '../../shared/contentHelpers';
 import { eventKeyToString } from './contentMappers';
 import EventLogPayload from './EventLogPayload';
 import DoubleClickButton from '../DoubleClickButton';
+import { EVENT_KEYS } from '../../constants';
 
 interface EventLogRowProps {
   eventLog: EventLog;
@@ -33,14 +34,15 @@ function EventLogRow({
 }: EventLogRowProps) {
   const { t } = useTranslation();
   const canDelete =
-    eventLog.key === 'update-player-stat' ||
-    eventLog.key === 'update-team-stat' ||
-    eventLog.key === 'update-coach-stat';
+    eventLog.key === EVENT_KEYS.UPDATE_PLAYER_STAT ||
+    eventLog.key === EVENT_KEYS.UPDATE_TEAM_STAT ||
+    eventLog.key === EVENT_KEYS.UPDATE_COACH_STAT ||
+    eventLog.key === EVENT_KEYS.UPDATE_PLAYERS_STATE;
 
   const canEdit =
-    eventLog.key === 'update-player-stat' ||
-    eventLog.key === 'update-coach-stat';
-
+    eventLog.key === EVENT_KEYS.UPDATE_PLAYER_STAT ||
+    eventLog.key === EVENT_KEYS.UPDATE_COACH_STAT ||
+    eventLog.key === EVENT_KEYS.UPDATE_PLAYERS_STATE;
   const handleDelete = async () => {
     onStartDeleting(eventLog.id);
     // Add a small delay for the animation to show

@@ -111,6 +111,18 @@
             "increment": "Increment (+)",
             "decrement": "Decrement (-)",
             "set": "Set (=)"
+          },
+          "playersState": {
+            "title": "Players State Update",
+            "state": "State",
+            "selectState": "Select player state",
+            "players": "Players",
+            "maxPlayersOnCourt": "(Max 5 players for On Court)",
+            "playersSelected": "selected",
+            "noPlayersAvailable": "No players available",
+            "injured": "Injured",
+            "available": "Available",
+            "notAvailable": "Not Available"
           }
         }
       },
@@ -388,7 +400,7 @@
     "updateOfficialInGame": "Update Official in Game",
     "updatePlayerStat": "Update Player Stat",
     "updatePlayerInTeam": "Update Player in Team",
-    "updatePlayersState": "Update Players State",
+    "updatePlayersState": "Substitution",
     "updateTeamStat": "Update Team Stat"
   },
   "teams": {
