@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { GameState } from '../../../types';
 import { byPlayer } from '../../basketball_5x5/Players/utils';
 import CheckboxFormField from '../../CheckboxFormField';
+import TeamSelect from './TeamSelect';
 
 interface UpdatePlayersStateFormProps {
   onChange: (updateFn: (prevPayload: any) => any) => void;
@@ -94,32 +95,12 @@ function UpdatePlayersStateForm({
     <div className="update-players-state-form">
       <div className="columns is-multiline">
         <div className="column is-4">
-          <div className="field">
-            <label className="label has-text-white-ter">
-              {t(
-                'basketball.modals.eventLogs.payloadFields.playerStat.teamType',
-              )}
-            </label>
-            <div className="control">
-              <div className="select is-fullwidth">
-                <select
-                  value={selectedTeamType}
-                  disabled={!!initialPayload['team-type']}
-                  onChange={(e) =>
-                    handleTeamChange(e.target.value as 'home' | 'away' | '')
-                  }
-                >
-                  <option value="">
-                    {t(
-                      'basketball.modals.eventLogs.payloadFields.playerStat.selectTeam',
-                    )}
-                  </option>
-                  <option value="away">{gameState.away_team.name}</option>
-                  <option value="home">{gameState.home_team.name}</option>
-                </select>
-              </div>
-            </div>
-          </div>
+          <TeamSelect
+            selectedTeamType={selectedTeamType}
+            onTeamChange={handleTeamChange}
+            gameState={gameState}
+            disabled={!!initialPayload['team-type']}
+          />
         </div>
 
         <div className="column is-4">

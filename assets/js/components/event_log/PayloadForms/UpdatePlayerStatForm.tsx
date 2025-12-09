@@ -1,7 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GameState } from '../../../types';
-import { getManualPlayerStatsForView } from '../../basketball_5x5/constants';
+import {
+  getManualPlayerStatsForView,
+  STAT_KEYS,
+} from '../../basketball_5x5/constants';
+import TeamSelect from './TeamSelect';
+
+// Semantic ordering for stats - lower numbers appear first
+const statSemanticOrder: Record<string, number> = {
+  // Scoring stats
+  [STAT_KEYS.FREE_THROWS_MADE]: 1,
+  [STAT_KEYS.FREE_THROWS_MISSED]: 2,
+  [STAT_KEYS.FIELD_GOALS_MADE]: 3,
+  [STAT_KEYS.FIELD_GOALS_MISSED]: 4,
+  [STAT_KEYS.THREE_POINT_FIELD_GOALS_MADE]: 5,
+  [STAT_KEYS.THREE_POINT_FIELD_GOALS_MISSED]: 6,
+
+  // Fouls
+  [STAT_KEYS.FOULS_PERSONAL]: 7,
+  [STAT_KEYS.FOULS_TECHNICAL]: 8,
+  [STAT_KEYS.FOULS_UNSPORTSMANLIKE]: 9,
+  [STAT_KEYS.FOULS_DISQUALIFYING]: 10,
+  [STAT_KEYS.FOULS_DISQUALIFYING_FIGHTING]: 11,
+  [STAT_KEYS.FOULS_GAME_DISQUALIFYING]: 12,
+
+  // Rebounding stats
+  [STAT_KEYS.REBOUNDS_OFFENSIVE]: 13,
+  [STAT_KEYS.REBOUNDS_DEFENSIVE]: 14,
+
+  // Playmaking stats
+  [STAT_KEYS.ASSISTS]: 15,
+  [STAT_KEYS.STEALS]: 16,
+  [STAT_KEYS.BLOCKS]: 17,
+  [STAT_KEYS.TURNOVERS]: 18,
+};
 
 interface UpdatePlayerStatFormProps {
   onChange: (updateFn: (prevPayload: any) => any) => void;
@@ -28,7 +61,13 @@ const UpdatePlayerStatForm: React.FC<UpdatePlayerStatFormProps> = ({
 
   const manualStats = getManualPlayerStatsForView(
     gameState.view_settings_state.view,
-  );
+  )
+    .map((stat) => ({
+      ...stat,
+      semanticOrder: statSemanticOrder[stat.key] || 999, // Default to end if not found
+    }))
+    .sort((a, b) => a.semanticOrder - b.semanticOrder);
+
   const selectedTeam =
     selectedTeamType === 'home' ? gameState.home_team : gameState.away_team;
   const availablePlayers = selectedTeam?.players || [];
@@ -64,29 +103,12 @@ const UpdatePlayerStatForm: React.FC<UpdatePlayerStatFormProps> = ({
   return (
     <div className="columns is-multiline">
       <div className="column is-4">
-        <div className="field">
-          <label className="label has-text-white-ter">
-            {t('basketball.modals.eventLogs.payloadFields.playerStat.teamType')}
-          </label>
-          <div className="control">
-            <div className="select is-fullwidth">
-              <select
-                value={selectedTeamType}
-                onChange={(e) =>
-                  handleTeamChange(e.target.value as 'home' | 'away' | '')
-                }
-              >
-                <option value="">
-                  {t(
-                    'basketball.modals.eventLogs.payloadFields.playerStat.selectTeam',
-                  )}
-                </option>
-                <option value="away">{gameState.away_team.name}</option>
-                <option value="home">{gameState.home_team.name}</option>
-              </select>
-            </div>
-          </div>
-        </div>
+        <TeamSelect
+          selectedTeamType={selectedTeamType}
+          onTeamChange={handleTeamChange}
+          gameState={gameState}
+          disabled={!!initialPayload['team-type']}
+        />
       </div>
 
       <div className="column is-4">
@@ -139,7 +161,7 @@ const UpdatePlayerStatForm: React.FC<UpdatePlayerStatFormProps> = ({
                 </option>
                 {manualStats.map((stat) => (
                   <option key={stat.key} value={stat.key}>
-                    {t(stat.labelTranslationKey)}
+                    {t(stat.abbreviationTranslationKey)}
                   </option>
                 ))}
               </select>

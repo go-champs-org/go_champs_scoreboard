@@ -14,9 +14,69 @@ export const EVENT_KEYS_EDITABLE = [
   EVENT_KEYS.UPDATE_TEAM_STAT,
 ];
 
+// Stat keys constant for semantic ordering and reference
+export const STAT_KEYS = {
+  // Scoring stats
+  FIELD_GOALS_MADE: 'field_goals_made',
+  FIELD_GOALS_ATTEMPTED: 'field_goals_attempted',
+  FIELD_GOALS_MISSED: 'field_goals_missed',
+  THREE_POINT_FIELD_GOALS_MADE: 'three_point_field_goals_made',
+  THREE_POINT_FIELD_GOALS_ATTEMPTED: 'three_point_field_goals_attempted',
+  THREE_POINT_FIELD_GOALS_MISSED: 'three_point_field_goals_missed',
+  FREE_THROWS_MADE: 'free_throws_made',
+  FREE_THROWS_ATTEMPTED: 'free_throws_attempted',
+  FREE_THROWS_MISSED: 'free_throws_missed',
+
+  // Rebounding stats
+  REBOUNDS_OFFENSIVE: 'rebounds_offensive',
+  REBOUNDS_DEFENSIVE: 'rebounds_defensive',
+  REBOUNDS: 'rebounds',
+
+  // Playmaking stats
+  ASSISTS: 'assists',
+  STEALS: 'steals',
+  BLOCKS: 'blocks',
+  TURNOVERS: 'turnovers',
+
+  // Fouls
+  FOULS_PERSONAL: 'fouls_personal',
+  FOULS_TECHNICAL: 'fouls_technical',
+  FOULS_UNSPORTSMANLIKE: 'fouls_unsportsmanlike',
+  FOULS_DISQUALIFYING: 'fouls_disqualifying',
+  FOULS_DISQUALIFYING_FIGHTING: 'fouls_disqualifying_fighting',
+  FOULS_GAME_DISQUALIFYING: 'fouls_game_disqualifying',
+  FOULS: 'fouls',
+
+  // Calculated stats
+  POINTS: 'points',
+  FIELD_GOAL_PERCENTAGE: 'field_goal_percentage',
+  THREE_POINT_FIELD_GOAL_PERCENTAGE: 'three_point_field_goal_percentage',
+  FREE_THROW_PERCENTAGE: 'free_throw_percentage',
+  EFFICIENCY: 'efficiency',
+
+  // Time and other stats
+  MINUTES_PLAYED: 'minutes_played',
+  PLUS_MINUS: 'plus_minus',
+  DISQUALIFICATIONS: 'disqualifications',
+  EJECTIONS: 'ejections',
+} as const;
+
+// Stat types constant
+export const STAT_TYPES = {
+  MANUAL: 'manual',
+  CALCULATED: 'calculated',
+  AUTOMATIC: 'automatic',
+} as const;
+
+// Basketball views constant
+export const BASKETBALL_VIEWS: Record<string, BasketballViews> = {
+  BASIC: 'basketball-basic',
+  MEDIUM: 'basketball-medium',
+} as const;
+
 export interface PlayerStat {
   key: string;
-  type: 'manual' | 'calculated' | 'automatic';
+  type: (typeof STAT_TYPES)[keyof typeof STAT_TYPES];
   view: BasketballViews[];
   abbreviationTranslationKey: string;
   labelTranslationKey: string;
@@ -24,244 +84,229 @@ export interface PlayerStat {
 
 export const PLAYER_STATS = [
   {
-    key: 'assists',
-    type: 'manual',
-    view: ['basketball-basic', 'basketball-medium'],
+    key: STAT_KEYS.ASSISTS,
+    type: STAT_TYPES.MANUAL,
+    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.assists',
     labelTranslationKey: 'basketball.stats.labels.assists',
   },
   {
-    key: 'blocks',
-    type: 'manual',
-    view: ['basketball-basic', 'basketball-medium'],
+    key: STAT_KEYS.BLOCKS,
+    type: STAT_TYPES.MANUAL,
+    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.blocks',
     labelTranslationKey: 'basketball.stats.labels.blocks',
   },
   {
-    key: 'disqualifications',
-    type: 'manual',
-    view: ['basketball-medium'],
-    abbreviationTranslationKey:
-      'basketball.stats.abbreviations.disqualifications',
-    labelTranslationKey: 'basketball.stats.labels.disqualifications',
-  },
-  {
-    key: 'ejections',
-    type: 'manual',
-    view: ['basketball-medium'],
-    abbreviationTranslationKey: 'basketball.stats.abbreviations.ejections',
-    labelTranslationKey: 'basketball.stats.labels.ejections',
-  },
-  {
-    key: 'efficiency',
-    type: 'calculated',
-    view: ['basketball-medium'],
+    key: STAT_KEYS.EFFICIENCY,
+    type: STAT_TYPES.CALCULATED,
+    view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.efficiency',
     labelTranslationKey: 'basketball.stats.labels.efficiency',
   },
   {
-    key: 'field_goal_percentage',
-    type: 'calculated',
-    view: ['basketball-medium'],
+    key: STAT_KEYS.FIELD_GOAL_PERCENTAGE,
+    type: STAT_TYPES.CALCULATED,
+    view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.fieldGoalPercentage',
     labelTranslationKey: 'basketball.stats.labels.fieldGoalPercentage',
   },
   {
-    key: 'field_goals_attempted',
-    type: 'manual',
-    view: ['basketball-medium'],
+    key: STAT_KEYS.FIELD_GOALS_ATTEMPTED,
+    type: STAT_TYPES.CALCULATED,
+    view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.fieldGoalsAttempted',
     labelTranslationKey: 'basketball.stats.labels.fieldGoalsAttempted',
   },
   {
-    key: 'field_goals_missed',
-    type: 'manual',
-    view: ['basketball-medium'],
+    key: STAT_KEYS.FIELD_GOALS_MISSED,
+    type: STAT_TYPES.MANUAL,
+    view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.fieldGoalsMissed',
     labelTranslationKey: 'basketball.stats.labels.fieldGoalsMissed',
   },
   {
-    key: 'field_goals_made',
-    type: 'manual',
-    view: ['basketball-basic', 'basketball-medium'],
+    key: STAT_KEYS.FIELD_GOALS_MADE,
+    type: STAT_TYPES.MANUAL,
+    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.fieldGoalsMade',
     labelTranslationKey: 'basketball.stats.labels.fieldGoalsMade',
   },
   {
-    key: 'fouls',
-    type: 'calculated',
-    view: ['basketball-medium'],
+    key: STAT_KEYS.FOULS,
+    type: STAT_TYPES.CALCULATED,
+    view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.fouls',
     labelTranslationKey: 'basketball.stats.labels.fouls',
   },
   {
-    key: 'fouls_unsportsmanlike',
-    type: 'manual',
-    view: ['basketball-medium'],
+    key: STAT_KEYS.FOULS_UNSPORTSMANLIKE,
+    type: STAT_TYPES.MANUAL,
+    view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.unsportsmanlikeFouls',
     labelTranslationKey: 'basketball.stats.labels.unsportsmanlikeFouls',
   },
   {
-    key: 'fouls_personal',
-    type: 'manual',
-    view: ['basketball-medium'],
+    key: STAT_KEYS.FOULS_PERSONAL,
+    type: STAT_TYPES.MANUAL,
+    view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.personalFouls',
     labelTranslationKey: 'basketball.stats.labels.personalFouls',
   },
   {
-    key: 'fouls_technical',
-    type: 'manual',
-    view: ['basketball-medium'],
+    key: STAT_KEYS.FOULS_TECHNICAL,
+    type: STAT_TYPES.MANUAL,
+    view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.technicalFouls',
     labelTranslationKey: 'basketball.stats.labels.technicalFouls',
   },
   {
-    key: 'fouls_disqualifying',
-    type: 'manual',
-    view: ['basketball-medium'],
+    key: STAT_KEYS.FOULS_DISQUALIFYING,
+    type: STAT_TYPES.MANUAL,
+    view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.disqualifyingFouls',
     labelTranslationKey: 'basketball.stats.labels.disqualifyingFouls',
   },
   {
-    key: 'fouls_disqualifying_fighting',
-    type: 'manual',
-    view: ['basketball-medium'],
+    key: STAT_KEYS.FOULS_DISQUALIFYING_FIGHTING,
+    type: STAT_TYPES.MANUAL,
+    view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.disqualifyingFightingFouls',
     labelTranslationKey: 'basketball.stats.labels.disqualifyingFightingFouls',
   },
   {
-    key: 'fouls_game_disqualifying',
-    type: 'manual',
-    view: ['basketball-medium'],
+    key: STAT_KEYS.FOULS_GAME_DISQUALIFYING,
+    type: STAT_TYPES.MANUAL,
+    view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.gameDisqualifyingFouls',
     labelTranslationKey: 'basketball.stats.labels.gameDisqualifyingFouls',
   },
   {
-    key: 'free_throw_percentage',
-    type: 'calculated',
-    view: ['basketball-medium'],
+    key: STAT_KEYS.FREE_THROW_PERCENTAGE,
+    type: STAT_TYPES.CALCULATED,
+    view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.onePointPercentage',
     labelTranslationKey: 'basketball.stats.labels.freeThrowPercentage',
   },
   {
-    key: 'free_throws_attempted',
-    type: 'calculated',
-    view: ['basketball-medium'],
+    key: STAT_KEYS.FREE_THROWS_ATTEMPTED,
+    type: STAT_TYPES.CALCULATED,
+    view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.freeThrowsAttempted',
     labelTranslationKey: 'basketball.stats.labels.freeThrowsAttempted',
   },
   {
-    key: 'free_throws_missed',
-    type: 'manual',
-    view: ['basketball-medium'],
+    key: STAT_KEYS.FREE_THROWS_MISSED,
+    type: STAT_TYPES.MANUAL,
+    view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.freeThrowsMissed',
     labelTranslationKey: 'basketball.stats.labels.freeThrowsMissed',
   },
   {
-    key: 'free_throws_made',
-    type: 'manual',
-    view: ['basketball-basic', 'basketball-medium'],
+    key: STAT_KEYS.FREE_THROWS_MADE,
+    type: STAT_TYPES.MANUAL,
+    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.onePoint',
     labelTranslationKey: 'basketball.stats.labels.freeThrowsMade',
   },
   {
-    key: 'minutes_played',
-    type: 'automatic',
-    view: ['basketball-medium'],
+    key: STAT_KEYS.MINUTES_PLAYED,
+    type: STAT_TYPES.AUTOMATIC,
+    view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.minutesPlayed',
     labelTranslationKey: 'basketball.stats.labels.minutesPlayed',
   },
   {
-    key: 'plus_minus',
-    type: 'automatic',
-    view: ['basketball-medium'],
+    key: STAT_KEYS.PLUS_MINUS,
+    type: STAT_TYPES.AUTOMATIC,
+    view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.plusMinus',
     labelTranslationKey: 'basketball.stats.labels.plusMinus',
   },
   {
-    key: 'points',
-    type: 'calculated',
-    view: ['basketball-basic', 'basketball-medium'],
+    key: STAT_KEYS.POINTS,
+    type: STAT_TYPES.CALCULATED,
+    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.points',
     labelTranslationKey: 'basketball.stats.labels.points',
   },
   {
-    key: 'rebounds',
-    type: 'calculated',
-    view: ['basketball-basic', 'basketball-medium'],
+    key: STAT_KEYS.REBOUNDS,
+    type: STAT_TYPES.CALCULATED,
+    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.rebounds',
     labelTranslationKey: 'basketball.stats.labels.rebounds',
   },
   {
-    key: 'rebounds_defensive',
-    type: 'manual',
-    view: ['basketball-medium'],
+    key: STAT_KEYS.REBOUNDS_DEFENSIVE,
+    type: STAT_TYPES.MANUAL,
+    view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.defensiveRebounds',
     labelTranslationKey: 'basketball.stats.labels.defensiveRebounds',
   },
   {
-    key: 'rebounds_offensive',
-    type: 'manual',
-    view: ['basketball-medium'],
+    key: STAT_KEYS.REBOUNDS_OFFENSIVE,
+    type: STAT_TYPES.MANUAL,
+    view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.offensiveRebounds',
     labelTranslationKey: 'basketball.stats.labels.offensiveRebounds',
   },
   {
-    key: 'steals',
-    type: 'manual',
-    view: ['basketball-basic', 'basketball-medium'],
+    key: STAT_KEYS.STEALS,
+    type: STAT_TYPES.MANUAL,
+    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.steals',
     labelTranslationKey: 'basketball.stats.labels.steals',
   },
   {
-    key: 'three_point_field_goal_percentage',
-    type: 'calculated',
-    view: ['basketball-medium'],
+    key: STAT_KEYS.THREE_POINT_FIELD_GOAL_PERCENTAGE,
+    type: STAT_TYPES.CALCULATED,
+    view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.threePointPercentage',
     labelTranslationKey:
       'basketball.stats.labels.threePointFieldGoalPercentage',
   },
   {
-    key: 'three_point_field_goals_attempted',
-    type: 'calculated',
-    view: ['basketball-medium'],
+    key: STAT_KEYS.THREE_POINT_FIELD_GOALS_ATTEMPTED,
+    type: STAT_TYPES.CALCULATED,
+    view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.threePointsAttempted',
     labelTranslationKey:
       'basketball.stats.labels.threePointFieldGoalsAttempted',
   },
   {
-    key: 'three_point_field_goals_missed',
-    type: 'manual',
-    view: ['basketball-medium'],
+    key: STAT_KEYS.THREE_POINT_FIELD_GOALS_MISSED,
+    type: STAT_TYPES.MANUAL,
+    view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.threePointsMissed',
     labelTranslationKey: 'basketball.stats.labels.threePointFieldGoalsMissed',
   },
   {
-    key: 'three_point_field_goals_made',
-    type: 'manual',
-    view: ['basketball-basic', 'basketball-medium'],
+    key: STAT_KEYS.THREE_POINT_FIELD_GOALS_MADE,
+    type: STAT_TYPES.MANUAL,
+    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.threePoints',
     labelTranslationKey: 'basketball.stats.labels.threePointFieldGoalsMade',
   },
   {
-    key: 'turnovers',
-    type: 'manual',
-    view: ['basketball-medium'],
+    key: STAT_KEYS.TURNOVERS,
+    type: STAT_TYPES.MANUAL,
+    view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.turnovers',
     labelTranslationKey: 'basketball.stats.labels.turnovers',
   },
@@ -276,6 +321,7 @@ export const TEAM_STATS = {
 // Utility function to get manual player stats for a specific view
 export const getManualPlayerStatsForView = (currentView: BasketballViews) => {
   return PLAYER_STATS.filter(
-    (stat) => stat.type === 'manual' && stat.view.includes(currentView as any),
+    (stat) =>
+      stat.type === STAT_TYPES.MANUAL && stat.view.includes(currentView as any),
   );
 };
