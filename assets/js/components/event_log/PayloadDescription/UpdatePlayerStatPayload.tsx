@@ -1,7 +1,9 @@
 import React from 'react';
-import { DEFAULT_PLAYER_STATE, EventLog, GameState } from '../../../types';
+import { EventLog, GameState } from '../../../types';
 import { statIdToAbbreviationKey } from '../../basketball_5x5/Stats/statsMapper';
 import { useTranslation } from 'react-i18next';
+import TeamName from './TeamName';
+import PlayerNumbers from './PlayerNumbers';
 
 export default function UpdatePlayerStatPayload({
   eventLog,
@@ -13,13 +15,19 @@ export default function UpdatePlayerStatPayload({
   const { t } = useTranslation();
   if (!eventLog.payload) return <></>;
 
-  const team =
-    eventLog.payload['team-type'] === 'home'
-      ? gameState.home_team
-      : gameState.away_team;
-  const player =
-    team.players.find((p) => p.id === eventLog.payload?.['player-id']) ||
-    DEFAULT_PLAYER_STATE;
+  const teamType = eventLog.payload['team-type'] as 'home' | 'away';
+  const playerId = eventLog.payload['player-id'];
   const statKey = statIdToAbbreviationKey(eventLog.payload?.['stat-id']);
-  return `${team.name} - ${player.name} | ${t(statKey)}`;
+
+  return (
+    <>
+      <TeamName gameState={gameState} teamType={teamType} /> -{' '}
+      <PlayerNumbers
+        gameState={gameState}
+        teamType={teamType}
+        playerIds={[playerId]}
+      />{' '}
+      | {t(statKey)}
+    </>
+  );
 }

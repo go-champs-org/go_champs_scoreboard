@@ -45,7 +45,6 @@ function EventLogRow({
     eventLog.key === EVENT_KEYS.UPDATE_PLAYERS_STATE;
   const handleDelete = async () => {
     onStartDeleting(eventLog.id);
-    // Add a small delay for the animation to show
     setTimeout(async () => {
       await onDeleteEvent(eventLog.id);
     }, 300);

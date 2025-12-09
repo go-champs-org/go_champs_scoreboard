@@ -398,7 +398,7 @@
     "updateClockStateMetadata": "Update Clock State Metadata",
     "updateGameInfo": "Update Game Info",
     "updateOfficialInGame": "Update Official in Game",
-    "updatePlayerStat": "Update Player Stat",
+    "updatePlayerStat": "Player event",
     "updatePlayerInTeam": "Update Player in Team",
     "updatePlayersState": "Substitution",
     "updateTeamStat": "Update Team Stat"
