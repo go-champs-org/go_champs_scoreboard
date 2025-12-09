@@ -1,0 +1,31 @@
+.update-players-state-form {
+  .players-grid {
+    .player-checkbox {
+      transition: transform 0.2s ease, background-color 0.2s ease;
+      padding: 0.5rem;
+      display: flex;
+      align-items: center;
+      border-radius: 0.375rem;
+      width: 100%;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+
+      &.disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+
+        &:hover {
+          transform: none;
+          background-color: transparent;
+        }
+      }
+
+      .checkbox-label {
+        cursor: pointer;
+        user-select: none;
+      }
+    }
+  }
+}

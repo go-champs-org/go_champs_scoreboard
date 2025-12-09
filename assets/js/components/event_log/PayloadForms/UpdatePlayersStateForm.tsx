@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GameState } from '../../../types';
 import { byPlayer } from '../../basketball_5x5/Players/utils';
+import CheckboxFormField from '../../CheckboxFormField';
 
 interface UpdatePlayersStateFormProps {
   onChange: (updateFn: (prevPayload: any) => any) => void;
@@ -9,11 +10,11 @@ interface UpdatePlayersStateFormProps {
   initialPayload?: Record<string, any>;
 }
 
-const UpdatePlayersStateForm: React.FC<UpdatePlayersStateFormProps> = ({
+function UpdatePlayersStateForm({
   onChange,
   gameState,
   initialPayload = {},
-}) => {
+}: UpdatePlayersStateFormProps) {
   const { t } = useTranslation();
 
   const [selectedTeamType, setSelectedTeamType] = useState<
@@ -23,12 +24,6 @@ const UpdatePlayersStateForm: React.FC<UpdatePlayersStateFormProps> = ({
   const [selectedPlayerIds, setSelectedPlayerIds] = useState<string[]>(
     initialPayload['player-ids'] || [],
   );
-
-  useEffect(() => {
-    if (Object.keys(initialPayload).length > 0) {
-      onChange(() => initialPayload);
-    }
-  }, [initialPayload, onChange]);
 
   const selectedTeam =
     selectedTeamType === 'home' ? gameState.home_team : gameState.away_team;
@@ -96,136 +91,141 @@ const UpdatePlayersStateForm: React.FC<UpdatePlayersStateFormProps> = ({
   };
 
   return (
-    <div className="columns is-multiline">
-      <div className="column is-4">
-        <div className="field">
-          <label className="label has-text-white-ter">
-            {t('basketball.modals.eventLogs.payloadFields.playerStat.teamType')}
-          </label>
-          <div className="control">
-            <div className="select is-fullwidth">
-              <select
-                value={selectedTeamType}
-                disabled={!!initialPayload['team-type']}
-                onChange={(e) =>
-                  handleTeamChange(e.target.value as 'home' | 'away' | '')
-                }
-              >
-                <option value="">
-                  {t(
-                    'basketball.modals.eventLogs.payloadFields.playerStat.selectTeam',
-                  )}
-                </option>
-                <option value="away">{gameState.away_team.name}</option>
-                <option value="home">{gameState.home_team.name}</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="column is-4">
-        <div className="field">
-          <label className="label has-text-white-ter">
-            {t('basketball.modals.eventLogs.payloadFields.playersState.state')}
-          </label>
-          <div className="control">
-            <div className="select is-fullwidth">
-              <select
-                value={initialPayload['state'] || ''}
-                disabled={!!initialPayload['state']}
-                onChange={(e) => handleInputChange('state', e.target.value)}
-              >
-                <option value="">
-                  {t(
-                    'basketball.modals.eventLogs.payloadFields.playersState.selectState',
-                  )}
-                </option>
-                {stateOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
+    <div className="update-players-state-form">
+      <div className="columns is-multiline">
+        <div className="column is-4">
+          <div className="field">
+            <label className="label has-text-white-ter">
+              {t(
+                'basketball.modals.eventLogs.payloadFields.playerStat.teamType',
+              )}
+            </label>
+            <div className="control">
+              <div className="select is-fullwidth">
+                <select
+                  value={selectedTeamType}
+                  disabled={!!initialPayload['team-type']}
+                  onChange={(e) =>
+                    handleTeamChange(e.target.value as 'home' | 'away' | '')
+                  }
+                >
+                  <option value="">
+                    {t(
+                      'basketball.modals.eventLogs.payloadFields.playerStat.selectTeam',
+                    )}
                   </option>
-                ))}
-              </select>
+                  <option value="away">{gameState.away_team.name}</option>
+                  <option value="home">{gameState.home_team.name}</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="column is-12">
-        <div className="field">
-          <label className="label has-text-white-ter">
-            {t(
-              'basketball.modals.eventLogs.payloadFields.playersState.players',
-            )}
-            {initialPayload['state'] === 'playing' && (
-              <span className="has-text-info ml-2">
-                {t(
-                  'basketball.modals.eventLogs.payloadFields.playersState.maxPlayersOnCourt',
-                )}
-              </span>
-            )}
-            {selectedPlayerIds.length > 0 && (
-              <span className="has-text-grey ml-2">
-                ({selectedPlayerIds.length}{' '}
-                {t(
-                  'basketball.modals.eventLogs.payloadFields.playersState.playersSelected',
-                )}
-                )
-              </span>
-            )}
-          </label>
-          <div className="control">
-            {!selectedTeamType ? (
-              <p className="has-text-grey-light">
-                {t(
-                  'basketball.modals.eventLogs.payloadFields.playerStat.selectTeamFirst',
-                )}
-              </p>
-            ) : availablePlayers.length === 0 ? (
-              <p className="has-text-grey-light">
-                {t(
-                  'basketball.modals.eventLogs.payloadFields.playersState.noPlayersAvailable',
-                )}
-              </p>
-            ) : (
-              <div className="field is-grouped is-grouped-multiline">
-                {availablePlayers.map((player) => {
-                  const isSelected = selectedPlayerIds.includes(player.id);
-                  const isPlayingState = initialPayload['state'] === 'playing';
-                  const maxReached =
-                    isPlayingState && selectedPlayerIds.length >= 5;
-                  const isDisabled = !isSelected && maxReached;
-
-                  return (
-                    <div key={player.id} className="control">
-                      <label
-                        className={`checkbox ${
-                          isDisabled ? 'has-text-grey' : ''
-                        }`}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={isSelected}
-                          disabled={isDisabled}
-                          onChange={(e) =>
-                            handlePlayerSelection(player.id, e.target.checked)
-                          }
-                        />
-                        <span className="ml-2 has-text-white-ter">
-                          #{player.number} - {player.name}
-                        </span>
-                      </label>
-                    </div>
-                  );
-                })}
+        <div className="column is-4">
+          <div className="field">
+            <label className="label has-text-white-ter">
+              {t(
+                'basketball.modals.eventLogs.payloadFields.playersState.state',
+              )}
+            </label>
+            <div className="control">
+              <div className="select is-fullwidth">
+                <select
+                  value={initialPayload['state'] || ''}
+                  disabled={!!initialPayload['state']}
+                  onChange={(e) => handleInputChange('state', e.target.value)}
+                >
+                  <option value="">
+                    {t(
+                      'basketball.modals.eventLogs.payloadFields.playersState.selectState',
+                    )}
+                  </option>
+                  {stateOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
               </div>
-            )}
+            </div>
+          </div>
+        </div>
+
+        <div className="column is-12">
+          <div className="field">
+            <label className="label has-text-white-ter">
+              {t(
+                'basketball.modals.eventLogs.payloadFields.playersState.players',
+              )}
+              {initialPayload['state'] === 'playing' && (
+                <span className="has-text-info ml-2">
+                  {t(
+                    'basketball.modals.eventLogs.payloadFields.playersState.maxPlayersOnCourt',
+                  )}
+                </span>
+              )}
+              {selectedPlayerIds.length > 0 && (
+                <span className="has-text-grey ml-2">
+                  ({selectedPlayerIds.length}{' '}
+                  {t(
+                    'basketball.modals.eventLogs.payloadFields.playersState.playersSelected',
+                  )}
+                  )
+                </span>
+              )}
+            </label>
+            <div className="control">
+              {!selectedTeamType ? (
+                <p className="has-text-grey-light">
+                  {t(
+                    'basketball.modals.eventLogs.payloadFields.playerStat.selectTeamFirst',
+                  )}
+                </p>
+              ) : availablePlayers.length === 0 ? (
+                <p className="has-text-grey-light">
+                  {t(
+                    'basketball.modals.eventLogs.payloadFields.playersState.noPlayersAvailable',
+                  )}
+                </p>
+              ) : (
+                <div className="players-grid">
+                  <div className="columns is-multiline">
+                    {availablePlayers.map((player) => {
+                      const isSelected = selectedPlayerIds.includes(player.id);
+                      const isPlayingState =
+                        initialPayload['state'] === 'playing';
+                      const maxReached =
+                        isPlayingState && selectedPlayerIds.length >= 5;
+                      const isDisabled = !isSelected && maxReached;
+
+                      return (
+                        <div key={player.id} className="column is-3">
+                          <CheckboxFormField
+                            initialValue={isSelected}
+                            disabled={isDisabled}
+                            onChange={(checked) =>
+                              handlePlayerSelection(player.id, checked)
+                            }
+                            label={`#${player.number} - ${player.name}`}
+                            className={
+                              isDisabled
+                                ? 'player-checkbox has-text-grey'
+                                : 'player-checkbox has-text-white-ter'
+                            }
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default UpdatePlayersStateForm;

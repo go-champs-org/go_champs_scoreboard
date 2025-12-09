@@ -69,7 +69,6 @@ function EventLogRow({
           ? 'translateX(-100%) scale(0.95)'
           : 'translateX(0) scale(1)',
         opacity: isDeleting ? 0 : 1,
-        backgroundColor: isDeleting ? '#ffebee' : 'transparent',
         overflow: 'hidden',
         cursor: canEdit ? 'pointer' : 'default',
       }}
@@ -131,7 +130,7 @@ function EventLogTable({
   };
 
   return (
-    <table className="table is-striped is-fullwidth">
+    <table className="table is-fullwidth event-log-table">
       <thead>
         <tr>
           <th style={{ width: '50px' }}>
