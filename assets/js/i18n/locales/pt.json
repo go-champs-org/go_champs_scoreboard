@@ -52,6 +52,10 @@
         "second": "Segundo",
         "statFilter": "Filtrar por Estatística",
         "allStats": "Todas as Estatísticas",
+        "eventKeyFilter": "Filtrar por Tipo de Evento",
+        "allEventKeys": "Todos os Tipos de Evento",
+        "teamTypeFilter": "Filtrar por Equipe",
+        "allTeams": "Todas as Equipes",
         "table": {
           "quarter": "Q",
           "time": "Tempo",

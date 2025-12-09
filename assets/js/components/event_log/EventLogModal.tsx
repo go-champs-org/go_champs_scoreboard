@@ -5,7 +5,6 @@ import {
   GameState,
   EventLog,
   PostEventLog,
-  PutEventLog,
   BasketballViews,
 } from '../../types';
 import eventLogsHttpClient from '../../features/event_logs/eventLogsHttpClient';
@@ -17,7 +16,9 @@ import {
   EVENT_KEYS_EDITABLE,
   getManualPlayerStatsForView,
   LIVE_MODE_EVENT_KEYS,
+  BASKETBALL_VIEWS,
 } from '../basketball_5x5/constants';
+import { eventKeyToString } from './contentMappers';
 
 interface EventLogModalProps {
   game_state: GameState;
@@ -95,11 +96,93 @@ function ToggleViewButton({ showForm, onToggleForm }: ToggleViewButtonProps) {
   );
 }
 
+interface EventKeyFilterProps {
+  selectedEventKey: string | null;
+  onEventKeyFilter: (eventKey: string | null) => void;
+  showForm: boolean;
+}
+
+function EventKeyFilter({
+  selectedEventKey,
+  onEventKeyFilter,
+  showForm,
+}: EventKeyFilterProps) {
+  const { t } = useTranslation();
+
+  if (showForm) return null;
+
+  return (
+    <div className="field">
+      <label className="label has-text-white-ter">
+        {t('basketball.modals.eventLogs.eventKeyFilter')}
+      </label>
+      <div className="control">
+        <div className="select is-fullwidth">
+          <select
+            value={selectedEventKey || ''}
+            onChange={(e) => onEventKeyFilter(e.target.value || null)}
+          >
+            <option value="">
+              {t('basketball.modals.eventLogs.allEventKeys')}
+            </option>
+            {EVENT_KEYS_EDITABLE.map((eventKey) => (
+              <option key={eventKey} value={eventKey}>
+                {eventKeyToString(eventKey, t)}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface TeamTypeFilterProps {
+  selectedTeamType: string | null;
+  onTeamTypeFilter: (teamType: string | null) => void;
+  showForm: boolean;
+  gameState: GameState;
+}
+
+function TeamTypeFilter({
+  selectedTeamType,
+  onTeamTypeFilter,
+  showForm,
+  gameState,
+}: TeamTypeFilterProps) {
+  const { t } = useTranslation();
+
+  if (showForm) return null;
+
+  return (
+    <div className="field">
+      <label className="label has-text-white-ter">
+        {t('basketball.modals.eventLogs.teamTypeFilter')}
+      </label>
+      <div className="control">
+        <div className="select is-fullwidth">
+          <select
+            value={selectedTeamType || ''}
+            onChange={(e) => onTeamTypeFilter(e.target.value || null)}
+          >
+            <option value="">
+              {t('basketball.modals.eventLogs.allTeams')}
+            </option>
+            <option value="home">{gameState.home_team.name}</option>
+            <option value="away">{gameState.away_team.name}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 interface StatFilterProps {
   selectedStat: string | null;
   onStatFilter: (statKey: string | null) => void;
   showForm: boolean;
   currentView: BasketballViews;
+  selectedEventKey: string | null;
 }
 
 function StatFilter({
@@ -107,10 +190,12 @@ function StatFilter({
   onStatFilter,
   showForm,
   currentView,
+  selectedEventKey,
 }: StatFilterProps) {
   const { t } = useTranslation();
 
-  if (showForm) return null;
+  if (showForm || selectedEventKey !== EVENT_KEYS.UPDATE_PLAYER_STAT)
+    return null;
 
   const availableStats = getManualPlayerStatsForView(currentView);
 
@@ -151,6 +236,8 @@ function useEventLogs(
   const [selectedQuarter, setSelectedQuarter] = useState<number | null>(
     currentPeriod,
   );
+  const [selectedEventKey, setSelectedEventKey] = useState<string | null>(null);
+  const [selectedTeamType, setSelectedTeamType] = useState<string | null>(null);
   const [selectedStat, setSelectedStat] = useState<string | null>(null);
   const [availableQuarters, setAvailableQuarters] = useState<number[]>([]);
 
@@ -208,6 +295,18 @@ function useEventLogs(
       );
     }
 
+    // Filter by event key
+    if (selectedEventKey !== null) {
+      filtered = filtered.filter((log) => log.key === selectedEventKey);
+    }
+
+    // Filter by team type
+    if (selectedTeamType !== null) {
+      filtered = filtered.filter(
+        (log) => log.payload?.['team-type'] === selectedTeamType,
+      );
+    }
+
     // Filter by stat (only for UPDATE_PLAYER_STAT events)
     if (selectedStat !== null) {
       filtered = filtered.filter(
@@ -218,12 +317,30 @@ function useEventLogs(
     }
 
     setFilteredEventLogs(filtered);
-  }, [eventLogs, selectedQuarter, selectedStat]);
+  }, [
+    eventLogs,
+    selectedQuarter,
+    selectedEventKey,
+    selectedTeamType,
+    selectedStat,
+  ]);
 
   const handleQuarterFilter = async (quarter: number | null) => {
     setSelectedQuarter(quarter);
     // Fetch new data when quarter filter changes
     await fetchEventLogs(quarter);
+  };
+
+  const handleEventKeyFilter = (eventKey: string | null) => {
+    setSelectedEventKey(eventKey);
+    // Clear stat filter when event key changes (since stats only work with UPDATE_PLAYER_STAT)
+    if (eventKey !== EVENT_KEYS.UPDATE_PLAYER_STAT) {
+      setSelectedStat(null);
+    }
+  };
+
+  const handleTeamTypeFilter = (teamType: string | null) => {
+    setSelectedTeamType(teamType);
   };
 
   const handleStatFilter = (statKey: string | null) => {
@@ -243,9 +360,13 @@ function useEventLogs(
     filteredEventLogs,
     loading,
     selectedQuarter,
+    selectedEventKey,
+    selectedTeamType,
     selectedStat,
     availableQuarters,
     handleQuarterFilter,
+    handleEventKeyFilter,
+    handleTeamTypeFilter,
     handleStatFilter,
     handleDeleteEvent,
   };
@@ -268,9 +389,13 @@ function EventLogModal({
     filteredEventLogs,
     loading,
     selectedQuarter,
+    selectedEventKey,
+    selectedTeamType,
     selectedStat,
     availableQuarters,
     handleQuarterFilter,
+    handleEventKeyFilter,
+    handleTeamTypeFilter,
     handleStatFilter,
     handleDeleteEvent,
   } = useEventLogs(gameId, showModal, currentPeriod);
@@ -355,12 +480,32 @@ function EventLogModal({
                   />
                 </div>
                 <div className="column is-12">
-                  <StatFilter
-                    selectedStat={selectedStat}
-                    onStatFilter={handleStatFilter}
-                    showForm={showForm}
-                    currentView={game_state.view_settings_state.view}
-                  />
+                  <div className="columns is-multiline">
+                    <div className="column is-4">
+                      <EventKeyFilter
+                        selectedEventKey={selectedEventKey}
+                        onEventKeyFilter={handleEventKeyFilter}
+                        showForm={showForm}
+                      />
+                    </div>
+                    <div className="column is-4">
+                      <TeamTypeFilter
+                        selectedTeamType={selectedTeamType}
+                        onTeamTypeFilter={handleTeamTypeFilter}
+                        showForm={showForm}
+                        gameState={game_state}
+                      />
+                    </div>
+                    <div className="column is-4">
+                      <StatFilter
+                        selectedStat={selectedStat}
+                        onStatFilter={handleStatFilter}
+                        showForm={showForm}
+                        currentView={game_state.view_settings_state.view}
+                        selectedEventKey={selectedEventKey}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

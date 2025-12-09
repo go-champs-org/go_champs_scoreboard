@@ -52,6 +52,10 @@
         "second": "Second",
         "statFilter": "Filter by Stat",
         "allStats": "All Stats",
+        "eventKeyFilter": "Filter by Event Type",
+        "allEventKeys": "All Event Types",
+        "teamTypeFilter": "Filter by Team",
+        "allTeams": "All Teams",
         "table": {
           "quarter": "Q",
           "time": "Time",
