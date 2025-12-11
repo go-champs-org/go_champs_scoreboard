@@ -42,7 +42,9 @@ function EventLogRow({
   const canEdit =
     eventLog.key === EVENT_KEYS.UPDATE_PLAYER_STAT ||
     eventLog.key === EVENT_KEYS.UPDATE_COACH_STAT ||
-    eventLog.key === EVENT_KEYS.UPDATE_PLAYERS_STATE;
+    eventLog.key === EVENT_KEYS.UPDATE_PLAYERS_STATE ||
+    eventLog.key === EVENT_KEYS.UPDATE_TEAM_STAT;
+
   const handleDelete = async () => {
     onStartDeleting(eventLog.id);
     setTimeout(async () => {

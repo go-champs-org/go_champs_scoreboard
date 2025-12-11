@@ -270,6 +270,24 @@
         "technicalFoulCanceledFreeThrows": "FT Canceled (TC)"
       }
     },
+    "teamStats": {
+      "abbreviations": {
+        "timeouts": "TO",
+        "lostTimeouts": "LTO",
+        "technicalFouls": "T. FLT",
+        "points": "PT",
+        "fouls": "F",
+        "totalTechnicalFouls": "TTF"
+      },
+      "labels": {
+        "timeouts": "Timeouts",
+        "lostTimeouts": "Lost Timeouts",
+        "technicalFouls": "Technical Fouls",
+        "points": "Points",
+        "fouls": "Total Fouls",
+        "totalTechnicalFouls": "Total Technical Fouls"
+      }
+    },
     "players": {
       "onCourt": "On Court",
       "onBench": "On Bench",

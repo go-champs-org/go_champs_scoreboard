@@ -3,6 +3,7 @@ import { EVENT_KEYS } from '../../constants';
 import { EVENT_KEYS_EDITABLE } from '../basketball_5x5/constants';
 import UpdatePlayerStatForm from './PayloadForms/UpdatePlayerStatForm';
 import UpdateCoachStatForm from './PayloadForms/UpdateCoachStatForm';
+import UpdateTeamStatForm from './PayloadForms/UpdateTeamStatForm';
 import UpdatePlayersStateForm from './PayloadForms/UpdatePlayersStateForm';
 import { GameState } from '../../types';
 
@@ -49,7 +50,13 @@ const PayloadForm: React.FC<PayloadFormProps> = ({
         />
       );
     case EVENT_KEYS.UPDATE_TEAM_STAT:
-      return <></>;
+      return (
+        <UpdateTeamStatForm
+          onChange={onPayloadChange}
+          gameState={gameState}
+          initialPayload={initialPayload}
+        />
+      );
     default:
       return <></>;
   }

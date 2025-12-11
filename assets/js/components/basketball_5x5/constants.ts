@@ -61,6 +61,19 @@ export const STAT_KEYS = {
   EJECTIONS: 'ejections',
 } as const;
 
+// Team stat keys constant for semantic ordering and reference
+export const TEAM_STAT_KEYS = {
+  // Manual team stats
+  TIMEOUTS: 'timeouts',
+  LOST_TIMEOUTS: 'lost_timeouts',
+  FOULS_TECHNICAL: 'fouls_technical',
+
+  // Calculated team stats
+  POINTS: 'points',
+  FOULS: 'fouls',
+  TOTAL_FOULS_TECHNICAL: 'total_fouls_technical',
+} as const;
+
 // Stat types constant
 export const STAT_TYPES = {
   MANUAL: 'manual',
@@ -312,11 +325,47 @@ export const PLAYER_STATS = [
   },
 ] as const;
 
-export const TEAM_STATS = {
-  TIMEOUTS: 'timeouts',
-  FOULS_TECHNICAL: 'fouls_technical',
-  TOTAL_FOULS_TECHNICAL: 'total_fouls_technical',
-} as const;
+export const TEAM_STATS = [
+  {
+    key: TEAM_STAT_KEYS.TIMEOUTS,
+    type: STAT_TYPES.MANUAL,
+    abbreviationTranslationKey: 'basketball.teamStats.abbreviations.timeouts',
+    labelTranslationKey: 'basketball.teamStats.labels.timeouts',
+  },
+  {
+    key: TEAM_STAT_KEYS.LOST_TIMEOUTS,
+    type: STAT_TYPES.MANUAL,
+    abbreviationTranslationKey:
+      'basketball.teamStats.abbreviations.lostTimeouts',
+    labelTranslationKey: 'basketball.teamStats.labels.lostTimeouts',
+  },
+  {
+    key: TEAM_STAT_KEYS.FOULS_TECHNICAL,
+    type: STAT_TYPES.MANUAL,
+    abbreviationTranslationKey:
+      'basketball.teamStats.abbreviations.technicalFouls',
+    labelTranslationKey: 'basketball.teamStats.labels.technicalFouls',
+  },
+  {
+    key: TEAM_STAT_KEYS.POINTS,
+    type: STAT_TYPES.CALCULATED,
+    abbreviationTranslationKey: 'basketball.teamStats.abbreviations.points',
+    labelTranslationKey: 'basketball.teamStats.labels.points',
+  },
+  {
+    key: TEAM_STAT_KEYS.FOULS,
+    type: STAT_TYPES.CALCULATED,
+    abbreviationTranslationKey: 'basketball.teamStats.abbreviations.fouls',
+    labelTranslationKey: 'basketball.teamStats.labels.fouls',
+  },
+  {
+    key: TEAM_STAT_KEYS.TOTAL_FOULS_TECHNICAL,
+    type: STAT_TYPES.CALCULATED,
+    abbreviationTranslationKey:
+      'basketball.teamStats.abbreviations.totalTechnicalFouls',
+    labelTranslationKey: 'basketball.teamStats.labels.totalTechnicalFouls',
+  },
+] as const;
 
 // Utility function to get manual player stats for a specific view
 export const getManualPlayerStatsForView = (currentView: BasketballViews) => {

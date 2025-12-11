@@ -85,9 +85,9 @@
           },
           "coachStat": {
             "title": "Atualização de Estatística de Técnico",
-            "teamType": "Time",
+            "teamType": "Equipe",
             "coachId": "ID do Técnico",
-            "selectTeam": "Selecione um time",
+            "selectTeam": "Selecione um equipe",
             "selectCoach": "Selecione um técnico",
             "coachIdPlaceholder": "Digite o ID do técnico",
             "statType": "Tipo de Estatística",
@@ -103,9 +103,9 @@
             "noFreeThrows": "Nenhum lance livre"
           },
           "teamStat": {
-            "title": "Atualização de Estatística de Time",
-            "teamId": "ID do Time",
-            "teamIdPlaceholder": "Digite o ID do time",
+            "title": "Atualização de Estatística de Equipe",
+            "teamId": "ID da Equipe",
+            "teamIdPlaceholder": "Digite o ID da equipe",
             "statType": "Tipo de Estatística",
             "selectStatType": "Selecione uma estatística",
             "value": "Valor",
@@ -132,7 +132,7 @@
       },
       "fouls": {
         "title": "Mais Faltas",
-        "selectTeam": "Selecionar Time",
+        "selectTeam": "Selecionar Equipe",
         "selectPersonType": "Selecionar Tipo",
         "player": "Atleta",
         "coach": "Técnico",
@@ -142,7 +142,7 @@
         "noCoaches": "Nenhum técnico disponível",
         "availableFouls": "Faltas Disponíveis",
         "placeholders": {
-          "selectTeam": "Por favor, selecione um time primeiro",
+          "selectTeam": "Por favor, selecione uma equipe primeiro",
           "selectPersonType": "Agora selecione se deseja adicionar faltas a atletas ou técnicos",
           "instruction": "Siga os passos acima para registrar faltas"
         }
@@ -270,6 +270,24 @@
         "technicalFoulCanceledFreeThrows": "LL Cancelado (TC)"
       }
     },
+    "teamStats": {
+      "abbreviations": {
+        "timeouts": "T. TÉC",
+        "lostTimeouts": "T. TÉC PERD",
+        "technicalFouls": "F. TÉC (T)",
+        "points": "PT",
+        "fouls": "F",
+        "totalTechnicalFouls": "TOTAL F TÉC"
+      },
+      "labels": {
+        "timeouts": "Tempos Técnicos",
+        "lostTimeouts": "Tempos Técnicos Perdidos",
+        "technicalFouls": "Faltas Técnicas",
+        "points": "Pontos",
+        "fouls": "Total de Faltas",
+        "totalTechnicalFouls": "Total de Faltas Técnicas"
+      }
+    },
     "players": {
       "onCourt": "Em Quadra",
       "onBench": "No Banco",
@@ -294,14 +312,14 @@
       "controls": {
         "registryProtest": "Registrar Protesto",
         "registry": "Registrar",
-        "selectTeam": "Selecionar Time",
+        "selectTeam": "Selecionar Equipe",
         "selectPlayer": "Selecionar Jogador"
       },
       "registered": {
         "title": "Protesto Registrado",
         "message": "Um protesto foi registrado para este jogo",
         "player": "Jogador",
-        "team": "Time"
+        "team": "Equipe"
       }
     },
     "coaches": {
@@ -405,7 +423,7 @@
     "updatePlayerStat": "Ação de Atleta",
     "updatePlayerInTeam": "Atualizar Atleta na Equipe",
     "updatePlayersState": "Substituição",
-    "updateTeamStat": "Atualizar Estatística da Equipe"
+    "updateTeamStat": "Ação de Equipe"
   },
   "teams": {
     "home": "Casa",
