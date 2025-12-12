@@ -288,6 +288,26 @@
         "totalTechnicalFouls": "Total de Faltas Técnicas"
       }
     },
+    "coachStats": {
+      "abbreviations": {
+        "technicalFouls": "F. TÉC (C)",
+        "disqualifyingFouls": "F. DSQ (D)",
+        "disqualifyingFightingFouls": "F. DSQ BRIGA (F)",
+        "technicalBenchFouls": "F. TÉC BANCO (B)",
+        "technicalBenchDisqualifyingFouls": "F. TÉC DSQ BANCO (B CIRC)",
+        "gameDisqualifyingFouls": "F. DSQ.J (GD)",
+        "fouls": "F"
+      },
+      "labels": {
+        "technicalFouls": "Faltas Técnicas",
+        "disqualifyingFouls": "Faltas Desqualificantes",
+        "disqualifyingFightingFouls": "Faltas Desqualificantes de Briga",
+        "technicalBenchFouls": "Faltas Técnicas de Banco (B)",
+        "technicalBenchDisqualifyingFouls": "Faltas Técnicas Desqualificantes de Banco (B Circulado)",
+        "gameDisqualifyingFouls": "Faltas Desqualificantes de Jogo (GD)",
+        "fouls": "Total de Faltas"
+      }
+    },
     "players": {
       "onCourt": "Em Quadra",
       "onBench": "No Banco",
@@ -416,7 +436,7 @@
     "updateClockState": "Atualização Cronômetro",
     "updateClockTimeAndPeriod": "Atualização Tempo",
     "updateCoachInTeam": "Atualizar Técnico na Equipe",
-    "updateCoachStat": "Atualizar Estatística do Técnico",
+    "updateCoachStat": "Ação de Técnico",
     "updateClockStateMetadata": "Atualizar Metadados do Cronômetro",
     "updateGameInfo": "Atualizar Informações do Jogo",
     "updateOfficialInGame": "Atualizar Oficial do Jogo",

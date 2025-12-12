@@ -288,6 +288,26 @@
         "totalTechnicalFouls": "Total Technical Fouls"
       }
     },
+    "coachStats": {
+      "abbreviations": {
+        "technicalFouls": "T. FLT (C)",
+        "disqualifyingFouls": "DQ. FLT (D)",
+        "disqualifyingFightingFouls": "DQ.F. FLT (F)",
+        "technicalBenchFouls": "TBF (B)",
+        "technicalBenchDisqualifyingFouls": "TBDF (B CIRC)",
+        "gameDisqualifyingFouls": "GD. FLT",
+        "fouls": "F"
+      },
+      "labels": {
+        "technicalFouls": "Technical Fouls",
+        "disqualifyingFouls": "Disqualifying Fouls",
+        "disqualifyingFightingFouls": "Disqualifying Fighting Fouls",
+        "technicalBenchFouls": "Technical Bench Fouls",
+        "technicalBenchDisqualifyingFouls": "Technical Bench Disqualifying Fouls",
+        "gameDisqualifyingFouls": "Game Disqualifying Fouls",
+        "fouls": "Total Fouls"
+      }
+    },
     "players": {
       "onCourt": "On Court",
       "onBench": "On Bench",

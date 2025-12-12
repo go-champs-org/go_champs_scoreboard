@@ -74,6 +74,20 @@ export const TEAM_STAT_KEYS = {
   TOTAL_FOULS_TECHNICAL: 'total_fouls_technical',
 } as const;
 
+// Coach stat keys constant for semantic ordering and reference
+export const COACH_STAT_KEYS = {
+  // Foul stats
+  FOULS_TECHNICAL: 'fouls_technical',
+  FOULS_DISQUALIFYING: 'fouls_disqualifying',
+  FOULS_DISQUALIFYING_FIGHTING: 'fouls_disqualifying_fighting',
+  FOULS_TECHNICAL_BENCH: 'fouls_technical_bench',
+  FOULS_TECHNICAL_BENCH_DISQUALIFYING: 'fouls_technical_bench_disqualifying',
+  FOULS_GAME_DISQUALIFYING: 'fouls_game_disqualifying',
+
+  // Calculated stats
+  FOULS: 'fouls',
+} as const;
+
 // Stat types constant
 export const STAT_TYPES = {
   MANUAL: 'manual',
@@ -364,6 +378,59 @@ export const TEAM_STATS = [
     abbreviationTranslationKey:
       'basketball.teamStats.abbreviations.totalTechnicalFouls',
     labelTranslationKey: 'basketball.teamStats.labels.totalTechnicalFouls',
+  },
+] as const;
+
+export const COACH_STATS = [
+  {
+    key: COACH_STAT_KEYS.FOULS_TECHNICAL,
+    type: STAT_TYPES.MANUAL,
+    abbreviationTranslationKey:
+      'basketball.coachStats.abbreviations.technicalFouls',
+    labelTranslationKey: 'basketball.coachStats.labels.technicalFouls',
+  },
+  {
+    key: COACH_STAT_KEYS.FOULS_DISQUALIFYING,
+    type: STAT_TYPES.MANUAL,
+    abbreviationTranslationKey:
+      'basketball.coachStats.abbreviations.disqualifyingFouls',
+    labelTranslationKey: 'basketball.coachStats.labels.disqualifyingFouls',
+  },
+  {
+    key: COACH_STAT_KEYS.FOULS_DISQUALIFYING_FIGHTING,
+    type: STAT_TYPES.MANUAL,
+    abbreviationTranslationKey:
+      'basketball.coachStats.abbreviations.disqualifyingFightingFouls',
+    labelTranslationKey:
+      'basketball.coachStats.labels.disqualifyingFightingFouls',
+  },
+  {
+    key: COACH_STAT_KEYS.FOULS_TECHNICAL_BENCH,
+    type: STAT_TYPES.MANUAL,
+    abbreviationTranslationKey:
+      'basketball.coachStats.abbreviations.technicalBenchFouls',
+    labelTranslationKey: 'basketball.coachStats.labels.technicalBenchFouls',
+  },
+  {
+    key: COACH_STAT_KEYS.FOULS_TECHNICAL_BENCH_DISQUALIFYING,
+    type: STAT_TYPES.MANUAL,
+    abbreviationTranslationKey:
+      'basketball.coachStats.abbreviations.technicalBenchDisqualifyingFouls',
+    labelTranslationKey:
+      'basketball.coachStats.labels.technicalBenchDisqualifyingFouls',
+  },
+  {
+    key: COACH_STAT_KEYS.FOULS_GAME_DISQUALIFYING,
+    type: STAT_TYPES.MANUAL,
+    abbreviationTranslationKey:
+      'basketball.coachStats.abbreviations.gameDisqualifyingFouls',
+    labelTranslationKey: 'basketball.coachStats.labels.gameDisqualifyingFouls',
+  },
+  {
+    key: COACH_STAT_KEYS.FOULS,
+    type: STAT_TYPES.CALCULATED,
+    abbreviationTranslationKey: 'basketball.coachStats.abbreviations.fouls',
+    labelTranslationKey: 'basketball.coachStats.labels.fouls',
   },
 ] as const;
 
