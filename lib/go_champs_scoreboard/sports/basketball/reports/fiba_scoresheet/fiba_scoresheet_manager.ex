@@ -39,6 +39,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
       location: game_state.info.location,
       datetime: game_state.info.datetime,
       tournament_name: game_state.info.tournament_name,
+      game_report: game_state.info.game_report,
       actual_start_datetime: game_state.clock_state.started_at,
       actual_end_datetime: game_state.clock_state.finished_at,
       initial_period_time: game_state.clock_state.initial_period_time

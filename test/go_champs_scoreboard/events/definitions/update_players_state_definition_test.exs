@@ -102,7 +102,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinitionTest
       }
 
       assert {:error,
-              "Invalid or missing state. Must be one of: playing, bench, injured, disqualified, available, not_available"} =
+              "Invalid state. Must be one of: playing, bench, injured, disqualified, available, not_available"} =
                UpdatePlayersStateDefinition.validate(%GameState{}, payload)
     end
 

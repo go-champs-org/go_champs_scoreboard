@@ -338,7 +338,8 @@ defmodule GoChampsScoreboard.GameStateFixtures do
         location: "Game Location",
         datetime: datetime,
         tournament_name: "Tournament Name",
-        tournament_id: "tournament-id"
+        tournament_id: "tournament-id",
+        game_report: "This is a game report."
       },
       protest_state: %ProtestState{
         team_type: :home,

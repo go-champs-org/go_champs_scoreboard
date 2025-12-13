@@ -82,6 +82,7 @@ export interface Info {
   tournament_name: string;
   actual_start_datetime: string;
   actual_end_datetime: string;
+  game_report: string;
 }
 
 const styles = StyleSheet.create({
@@ -384,74 +385,133 @@ interface FibaScoresheetProps {
   scoresheetData: FibaScoresheetData;
 }
 
-function FibaScoresheet({ scoresheetData }: FibaScoresheetProps) {
+function ScoresheetPage({ scoresheetData }: FibaScoresheetProps) {
   return (
-    <Document>
-      <Page size="A4" style={styles.page}>
-        <View style={styles.title}>
-          <Text>{scoresheetData.info.tournament_name}</Text>
+    <Page size="A4" style={styles.page}>
+      <View style={styles.title}>
+        <Text>{scoresheetData.info.tournament_name}</Text>
+      </View>
+      <View style={styles.main}>
+        <View style={styles.main.header}>
+          <HeaderBox
+            number={scoresheetData.info.number}
+            crewChiefName={scoresheetData.crew_chief.name}
+            umpire1Name={scoresheetData.umpire_1.name}
+            umpire2Name={scoresheetData.umpire_2.name}
+            datetime={scoresheetData.info.actual_start_datetime}
+            location={scoresheetData.info.location}
+          />
         </View>
-        <View style={styles.main}>
-          <View style={styles.main.header}>
-            <HeaderBox
-              number={scoresheetData.info.number}
-              crewChiefName={scoresheetData.crew_chief.name}
-              umpire1Name={scoresheetData.umpire_1.name}
-              umpire2Name={scoresheetData.umpire_2.name}
-              datetime={scoresheetData.info.actual_start_datetime}
-              location={scoresheetData.info.location}
+        <View style={styles.main.teamsAndRunningScoreContainer}>
+          <View style={styles.main.teamsAndRunningScoreContainer.containerLeft}>
+            <TeamBox
+              type="A"
+              team={scoresheetData.team_a}
+              isGameEnded={!!scoresheetData.info.actual_end_datetime}
+            />
+            <TeamBox
+              type="B"
+              team={scoresheetData.team_b}
+              isGameEnded={!!scoresheetData.info.actual_end_datetime}
+            />
+            <OfficialsBox
+              scorer={scoresheetData.scorer}
+              assistantScorer={scoresheetData.assistant_scorer}
+              timekeeper={scoresheetData.timekeeper}
+              shotClockOperator={scoresheetData.shot_clock_operator}
+            />
+            <FiscalsBox
+              crewChief={scoresheetData.crew_chief}
+              umpire1={scoresheetData.umpire_1}
+              umpire2={scoresheetData.umpire_2}
             />
           </View>
-          <View style={styles.main.teamsAndRunningScoreContainer}>
-            <View
-              style={styles.main.teamsAndRunningScoreContainer.containerLeft}
-            >
-              <TeamBox
-                type="A"
-                team={scoresheetData.team_a}
-                isGameEnded={!!scoresheetData.info.actual_end_datetime}
-              />
-              <TeamBox
-                type="B"
-                team={scoresheetData.team_b}
-                isGameEnded={!!scoresheetData.info.actual_end_datetime}
-              />
-              <OfficialsBox
-                scorer={scoresheetData.scorer}
-                assistantScorer={scoresheetData.assistant_scorer}
-                timekeeper={scoresheetData.timekeeper}
-                shotClockOperator={scoresheetData.shot_clock_operator}
-              />
-              <FiscalsBox
-                crewChief={scoresheetData.crew_chief}
-                umpire1={scoresheetData.umpire_1}
-                umpire2={scoresheetData.umpire_2}
-              />
-            </View>
-            <View
-              style={styles.main.teamsAndRunningScoreContainer.containerRight}
-            >
-              <RunningScoreBox
-                aTeamRunningScore={scoresheetData.team_a.running_score}
-                aTeamLastScore={scoresheetData.team_a.score}
-                bTeamRunningScore={scoresheetData.team_b.running_score}
-                bTeamLastScore={scoresheetData.team_b.score}
-                isGameEnded={!!scoresheetData.info.actual_end_datetime}
-              />
-              <Periods
-                teamA={scoresheetData.team_a}
-                teamB={scoresheetData.team_b}
-              />
-              <EndResults
-                teamA={scoresheetData.team_a}
-                teamB={scoresheetData.team_b}
-              />
-              <Protest protest={scoresheetData.protest} />
-              <EndGame endDatetime={scoresheetData.info.actual_end_datetime} />
-            </View>
+          <View
+            style={styles.main.teamsAndRunningScoreContainer.containerRight}
+          >
+            <RunningScoreBox
+              aTeamRunningScore={scoresheetData.team_a.running_score}
+              aTeamLastScore={scoresheetData.team_a.score}
+              bTeamRunningScore={scoresheetData.team_b.running_score}
+              bTeamLastScore={scoresheetData.team_b.score}
+              isGameEnded={!!scoresheetData.info.actual_end_datetime}
+            />
+            <Periods
+              teamA={scoresheetData.team_a}
+              teamB={scoresheetData.team_b}
+            />
+            <EndResults
+              teamA={scoresheetData.team_a}
+              teamB={scoresheetData.team_b}
+            />
+            <Protest protest={scoresheetData.protest} />
+            <EndGame endDatetime={scoresheetData.info.actual_end_datetime} />
           </View>
         </View>
-      </Page>
+      </View>
+    </Page>
+  );
+}
+
+function GameReportPage({ scoresheetData }: FibaScoresheetProps) {
+  return (
+    <Page size="A4" style={styles.page}>
+      <View style={styles.title}>
+        <Text>{scoresheetData.info.tournament_name}</Text>
+      </View>
+      <View style={styles.main}>
+        <View style={styles.main.header}>
+          <HeaderBox
+            number={scoresheetData.info.number}
+            crewChiefName={scoresheetData.crew_chief.name}
+            umpire1Name={scoresheetData.umpire_1.name}
+            umpire2Name={scoresheetData.umpire_2.name}
+            datetime={scoresheetData.info.actual_start_datetime}
+            location={scoresheetData.info.location}
+          />
+        </View>
+        <View
+          style={{
+            border: '2px solid #000',
+            margin: '10px',
+            padding: '15px',
+            flex: 1,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: '12px',
+              fontWeight: 'bold',
+              marginBottom: '10px',
+              textAlign: 'center',
+            }}
+          >
+            Relatório do Jogo
+          </Text>
+          <Text
+            style={{
+              fontSize: '10px',
+              lineHeight: 1.4,
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            {scoresheetData.info.game_report}
+          </Text>
+        </View>
+      </View>
+    </Page>
+  );
+}
+
+function FibaScoresheet({ scoresheetData }: FibaScoresheetProps) {
+  const hasGameReport =
+    scoresheetData.info.game_report &&
+    scoresheetData.info.game_report.trim() !== '';
+
+  return (
+    <Document>
+      <ScoresheetPage scoresheetData={scoresheetData} />
+      {hasGameReport && <GameReportPage scoresheetData={scoresheetData} />}
     </Document>
   );
 }

@@ -199,7 +199,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
             tournament_name: String.t(),
             actual_start_datetime: DateTime.t() | nil,
             actual_end_datetime: DateTime.t() | nil,
-            initial_period_time: integer() | nil
+            initial_period_time: integer() | nil,
+            game_report: String.t() | nil
           }
 
     defstruct [
@@ -209,7 +210,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
       :tournament_name,
       :actual_start_datetime,
       :actual_end_datetime,
-      :initial_period_time
+      :initial_period_time,
+      :game_report
     ]
   end
 
