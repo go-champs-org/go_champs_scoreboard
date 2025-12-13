@@ -13,32 +13,29 @@ const EMPTY_FOUL = {
 const styles = StyleSheet.create({
   teamContainer: {
     borderBottom: '1px solid #000',
-    display: 'flex',
-    flex: '1 1',
     header: {
       display: 'flex',
       flexDirection: 'column',
-      padding: '7px 5px',
+      padding: '3px 5px',
       borderBottom: '1px solid #000',
       row: {
         display: 'flex',
         flexDirection: 'row',
         flex: '1 1 auto',
-        padding: '1px 0',
+        margin: '1px 0',
         column: {
           flex: '1 1 auto',
         },
       },
       teamLabel: {
-        fontSize: '11px',
+        fontSize: '9px',
         fontWeight: 'bold',
         paddingRight: '5px',
       },
       teamName: {
-        fontSize: '10px',
+        fontSize: '9px',
         flex: '1 1',
         maxLines: 1,
-        marginTop: '1px',
       },
     },
     teamFoulBoxes: {

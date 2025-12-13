@@ -5,16 +5,17 @@ import { backgroundColorForPeriod, BLUE, textColorForPeriod } from './styles';
 
 const styles = StyleSheet.create({
   runningScore: {
-    margin: 'auto',
-    height: '98%',
-    width: '97%',
-    border: '1px solid #000',
+    margin: '0 auto',
+    height: '84%',
+    width: '95%',
+    borderRight: '1px solid #000',
+    borderLeft: '1px solid #000',
     header: {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
       borderBottom: '1px solid #000',
-      height: '30px',
+      height: '18px',
     },
     columnsContainer: {
       display: 'flex',
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
               left: '0',
               height: '100%',
               width: '100%',
-              borderRadius: '15px',
+              borderRadius: '50px',
               borderWidth: '1px',
             },
             middleLine: {

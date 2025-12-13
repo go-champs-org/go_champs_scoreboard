@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',
     backgroundColor: '#FFFFFF',
-    padding: '12px',
+    padding: '12px 12px 20px 12px',
     fontSize: 8,
   },
   title: {
@@ -101,17 +101,16 @@ const styles = StyleSheet.create({
   main: {
     border: '2px solid #000',
     margin: 'auto',
-    height: '97%',
+    height: '95%',
     width: '100%',
     header: {
       borderBottom: '2px solid #000',
-      height: '50px',
+      height: '40px',
     },
     teamsAndRunningScoreContainer: {
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'space-between',
-      height: '100%',
       containerLeft: {
         borderRight: '1px solid #000',
         flex: '1 1',
@@ -123,15 +122,15 @@ const styles = StyleSheet.create({
     },
   },
   periods: {
+    display: 'flex',
     borderTop: '1px solid #000',
     borderBottom: '1px solid #000',
-    fontSize: '8px',
-    padding: '5px',
+    padding: '3px 2px',
     row: {
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'space-between',
-      padding: '3px 0',
+      padding: '2px 0',
       column: {
         flex: '1 1',
         display: 'flex',
@@ -141,7 +140,7 @@ const styles = StyleSheet.create({
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'space-between',
-      padding: '0 3px',
+      padding: '0 5px',
       quarter: {
         display: 'flex',
         flex: '1 1',
