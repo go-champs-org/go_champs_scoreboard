@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
             minWidth: 0,
           },
           playerCaptain: {
-            width: '29px',
+            width: '25px',
             fontStyle: 'italic',
             flexShrink: 0,
             whiteSpace: 'nowrap',
