@@ -8,6 +8,10 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
           datetime: DateTime.t(),
           tournament_id: String.t(),
           tournament_name: String.t(),
+          tournament_slug: String.t(),
+          organization_name: String.t(),
+          organization_slug: String.t(),
+          organization_logo_url: String.t(),
           location: String.t(),
           number: String.t(),
           game_report: String.t()
@@ -17,6 +21,10 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
     :datetime,
     :tournament_id,
     :tournament_name,
+    :tournament_slug,
+    :organization_name,
+    :organization_slug,
+    :organization_logo_url,
     :location,
     :number,
     :game_report
@@ -31,6 +39,10 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
       datetime: datetime,
       tournament_id: Keyword.get(opts, :tournament_id, ""),
       tournament_name: Keyword.get(opts, :tournament_name, ""),
+      tournament_slug: Keyword.get(opts, :tournament_slug, ""),
+      organization_name: Keyword.get(opts, :organization_name, ""),
+      organization_slug: Keyword.get(opts, :organization_slug, ""),
+      organization_logo_url: Keyword.get(opts, :organization_logo_url, ""),
       location: Keyword.get(opts, :location, ""),
       number: Keyword.get(opts, :number, ""),
       game_report: Keyword.get(opts, :game_report, "")
@@ -38,34 +50,36 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
   end
 
   defimpl Poison.Decoder, for: GoChampsScoreboard.Games.Models.InfoState do
-    def decode(
-          %{
-            datetime: datetime,
-            tournament_id: tournament_id,
-            tournament_name: tournament_name,
-            location: location,
-            number: number,
-            game_report: game_report
-          } = _values,
-          _options
-        ) do
+    def decode(values, _options) do
       datetime =
-        if datetime do
-          case DateTime.from_iso8601(datetime) do
-            {:ok, parsed_datetime, _} -> parsed_datetime
-            {:error, _} -> DateTime.utc_now()
-          end
-        else
-          DateTime.utc_now()
+        case Map.get(values, :datetime) || Map.get(values, "datetime") do
+          nil ->
+            DateTime.utc_now()
+
+          datetime_str ->
+            case DateTime.from_iso8601(datetime_str) do
+              {:ok, parsed_datetime, _} -> parsed_datetime
+              {:error, _} -> DateTime.utc_now()
+            end
         end
 
       %GoChampsScoreboard.Games.Models.InfoState{
         datetime: datetime,
-        tournament_id: tournament_id,
-        tournament_name: tournament_name,
-        location: location,
-        number: number,
-        game_report: game_report || ""
+        tournament_id: Map.get(values, :tournament_id) || Map.get(values, "tournament_id") || "",
+        tournament_name:
+          Map.get(values, :tournament_name) || Map.get(values, "tournament_name") || "",
+        tournament_slug:
+          Map.get(values, :tournament_slug) || Map.get(values, "tournament_slug") || "",
+        organization_name:
+          Map.get(values, :organization_name) || Map.get(values, "organization_name") || "",
+        organization_slug:
+          Map.get(values, :organization_slug) || Map.get(values, "organization_slug") || "",
+        organization_logo_url:
+          Map.get(values, :organization_logo_url) || Map.get(values, "organization_logo_url") ||
+            "",
+        location: Map.get(values, :location) || Map.get(values, "location") || "",
+        number: Map.get(values, :number) || Map.get(values, "number") || "",
+        game_report: Map.get(values, :game_report) || Map.get(values, "game_report") || ""
       }
     end
   end

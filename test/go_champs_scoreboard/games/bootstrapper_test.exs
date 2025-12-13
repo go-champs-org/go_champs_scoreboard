@@ -188,7 +188,53 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
         "phase" => %{
           "tournament" => %{
             "id" => "tournament-id",
-            "name" => "Tournament Name"
+            "name" => "Tournament Name",
+            "slug" => "tournament-slug"
+          }
+        }
+      }
+    }
+
+    @response_body_with_organization %{
+      "data" => %{
+        "id" => "game-id",
+        "away_team" => %{
+          "name" => "Team A",
+          "tri_code" => "ABC",
+          "logo_url" => "https://example.com/logo.png",
+          "players" => [
+            %{
+              "id" => "player-1",
+              "name" => "Player 1",
+              "shirt_name" => "P 1",
+              "shirt_number" => "1"
+            }
+          ]
+        },
+        "home_team" => %{
+          "name" => "Team B",
+          "players" => [
+            %{
+              "id" => "player-2",
+              "name" => "Player 2",
+              "shirt_name" => "P 2",
+              "shirt_number" => "2"
+            }
+          ]
+        },
+        "datetime" => "2023-10-01T12:00:00Z",
+        "location" => "Stadium A",
+        "phase" => %{
+          "tournament" => %{
+            "id" => "tournament-id",
+            "name" => "Tournament Name",
+            "slug" => "tournament-slug",
+            "organization" => %{
+              "id" => "organization-id",
+              "name" => "Organization Name",
+              "slug" => "organization-slug",
+              "logo_url" => "http://host/logo.png"
+            }
           }
         }
       }
@@ -438,6 +484,50 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
       assert game.info.datetime == expected_datetime
       assert game.info.tournament_id == "tournament-id"
       assert game.info.tournament_name == "Tournament Name"
+      assert game.info.tournament_slug == "tournament-slug"
+      assert game.info.location == "Stadium A"
+      assert game.info.number == "game-id"
+    end
+
+    test "maps game and organization info" do
+      expect(@http_client, :get, fn url, headers ->
+        assert url =~ "game-id"
+        assert headers == [{"Authorization", "Bearer token"}]
+
+        {:ok,
+         %HTTPoison.Response{
+           body: @response_body_with_organization |> Poison.encode!(),
+           status_code: 200
+         }}
+      end)
+
+      expect(@http_client, :get, fn url ->
+        assert url =~ "game-id/scoreboard-setting"
+
+        {:ok,
+         %HTTPoison.Response{
+           body: @response_setting_full_body |> Poison.encode!(),
+           status_code: 200
+         }}
+      end)
+
+      game =
+        Bootstrapper.bootstrap_from_go_champs(
+          GoChampsScoreboard.Games.Bootstrapper.bootstrap(),
+          "game-id",
+          "token"
+        )
+
+      {:ok, expected_datetime, _} =
+        DateTime.from_iso8601("2023-10-01T12:00:00Z")
+
+      assert game.info.datetime == expected_datetime
+      assert game.info.tournament_id == "tournament-id"
+      assert game.info.tournament_name == "Tournament Name"
+      assert game.info.tournament_slug == "tournament-slug"
+      assert game.info.organization_name == "Organization Name"
+      assert game.info.organization_slug == "organization-slug"
+      assert game.info.organization_logo_url == "http://host/logo.png"
       assert game.info.location == "Stadium A"
       assert game.info.number == "game-id"
     end

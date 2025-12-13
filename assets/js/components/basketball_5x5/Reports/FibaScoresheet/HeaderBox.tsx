@@ -91,7 +91,7 @@ function HeaderBox({
           }}
         >
           <View style={styles.headerBox.row.column.label}>
-            <Text>Jogo Id</Text>
+            <Text>Nro Jogo</Text>
           </View>
           <View style={styles.headerBox.row.column.value}>
             <Text>{number}</Text>

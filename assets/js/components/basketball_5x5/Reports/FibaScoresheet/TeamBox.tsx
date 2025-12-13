@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
       periodContainer: {
         display: 'flex',
         flexDirection: 'row',
+        alignItems: 'center',
         period: {
           display: 'flex',
           justifyContent: 'center',
@@ -86,10 +87,10 @@ const styles = StyleSheet.create({
         border: `1px solid ${RED}`,
         borderRadius: '75px',
         color: BLUE,
-        paddingLeft: '3px',
-        paddingRight: '3px',
-        paddingTop: '1px',
-        margin: '2px 2px 1px',
+        padding: '2px 4px 0px 4px',
+        margin: '1px 0 0 1px',
+        height: '100%',
+        widht: '100%',
         maxLines: 1,
       },
       row: {
@@ -97,7 +98,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flex: '1 1 auto',
         borderBottom: '1px solid #000',
-        minHeight: '14px',
+        height: '15px',
         columnLic: {
           display: 'flex',
           justifyContent: 'center',
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
           },
         },
         columnName: {
-          margin: '2px',
+          marginLeft: '2px',
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
@@ -145,16 +146,16 @@ const styles = StyleSheet.create({
           },
         },
         columnBox: {
-          flex: '1 1 16px',
-          maxWidth: '16px',
+          flex: '1 1 15px',
+          maxWidth: '15px',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           borderLeft: '1px solid #000',
         },
         columnFouls: {
-          flex: '1 1 90px',
-          maxWidth: '90px',
+          flex: '1 1 84px',
+          maxWidth: '84px',
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'center',
@@ -164,7 +165,7 @@ const styles = StyleSheet.create({
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-            width: '16px',
+            width: '14px',
             height: '100%',
             borderLeft: '1px solid #000',
             position: 'relative',
@@ -186,7 +187,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         flex: '1 1 auto',
-        height: '16px',
+        height: '14px',
         borderBottom: '1px solid #000',
         name: {
           display: 'flex',
@@ -211,7 +212,7 @@ const styles = StyleSheet.create({
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-            width: '15px',
+            width: '14px',
             height: '100%',
             borderLeft: '1px solid #000',
             position: 'relative',
@@ -250,7 +251,7 @@ const styles = StyleSheet.create({
 function borderForFoul(foul: CoachFoul) {
   if (foul.type === 'BD') {
     return {
-      margin: '0 -1px',
+      margin: '-1px 0 0 -1px',
       padding: '1px 3px',
       border: `1px`,
       borderColor: colorForPeriod(foul.period),

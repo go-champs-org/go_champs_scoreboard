@@ -172,11 +172,21 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
     tournament_info = get_in(game_response, ["phase", "tournament"]) || %{}
     tournament_id = Map.get(tournament_info, "id", "")
     tournament_name = Map.get(tournament_info, "name", "")
+    tournament_slug = Map.get(tournament_info, "slug", "")
+
+    organization_info = Map.get(tournament_info, "organization", %{})
+    organization_name = Map.get(organization_info, "name", "")
+    organization_slug = Map.get(organization_info, "slug", "")
+    organization_logo_url = Map.get(organization_info, "logo_url", "")
 
     InfoState.new(
       datetime,
       tournament_id: tournament_id,
       tournament_name: tournament_name,
+      tournament_slug: tournament_slug,
+      organization_name: organization_name,
+      organization_slug: organization_slug,
+      organization_logo_url: organization_logo_url,
       location: location,
       number: game_id
     )

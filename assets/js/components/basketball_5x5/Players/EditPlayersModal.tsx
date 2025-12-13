@@ -242,7 +242,7 @@ function EditPlayersModal({
   pushEvent,
 }: EditPlayersModalProps) {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = React.useState('away' as TeamType);
+  const [activeTab, setActiveTab] = React.useState('home' as TeamType);
   const [showAddPlayerRow, setShowAddPlayerRow] = React.useState(false);
   const selectedTeam =
     activeTab === 'away' ? game_state.away_team : game_state.home_team;
@@ -255,14 +255,14 @@ function EditPlayersModal({
     >
       <div className="tabs is-boxed">
         <ul>
-          <li className={activeTab === 'away' ? 'is-active' : ''}>
-            <a onClick={() => setActiveTab('away')}>
-              <span>{game_state.away_team.name}</span>
-            </a>
-          </li>
           <li className={activeTab === 'home' ? 'is-active' : ''}>
             <a onClick={() => setActiveTab('home')}>
               <span>{game_state.home_team.name}</span>
+            </a>
+          </li>
+          <li className={activeTab === 'away' ? 'is-active' : ''}>
+            <a onClick={() => setActiveTab('away')}>
+              <span>{game_state.away_team.name}</span>
             </a>
           </li>
         </ul>
