@@ -1,5 +1,12 @@
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+import {
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  Image,
+} from '@react-pdf/renderer';
 import RunningScoreBox from './FibaScoresheet/RunningScoreBox';
 import TeamBox from './FibaScoresheet/TeamBox';
 import OfficialsBox from './FibaScoresheet/OfficialsBox';
@@ -80,6 +87,10 @@ export interface Info {
   location: string;
   datetime: string;
   tournament_name: string;
+  tournament_slug: string;
+  organization_name: string;
+  organization_slug: string;
+  organization_logo_url: string;
   actual_start_datetime: string;
   actual_end_datetime: string;
   game_report: string;
@@ -92,11 +103,24 @@ const styles = StyleSheet.create({
     padding: '12px 12px 20px 12px',
     fontSize: 8,
   },
-  title: {
-    margin: 'auto',
-    fontSize: 10,
-    textAlign: 'center',
+  pageHeader: {
+    display: 'flex',
+    flexDirection: 'row',
     width: '100%',
+    position: 'relative',
+    nameContainer: {
+      alignItems: 'center',
+      fontSize: 10,
+      fontWeight: 'bold',
+      width: '100%',
+    },
+    organizationLogo: {
+      height: 24,
+      width: 24,
+      position: 'absolute',
+      left: 0,
+      top: 0,
+    },
   },
   main: {
     border: '2px solid #000',
@@ -365,6 +389,25 @@ function EndGame({ endDatetime }: { endDatetime: string }) {
   );
 }
 
+function PageHeader({ scoresheetData }: FibaScoresheetProps) {
+  return (
+    <View style={styles.pageHeader}>
+      {scoresheetData.info.organization_logo_url && (
+        <View style={styles.pageHeader.organizationLogo}>
+          <Image
+            src={scoresheetData.info.organization_logo_url}
+            style={{ height: '100%', width: '100%' }}
+          />
+        </View>
+      )}
+      <View style={styles.pageHeader.nameContainer}>
+        <Text>{scoresheetData.info.organization_name.toUpperCase()}</Text>
+        <Text>{`COMPETIÇÃO: ${scoresheetData.info.tournament_name.toUpperCase()}`}</Text>
+      </View>
+    </View>
+  );
+}
+
 export interface FibaScoresheetData {
   game_id: string;
   team_a: Team;
@@ -387,9 +430,7 @@ interface FibaScoresheetProps {
 function ScoresheetPage({ scoresheetData }: FibaScoresheetProps) {
   return (
     <Page size="A4" style={styles.page}>
-      <View style={styles.title}>
-        <Text>{scoresheetData.info.tournament_name}</Text>
-      </View>
+      <PageHeader scoresheetData={scoresheetData} />
       <View style={styles.main}>
         <View style={styles.main.header}>
           <HeaderBox
@@ -455,9 +496,7 @@ function ScoresheetPage({ scoresheetData }: FibaScoresheetProps) {
 function GameReportPage({ scoresheetData }: FibaScoresheetProps) {
   return (
     <Page size="A4" style={styles.page}>
-      <View style={styles.title}>
-        <Text>{scoresheetData.info.tournament_name}</Text>
-      </View>
+      <PageHeader scoresheetData={scoresheetData} />
       <View style={styles.main}>
         <View style={styles.main.header}>
           <HeaderBox
