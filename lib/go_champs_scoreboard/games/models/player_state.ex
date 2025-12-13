@@ -3,6 +3,8 @@ defmodule GoChampsScoreboard.Games.Models.PlayerState do
 
   @type state :: :playing | :bench | :injured | :disqualified | :available | :not_available
 
+  @valid_states [:playing, :bench, :injured, :disqualified, :available, :not_available]
+
   @type t :: %__MODULE__{
           id: String.t(),
           name: String.t(),
@@ -33,6 +35,27 @@ defmodule GoChampsScoreboard.Games.Models.PlayerState do
       stats_values: stats_values,
       is_captain: is_captain
     }
+  end
+
+  @spec valid_states() :: [state()]
+  def valid_states, do: @valid_states
+
+  @spec string_to_state(String.t()) :: {:ok, state()} | {:error, String.t()}
+  def string_to_state(state_string) when is_binary(state_string) do
+    state_atom = String.to_atom(state_string)
+
+    if state_atom in @valid_states do
+      {:ok, state_atom}
+    else
+      {:error, "Invalid state: #{state_string}"}
+    end
+  end
+
+  @spec valid_state_string?(String.t()) :: boolean()
+  def valid_state_string?(state_string) when is_binary(state_string) do
+    state_string
+    |> String.to_atom()
+    |> then(&(&1 in @valid_states))
   end
 
   defimpl Poison.Decoder, for: GoChampsScoreboard.Games.Models.PlayerState do

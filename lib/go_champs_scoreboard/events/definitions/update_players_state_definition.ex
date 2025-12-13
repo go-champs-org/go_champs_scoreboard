@@ -3,6 +3,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinition do
 
   alias GoChampsScoreboard.Events.Models.Event
   alias GoChampsScoreboard.Games.Models.GameState
+  alias GoChampsScoreboard.Games.Models.PlayerState
   alias GoChampsScoreboard.Games.{Games, Teams, Players}
   alias GoChampsScoreboard.Sports.Sports
   alias GoChampsScoreboard.Events.Models.StreamConfig
@@ -48,7 +49,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinition do
           "state" => state
         }
       }) do
-    new_state = String.to_existing_atom(state)
+    {:ok, new_state} = PlayerState.string_to_state(state)
 
     current_team = Teams.find_team(current_game, team_type)
 
@@ -120,14 +121,18 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinition do
     {:error, "Invalid or missing player-ids. Must be a non-empty list of strings"}
   end
 
-  defp validate_state(%{"state" => state})
-       when state in ["playing", "bench", "injured", "disqualified", "available", "not_available"] do
-    {:ok, state}
+  defp validate_state(%{"state" => state}) when is_binary(state) do
+    if PlayerState.valid_state_string?(state) do
+      {:ok, state}
+    else
+      valid_states = PlayerState.valid_states() |> Enum.map(&Atom.to_string/1) |> Enum.join(", ")
+      {:error, "Invalid state. Must be one of: #{valid_states}"}
+    end
   end
 
   defp validate_state(_payload) do
-    {:error,
-     "Invalid or missing state. Must be one of: playing, bench, injured, disqualified, available, not_available"}
+    valid_states = PlayerState.valid_states() |> Enum.map(&Atom.to_string/1) |> Enum.join(", ")
+    {:error, "Invalid or missing state. Must be one of: #{valid_states}"}
   end
 
   defp validate_players_exist(game_state, team_type, player_ids) do
