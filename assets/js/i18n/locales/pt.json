@@ -363,14 +363,18 @@
         "title": "Editar Jogo",
         "officialsTab": "Oficiais",
         "gameInfoTab": "Info do Jogo",
+        "gameReportTab": "Relatório do Jogo",
         "location": "Local",
         "number": "Número do Jogo",
         "startedAt": "Iniciado Em",
         "finishedAt": "Finalizado Em",
         "date": "Data",
         "time": "Hora",
+        "gameReport": "Relatório do Jogo",
         "locationPlaceholder": "Digite o local do jogo",
         "numberPlaceholder": "Digite o número do jogo",
+        "gameReportPlaceholder": "Digite o relatório do jogo",
+        "saveGameReport": "Salvar Relatório",
         "update": "Atualizar"
       }
     },

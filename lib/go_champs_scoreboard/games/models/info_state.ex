@@ -9,7 +9,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
           tournament_id: String.t(),
           tournament_name: String.t(),
           location: String.t(),
-          number: String.t()
+          number: String.t(),
+          game_report: String.t()
         }
 
   defstruct [
@@ -17,7 +18,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
     :tournament_id,
     :tournament_name,
     :location,
-    :number
+    :number,
+    :game_report
   ]
 
   @doc """
@@ -30,7 +32,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
       tournament_id: Keyword.get(opts, :tournament_id, ""),
       tournament_name: Keyword.get(opts, :tournament_name, ""),
       location: Keyword.get(opts, :location, ""),
-      number: Keyword.get(opts, :number, "")
+      number: Keyword.get(opts, :number, ""),
+      game_report: Keyword.get(opts, :game_report, "")
     }
   end
 
@@ -41,7 +44,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
             tournament_id: tournament_id,
             tournament_name: tournament_name,
             location: location,
-            number: number
+            number: number,
+            game_report: game_report
           } = _values,
           _options
         ) do
@@ -60,7 +64,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
         tournament_id: tournament_id,
         tournament_name: tournament_name,
         location: location,
-        number: number
+        number: number,
+        game_report: game_report || ""
       }
     end
   end

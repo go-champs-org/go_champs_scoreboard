@@ -19,7 +19,8 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinition do
   def validate(_game_state, payload) do
     with {:ok} <- validate_has_at_least_one_field(payload),
          {:ok} <- validate_location_if_present(payload),
-         {:ok} <- validate_number_if_present(payload) do
+         {:ok} <- validate_number_if_present(payload),
+         {:ok} <- validate_game_report_if_present(payload) do
       {:ok}
     else
       error -> error
@@ -50,16 +51,17 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinition do
   defp validate_has_at_least_one_field(%{} = payload) do
     has_location = Map.has_key?(payload, "location")
     has_number = Map.has_key?(payload, "number")
+    has_game_report = Map.has_key?(payload, "game_report")
 
-    if has_location or has_number do
+    if has_location or has_number or has_game_report do
       {:ok}
     else
-      {:error, "Must provide at least one field: location or number"}
+      {:error, "Must provide at least one field: location, number, or game_report"}
     end
   end
 
   defp validate_has_at_least_one_field(_payload) do
-    {:error, "Must provide at least one field: location or number"}
+    {:error, "Must provide at least one field: location, number, or game_report"}
   end
 
   defp validate_location_if_present(%{"location" => location}) when is_binary(location) do
@@ -86,10 +88,24 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinition do
     {:ok}
   end
 
+  defp validate_game_report_if_present(%{"game_report" => game_report})
+       when is_binary(game_report) do
+    {:ok}
+  end
+
+  defp validate_game_report_if_present(%{"game_report" => _game_report}) do
+    {:error, "Invalid game_report. Must be a string"}
+  end
+
+  defp validate_game_report_if_present(_payload) do
+    {:ok}
+  end
+
   defp update_info_fields(current_info, payload) do
     current_info
     |> update_location_if_present(payload)
     |> update_number_if_present(payload)
+    |> update_game_report_if_present(payload)
   end
 
   defp update_location_if_present(info, %{"location" => location}) do
@@ -103,4 +119,10 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinition do
   end
 
   defp update_number_if_present(info, _payload), do: info
+
+  defp update_game_report_if_present(info, %{"game_report" => game_report}) do
+    %InfoState{info | game_report: game_report}
+  end
+
+  defp update_game_report_if_present(info, _payload), do: info
 end

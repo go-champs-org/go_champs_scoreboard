@@ -20,6 +20,16 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinitionTest do
       assert {:ok} = UpdateGameInfoDefinition.validate(%GameState{}, payload)
     end
 
+    test "returns :ok with all fields" do
+      payload = %{
+        "location" => "Stadium A",
+        "number" => "GAME123",
+        "game_report" => "Great game today"
+      }
+
+      assert {:ok} = UpdateGameInfoDefinition.validate(%GameState{}, payload)
+    end
+
     test "returns :ok with only location" do
       payload = %{
         "location" => "Stadium A"
@@ -36,17 +46,25 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinitionTest do
       assert {:ok} = UpdateGameInfoDefinition.validate(%GameState{}, payload)
     end
 
+    test "returns :ok with only game_report" do
+      payload = %{
+        "game_report" => "Excellent match"
+      }
+
+      assert {:ok} = UpdateGameInfoDefinition.validate(%GameState{}, payload)
+    end
+
     test "returns error with empty payload" do
       payload = %{}
 
-      assert {:error, "Must provide at least one field: location or number"} =
+      assert {:error, "Must provide at least one field: location, number, or game_report"} =
                UpdateGameInfoDefinition.validate(%GameState{}, payload)
     end
 
     test "returns error with invalid payload type" do
       payload = "invalid"
 
-      assert {:error, "Must provide at least one field: location or number"} =
+      assert {:error, "Must provide at least one field: location, number, or game_report"} =
                UpdateGameInfoDefinition.validate(%GameState{}, payload)
     end
 
@@ -67,6 +85,16 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinitionTest do
       }
 
       assert {:error, "Invalid number. Must be a string"} =
+               UpdateGameInfoDefinition.validate(%GameState{}, payload)
+    end
+
+    test "returns error with invalid game_report type" do
+      payload = %{
+        "location" => "Stadium A",
+        "game_report" => 789
+      }
+
+      assert {:error, "Invalid game_report. Must be a string"} =
                UpdateGameInfoDefinition.validate(%GameState{}, payload)
     end
   end
@@ -105,7 +133,8 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinitionTest do
 
       event_payload = %{
         "location" => "New Stadium",
-        "number" => "NEW456"
+        "number" => "NEW456",
+        "game_report" => "Amazing game with great plays"
       }
 
       event = UpdateGameInfoDefinition.create("game-id", 600, 1, event_payload)
@@ -114,6 +143,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinitionTest do
       # Check that info was updated
       assert updated_game_state.info.location == "New Stadium"
       assert updated_game_state.info.number == "NEW456"
+      assert updated_game_state.info.game_report == "Amazing game with great plays"
 
       # Check that other info fields are preserved
       assert updated_game_state.info.datetime == original_datetime
@@ -131,13 +161,15 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinitionTest do
           tournament_id: "tournament-1",
           tournament_name: "Tournament Name",
           location: "Old Stadium",
-          number: "OLD123"
+          number: "OLD123",
+          game_report: "Old report"
         }
       }
 
       event_payload = %{
         "location" => "",
-        "number" => ""
+        "number" => "",
+        "game_report" => ""
       }
 
       event = UpdateGameInfoDefinition.create("game-id", 600, 1, event_payload)
@@ -145,6 +177,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinitionTest do
 
       assert updated_game_state.info.location == ""
       assert updated_game_state.info.number == ""
+      assert updated_game_state.info.game_report == ""
     end
 
     test "updates only location when number is not provided" do
@@ -157,7 +190,8 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinitionTest do
           tournament_id: "tournament-1",
           tournament_name: "Tournament Name",
           location: "Old Stadium",
-          number: "OLD123"
+          number: "OLD123",
+          game_report: "Old report"
         }
       }
 
@@ -189,7 +223,8 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinitionTest do
           tournament_id: "tournament-1",
           tournament_name: "Tournament Name",
           location: "Old Stadium",
-          number: "OLD123"
+          number: "OLD123",
+          game_report: "Old report"
         }
       }
 

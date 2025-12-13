@@ -7,7 +7,7 @@ import EditOfficialRow from './EditOfficialRow';
 import FormField from '../../FormField';
 import DateTimeInput from '../../shared/form/DateTimeInput';
 
-type TabType = 'officials' | 'gameInfo';
+type TabType = 'officials' | 'gameInfo' | 'gameReport';
 
 interface GameInfoTabProps {
   game_state: GameState;
@@ -101,6 +101,51 @@ function GameInfoTab({ game_state, pushEvent }: GameInfoTabProps) {
             dateLabel={t('basketball.game.modal.date')}
             timeLabel={t('basketball.game.modal.time')}
           />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface GameReportTabProps {
+  game_state: GameState;
+  pushEvent: (event: string, data: any) => void;
+}
+
+function GameReportTab({ game_state, pushEvent }: GameReportTabProps) {
+  const { t } = useTranslation();
+  const [gameReport, setGameReport] = React.useState(
+    game_state.info.game_report || '',
+  );
+
+  const handleSave = () => {
+    pushEvent('update-game-info', { game_report: gameReport });
+  };
+
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setGameReport(e.target.value);
+  };
+
+  return (
+    <div className="content">
+      <div className="field">
+        <label className="label">{t('basketball.game.modal.gameReport')}</label>
+        <div className="control">
+          <textarea
+            className="textarea"
+            rows={10}
+            value={gameReport}
+            onChange={handleTextareaChange}
+            placeholder={t('basketball.game.modal.gameReportPlaceholder')}
+          />
+        </div>
+      </div>
+
+      <div className="field">
+        <div className="control">
+          <button className="button is-primary" onClick={handleSave}>
+            {t('basketball.game.modal.saveGameReport')}
+          </button>
         </div>
       </div>
     </div>
@@ -213,6 +258,11 @@ function EditGameModal({
               {t('basketball.game.modal.gameInfoTab')}
             </a>
           </li>
+          <li className={activeTab === 'gameReport' ? 'is-active' : ''}>
+            <a onClick={() => setActiveTab('gameReport')}>
+              {t('basketball.game.modal.gameReportTab')}
+            </a>
+          </li>
         </ul>
       </div>
 
@@ -227,6 +277,9 @@ function EditGameModal({
         )}
         {activeTab === 'gameInfo' && (
           <GameInfoTab game_state={game_state} pushEvent={pushEvent} />
+        )}
+        {activeTab === 'gameReport' && (
+          <GameReportTab game_state={game_state} pushEvent={pushEvent} />
         )}
       </div>
     </Modal>

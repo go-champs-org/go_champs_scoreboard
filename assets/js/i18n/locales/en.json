@@ -363,14 +363,18 @@
         "title": "Edit Game",
         "officialsTab": "Officials",
         "gameInfoTab": "Game Info",
+        "gameReportTab": "Game Report",
         "location": "Location",
         "number": "Game Number",
         "startedAt": "Started At",
         "finishedAt": "Finished At",
         "date": "Date",
         "time": "Time",
+        "gameReport": "Game Report",
         "locationPlaceholder": "Enter game location",
         "numberPlaceholder": "Enter game number",
+        "gameReportPlaceholder": "Enter game report",
+        "saveGameReport": "Save Report",
         "update": "Update"
       }
     },
