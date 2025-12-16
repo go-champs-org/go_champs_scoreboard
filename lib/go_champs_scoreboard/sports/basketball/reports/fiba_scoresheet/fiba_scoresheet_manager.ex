@@ -46,7 +46,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
       game_report: game_state.info.game_report,
       actual_start_datetime: game_state.clock_state.started_at,
       actual_end_datetime: game_state.clock_state.finished_at,
-      initial_period_time: game_state.clock_state.initial_period_time
+      initial_period_time: game_state.clock_state.initial_period_time,
+      web_url: game_state.info.web_url
     }
   end
 

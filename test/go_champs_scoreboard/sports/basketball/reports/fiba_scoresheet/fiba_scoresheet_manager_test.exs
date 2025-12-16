@@ -46,7 +46,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
           actual_start_datetime: actual_start_datetime,
           actual_end_datetime: actual_end_datetime,
           initial_period_time: game_state.clock_state.initial_period_time,
-          game_report: "This is a game report."
+          game_report: "This is a game report.",
+          web_url: "http://example.com/game_report"
         },
         team_a: %FibaScoresheet.Team{
           name: "Some home team",

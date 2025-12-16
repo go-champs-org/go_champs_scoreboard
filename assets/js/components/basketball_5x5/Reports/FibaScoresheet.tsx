@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Document,
   Page,
@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Image,
 } from '@react-pdf/renderer';
+import QRCode from 'qrcode';
 import RunningScoreBox from './FibaScoresheet/RunningScoreBox';
 import TeamBox from './FibaScoresheet/TeamBox';
 import OfficialsBox from './FibaScoresheet/OfficialsBox';
@@ -94,6 +95,7 @@ export interface Info {
   actual_start_datetime: string;
   actual_end_datetime: string;
   game_report: string;
+  web_url: string;
 }
 
 const styles = StyleSheet.create({
@@ -120,6 +122,13 @@ const styles = StyleSheet.create({
       position: 'absolute',
       left: 0,
       top: 0,
+    },
+    qrCodeContainer: {
+      position: 'absolute',
+      right: 0,
+      top: 0,
+      height: 24,
+      width: 24,
     },
   },
   main: {
@@ -390,6 +399,24 @@ function EndGame({ endDatetime }: { endDatetime: string }) {
 }
 
 function PageHeader({ scoresheetData }: FibaScoresheetProps) {
+  const qrCodeDataUrl = useMemo(() => {
+    if (!scoresheetData.info.web_url) return null;
+
+    try {
+      return QRCode.toDataURL(scoresheetData.info.web_url, {
+        width: 24,
+        margin: 1,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF',
+        },
+      });
+    } catch (error) {
+      console.warn('Failed to generate QR code:', error);
+      return null;
+    }
+  }, [scoresheetData.info.web_url]);
+
   return (
     <View style={styles.pageHeader}>
       {scoresheetData.info.organization_logo_url && (
@@ -404,6 +431,14 @@ function PageHeader({ scoresheetData }: FibaScoresheetProps) {
         <Text>{scoresheetData.info.organization_name.toUpperCase()}</Text>
         <Text>{`COMPETIÇÃO: ${scoresheetData.info.tournament_name.toUpperCase()}`}</Text>
       </View>
+      {qrCodeDataUrl && (
+        <View style={styles.pageHeader.qrCodeContainer}>
+          <Image
+            src={qrCodeDataUrl}
+            style={{ height: '100%', width: '100%' }}
+          />
+        </View>
+      )}
     </View>
   );
 }

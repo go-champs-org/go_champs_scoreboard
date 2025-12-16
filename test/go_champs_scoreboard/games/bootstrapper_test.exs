@@ -191,7 +191,8 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
             "name" => "Tournament Name",
             "slug" => "tournament-slug"
           }
-        }
+        },
+        "web_url" => "http://example.com/games/game-id"
       }
     }
 
@@ -487,6 +488,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
       assert game.info.tournament_slug == "tournament-slug"
       assert game.info.location == "Stadium A"
       assert game.info.number == "game-id"
+      assert game.info.web_url == "http://example.com/games/game-id"
     end
 
     test "maps game and organization info" do

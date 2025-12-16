@@ -14,7 +14,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
           organization_logo_url: String.t(),
           location: String.t(),
           number: String.t(),
-          game_report: String.t()
+          game_report: String.t(),
+          web_url: String.t()
         }
 
   defstruct [
@@ -27,7 +28,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
     :organization_logo_url,
     :location,
     :number,
-    :game_report
+    :game_report,
+    :web_url
   ]
 
   @doc """
@@ -45,7 +47,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
       organization_logo_url: Keyword.get(opts, :organization_logo_url, ""),
       location: Keyword.get(opts, :location, ""),
       number: Keyword.get(opts, :number, ""),
-      game_report: Keyword.get(opts, :game_report, "")
+      game_report: Keyword.get(opts, :game_report, ""),
+      web_url: Keyword.get(opts, :web_url, "")
     }
   end
 
@@ -79,7 +82,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
             "",
         location: Map.get(values, :location) || Map.get(values, "location") || "",
         number: Map.get(values, :number) || Map.get(values, "number") || "",
-        game_report: Map.get(values, :game_report) || Map.get(values, "game_report") || ""
+        game_report: Map.get(values, :game_report) || Map.get(values, "game_report") || "",
+        web_url: Map.get(values, :web_url) || Map.get(values, "web_url") || ""
       }
     end
   end
