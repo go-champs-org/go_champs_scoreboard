@@ -312,6 +312,9 @@
       "onCourt": "Em Quadra",
       "onBench": "No Banco",
       "disqualified": "Desqualificado",
+      "warning": "Faltas T ou U",
+      "warningTechnical": "Falta T",
+      "warningUnsportsmanlike": "Falta U",
       "controls": {
         "substitute": "Substituir",
         "cancel": "Cancelar"

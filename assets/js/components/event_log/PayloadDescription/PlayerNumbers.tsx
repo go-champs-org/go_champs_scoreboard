@@ -19,7 +19,9 @@ export default function PlayerNumbers({
       team.players.find((p) => p.id === playerId) || DEFAULT_PLAYER_STATE,
   );
 
-  const playerNumbers = players.map((p) => `#${p.number}`).join(', ');
+  const playerNumbers = players
+    .map((p) => (p.number !== null ? `#${p.number}` : p.name))
+    .join(', ');
 
   return <>{playerNumbers}</>;
 }

@@ -69,3 +69,108 @@ export const byPlayer = (a: PlayerState, b: PlayerState): number => {
 export const sortPlayers = (players: PlayerState[]): PlayerState[] => {
   return [...players].sort(byPlayer);
 };
+
+/**
+ * Type for translation function
+ */
+export type TranslationFunction = (key: string) => string;
+
+/**
+ * Generates tooltip text for a player button based on their state and fouls
+ * @param player Player state to generate tooltip for
+ * @param t Translation function
+ * @returns Tooltip text or undefined if no tooltip needed
+ */
+export const getPlayerTooltipText = (
+  player: PlayerState,
+  t: TranslationFunction,
+): string | undefined => {
+  const isDisqualified = player.state === 'disqualified';
+  const technicalFouls = player.stats_values['fouls_technical'] || 0;
+  const unsportsmanlikeFouls =
+    player.stats_values['fouls_unsportsmanlike'] || 0;
+  const hasWarning =
+    (technicalFouls >= 1 || unsportsmanlikeFouls >= 1) && !isDisqualified;
+
+  if (isDisqualified) {
+    return t('basketball.players.disqualified');
+  }
+
+  if (hasWarning) {
+    if (technicalFouls >= 1 && unsportsmanlikeFouls >= 1) {
+      return `${t(
+        'basketball.players.warningTechnical',
+      )} (${technicalFouls}) + ${t(
+        'basketball.players.warningUnsportsmanlike',
+      )} (${unsportsmanlikeFouls})`;
+    } else if (technicalFouls >= 1) {
+      return `${t('basketball.players.warningTechnical')} (${technicalFouls})`;
+    } else if (unsportsmanlikeFouls >= 1) {
+      return `${t(
+        'basketball.players.warningUnsportsmanlike',
+      )} (${unsportsmanlikeFouls})`;
+    }
+  }
+
+  return undefined;
+};
+
+/**
+ * User action state for player button styling
+ */
+export type UserActionState = 'normal' | 'selected' | 'disabled';
+
+/**
+ * Generates CSS class names for a player button based on state and props
+ * @param player Player state
+ * @param isSelected Whether the button is selected
+ * @param disabled Whether the button is disabled
+ * @param customClassName Additional custom CSS classes
+ * @returns Complete CSS class string for the button
+ */
+export const getPlayerButtonClassName = (
+  player: PlayerState,
+  isSelected: boolean,
+  disabled: boolean,
+  customClassName: string = '',
+): string => {
+  // Player info states
+  const isDisqualified = player.state === 'disqualified';
+  const technicalFouls = player.stats_values['fouls_technical'] || 0;
+  const unsportsmanlikeFouls =
+    player.stats_values['fouls_unsportsmanlike'] || 0;
+  const isWarning =
+    (technicalFouls >= 1 || unsportsmanlikeFouls >= 1) && !isDisqualified;
+
+  // User action state calculation
+  const isButtonDisabled = disabled || isDisqualified;
+  const userActionState: UserActionState = isButtonDisabled
+    ? 'disabled'
+    : isSelected
+    ? 'selected'
+    : 'normal';
+
+  // Class assignment
+  const baseClasses = 'player-button button';
+  const userActionClasses: Record<UserActionState, string> = {
+    normal: '',
+    selected: 'is-dark',
+    disabled: '',
+  };
+
+  const infoClasses: string[] = [];
+  if (isDisqualified) infoClasses.push('is-disqualified');
+  if (isWarning) infoClasses.push('has-foul-trouble');
+
+  const tooltipClasses = isDisqualified || isWarning ? 'has-tooltip' : '';
+
+  return [
+    baseClasses,
+    userActionClasses[userActionState],
+    ...infoClasses,
+    tooltipClasses,
+    customClassName,
+  ]
+    .filter(Boolean)
+    .join(' ');
+};

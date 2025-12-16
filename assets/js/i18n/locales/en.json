@@ -312,6 +312,9 @@
       "onCourt": "On Court",
       "onBench": "On Bench",
       "disqualified": "Disqualified",
+      "warning": "Player with T or U foul",
+      "warningTechnical": "T Foul",
+      "warningUnsportsmanlike": "U Foul",
       "controls": {
         "substitute": "Substitute",
         "cancel": "Cancel"

@@ -1,4 +1,13 @@
-import { sortPlayers, wherePlaying, whereNotPlaying, byPlayer } from '../utils';
+import {
+  sortPlayers,
+  wherePlaying,
+  whereNotPlaying,
+  byPlayer,
+  getPlayerTooltipText,
+  TranslationFunction,
+  getPlayerButtonClassName,
+  UserActionState,
+} from '../utils';
 import { PlayerState } from '../../../../types';
 
 describe('Players utils', () => {
@@ -146,6 +155,271 @@ describe('Players utils', () => {
 
       const sorted = sortPlayers([player1, player2]);
       expect(sorted).toEqual([player1, player2]);
+    });
+  });
+
+  describe('getPlayerTooltipText', () => {
+    const mockT: TranslationFunction = (key: string) => {
+      const translations: Record<string, string> = {
+        'basketball.players.disqualified': 'Disqualified',
+        'basketball.players.warningTechnical': 'Technical Foul',
+        'basketball.players.warningUnsportsmanlike': 'Unsportsmanlike Foul',
+      };
+      return translations[key] || key;
+    };
+
+    const createPlayerWithStats = (
+      name: string,
+      state: PlayerState['state'] = 'available',
+      stats_values: Record<string, number> = {},
+    ): PlayerState => ({
+      id: `player-${name}`,
+      name,
+      number: '10',
+      license_number: '',
+      state,
+      stats_values,
+      is_captain: false,
+    });
+
+    it('returns disqualified message for disqualified players', () => {
+      const player = createPlayerWithStats('John', 'disqualified');
+      const result = getPlayerTooltipText(player, mockT);
+      expect(result).toBe('Disqualified');
+    });
+
+    it('returns undefined for players with no fouls or issues', () => {
+      const player = createPlayerWithStats('John', 'playing');
+      const result = getPlayerTooltipText(player, mockT);
+      expect(result).toBeUndefined();
+    });
+
+    it('returns technical foul warning with count', () => {
+      const player = createPlayerWithStats('John', 'playing', {
+        fouls_technical: 1,
+      });
+      const result = getPlayerTooltipText(player, mockT);
+      expect(result).toBe('Technical Foul (1)');
+    });
+
+    it('returns unsportsmanlike foul warning with count', () => {
+      const player = createPlayerWithStats('John', 'playing', {
+        fouls_unsportsmanlike: 1,
+      });
+      const result = getPlayerTooltipText(player, mockT);
+      expect(result).toBe('Unsportsmanlike Foul (1)');
+    });
+
+    it('returns combined warning for both foul types', () => {
+      const player = createPlayerWithStats('John', 'playing', {
+        fouls_technical: 2,
+        fouls_unsportsmanlike: 1,
+      });
+      const result = getPlayerTooltipText(player, mockT);
+      expect(result).toBe('Technical Foul (2) + Unsportsmanlike Foul (1)');
+    });
+
+    it('prioritizes disqualified status over fouls', () => {
+      const player = createPlayerWithStats('John', 'disqualified', {
+        fouls_technical: 1,
+        fouls_unsportsmanlike: 1,
+      });
+      const result = getPlayerTooltipText(player, mockT);
+      expect(result).toBe('Disqualified');
+    });
+
+    it('handles missing stats_values gracefully', () => {
+      const player = createPlayerWithStats('John', 'playing');
+      player.stats_values = {};
+      const result = getPlayerTooltipText(player, mockT);
+      expect(result).toBeUndefined();
+    });
+
+    it('handles zero foul counts', () => {
+      const player = createPlayerWithStats('John', 'playing', {
+        fouls_technical: 0,
+        fouls_unsportsmanlike: 0,
+      });
+      const result = getPlayerTooltipText(player, mockT);
+      expect(result).toBeUndefined();
+    });
+
+    it('handles high foul counts', () => {
+      const player = createPlayerWithStats('John', 'playing', {
+        fouls_technical: 3,
+      });
+      const result = getPlayerTooltipText(player, mockT);
+      expect(result).toBe('Technical Foul (3)');
+    });
+
+    it('only shows warning for technical fouls >= 1', () => {
+      const player = createPlayerWithStats('John', 'playing', {
+        fouls_technical: 0,
+      });
+      const result = getPlayerTooltipText(player, mockT);
+      expect(result).toBeUndefined();
+    });
+
+    it('only shows warning for unsportsmanlike fouls >= 1', () => {
+      const player = createPlayerWithStats('John', 'playing', {
+        fouls_unsportsmanlike: 0,
+      });
+      const result = getPlayerTooltipText(player, mockT);
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('getPlayerButtonClassName', () => {
+    const createPlayerWithStats = (
+      name: string,
+      state: PlayerState['state'] = 'available',
+      stats_values: Record<string, number> = {},
+    ): PlayerState => ({
+      id: `player-${name}`,
+      name,
+      number: '10',
+      license_number: '',
+      state,
+      stats_values,
+      is_captain: false,
+    });
+
+    it('returns base classes for normal player', () => {
+      const player = createPlayerWithStats('John', 'playing');
+      const result = getPlayerButtonClassName(player, false, false);
+      expect(result).toBe('player-button button');
+    });
+
+    it('adds selected class when isSelected is true', () => {
+      const player = createPlayerWithStats('John', 'playing');
+      const result = getPlayerButtonClassName(player, true, false);
+      expect(result).toBe('player-button button is-dark');
+    });
+
+    it('adds disqualified classes for disqualified player', () => {
+      const player = createPlayerWithStats('John', 'disqualified');
+      const result = getPlayerButtonClassName(player, false, false);
+      expect(result).toBe('player-button button is-disqualified has-tooltip');
+    });
+
+    it('adds foul trouble classes for player with technical foul', () => {
+      const player = createPlayerWithStats('John', 'playing', {
+        fouls_technical: 1,
+      });
+      const result = getPlayerButtonClassName(player, false, false);
+      expect(result).toBe('player-button button has-foul-trouble has-tooltip');
+    });
+
+    it('adds foul trouble classes for player with unsportsmanlike foul', () => {
+      const player = createPlayerWithStats('John', 'playing', {
+        fouls_unsportsmanlike: 1,
+      });
+      const result = getPlayerButtonClassName(player, false, false);
+      expect(result).toBe('player-button button has-foul-trouble has-tooltip');
+    });
+
+    it('combines selected and foul trouble classes', () => {
+      const player = createPlayerWithStats('John', 'playing', {
+        fouls_technical: 1,
+      });
+      const result = getPlayerButtonClassName(player, true, false);
+      expect(result).toBe(
+        'player-button button is-dark has-foul-trouble has-tooltip',
+      );
+    });
+
+    it('prioritizes disqualified over foul trouble', () => {
+      const player = createPlayerWithStats('John', 'disqualified', {
+        fouls_technical: 1,
+      });
+      const result = getPlayerButtonClassName(player, false, false);
+      expect(result).toBe('player-button button is-disqualified has-tooltip');
+    });
+
+    it('handles disabled prop correctly', () => {
+      const player = createPlayerWithStats('John', 'playing');
+      const result = getPlayerButtonClassName(player, false, true);
+      expect(result).toBe('player-button button');
+    });
+
+    it('disqualified player is treated as disabled even when selected', () => {
+      const player = createPlayerWithStats('John', 'disqualified');
+      const result = getPlayerButtonClassName(player, true, false);
+      expect(result).toBe('player-button button is-disqualified has-tooltip');
+    });
+
+    it('includes custom className when provided', () => {
+      const player = createPlayerWithStats('John', 'playing');
+      const result = getPlayerButtonClassName(
+        player,
+        false,
+        false,
+        'custom-class',
+      );
+      expect(result).toBe('player-button button custom-class');
+    });
+
+    it('combines all classes correctly', () => {
+      const player = createPlayerWithStats('John', 'playing', {
+        fouls_technical: 1,
+      });
+      const result = getPlayerButtonClassName(
+        player,
+        true,
+        false,
+        'custom-class another-class',
+      );
+      expect(result).toBe(
+        'player-button button is-dark has-foul-trouble has-tooltip custom-class another-class',
+      );
+    });
+
+    it('handles empty custom className', () => {
+      const player = createPlayerWithStats('John', 'playing');
+      const result = getPlayerButtonClassName(player, false, false, '');
+      expect(result).toBe('player-button button');
+    });
+
+    it('handles undefined stats_values', () => {
+      const player = createPlayerWithStats('John', 'playing');
+      player.stats_values = {};
+      const result = getPlayerButtonClassName(player, false, false);
+      expect(result).toBe('player-button button');
+    });
+
+    it('requires both technical and unsportsmanlike fouls to be >= 1 for warning', () => {
+      const playerWithZeroTech = createPlayerWithStats('John', 'playing', {
+        fouls_technical: 0,
+        fouls_unsportsmanlike: 1,
+      });
+      const result1 = getPlayerButtonClassName(
+        playerWithZeroTech,
+        false,
+        false,
+      );
+      expect(result1).toBe('player-button button has-foul-trouble has-tooltip');
+
+      const playerWithZeroUnsport = createPlayerWithStats('John', 'playing', {
+        fouls_technical: 1,
+        fouls_unsportsmanlike: 0,
+      });
+      const result2 = getPlayerButtonClassName(
+        playerWithZeroUnsport,
+        false,
+        false,
+      );
+      expect(result2).toBe('player-button button has-foul-trouble has-tooltip');
+
+      const playerWithBothZero = createPlayerWithStats('John', 'playing', {
+        fouls_technical: 0,
+        fouls_unsportsmanlike: 0,
+      });
+      const result3 = getPlayerButtonClassName(
+        playerWithBothZero,
+        false,
+        false,
+      );
+      expect(result3).toBe('player-button button');
     });
   });
 });
