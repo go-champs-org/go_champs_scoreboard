@@ -99,6 +99,13 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       | fouls: player.fouls ++ [foul]
     }
 
+    all_fouls =
+      if foul.type in ["F", "GD"] do
+        team.all_fouls
+      else
+        team.all_fouls ++ [foul]
+      end
+
     updated_team = %FibaScoresheet.Team{
       team
       | players:
@@ -107,7 +114,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
             Enum.find_index(team.players, fn p -> p.id == player_id end),
             updated_player
           ),
-        all_fouls: team.all_fouls ++ [foul]
+        all_fouls: all_fouls
     }
 
     updated_team
@@ -138,8 +145,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
             updated_coach
           else
             team.assistant_coach
-          end,
-        all_fouls: team.all_fouls ++ [foul]
+          end
     }
 
     updated_team

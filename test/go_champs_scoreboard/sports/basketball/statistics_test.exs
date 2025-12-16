@@ -243,37 +243,71 @@ defmodule GoChampsScoreboard.Sports.Basketball.StatisticsTest do
   end
 
   describe "calc_team_fouls" do
-    test "returns the sum of total player fouls and total coach fouls" do
+    test "returns the sum of specific player foul types" do
       team_state = %GoChampsScoreboard.Games.Models.TeamState{
         total_player_stats: %{
-          "fouls" => 12
+          "fouls_disqualifying" => 1,
+          "fouls_flagrant" => 2,
+          "fouls_personal" => 8,
+          "fouls_technical" => 3,
+          "fouls_unsportsmanlike" => 1
+        },
+        total_coach_stats: %{
+          "fouls" => 5
+        }
+      }
+
+      # Should only count specific player fouls, not coach fouls
+      assert Statistics.calc_team_fouls(team_state) == 15
+    end
+
+    test "returns only specific player fouls when they exist" do
+      team_state = %GoChampsScoreboard.Games.Models.TeamState{
+        total_player_stats: %{
+          "fouls_personal" => 6,
+          "fouls_technical" => 2
         },
         total_coach_stats: %{
           "fouls" => 3
         }
       }
 
-      assert Statistics.calc_team_fouls(team_state) == 15
-    end
-
-    test "returns only player fouls when no coach fouls" do
-      team_state = %GoChampsScoreboard.Games.Models.TeamState{
-        total_player_stats: %{
-          "fouls" => 8
-        },
-        total_coach_stats: %{}
-      }
-
+      # Should only count the specific player fouls, not coach fouls
       assert Statistics.calc_team_fouls(team_state) == 8
     end
 
-    test "returns 0 when no fouls from either players or coaches" do
+    test "returns 0 when no specific player foul types are present" do
       team_state = %GoChampsScoreboard.Games.Models.TeamState{
-        total_player_stats: %{},
-        total_coach_stats: %{}
+        total_player_stats: %{
+          # Has other stats but not the specific fouls we count
+          "points" => 85,
+          "rebounds" => 45
+        },
+        total_coach_stats: %{
+          "fouls" => 2
+        }
       }
 
       assert Statistics.calc_team_fouls(team_state) == 0
+    end
+
+    test "does not count fouls_disqualifying_fighting and fouls_game_disqualifying" do
+      team_state = %GoChampsScoreboard.Games.Models.TeamState{
+        total_player_stats: %{
+          "fouls_personal" => 5,
+          "fouls_technical" => 2,
+          # These should NOT be counted
+          "fouls_disqualifying_fighting" => 3,
+          "fouls_game_disqualifying" => 2
+        },
+        total_coach_stats: %{
+          "fouls" => 1
+        }
+      }
+
+      # Should only count fouls_personal (5) + fouls_technical (2) = 7
+      # Should NOT count fouls_disqualifying_fighting or fouls_game_disqualifying
+      assert Statistics.calc_team_fouls(team_state) == 7
     end
   end
 

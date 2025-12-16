@@ -323,6 +323,121 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       assert updated_team.all_fouls == [existing_foul, new_foul]
       assert List.last(updated_team.all_fouls) == new_foul
     end
+
+    test "does not add F fouls to the team's all_fouls list" do
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [%FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: []}],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [],
+        running_score: %{},
+        score: 0
+      }
+
+      foul = %FibaScoresheet.Foul{
+        type: "F",
+        period: 1,
+        extra_action: nil
+      }
+
+      updated_team = TeamManager.add_player_foul(team, "123", foul)
+      player = Enum.find(updated_team.players, fn p -> p.id == "123" end)
+      assert player.fouls == [foul]
+      assert updated_team.all_fouls == []
+    end
+
+    test "does not add GD fouls to the team's all_fouls list" do
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [%FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: []}],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [],
+        running_score: %{},
+        score: 0
+      }
+
+      foul = %FibaScoresheet.Foul{
+        type: "GD",
+        period: 1,
+        extra_action: nil
+      }
+
+      updated_team = TeamManager.add_player_foul(team, "123", foul)
+      player = Enum.find(updated_team.players, fn p -> p.id == "123" end)
+      assert player.fouls == [foul]
+      assert updated_team.all_fouls == []
+    end
+
+    test "adds T fouls to the team's all_fouls list" do
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [%FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: []}],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [],
+        running_score: %{},
+        score: 0
+      }
+
+      foul = %FibaScoresheet.Foul{
+        type: "T",
+        period: 1,
+        extra_action: nil
+      }
+
+      updated_team = TeamManager.add_player_foul(team, "123", foul)
+      player = Enum.find(updated_team.players, fn p -> p.id == "123" end)
+      assert player.fouls == [foul]
+      assert updated_team.all_fouls == [foul]
+    end
+
+    test "adds U fouls to the team's all_fouls list" do
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [%FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: []}],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [],
+        running_score: %{},
+        score: 0
+      }
+
+      foul = %FibaScoresheet.Foul{
+        type: "U",
+        period: 1,
+        extra_action: nil
+      }
+
+      updated_team = TeamManager.add_player_foul(team, "123", foul)
+      player = Enum.find(updated_team.players, fn p -> p.id == "123" end)
+      assert player.fouls == [foul]
+      assert updated_team.all_fouls == [foul]
+    end
+
+    test "adds D fouls to the team's all_fouls list" do
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [%FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: []}],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [],
+        running_score: %{},
+        score: 0
+      }
+
+      foul = %FibaScoresheet.Foul{
+        type: "D",
+        period: 1,
+        extra_action: nil
+      }
+
+      updated_team = TeamManager.add_player_foul(team, "123", foul)
+      player = Enum.find(updated_team.players, fn p -> p.id == "123" end)
+      assert player.fouls == [foul]
+      assert updated_team.all_fouls == [foul]
+    end
   end
 
   describe "add_coach_foul/3" do
@@ -346,7 +461,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       updated_team = TeamManager.add_coach_foul(team, "coach-id", foul)
       coach = updated_team.coach
       assert coach.fouls == [foul]
-      assert updated_team.all_fouls == [foul]
+      assert updated_team.all_fouls == []
     end
 
     test "adds multiple fouls to the end of the coach's and team's foul lists" do
@@ -379,9 +494,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       assert coach.fouls == [existing_foul, new_foul]
       assert List.last(coach.fouls) == new_foul
 
-      # Verify the new foul is added at the end of the team's all_fouls array
-      assert updated_team.all_fouls == [existing_foul, new_foul]
-      assert List.last(updated_team.all_fouls) == new_foul
+      # Verify that coach fouls are not added to the team's all_fouls array
+      assert updated_team.all_fouls == [existing_foul]
     end
   end
 

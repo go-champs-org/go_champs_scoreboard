@@ -91,10 +91,14 @@ defmodule GoChampsScoreboard.Sports.Basketball.Statistics do
 
   @spec calc_team_fouls(TeamState.t()) :: float()
   def calc_team_fouls(team_state) do
-    total_player_fouls = Map.get(team_state.total_player_stats, "fouls", 0)
-    total_coach_fouls = Map.get(team_state.total_coach_stats, "fouls", 0)
+    fouls_disqualifying = Map.get(team_state.total_player_stats, "fouls_disqualifying", 0)
+    fouls_flagrant = Map.get(team_state.total_player_stats, "fouls_flagrant", 0)
+    fouls_personal = Map.get(team_state.total_player_stats, "fouls_personal", 0)
+    fouls_technical = Map.get(team_state.total_player_stats, "fouls_technical", 0)
+    fouls_unsportsmanlike = Map.get(team_state.total_player_stats, "fouls_unsportsmanlike", 0)
 
-    total_player_fouls + total_coach_fouls
+    fouls_disqualifying + fouls_flagrant + fouls_personal + fouls_technical +
+      fouls_unsportsmanlike
   end
 
   @spec calc_team_technical_fouls(TeamState.t()) :: float()

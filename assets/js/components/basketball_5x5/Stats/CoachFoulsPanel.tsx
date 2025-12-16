@@ -98,27 +98,6 @@ function CoachFoulsPanel({
           onClick={() =>
             onFoulWithFreeThrows(
               'fouls_technical_bench_disqualifying',
-              '1',
-              panelRef.close,
-            )
-          }
-        >
-          <span
-            style={{
-              border: '1px solid black',
-              borderRadius: '50px',
-              padding: '0 3px',
-              margin: '-1px 0',
-            }}
-          >
-            B1
-          </span>
-        </button>
-        <button
-          className="button is-fullwidth is-small is-primary"
-          onClick={() =>
-            onFoulWithFreeThrows(
-              'fouls_technical_bench_disqualifying',
               '2',
               panelRef.close,
             )
@@ -133,27 +112,6 @@ function CoachFoulsPanel({
             }}
           >
             B2
-          </span>
-        </button>
-        <button
-          className="button is-fullwidth is-small is-primary"
-          onClick={() =>
-            onFoulWithFreeThrows(
-              'fouls_technical_bench_disqualifying',
-              'C',
-              panelRef.close,
-            )
-          }
-        >
-          <span
-            style={{
-              border: '1px solid black',
-              borderRadius: '50px',
-              padding: '0 2px',
-              margin: '-1px 0',
-            }}
-          >
-            BC
           </span>
         </button>
       </div>
