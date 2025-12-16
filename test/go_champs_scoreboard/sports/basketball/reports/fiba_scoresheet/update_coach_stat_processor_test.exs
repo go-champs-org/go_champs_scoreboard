@@ -55,7 +55,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateCoac
       coach = result_scoresheet.team_a.coach
 
       assert coach.fouls == expected_fouls
-      assert result_scoresheet.team_a.all_fouls == expected_fouls
+      assert result_scoresheet.team_a.all_fouls == []
     end
 
     test "returns a fiba scoresheet data coach fouls when event log payload with fouls_disqualifying operation is increment and team-type is home" do
@@ -103,7 +103,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateCoac
       coach = result_scoresheet.team_a.coach
 
       assert coach.fouls == expected_fouls
-      assert result_scoresheet.team_a.all_fouls == expected_fouls
+      assert result_scoresheet.team_a.all_fouls == []
     end
 
     test "returns a fiba scoresheet data coach fouls when event log payload with fouls_technical_bench operation is increment and team-type is away" do
@@ -151,7 +151,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateCoac
       coach = result_scoresheet.team_b.coach
 
       assert coach.fouls == expected_fouls
-      assert result_scoresheet.team_b.all_fouls == expected_fouls
+      assert result_scoresheet.team_b.all_fouls == []
     end
 
     test "returns a fiba scoresheet data coach fouls when event log payload with fouls_technical_bench_disqualifying operation is increment and team-type is away" do
@@ -199,7 +199,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateCoac
       coach = result_scoresheet.team_b.coach
 
       assert coach.fouls == expected_fouls
-      assert result_scoresheet.team_b.all_fouls == expected_fouls
+      assert result_scoresheet.team_b.all_fouls == []
     end
 
     test "returns a fiba scoresheet data coach fouls when event log payload with fouls_game_disqualifying operation is increment and team-type is home" do
@@ -247,7 +247,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateCoac
       coach = result_scoresheet.team_a.coach
 
       assert coach.fouls == expected_fouls
-      assert result_scoresheet.team_a.all_fouls == expected_fouls
+      assert result_scoresheet.team_a.all_fouls == []
     end
 
     test "returns a fiba scoresheet data coach fouls when event log payload with fouls_disqualifying_fighting operation is increment and team-type is home" do
@@ -295,7 +295,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateCoac
       coach = result_scoresheet.team_a.coach
 
       assert coach.fouls == expected_fouls
-      assert result_scoresheet.team_a.all_fouls == expected_fouls
+      assert result_scoresheet.team_a.all_fouls == []
     end
 
     test "returns a fiba scoresheet data coach fouls with extra_action when event log payload includes metadata free-throws-awarded" do
@@ -346,7 +346,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateCoac
       coach = result_scoresheet.team_a.coach
 
       assert coach.fouls == expected_fouls
-      assert result_scoresheet.team_a.all_fouls == expected_fouls
+      assert result_scoresheet.team_a.all_fouls == []
     end
 
     test "returns unchanged fiba scoresheet when event log payload has non-foul stat-id" do

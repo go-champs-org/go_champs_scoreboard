@@ -1,8 +1,8 @@
 @import '../colors.scss';
 
 .stream-views {
-  width: 800px;
-  padding: 1.5rem;
+  max-width: 800px;
+  margin: 1.5rem 3rem 1.5rem 1.5rem;
 
   .column {
     border: 1px solid $white-dark;
@@ -11,20 +11,26 @@
 
     &.away {
       background-color: $green;
+      height: 118px;
     }
 
     &.home {
       background-color: $red-dark;
+      height: 118px;
     }
 
-    &.period {
+    &.time-ad {
       background-color: $black;
+      display: flex;
+      flex-direction: column;
+      height: 118px;
     }
   }
 
   .team-score {
     display: flex;
     justify-content: space-between;
+    border-bottom: 1px solid $white-dark;
 
     .identifier {
       position: relative;
@@ -100,27 +106,50 @@
     }
   }
 
+  .fouls {
+    font-size: 18px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .period-time {
     display: flex;
+    align-items: center;
+    flex: 1 1;
     font-size: 40px;
     font-weight: bold;
     color: $white;
+    border-bottom: 1px solid $white-dark;
 
     .period {
       background-color: rgb(18, 18, 18);
       width: 30%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .time {
       background-color: rgb(36, 36, 36);
       width: 70%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 
   .ad {
     background-color: rgb(36, 36, 36);
     color: $white;
-    font-size: 20px;
+    font-size: 18px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .animated-score {

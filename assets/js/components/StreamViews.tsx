@@ -1,6 +1,7 @@
 import React from 'react';
 import { GameState, DEFAULT_GAME_STATE, TeamState } from '../types';
 import { formatTime } from '../shared/contentHelpers';
+import { useTranslation } from 'react-i18next';
 
 interface StreamViewsProps {
   game_data: string;
@@ -61,13 +62,20 @@ function TeamScore({
   team,
   score,
   defaultColor,
+  currentPeriod,
 }: {
   team: TeamState;
   score: number;
   defaultColor: string;
+  currentPeriod: number;
 }) {
+  const { t } = useTranslation();
   const [color, setColor] = React.useState(defaultColor);
   const [contrastColor, setContrastColor] = React.useState('#FFFFFF');
+  const quarteFouls =
+    currentPeriod && team.period_stats[currentPeriod]
+      ? team.period_stats[currentPeriod]['fouls'] || 0
+      : 0;
 
   const handleColorChange = (color: string) => {
     setColor(color);
@@ -77,29 +85,38 @@ function TeamScore({
   const shouldUseLogoAndTriCode = team.logo_url && team.tri_code;
 
   return (
-    <div className="team-score">
-      <div className="identifier">
-        {shouldUseLogoAndTriCode ? (
-          <>
-            <img className="logo" src={team.logo_url} alt={team.tri_code} />
-            <span className="tri-code" style={{ color: contrastColor }}>
-              {team.tri_code}
+    <div className="column is-12">
+      <div className="team-score">
+        <div className="identifier">
+          {shouldUseLogoAndTriCode ? (
+            <>
+              <img className="logo" src={team.logo_url} alt={team.tri_code} />
+              <span className="tri-code" style={{ color: contrastColor }}>
+                {team.tri_code}
+              </span>
+            </>
+          ) : (
+            <span className="text" style={{ color: contrastColor }}>
+              {team.tri_code || team.name}
             </span>
-          </>
-        ) : (
-          <span className="text" style={{ color: contrastColor }}>
-            {team.tri_code || team.name}
-          </span>
-        )}
+          )}
 
-        <input
-          type="color"
-          value={color}
-          onChange={(e) => handleColorChange(e.target.value)}
-        />
+          <input
+            type="color"
+            value={color}
+            onChange={(e) => handleColorChange(e.target.value)}
+          />
+        </div>
+        <div className="score">
+          <AnimatedScore score={score} />
+        </div>
       </div>
-      <div className="score">
-        <AnimatedScore score={score} />
+      <div
+        className="fouls"
+        style={{ backgroundColor: color, color: contrastColor }}
+      >
+        {t('basketball.streamViewer.teamScore.fouls').toUpperCase()}:{' '}
+        {quarteFouls}
       </div>
     </div>
   );
@@ -110,34 +127,34 @@ function StreamViews({ game_data }: StreamViewsProps) {
   const game_state = (object.result as GameState) || DEFAULT_GAME_STATE;
   return (
     <div className="stream-views">
-      <div className="container">
-        <div className="columns is-multiline is-vcentered">
-          <div className="column has-text-centered away">
-            <TeamScore
-              team={game_state.home_team}
-              score={game_state.home_team.total_player_stats['points'] || 0}
-              defaultColor="#2b5615"
-            />
-          </div>
-          <div className="column has-text-centered home">
-            <TeamScore
-              team={game_state.away_team}
-              score={game_state.away_team.total_player_stats['points'] || 0}
-              defaultColor="#970c10"
-            />
-          </div>
-          <div className="column is-3 has-text-centered period">
-            <div className="period-time">
-              <span className="period">
-                {`${game_state.clock_state.period}º`}
-              </span>
-              <span className="time">
-                {formatTime(game_state.clock_state.time)}
-              </span>
+      <div className="columns is-multiline is-vcentered">
+        <div className="column has-text-centered away">
+          <TeamScore
+            team={game_state.home_team}
+            score={game_state.home_team.total_player_stats['points'] || 0}
+            defaultColor="#2b5615"
+            currentPeriod={game_state.clock_state.period}
+          />
+        </div>
+        <div className="column has-text-centered home">
+          <TeamScore
+            team={game_state.away_team}
+            score={game_state.away_team.total_player_stats['points'] || 0}
+            defaultColor="#970c10"
+            currentPeriod={game_state.clock_state.period}
+          />
+        </div>
+        <div className="column is-3 has-text-centered time-ad">
+          <div className="period-time">
+            <span className="period">
+              {`${game_state.clock_state.period}º`}
+            </span>
+            <div className="time">
+              <span>{formatTime(game_state.clock_state.time)}</span>
             </div>
-            <div className="ad">
-              <span>go-champs.com</span>
-            </div>
+          </div>
+          <div className="ad">
+            <span>go-champs.com</span>
           </div>
         </div>
       </div>

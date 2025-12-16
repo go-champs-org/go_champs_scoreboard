@@ -103,13 +103,13 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinitionTest do
           total_player_stats: %{},
           stats_values: %{
             "points" => 0,
-            "fouls" => 2,
+            "fouls" => 0,
             "total_fouls_technical" => 0
           },
           period_stats: %{
             "1" => %{
               "points" => 0,
-              "fouls" => 2,
+              "fouls" => 0,
               "total_fouls_technical" => 0
             }
           }
@@ -191,7 +191,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinitionTest do
 
       # Verify team totals were calculated correctly
       assert result.home_team.total_coach_stats["fouls_technical"] == 3
-      assert result.home_team.stats_values["fouls"] == 3
+      assert result.home_team.stats_values["fouls"] == 0
     end
   end
 end

@@ -7,7 +7,7 @@
       "editGame": "Edit Game",
       "eventLogs": "Event Logs",
       "streamViews": "Stream Views (OBS)",
-      "fibaScoresheet": "Scoresheet (Beta)",
+      "fibaScoresheet": "Scoresheet",
       "startLive": "Start Live",
       "endLive": "End Live"
     },
@@ -418,6 +418,11 @@
       "quarterPoints": "Quarter P.",
       "used": "Used",
       "remaining": "Rem"
+    },
+    "streamViewer": {
+      "teamScore": {
+        "fouls": "Fouls"
+      }
     }
   },
   "eventKeys": {

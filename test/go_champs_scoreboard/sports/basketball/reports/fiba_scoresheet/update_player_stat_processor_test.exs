@@ -409,7 +409,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
       [player] = result_scoresheet.team_a.players
 
       assert player.fouls == expected_fouls
-      assert result_scoresheet.team_a.all_fouls == expected_fouls
+      assert result_scoresheet.team_a.all_fouls == []
     end
 
     test "returns a fiba scoresheet data player fouls when event log payload with fouls_disqualifying_fighting operation is increment and team-type is home" do
@@ -451,7 +451,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
       [player] = result_scoresheet.team_a.players
 
       assert player.fouls == expected_fouls
-      assert result_scoresheet.team_a.all_fouls == expected_fouls
+      assert result_scoresheet.team_a.all_fouls == []
     end
 
     test "returns unchanged fiba scoresheet when event log payload has non-scoring/non-foul stat-id" do

@@ -7,7 +7,7 @@
       "editGame": "Editar Jogo",
       "eventLogs": "Eventos",
       "streamViews": "Telas para Stream (OBS)",
-      "fibaScoresheet": "Súmula (Beta)",
+      "fibaScoresheet": "Súmula",
       "startLive": "Iniciar Ao Vivo",
       "endLive": "Finalizar Ao Vivo"
     },
@@ -418,6 +418,11 @@
       "quarterPoints": "PTS Q.",
       "used": "Usado",
       "remaining": "Rest"
+    },
+    "streamViewer": {
+      "teamScore": {
+        "fouls": "Faltas"
+      }
     }
   },
   "eventKeys": {
