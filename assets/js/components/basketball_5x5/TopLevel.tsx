@@ -105,7 +105,7 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
               onClick={() => {
                 if (game_state.live_state.state !== 'not_started') {
                   window.open(
-                    `/scoreboard/report_viewer/${game_state.id}`,
+                    `/scoreboard/report_viewer/${game_state.id}?report_slug=fiba-scoresheet`,
                     '_blank',
                   );
                 }

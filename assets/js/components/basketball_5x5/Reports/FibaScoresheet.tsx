@@ -589,4 +589,13 @@ function FibaScoresheet({ scoresheetData }: FibaScoresheetProps) {
   );
 }
 
+// Static method to parse data for this report type
+export function parseFibaScoresheetData(rawData: string): FibaScoresheetData {
+  try {
+    return JSON.parse(rawData) as FibaScoresheetData;
+  } catch (error) {
+    throw new Error(`Invalid JSON data for FIBA scoresheet: ${error}`);
+  }
+}
+
 export default FibaScoresheet;

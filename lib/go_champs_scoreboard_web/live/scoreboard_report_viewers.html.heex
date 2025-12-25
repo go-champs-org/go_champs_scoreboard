@@ -1,4 +1,6 @@
-{live_react_component("Components.ReportViewer", [report_data: Poison.encode!(@report_data)],
+{live_react_component(
+  "Components.ReportViewer",
+  [report_data: Poison.encode!(@report_data), report_slug: @report_slug],
   id: "report-viewer-scoreboard",
   container: [style: "height: 100%; width: 100%; position: absolute; top: 0; left: 0;"]
 )}
