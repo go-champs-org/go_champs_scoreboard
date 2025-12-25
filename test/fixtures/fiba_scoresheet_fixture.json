@@ -1,0 +1,281 @@
+{
+  "team_b": {
+    "running_score": {
+      "34": {"player_number": null, "is_last_of_period": false, "period": 2, "type": "2PT"},
+      "32": {"player_number": null, "is_last_of_period": false, "period": 2, "type": "2PT"},
+      "30": {"player_number": null, "is_last_of_period": false, "period": 2, "type": "2PT"},
+      "28": {"player_number": "27", "is_last_of_period": false, "period": 2, "type": "2PT"},
+      "26": {"player_number": "27", "is_last_of_period": false, "period": 2, "type": "FT"},
+      "25": {"player_number": "27", "is_last_of_period": false, "period": 2, "type": "FT"},
+      "24": {"player_number": "27", "is_last_of_period": false, "period": 2, "type": "FT"},
+      "23": {"player_number": null, "is_last_of_period": false, "period": 2, "type": "2PT"},
+      "21": {"player_number": null, "is_last_of_period": true, "period": 1, "type": "FT"},
+      "20": {"player_number": null, "is_last_of_period": false, "period": 1, "type": "FT"},
+      "19": {"player_number": null, "is_last_of_period": false, "period": 1, "type": "FT"},
+      "18": {"player_number": null, "is_last_of_period": false, "period": 1, "type": "FT"},
+      "17": {"player_number": null, "is_last_of_period": false, "period": 1, "type": "3PT"},
+      "14": {"player_number": null, "is_last_of_period": false, "period": 1, "type": "3PT"},
+      "11": {"player_number": null, "is_last_of_period": false, "period": 1, "type": "FT"},
+      "10": {"player_number": "10", "is_last_of_period": false, "period": 1, "type": "FT"},
+      "9": {"player_number": "10", "is_last_of_period": false, "period": 1, "type": "FT"},
+      "8": {"player_number": null, "is_last_of_period": false, "period": 1, "type": "3PT"},
+      "5": {"player_number": "27", "is_last_of_period": false, "period": 1, "type": "2PT"},
+      "3": {"player_number": "27", "is_last_of_period": false, "period": 1, "type": "3PT"}
+    },
+    "score": 34,
+    "all_fouls": [
+      {"extra_action": "1", "is_last_of_half": false, "period": 1, "type": "P"},
+      {"extra_action": null, "is_last_of_half": false, "period": 1, "type": "P"},
+      {"extra_action": "2", "is_last_of_half": false, "period": 1, "type": "P"},
+      {"extra_action": "1", "is_last_of_half": false, "period": 1, "type": "P"},
+      {"extra_action": "1", "is_last_of_half": false, "period": 1, "type": "T"},
+      {"extra_action": "1", "is_last_of_half": false, "period": 2, "type": "U"},
+      {"extra_action": null, "is_last_of_half": false, "period": 2, "type": "T"}
+    ],
+    "coach": {
+      "fouls": [{"extra_action": "1", "is_last_of_half": false, "period": 1, "type": "C"}],
+      "name": "David Adelman",
+      "id": "eb25573b-fc99-4822-9a32-f6a74ed1af6c"
+    },
+    "assistant_coach": {
+      "fouls": [],
+      "name": "Jared Dudley",
+      "id": "093d5c08-e067-4672-8230-52a8934a8832"
+    },
+    "players": [
+      {
+        "has_started": null,
+        "has_played": true,
+        "first_played_period": 2,
+        "fouls": [],
+        "license_number": null,
+        "is_captain": false,
+        "number": null,
+        "name": "Westbrook",
+        "id": "c76cfbf8-6c37-47a9-871d-288a280aa033"
+      },
+      {
+        "has_started": true,
+        "has_played": true,
+        "first_played_period": 1,
+        "fouls": [
+          {"extra_action": "1", "is_last_of_half": false, "period": 2, "type": "U"},
+          {"extra_action": null, "is_last_of_half": false, "period": 2, "type": "T"},
+          {"extra_action": null, "is_last_of_half": false, "period": 2, "type": "GD"}
+        ],
+        "license_number": null,
+        "is_captain": true,
+        "number": null,
+        "name": "Jokic",
+        "id": "bf902f75-0b64-4b59-904e-68ed960b8c7b"
+      },
+      {
+        "has_started": true,
+        "has_played": true,
+        "first_played_period": 1,
+        "fouls": [{"extra_action": null, "is_last_of_half": false, "period": 1, "type": "P"}],
+        "license_number": null,
+        "is_captain": false,
+        "number": "27",
+        "name": "Murray",
+        "id": "c8b13cc8-2b3e-431f-9995-baaa042cbcdd"
+      },
+      {
+        "has_started": true,
+        "has_played": true,
+        "first_played_period": 1,
+        "fouls": [{"extra_action": "1", "is_last_of_half": false, "period": 1, "type": "P"}],
+        "license_number": null,
+        "is_captain": false,
+        "number": null,
+        "name": "Gordon",
+        "id": "bc64df4b-9ab1-471d-81c9-2292d754a0e2"
+      },
+      {
+        "has_started": true,
+        "has_played": true,
+        "first_played_period": 1,
+        "fouls": [
+          {"extra_action": "1", "is_last_of_half": false, "period": 1, "type": "P"},
+          {"extra_action": "1", "is_last_of_half": false, "period": 1, "type": "T"}
+        ],
+        "license_number": null,
+        "is_captain": false,
+        "number": null,
+        "name": "Porter Jr.",
+        "id": "eb94da6f-915e-4edb-9928-c67dcceb651e"
+      },
+      {
+        "has_started": true,
+        "has_played": true,
+        "first_played_period": 1,
+        "fouls": [{"extra_action": "2", "is_last_of_half": false, "period": 1, "type": "P"}],
+        "license_number": null,
+        "is_captain": false,
+        "number": "10",
+        "name": "Christian Braun",
+        "id": "4020bc08-9475-4a0e-ad02-23ec1fe26230"
+      }
+    ],
+    "timeouts": [],
+    "name": "Denver Nuggets"
+  },
+  "team_a": {
+    "running_score": {
+      "27": {"player_number": "10", "is_last_of_period": false, "period": 2, "type": "3PT"},
+      "24": {"player_number": "7", "is_last_of_period": false, "period": 2, "type": "3PT"},
+      "21": {"player_number": "0", "is_last_of_period": true, "period": 1, "type": "FT"},
+      "20": {"player_number": "0", "is_last_of_period": false, "period": 1, "type": "2PT"},
+      "18": {"player_number": "42", "is_last_of_period": false, "period": 1, "type": "2PT"},
+      "16": {"player_number": "7", "is_last_of_period": false, "period": 1, "type": "FT"},
+      "15": {"player_number": "7", "is_last_of_period": false, "period": 1, "type": "FT"},
+      "14": {"player_number": "7", "is_last_of_period": false, "period": 1, "type": "3PT"},
+      "11": {"player_number": "4", "is_last_of_period": false, "period": 1, "type": "2PT"},
+      "9": {"player_number": "4", "is_last_of_period": false, "period": 1, "type": "3PT"},
+      "6": {"player_number": "4", "is_last_of_period": false, "period": 1, "type": "FT"},
+      "5": {"player_number": "4", "is_last_of_period": false, "period": 1, "type": "FT"},
+      "4": {"player_number": "4", "is_last_of_period": false, "period": 1, "type": "2PT"},
+      "2": {"player_number": "4", "is_last_of_period": false, "period": 1, "type": "2PT"}
+    },
+    "score": 27,
+    "all_fouls": [
+      {"extra_action": "2", "is_last_of_half": false, "period": 1, "type": "P"},
+      {"extra_action": "2", "is_last_of_half": false, "period": 1, "type": "P"},
+      {"extra_action": "1", "is_last_of_half": false, "period": 1, "type": "P"},
+      {"extra_action": "2", "is_last_of_half": false, "period": 1, "type": "P"},
+      {"extra_action": "2", "is_last_of_half": false, "period": 2, "type": "P"},
+      {"extra_action": null, "is_last_of_half": false, "period": 2, "type": "P"},
+      {"extra_action": "1", "is_last_of_half": false, "period": 2, "type": "U"},
+      {"extra_action": null, "is_last_of_half": false, "period": 2, "type": "P"},
+      {"extra_action": null, "is_last_of_half": false, "period": 2, "type": "P"},
+      {"extra_action": null, "is_last_of_half": false, "period": 2, "type": "T"}
+    ],
+    "coach": {
+      "fouls": [],
+      "name": "Joe Mazulla",
+      "id": "7838647e-c22e-42af-b961-3d27072a06a0"
+    },
+    "assistant_coach": {
+      "fouls": [],
+      "name": "Sam Cassell",
+      "id": "1e89d38d-d8c9-4cea-ac1f-b161838fb6fb"
+    },
+    "players": [
+      {
+        "has_started": true,
+        "has_played": true,
+        "first_played_period": 1,
+        "fouls": [{"extra_action": "2", "is_last_of_half": false, "period": 1, "type": "P"}],
+        "license_number": null,
+        "is_captain": false,
+        "number": "10",
+        "name": "Ruan",
+        "id": "2f658a87-6281-4812-8c6b-40c34dcf79d6"
+      },
+      {
+        "has_started": null,
+        "has_played": true,
+        "first_played_period": 1,
+        "fouls": [
+          {"extra_action": "2", "is_last_of_half": false, "period": 1, "type": "P"},
+          {"extra_action": "2", "is_last_of_half": false, "period": 2, "type": "P"},
+          {"extra_action": null, "is_last_of_half": false, "period": 2, "type": "P"},
+          {"extra_action": null, "is_last_of_half": false, "period": 2, "type": "P"},
+          {"extra_action": null, "is_last_of_half": false, "period": 2, "type": "P"}
+        ],
+        "license_number": null,
+        "is_captain": false,
+        "number": "42",
+        "name": "Horford",
+        "id": "c2a246d4-fdd4-4608-bd8d-aea4dcd99f06"
+      },
+      {
+        "has_started": true,
+        "has_played": true,
+        "first_played_period": 1,
+        "fouls": [
+          {"extra_action": "2", "is_last_of_half": false, "period": 1, "type": "P"},
+          {"extra_action": "1", "is_last_of_half": false, "period": 2, "type": "U"},
+          {"extra_action": null, "is_last_of_half": false, "period": 2, "type": "T"},
+          {"extra_action": null, "is_last_of_half": false, "period": 2, "type": "GD"}
+        ],
+        "license_number": null,
+        "is_captain": true,
+        "number": "9",
+        "name": "White",
+        "id": "eedd7e05-a7bc-44a2-b3c3-f32871c49d9a"
+      },
+      {
+        "has_started": null,
+        "has_played": true,
+        "first_played_period": 2,
+        "fouls": [],
+        "license_number": null,
+        "is_captain": false,
+        "number": "8",
+        "name": "Porzingis",
+        "id": "9d5c0e0b-68b5-4e16-bebf-85f3e10fa251"
+      },
+      {
+        "has_started": true,
+        "has_played": true,
+        "first_played_period": 1,
+        "fouls": [],
+        "license_number": null,
+        "is_captain": false,
+        "number": "4",
+        "name": "Holiday",
+        "id": "c27b756c-3e2b-4876-aa03-745e2faff433"
+      },
+      {
+        "has_started": true,
+        "has_played": true,
+        "first_played_period": 1,
+        "fouls": [{"extra_action": "1", "is_last_of_half": false, "period": 1, "type": "P"}],
+        "license_number": null,
+        "is_captain": false,
+        "number": "7",
+        "name": "Brown",
+        "id": "a7ffb977-02d1-46f7-bc97-f04852c334fc"
+      },
+      {
+        "has_started": true,
+        "has_played": true,
+        "first_played_period": 1,
+        "fouls": [],
+        "license_number": null,
+        "is_captain": false,
+        "number": "0",
+        "name": "Tatum",
+        "id": "9c290e68-5878-48c1-bbba-721077f6a58d"
+      }
+    ],
+    "timeouts": [],
+    "name": "Boston Celtics"
+  },
+  "umpire_2": {"name": "", "id": ""},
+  "umpire_1": {"name": "", "id": ""},
+  "crew_chief": {"name": "", "id": ""},
+  "shot_clock_operator": {"name": "", "id": ""},
+  "timekeeper": {"name": "", "id": ""},
+  "assistant_scorer": {"name": "", "id": ""},
+  "scorer": {"name": "", "id": ""},
+  "tournament_name": null,
+  "protest": {"player_name": "", "state": "no_protest"},
+  "game_id": "0c88ead2-8124-492a-b7b2-7772f86cc150",
+  "info": {
+    "actual_start_datetime": "2025-12-16T02:06:26.073157Z",
+    "actual_end_datetime": null,
+    "web_url": "https://staging.go-champs.com/lair/torneio-basquete/GameView/0c88ead2-8124-492a-b7b2-7772f86cc150",
+    "tournament_slug": "torneio-basquete",
+    "tournament_name": "Basquete Torneio",
+    "organization_slug": "lair",
+    "organization_name": "Lair",
+    "organization_logo_url": "https://organization-logos.go-champs.com/uploads/2b609afc-b286-4e53-90a9-beb8ef91fe3a_NBA.png",
+    "game_report": "",
+    "datetime": "2025-09-14T16:00:00Z",
+    "initial_period_time": 600,
+    "number": "0c88ead2-8124-492a-b7b2-7772f86cc150",
+    "location": "Casa Iaia"
+  }
+}
