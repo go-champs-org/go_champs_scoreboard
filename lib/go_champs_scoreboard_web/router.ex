@@ -51,6 +51,7 @@ defmodule GoChampsScoreboardWeb.Router do
     pipe_through :browser
 
     get "/load/:game_id", ScoreboardController, :load
+    get "/report_data/:game_id", ScoreboardController, :report_data
     live "/control/:game_id", ScoreboardControlLive
     live "/report_viewer/:game_id", ScoreboardReportViewers
     live "/stream_views/:game_id", ScoreboardStreamViewsLive

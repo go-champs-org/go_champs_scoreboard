@@ -582,7 +582,7 @@ function FibaScoresheet({ scoresheetData }: FibaScoresheetProps) {
     scoresheetData.info.game_report.trim() !== '';
 
   return (
-    <Document>
+    <Document title={`FIBA Scoresheet - Game ${scoresheetData.game_id}`}>
       <ScoresheetPage scoresheetData={scoresheetData} />
       {hasGameReport && <GameReportPage scoresheetData={scoresheetData} />}
     </Document>

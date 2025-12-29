@@ -3,38 +3,10 @@ import Modal from '../Modal';
 import { useTranslation } from 'react-i18next';
 import { GameState } from '../../types';
 import { BASKETBALL_VIEWS } from './constants';
-import { getReportConfig } from '../../shared/reportRegistry';
-import { pdf } from '@react-pdf/renderer';
-import uploadHttpClient from '../../features/upload/uploadHttpClient';
 import { useConfig } from '../../shared/Config';
+import generatorAndUploaders from './Reports/generatorAndUploaders';
 
 const FORTY_FIVE_MINUTES_IN_MS = 45 * 60 * 1000; // 45 minutes in milliseconds
-
-const generateAndUploadSimpleExample = async (goChampsApiBaseUrl: string) => {
-  const reportConfig = getReportConfig('simple-example');
-  const reportData = reportConfig!.parseData('{}');
-  const ReportComponent = reportConfig!.component;
-  const reportBlob = pdf(<ReportComponent data={reportData} />).toBlob();
-  await uploadHttpClient.singAndUpload({
-    baseGoChampsApi: goChampsApiBaseUrl,
-    file: await reportBlob,
-    fileReference: {
-      filename: `simple-example.pdf`,
-      file_type: 'game-assets',
-      content_type: 'application/pdf',
-      size: (await reportBlob).size,
-    },
-    setProgress: (progress: number) => {
-      console.log(`Upload progress: ${progress}%`);
-    },
-    onSucess: (fileReference: any) => {
-      console.log('File uploaded successfully:', fileReference);
-    },
-    onError: () => {
-      console.error('Error uploading file');
-    },
-  });
-};
 
 interface EndLiveModalProps {
   game_state: GameState;
@@ -50,8 +22,8 @@ function EndLiveModal({
   pushEvent,
 }: EndLiveModalProps) {
   const { t } = useTranslation();
-  const [isEnding, setIsEnding] = React.useState(false);
-  const config = useConfig();
+  const [isEnding, setIsEnding] = React.useState(false); // We will use this later to upload files
+  const config = useConfig(); // Get config context we - will use this later to upload files
   const startedAt = new Date(game_state.live_state.started_at); // Parse the UTC date
   const now = new Date(); // Current local time
   const shouldShowWarning =
@@ -70,7 +42,7 @@ function EndLiveModal({
       <div className="end-live-modal">
         {shouldShowWarning && (
           <div className="warning">
-            <p>Jogo com menos de 45 minutos</p>
+            <p>{t('basketball.modals.endLiveConfirmation.endSoonWarning')}</p>
           </div>
         )}
         <div className="content">

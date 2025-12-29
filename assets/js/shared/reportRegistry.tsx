@@ -5,6 +5,12 @@ import FibaScoresheet, {
 } from '../components/basketball_5x5/Reports/FibaScoresheet';
 import SimpleExample from '../components/shared/Reports/SimpleExample';
 
+export type ReportSlug = 'fiba-scoresheet' | 'simple-example';
+
+export const REPORT_SLUGS: Record<string, ReportSlug> = {
+  FIBA_SCORESHEET: 'fiba-scoresheet' as ReportSlug,
+  SIMPLE_EXAMPLE: 'simple-example' as ReportSlug,
+};
 // Standard props interface that all report components should accept
 export interface ReportComponentProps {
   data: any;
@@ -30,11 +36,11 @@ export const SimpleExampleWrapper: ReportComponent = ({ data }) => (
 
 // Registry of all available reports
 export const REPORT_REGISTRY: { [key: string]: ReportConfig } = {
-  ['fiba-scoresheet']: {
+  [REPORT_SLUGS.FIBA_SCORESHEET]: {
     component: FibaScoresheetWrapper,
     parseData: parseFibaScoresheetData,
   },
-  ['simple-example']: {
+  [REPORT_SLUGS.SIMPLE_EXAMPLE]: {
     component: SimpleExampleWrapper,
     parseData: (rawData: string): null => {
       // SimpleExample doesn't need data, but we still validate the JSON

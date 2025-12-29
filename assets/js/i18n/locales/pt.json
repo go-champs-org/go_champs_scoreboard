@@ -32,6 +32,7 @@
       },
       "endLiveConfirmation": {
         "title": "Finalizar Jogo",
+        "endSoonWarning": "Esse jogo foi iniciado há menos de 45 minutos!",
         "message": "Tem certeza que deseja finalizar o modo ao vivo? O jogo será considerado finalizado e você não poderá iniciá-lo novamente.",
         "endLive": "Finalizar Ao Vivo",
         "cancel": "Cancelar"

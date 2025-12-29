@@ -32,6 +32,7 @@
       },
       "endLiveConfirmation": {
         "title": "Are you sure?",
+        "endSoonWarning": "This game started less than 45 minutes ago!",
         "message": "Are you sure you want to end the live mode? The game will be considered finished and you will not be able to start it again.",
         "endLive": "End Live",
         "cancel": "Cancel"
