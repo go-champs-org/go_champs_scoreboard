@@ -31,7 +31,7 @@
         "message": "As estatísticas do jogo foram salvas no Go Champs e não podemos mais usar o Placar."
       },
       "endLiveConfirmation": {
-        "title": "Tem certeza?",
+        "title": "Finalizar Jogo",
         "message": "Tem certeza que deseja finalizar o modo ao vivo? O jogo será considerado finalizado e você não poderá iniciá-lo novamente.",
         "endLive": "Finalizar Ao Vivo",
         "cancel": "Cancelar"

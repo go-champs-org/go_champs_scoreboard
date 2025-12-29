@@ -11,6 +11,7 @@ import EventLogModal from '../event_log/EventLogModal';
 import EditGameModal from './Officials/EditGameModal';
 import LanguageSwitcher from '../LanguageSwitcher';
 import { useTranslation } from '../../hooks/useTranslation';
+import EndLiveModal from './EndLiveModal';
 
 interface TopLevelProps {
   game_state: GameState;
@@ -29,19 +30,6 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
     pushEvent('start-game-live-mode', {});
   };
   const [showEventLogModal, setShowEventLogModal] = React.useState(false);
-  const onEndLive = () => {
-    const startedAt = new Date(game_state.live_state.started_at); // Parse the UTC date
-    const now = new Date(); // Current local time
-    const fortyFiveMinutesInMs = 45 * 60 * 1000; // 45 minutes in milliseconds
-
-    if (now.getTime() - startedAt.getTime() > fortyFiveMinutesInMs) {
-      pushEvent('end-game-live-mode', {});
-      return;
-    } else {
-      setShowEndLiveWarningModal(true);
-    }
-  };
-
   const liveSocket = useConnectionState();
 
   return (
@@ -146,32 +134,12 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
           onCloseModal={() => setShowEventLogModal(false)}
           showModal={showEventLogModal}
         />
-        <Modal
-          title={t('basketball.modals.endLiveConfirmation.title')}
-          onClose={() => setShowEndLiveWarningModal(false)}
+        <EndLiveModal
+          game_state={game_state}
           showModal={showEndLiveWarningModal}
-        >
-          <>
-            <p>{t('basketball.modals.endLiveConfirmation.message')}</p>
-            <div className="modal-card-foot">
-              <button
-                className="button is-danger is-small"
-                onClick={() => {
-                  pushEvent('end-game-live-mode', {});
-                  setShowEndLiveWarningModal(false);
-                }}
-              >
-                {t('basketball.modals.endLiveConfirmation.endLive')}
-              </button>
-              <button
-                className="button is-small"
-                onClick={() => setShowEndLiveWarningModal(false)}
-              >
-                {t('basketball.modals.endLiveConfirmation.cancel')}
-              </button>
-            </div>
-          </>
-        </Modal>
+          onCloseModal={() => setShowEndLiveWarningModal(false)}
+          pushEvent={pushEvent}
+        />
       </div>
 
       <div className="level-right">
@@ -194,7 +162,10 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
         )}
         <p className="level-item">
           {game_state.live_state.state === 'in_progress' ? (
-            <button className="button is-danger is-small" onClick={onEndLive}>
+            <button
+              className="button is-danger is-small"
+              onClick={() => setShowEndLiveWarningModal(true)}
+            >
               {t('basketball.navigation.endLive')}
             </button>
           ) : (

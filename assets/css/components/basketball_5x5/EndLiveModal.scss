@@ -1,0 +1,21 @@
+@import '../../colors.scss';
+
+.end-live-modal {
+  .warning {
+    background-color: $warning;
+    opacity: 0.8;
+    border-radius: 4px;
+    padding: 0.5rem;
+    display: flex;
+    justify-content: center;
+    color: $dark;
+  }
+
+  .content {
+    margin-top: 1rem;
+  }
+
+  .footer {
+    gap: 0.5rem;
+  }
+}
