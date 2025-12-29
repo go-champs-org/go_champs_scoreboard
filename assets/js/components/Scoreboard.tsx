@@ -2,6 +2,7 @@ import React from 'react';
 import Main from './basketball_5x5/Main';
 import { GameState, DEFAULT_GAME_STATE, EventLog } from '../types';
 import { FeatureFlagProvider } from '../shared/FeatureFlags';
+import { ConfigProvider } from '../shared/Config';
 
 const ScoreboardRegistry = {
   basketball: Main,
@@ -9,6 +10,8 @@ const ScoreboardRegistry = {
 };
 
 interface ScoreboardProps {
+  api_token: string;
+  env: string;
   game_data: string;
   recent_events_data: string;
   feature_flags_data?: string;
@@ -19,6 +22,7 @@ interface ScoreboardProps {
 
 function Scoreboard({
   feature_flags_data = '{}',
+  env,
   game_data,
   recent_events_data,
   pushEvent,
@@ -32,19 +36,21 @@ function Scoreboard({
   const isLoading = object.loading || false;
 
   return (
-    <FeatureFlagProvider initialFlags={feature_flags_data}>
-      <div className="container">
-        {isLoading ? (
-          <p>Loading...</p>
-        ) : (
-          <Component
-            game_state={game_state}
-            recent_events={recent_events}
-            pushEvent={pushEvent}
-          />
-        )}
-      </div>
-    </FeatureFlagProvider>
+    <ConfigProvider configString={env}>
+      <FeatureFlagProvider initialFlags={feature_flags_data}>
+        <div className="container">
+          {isLoading ? (
+            <p>Loading...</p>
+          ) : (
+            <Component
+              game_state={game_state}
+              recent_events={recent_events}
+              pushEvent={pushEvent}
+            />
+          )}
+        </div>
+      </FeatureFlagProvider>
+    </ConfigProvider>
   );
 }
 

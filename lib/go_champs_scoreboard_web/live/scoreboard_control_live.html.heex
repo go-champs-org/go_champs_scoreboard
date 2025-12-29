@@ -1,9 +1,11 @@
 {live_react_component(
   "Components.Scoreboard",
   [
+    api_token: Poison.encode!(@api_token),
+    env: Poison.encode!(@env),
+    feature_flags_data: Poison.encode!(@feature_flags),
     game_data: Poison.encode!(@game_state),
-    recent_events_data: Poison.encode!(@recent_events),
-    feature_flags_data: Poison.encode!(@feature_flags)
+    recent_events_data: Poison.encode!(@recent_events)
   ],
   id: "main-scoreboard"
 )}

@@ -16,6 +16,11 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
     {:ok,
      socket
      |> assign(:api_token, api_token)
+     |> assign(:env, %{
+       go_champs_api_token: api_token,
+       go_champs_api:
+         System.get_env("GO_CHAMPS_API_URL") || "https://go-champs-api-staging.herokuapp.com/"
+     })
      |> assign(:feature_flags, FeatureFlags.all_flags())
      |> assign_async(:game_state, fn ->
        {:ok, %{game_state: Games.find_or_bootstrap(game_id, api_token)}}

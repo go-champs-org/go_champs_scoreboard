@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { EventLog, GameState, TeamType, Selection } from '../../types';
 import { BasicStatsControls, MediumStatsControls } from './StatsControls';
 import TopLevel from './TopLevel';
-import EndLiveModal from './EndLiveModal';
+import LiveEndedModal from './LiveEndedModal';
 import { BasicTopControls } from './TopControls';
 import PlayersControls from './PlayersControls';
 import TeamControls from './TeamControls';
@@ -169,7 +169,7 @@ function MediumView({
 }
 
 function Main({ game_state, recent_events, pushEvent }: MainProps) {
-  const showEndLiveModal = game_state.live_state.state === 'ended';
+  const showLiveEndedModal = game_state.live_state.state === 'ended';
   const [selection, setSelection] = useState<Selection | null>(null);
 
   return (
@@ -194,7 +194,7 @@ function Main({ game_state, recent_events, pushEvent }: MainProps) {
         />
       )}
 
-      <EndLiveModal showModal={showEndLiveModal} />
+      <LiveEndedModal showModal={showLiveEndedModal} />
     </>
   );
 }

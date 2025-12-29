@@ -2,13 +2,12 @@ import React from 'react';
 import Modal from '../Modal';
 import { useTranslation } from '../../hooks/useTranslation';
 
-interface EndLiveModalProps {
+interface LiveEndedModalProps {
   showModal: boolean;
 }
 
-function EndLiveModal({ showModal }: EndLiveModalProps) {
+function LiveEndedModal({ showModal }: LiveEndedModalProps) {
   const { t } = useTranslation();
-
   return (
     <Modal
       title={t('basketball.modals.gameEnded.title')}
@@ -20,4 +19,4 @@ function EndLiveModal({ showModal }: EndLiveModalProps) {
   );
 }
 
-export default EndLiveModal;
+export default LiveEndedModal;
