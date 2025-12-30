@@ -19,7 +19,11 @@ defmodule GoChampsScoreboard.Games.Officials do
           OfficialState.t()
   def bootstrap(name, type, license_number, federation)
       when is_binary(name) and is_binary(type) do
-    type_atom = String.to_existing_atom(type)
+    type_atom = String.to_atom(type)
+
+    if not OfficialState.valid_type?(type_atom) do
+      raise ArgumentError, "Invalid official type: #{type}"
+    end
 
     Ecto.UUID.generate()
     |> OfficialState.new(name, type_atom, license_number, federation)

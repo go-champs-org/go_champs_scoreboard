@@ -89,5 +89,11 @@ defmodule GoChampsScoreboard.Games.OfficialsTest do
       assert "" == official_state.license_number
       assert "" == official_state.federation
     end
+
+    test "raises ArgumentError for invalid official type" do
+      assert_raise ArgumentError, "Invalid official type: invalid_type", fn ->
+        Officials.bootstrap("Invalid Official", "invalid_type")
+      end
+    end
   end
 end

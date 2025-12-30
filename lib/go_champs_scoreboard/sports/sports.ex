@@ -2,12 +2,20 @@ defmodule GoChampsScoreboard.Sports.Sports do
   alias GoChampsScoreboard.Games.Models.PlayerState
   alias GoChampsScoreboard.Games.Models.CoachState
   alias GoChampsScoreboard.Games.Models.GameState
+  alias GoChampsScoreboard.Games.Models.OfficialState
   alias GoChampsScoreboard.Sports.Basketball
   alias GoChampsScoreboard.Statistics.Models.Stat
   alias GoChampsScoreboard.Games.Models.GameClockState
   alias GoChampsScoreboard.Events.GameSnapshot
 
   import Ecto.Query
+
+  @spec bootstrap_officials(String.t()) :: [OfficialState.t()]
+  def bootstrap_officials("basketball") do
+    Basketball.OfficialState.bootstrap_officials()
+  end
+
+  def bootstrap_officials(_sport_id), do: []
 
   @spec find_player_stat(String.t(), String.t()) :: Stat.t()
   def find_player_stat("basketball", stat_id), do: Basketball.Basketball.find_player_stat(stat_id)

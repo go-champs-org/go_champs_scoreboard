@@ -533,5 +533,38 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
       assert game.info.location == "Stadium A"
       assert game.info.number == "game-id"
     end
+
+    test "maps default sport officials when none from API" do
+      expect(@http_client, :get, fn url, headers ->
+        assert url =~ "game-id"
+        assert headers == [{"Authorization", "Bearer token"}]
+
+        {:ok, %HTTPoison.Response{body: @response_body |> Poison.encode!(), status_code: 200}}
+      end)
+
+      expect(@http_client, :get, fn url ->
+        assert url =~ "game-id/scoreboard-setting"
+
+        {:ok, %HTTPoison.Response{body: %{"data" => nil} |> Poison.encode!(), status_code: 200}}
+      end)
+
+      game =
+        Bootstrapper.bootstrap_from_go_champs(
+          GoChampsScoreboard.Games.Bootstrapper.bootstrap(),
+          "game-id",
+          "token"
+        )
+
+      assert length(game.officials) == 7
+      types = Enum.map(game.officials, fn official -> official.type end)
+
+      assert :crew_chief in types
+      assert :umpire_1 in types
+      assert :umpire_2 in types
+      assert :scorer in types
+      assert :assistant_scorer in types
+      assert :timekeeper in types
+      assert :shot_clock_operator in types
+    end
   end
 end
