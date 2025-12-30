@@ -121,9 +121,39 @@ defmodule GoChampsScoreboard.Games.GamesTest do
         :ok
       end)
 
-      result_game = Games.end_live_mode(game_state.id, @resource_manager)
+      result_game = Games.end_live_mode(game_state.id, %{}, @resource_manager)
 
       assert result_game.live_state.state == :ended
+
+      unset_test_game(game_state.id)
+    end
+
+    test "with assets in params, adds assets to game info" do
+      game_state = set_test_game()
+
+      expect(@resource_manager, :shut_down, fn game_id ->
+        assert game_id == game_state.id
+        :ok
+      end)
+
+      params = %{
+        "assets" => [
+          %{"type" => "logo", "url" => "http://example.com/logo1.png"},
+          %{"type" => "banner", "url" => "http://example.com/banner1.png"}
+        ]
+      }
+
+      result_game = Games.end_live_mode(game_state.id, params, @resource_manager)
+
+      assert result_game.live_state.state == :ended
+
+      assert Enum.any?(result_game.info.assets, fn asset ->
+               asset.type == "logo" and asset.url == "http://example.com/logo1.png"
+             end)
+
+      assert Enum.any?(result_game.info.assets, fn asset ->
+               asset.type == "banner" and asset.url == "http://example.com/banner1.png"
+             end)
 
       unset_test_game(game_state.id)
     end

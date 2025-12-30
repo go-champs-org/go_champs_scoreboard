@@ -1,4 +1,6 @@
 defmodule GoChampsScoreboard.Sports.Sports do
+  alias GoChampsScoreboard.Games.Infos
+  alias GoChampsScoreboard.Games.Models.InfoState
   alias GoChampsScoreboard.Games.Models.PlayerState
   alias GoChampsScoreboard.Games.Models.CoachState
   alias GoChampsScoreboard.Games.Models.GameState
@@ -123,6 +125,11 @@ defmodule GoChampsScoreboard.Sports.Sports do
 
   def copy_all_stats_from_game_state(_, source_game_state, _target_game_state) do
     source_game_state
+  end
+
+  @spec add_game_asset(String.t(), InfoState.t(), String.t(), String.t()) :: InfoState.t()
+  def add_game_asset(_, info_state, asset_type, asset_url) do
+    Infos.add_game_asset(info_state, asset_type, asset_url)
   end
 
   @spec map_from_snapshot(String.t(), GameState.t(), GameSnapshot.t()) :: GameState.t()

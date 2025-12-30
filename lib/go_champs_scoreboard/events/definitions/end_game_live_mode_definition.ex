@@ -3,6 +3,8 @@ defmodule GoChampsScoreboard.Events.Definitions.EndGameLiveModeDefinition do
 
   alias GoChampsScoreboard.Events.Models.Event
   alias GoChampsScoreboard.Games.Models.GameState
+  alias GoChampsScoreboard.Games.Infos
+  alias GoChampsScoreboard.Games.Games
   alias GoChampsScoreboard.Events.Models.StreamConfig
 
   @key "end-game-live-mode"
@@ -23,8 +25,8 @@ defmodule GoChampsScoreboard.Events.Definitions.EndGameLiveModeDefinition do
           clock_state_period_at :: integer(),
           payload :: any()
         ) :: Event.t()
-  def create(game_id, clock_state_time_at, clock_state_period_at, _payload),
-    do: Event.new(@key, game_id, clock_state_time_at, clock_state_period_at)
+  def create(game_id, clock_state_time_at, clock_state_period_at, payload),
+    do: Event.new(@key, game_id, clock_state_time_at, clock_state_period_at, payload)
 
   @impl true
   @spec handle(
@@ -33,7 +35,7 @@ defmodule GoChampsScoreboard.Events.Definitions.EndGameLiveModeDefinition do
         ) :: GameState.t()
   def handle(
         game_state,
-        _event \\ nil
+        event \\ nil
       ) do
     game_state
     |> Map.put(:live_state, %{
@@ -41,6 +43,21 @@ defmodule GoChampsScoreboard.Events.Definitions.EndGameLiveModeDefinition do
       | state: :ended,
         ended_at: NaiveDateTime.utc_now()
     })
+    |> maybe_add_assets(event.payload)
+  end
+
+  defp maybe_add_assets(game_state, nil), do: game_state
+
+  defp maybe_add_assets(game_state, payload) do
+    case Map.get(payload, "assets") do
+      nil ->
+        game_state
+
+      assets ->
+        Enum.reduce(assets, game_state, fn asset, acc ->
+          Games.update_info(acc, Infos.add_game_asset(acc.info, asset["type"], asset["url"]))
+        end)
+    end
   end
 
   @impl true

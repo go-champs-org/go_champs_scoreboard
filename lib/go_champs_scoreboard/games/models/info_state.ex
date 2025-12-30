@@ -4,6 +4,11 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
   Contains game-related metadata such as dates, times, and tournament information.
   """
 
+  @type asset :: %{
+          type: String.t(),
+          url: String.t()
+        }
+
   @type t :: %__MODULE__{
           datetime: DateTime.t(),
           tournament_id: String.t(),
@@ -15,7 +20,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
           location: String.t(),
           number: String.t(),
           game_report: String.t(),
-          web_url: String.t()
+          web_url: String.t(),
+          assets: [asset()]
         }
 
   defstruct [
@@ -29,7 +35,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
     :location,
     :number,
     :game_report,
-    :web_url
+    :web_url,
+    :assets
   ]
 
   @doc """
@@ -48,7 +55,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
       location: Keyword.get(opts, :location, ""),
       number: Keyword.get(opts, :number, ""),
       game_report: Keyword.get(opts, :game_report, ""),
-      web_url: Keyword.get(opts, :web_url, "")
+      web_url: Keyword.get(opts, :web_url, ""),
+      assets: Keyword.get(opts, :assets, [])
     }
   end
 
@@ -83,7 +91,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
         location: Map.get(values, :location) || Map.get(values, "location") || "",
         number: Map.get(values, :number) || Map.get(values, "number") || "",
         game_report: Map.get(values, :game_report) || Map.get(values, "game_report") || "",
-        web_url: Map.get(values, :web_url) || Map.get(values, "web_url") || ""
+        web_url: Map.get(values, :web_url) || Map.get(values, "web_url") || "",
+        assets: Map.get(values, :assets) || Map.get(values, "assets") || []
       }
     end
   end

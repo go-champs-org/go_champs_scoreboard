@@ -196,8 +196,8 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
      |> react_and_update_game_state(game_id, socket)}
   end
 
-  def handle_event("end-game-live-mode", _, socket) do
-    Games.end_live_mode(socket.assigns.game_state.result.id)
+  def handle_event("end-game-live-mode", params, socket) do
+    Games.end_live_mode(socket.assigns.game_state.result.id, params)
 
     {:noreply, socket}
   end

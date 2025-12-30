@@ -5,8 +5,54 @@ import { GameState } from '../../types';
 import { BASKETBALL_VIEWS } from './constants';
 import { useConfig } from '../../shared/Config';
 import generatorAndUploaders from './Reports/generatorAndUploaders';
+import { FileReference } from '../../features/upload/uploadHttpClient';
+import { REPORT_SLUGS } from '../../shared/reportRegistry';
 
 const FORTY_FIVE_MINUTES_IN_MS = 45 * 60 * 1000; // 45 minutes in milliseconds
+
+const endLiveFlowWithReports =
+  (
+    pushEvent: (event: string, payload: any) => void,
+    onCloseModal: () => void,
+    setIsEnding: (isEnding: boolean) => void,
+    gameId: string,
+    goChampsApiBaseUrl: string,
+  ) =>
+  async () => {
+    try {
+      setIsEnding(true);
+      const onSuccess = (fileReference: FileReference) => {
+        setIsEnding(false);
+        pushEvent('end-game-live-mode', {
+          assets: [
+            {
+              type: REPORT_SLUGS.FIBA_SCORESHEET,
+              url: fileReference.publicUrl,
+            },
+          ],
+        });
+        onCloseModal();
+      };
+
+      await generatorAndUploaders.fibaScoresheet({
+        goChampsApiBaseUrl,
+        gameId,
+        onSuccess,
+      });
+    } catch (error) {
+      console.error('Error in end live flow with reports:', error);
+    }
+  };
+
+const basicEndLiveFlow =
+  (
+    pushEvent: (event: string, payload: any) => void,
+    onCloseModal: () => void,
+  ) =>
+  () => {
+    pushEvent('end-game-live-mode', {});
+    onCloseModal();
+  };
 
 interface EndLiveModalProps {
   game_state: GameState;
@@ -28,11 +74,16 @@ function EndLiveModal({
   const now = new Date(); // Current local time
   const shouldShowWarning =
     now.getTime() - startedAt.getTime() <= FORTY_FIVE_MINUTES_IN_MS;
-  const onConfirmEndLive = async () => {
-    setIsEnding(true);
-    pushEvent('end-game-live-mode', {});
-    setIsEnding(false);
-  };
+  const onConfirmEndLive =
+    game_state.view_settings_state.view === BASKETBALL_VIEWS.BASIC
+      ? basicEndLiveFlow(pushEvent, onCloseModal)
+      : endLiveFlowWithReports(
+          pushEvent,
+          onCloseModal,
+          setIsEnding,
+          game_state.id,
+          config.getApiHost(),
+        );
   return (
     <Modal
       title={t('basketball.modals.endLiveConfirmation.title')}
