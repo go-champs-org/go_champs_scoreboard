@@ -1039,4 +1039,62 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameStateTest do
       assert result.away_team == game_state.away_team
     end
   end
+
+  describe "register_team_wo/2" do
+    test "updates game clock state to time 0 and period 4" do
+      game_state = basketball_game_state_fixture()
+      original_id = game_state.id
+
+      result = GameState.register_team_wo(game_state, "home")
+
+      assert result.id == original_id
+      assert result.clock_state.time == 0
+      assert result.clock_state.period == 4
+    end
+
+    test "updates given team walkover stats correctly" do
+      game_state = basketball_game_state_fixture()
+
+      result = GameState.register_team_wo(game_state, "away")
+
+      assert result.away_team.stats_values["game_walkover"] == 1
+      assert result.away_team.stats_values["game_walkover_against"] == 0
+      assert result.home_team.stats_values["game_walkover"] == 0
+      assert result.home_team.stats_values["game_walkover_against"] == 1
+    end
+
+    test "updates calculated team stats after registering walkover for home" do
+      game_state = basketball_game_state_fixture()
+
+      result = GameState.register_team_wo(game_state, "home")
+
+      assert result.home_team.stats_values["points"] == 0
+      assert result.away_team.stats_values["points"] == 20
+    end
+
+    test "updates calculated team stats after registering walkover for away" do
+      game_state = basketball_game_state_fixture()
+
+      result = GameState.register_team_wo(game_state, "away")
+
+      assert result.away_team.stats_values["points"] == 0
+      assert result.home_team.stats_values["points"] == 20
+    end
+
+    test "updates game state info for home team walkover" do
+      game_state = basketball_game_state_fixture()
+
+      result = GameState.register_team_wo(game_state, "home")
+
+      assert result.info.result_type == :home_team_walkover
+    end
+
+    test "updates game state info for away team walkover" do
+      game_state = basketball_game_state_fixture()
+
+      result = GameState.register_team_wo(game_state, "away")
+
+      assert result.info.result_type == :away_team_walkover
+    end
+  end
 end

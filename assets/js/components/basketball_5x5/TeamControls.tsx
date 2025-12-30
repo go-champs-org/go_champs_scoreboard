@@ -319,7 +319,7 @@ export function BasicTeamControls({ team, teamType }: TeamControlsProps) {
         </div>
         <div className="column is-3">
           <p className="chip-label title is-4">
-            {team.total_player_stats['points'] || 0}
+            {team.stats_values['points'] || 0}
           </p>
         </div>
         <div className="column is-12">
@@ -402,7 +402,7 @@ function TeamControls({ team, clock_state, teamType }: TeamControlsProps) {
         </div>
         <div className="column is-3">
           <p className="chip-label title is-4">
-            {team.total_player_stats['points'] || 0}
+            {team.stats_values['points'] || 0}
           </p>
         </div>
         <div className="column is-12">

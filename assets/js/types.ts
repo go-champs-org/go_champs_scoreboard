@@ -90,6 +90,14 @@ export interface OfficialState {
   federation?: string;
 }
 
+export const ClockStateStates = {
+  NOT_STARTED: 'not_started',
+  RUNNING: 'running',
+  PAUSED: 'paused',
+  STOPPED: 'stopped',
+  FINISHED: 'finished',
+} as const;
+
 export const LiveStateStates = {
   NOT_STARTED: 'not_started',
   IN_PROGRESS: 'in_progress',

@@ -86,7 +86,11 @@ defmodule GoChampsScoreboard.Sports.Basketball.Statistics do
 
   @spec calc_team_points(TeamState.t()) :: float()
   def calc_team_points(team_state) do
-    Map.get(team_state.total_player_stats, "points", 0)
+    if Map.get(team_state.stats_values, "game_walkover_against", 0) == 1 do
+      20
+    else
+      Map.get(team_state.total_player_stats, "points", 0)
+    end
   end
 
   @spec calc_team_fouls(TeamState.t()) :: float()

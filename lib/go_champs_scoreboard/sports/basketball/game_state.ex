@@ -1,4 +1,6 @@
 defmodule GoChampsScoreboard.Sports.Basketball.GameState do
+  alias GoChampsScoreboard.Sports.Basketball.TeamState
+  alias GoChampsScoreboard.Sports.Basketball.GameClock
   alias GoChampsScoreboard.Events.GameSnapshot
   alias GoChampsScoreboard.Games.Models.GameState
   alias GoChampsScoreboard.Sports.Basketball.Basketball
@@ -306,5 +308,57 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameState do
 
     game_state
     |> Games.update_protest_state(protest_state)
+  end
+
+  @spec register_team_wo(GameState.t(), String.t()) :: GameState.t()
+  def register_team_wo(game_state, team) do
+    updated_game_state =
+      game_state
+      |> Games.update_clock_state(GameClock.set_clock_for_wo(game_state.clock_state))
+      |> Games.update_info(set_info_for_wo(game_state.info, team))
+
+    case team do
+      "home" -> set_team_stats_for_home_wo(updated_game_state)
+      "away" -> set_team_stats_for_away_wo(updated_game_state)
+      _ -> updated_game_state
+    end
+  end
+
+  defp set_info_for_wo(info_state, "home") do
+    info_state
+    |> Map.put(:result_type, :home_team_walkover)
+  end
+
+  defp set_info_for_wo(info_state, "away") do
+    info_state
+    |> Map.put(:result_type, :away_team_walkover)
+  end
+
+  defp set_team_stats_for_home_wo(game_state) do
+    updated_home_team =
+      Teams.find_team(game_state, "home")
+      |> TeamState.set_walkover()
+
+    updated_away_team =
+      Teams.find_team(game_state, "away")
+      |> TeamState.set_walkover_against()
+
+    game_state
+    |> Games.update_team("home", updated_home_team)
+    |> Games.update_team("away", updated_away_team)
+  end
+
+  defp set_team_stats_for_away_wo(game_state) do
+    updated_away_team =
+      Teams.find_team(game_state, "away")
+      |> TeamState.set_walkover()
+
+    updated_home_team =
+      Teams.find_team(game_state, "home")
+      |> TeamState.set_walkover_against()
+
+    game_state
+    |> Games.update_team("away", updated_away_team)
+    |> Games.update_team("home", updated_home_team)
   end
 end

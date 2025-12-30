@@ -428,4 +428,26 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameClockTest do
       assert result.finished_at == original_finished_time
     end
   end
+
+  describe "set_clock_for_wo" do
+    test "sets the clock time to 0, period to 4, and state to :paused" do
+      game_clock_state = %GameClockState{
+        time: 500,
+        period: 2,
+        state: :running,
+        initial_period_time: 600,
+        initial_extra_period_time: 300
+      }
+
+      expected = %GameClockState{
+        time: 0,
+        period: 4,
+        state: :paused,
+        initial_period_time: 600,
+        initial_extra_period_time: 300
+      }
+
+      assert expected == GameClock.set_clock_for_wo(game_clock_state)
+    end
+  end
 end

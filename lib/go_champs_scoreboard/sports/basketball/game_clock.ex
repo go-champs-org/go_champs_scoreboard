@@ -66,4 +66,9 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameClock do
   def end_game(clock_state) do
     advance_to(clock_state, :finished)
   end
+
+  @spec set_clock_for_wo(GameClockState.t()) :: GameClockState.t()
+  def set_clock_for_wo(clock_state) do
+    %GameClockState{clock_state | time: 0, period: 4, state: :paused}
+  end
 end

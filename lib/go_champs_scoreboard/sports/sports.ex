@@ -157,4 +157,14 @@ defmodule GoChampsScoreboard.Sports.Sports do
   def protest_game(_, game_state, _event_payload) do
     game_state
   end
+
+  @spec register_team_wo(String.t(), GameState.t(), String.t()) :: GameState.t()
+  def register_team_wo("basketball", game_state, team) do
+    Basketball.GameState.register_team_wo(game_state, team)
+  end
+
+  @spec register_team_wo(String.t(), GameState.t(), String.t()) :: GameState.t()
+  def register_team_wo(_, game_state, _team) do
+    game_state
+  end
 end

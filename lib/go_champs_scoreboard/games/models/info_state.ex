@@ -4,6 +4,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
   Contains game-related metadata such as dates, times, and tournament information.
   """
 
+  @type result_type :: :automatic | :home_team_walkover | :away_team_walkover
+
   @type t :: %__MODULE__{
           datetime: DateTime.t(),
           tournament_id: String.t(),
@@ -15,7 +17,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
           location: String.t(),
           number: String.t(),
           game_report: String.t(),
-          web_url: String.t()
+          web_url: String.t(),
+          result_type: result_type()
         }
 
   defstruct [
@@ -29,7 +32,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
     :location,
     :number,
     :game_report,
-    :web_url
+    :web_url,
+    :result_type
   ]
 
   @doc """
@@ -48,7 +52,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
       location: Keyword.get(opts, :location, ""),
       number: Keyword.get(opts, :number, ""),
       game_report: Keyword.get(opts, :game_report, ""),
-      web_url: Keyword.get(opts, :web_url, "")
+      web_url: Keyword.get(opts, :web_url, ""),
+      result_type: Keyword.get(opts, :result_type, :automatic)
     }
   end
 
@@ -64,6 +69,13 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
               {:ok, parsed_datetime, _} -> parsed_datetime
               {:error, _} -> DateTime.utc_now()
             end
+        end
+
+      result_type =
+        case Map.get(values, :result_type) || Map.get(values, "result_type") do
+          "home_team_walkover" -> :home_team_walkover
+          "away_team_walkover" -> :away_team_walkover
+          _ -> :automatic
         end
 
       %GoChampsScoreboard.Games.Models.InfoState{
@@ -83,7 +95,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
         location: Map.get(values, :location) || Map.get(values, "location") || "",
         number: Map.get(values, :number) || Map.get(values, "number") || "",
         game_report: Map.get(values, :game_report) || Map.get(values, "game_report") || "",
-        web_url: Map.get(values, :web_url) || Map.get(values, "web_url") || ""
+        web_url: Map.get(values, :web_url) || Map.get(values, "web_url") || "",
+        result_type: result_type
       }
     end
   end

@@ -227,15 +227,28 @@ defmodule GoChampsScoreboard.Sports.Basketball.StatisticsTest do
       team_state = %GoChampsScoreboard.Games.Models.TeamState{
         total_player_stats: %{
           "points" => 85
-        }
+        },
+        stats_values: %{}
       }
 
       assert Statistics.calc_team_points(team_state) == 85
     end
 
+    test "returns 20 when team has a walkover against" do
+      team_state = %GoChampsScoreboard.Games.Models.TeamState{
+        stats_values: %{
+          "game_walkover_against" => 1
+        },
+        total_player_stats: %{}
+      }
+
+      assert Statistics.calc_team_points(team_state) == 20
+    end
+
     test "returns 0 when no points in total_player_stats" do
       team_state = %GoChampsScoreboard.Games.Models.TeamState{
-        total_player_stats: %{}
+        total_player_stats: %{},
+        stats_values: %{}
       }
 
       assert Statistics.calc_team_points(team_state) == 0
