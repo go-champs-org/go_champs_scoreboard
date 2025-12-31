@@ -7,6 +7,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameStateTest do
   alias GoChampsScoreboard.Games.Models.GameClockState
   alias GoChampsScoreboard.Games.Models.TeamState
   alias GoChampsScoreboard.Games.Models.PlayerState
+  alias GoChampsScoreboard.Games.Models.InfoState
   alias GoChampsScoreboard.Games.Models.CoachState
   alias GoChampsScoreboard.Events.GameSnapshot
 
@@ -657,6 +658,61 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameStateTest do
 
       # Period stats should be set to empty map when snapshot has nil
       assert result.home_team.period_stats == %{}
+    end
+
+    test "updates clock state from snapshot when snapshot clock state is not_started" do
+      original_game_state = basketball_game_state_fixture()
+
+      # Create snapshot with clock state as :not_started
+      snapshot_game_state = %GameStateModel{
+        original_game_state
+        | clock_state: %GameClockState{
+            time: 0,
+            period: 0,
+            state: :not_started,
+            initial_period_time: 720,
+            initial_extra_period_time: 300,
+            started_at: nil,
+            finished_at: nil
+          }
+      }
+
+      mock_snapshot = %GameSnapshot{state: snapshot_game_state}
+
+      result = GameState.map_from_snapshot(original_game_state, mock_snapshot)
+
+      # Clock state should be updated from snapshot
+      assert result.clock_state.time == 0
+      assert result.clock_state.period == 0
+      assert result.clock_state.state == :not_started
+    end
+
+    test "updates info state from snapshot when snapshot clock state is not_started" do
+      original_game_state = basketball_game_state_fixture()
+
+      # Create snapshot with clock state as :not_started
+      snapshot_game_state = %GameStateModel{
+        original_game_state
+        | clock_state: %GameClockState{
+            time: 0,
+            period: 0,
+            state: :not_started,
+            initial_period_time: 720,
+            initial_extra_period_time: 300,
+            started_at: nil,
+            finished_at: nil
+          },
+          info: %InfoState{
+            original_game_state.info
+            | result_type: :home_team_walkover
+          }
+      }
+
+      mock_snapshot = %GameSnapshot{state: snapshot_game_state}
+
+      result = GameState.map_from_snapshot(original_game_state, mock_snapshot)
+
+      assert result.info.result_type == :home_team_walkover
     end
   end
 

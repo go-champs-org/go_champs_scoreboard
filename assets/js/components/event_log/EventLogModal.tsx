@@ -16,7 +16,6 @@ import {
   EVENT_KEYS_EDITABLE,
   getManualPlayerStatsForView,
   LIVE_MODE_EVENT_KEYS,
-  BASKETBALL_VIEWS,
 } from '../basketball_5x5/constants';
 import { eventKeyToString } from './contentMappers';
 

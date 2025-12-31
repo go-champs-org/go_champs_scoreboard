@@ -28,21 +28,42 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameState do
       %GameState{} = restored_state ->
         valid_keys = get_valid_stat_keys()
 
-        ["home", "away"]
-        |> Enum.reduce(game_state, fn team_type, acc_game_state ->
-          updated_team =
-            update_team_from_snapshot(
-              acc_game_state,
-              restored_state,
-              team_type,
-              valid_keys
-            )
+        updated_game =
+          ["home", "away"]
+          |> Enum.reduce(game_state, fn team_type, acc_game_state ->
+            updated_team =
+              update_team_from_snapshot(
+                acc_game_state,
+                restored_state,
+                team_type,
+                valid_keys
+              )
 
-          Games.update_team(acc_game_state, team_type, updated_team)
-        end)
+            Games.update_team(acc_game_state, team_type, updated_team)
+          end)
+
+        updated_game
+        |> maybe_update_info(restored_state)
+        |> maybe_update_clock_state(restored_state)
 
       _ ->
         game_state
+    end
+  end
+
+  defp maybe_update_clock_state(game_state, restored_state) do
+    if restored_state.clock_state.state == :not_started do
+      Games.update_clock_state(game_state, restored_state.clock_state)
+    else
+      game_state
+    end
+  end
+
+  defp maybe_update_info(game_state, restored_state) do
+    if restored_state.clock_state.state == :not_started do
+      Games.update_info(game_state, restored_state.info)
+    else
+      game_state
     end
   end
 

@@ -5,6 +5,7 @@ import UpdatePlayerStatPayload from './PayloadDescription/UpdatePlayerStatPayloa
 import UpdateCoachStatPayload from './PayloadDescription/UpdateCoachStatPayload';
 import UpdatePlayersStatePayload from './PayloadDescription/UpdatePlayersStatePayload';
 import UpdateTeamStatPayload from './PayloadDescription/UpdateTeamStatPayload';
+import RegisterTeamWOPayload from './PayloadDescription/RegisterTeamWOPayload';
 
 export default function EventLogPayload({
   eventLog,
@@ -14,6 +15,10 @@ export default function EventLogPayload({
   gameState: GameState;
 }) {
   switch (eventLog.key) {
+    case EVENT_KEYS.REGISTER_TEAM_WO:
+      return (
+        <RegisterTeamWOPayload eventLog={eventLog} gameState={gameState} />
+      );
     case EVENT_KEYS.UPDATE_PLAYER_STAT:
       return (
         <UpdatePlayerStatPayload eventLog={eventLog} gameState={gameState} />
