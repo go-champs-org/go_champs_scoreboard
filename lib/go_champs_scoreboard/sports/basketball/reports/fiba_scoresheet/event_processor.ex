@@ -4,6 +4,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.EventProce
   """
 
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.EndPeriodProcessor
+  alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.RegisterTeamWoProcessor
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateClockStateProcessor
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateCoachStatProcessor
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlayerStatProcessor
@@ -42,6 +43,10 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.EventProce
 
   def process(event_log, data) when event_log.key == "update-team-stat" do
     UpdateTeamStatProcessor.process(event_log, data)
+  end
+
+  def process(event_log, data) when event_log.key == "register-team-wo" do
+    RegisterTeamWoProcessor.process(event_log, data)
   end
 
   def process(_event_log, data) do

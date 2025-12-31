@@ -80,7 +80,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
           all_fouls: [],
           timeouts: [],
           running_score: %{},
-          score: 0
+          score: 0,
+          has_walkover: false
         },
         team_b: %FibaScoresheet.Team{
           name: "Some away team",
@@ -102,7 +103,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
           all_fouls: [],
           timeouts: [],
           running_score: %{},
-          score: 0
+          score: 0,
+          has_walkover: false
         },
         scorer: %FibaScoresheet.Official{
           id: "scorer-official-id",

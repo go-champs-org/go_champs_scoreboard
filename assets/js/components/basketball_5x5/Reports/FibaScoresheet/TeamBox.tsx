@@ -230,6 +230,17 @@ const styles = StyleSheet.create({
           },
         },
       },
+      walkoverMessage: {
+        position: 'absolute',
+        top: '35%',
+        left: '12%',
+        transform: 'rotate(-30deg)',
+        backgroundColor: '#fff',
+        padding: '5px',
+        fontSize: '25px',
+        fontWeight: 'bold',
+        color: BLUE,
+      },
     },
     square: {
       width: '13px',
@@ -476,10 +487,13 @@ function PlayerRow({
   isFirstEmpty?: boolean;
 }) {
   const isFirstEmptyPlayerAndGameEnded = isFirstEmpty && isGameEnded;
+  const isLicenseNumberUnsed =
+    isFirstEmptyPlayerAndGameEnded ||
+    (isGameEnded && !player.license_number && player.name);
   return (
     <View style={styles.teamContainer.table.row}>
       <View style={styles.teamContainer.table.row.columnLic}>
-        <ConditionalCell isUnsed={isFirstEmptyPlayerAndGameEnded}>
+        <ConditionalCell isUnsed={isLicenseNumberUnsed}>
           <Text style={{ ...styles.teamContainer.table.content, margin: 0 }}>
             {player.license_number}
           </Text>
@@ -592,7 +606,7 @@ function CoachRow({
         <Text>{label}</Text>
       </View>
       <View style={styles.teamContainer.table.coachRow.name}>
-        <ConditionalCell isUnsed={coach.name === ''}>
+        <ConditionalCell isUnsed={isGameEnded && coach.name === ''}>
           <Text>{coach.name}</Text>
         </ConditionalCell>
       </View>
@@ -603,7 +617,7 @@ function CoachRow({
             style={{
               ...styles.teamContainer.table.coachRow.columnFouls.fouls,
               backgroundColor: index === 3 ? '#ddd' : 'transparent',
-              ...defineFoulBorders(foul, index, false),
+              ...defineFoulBorders(foul, index, isGameEnded),
             }}
           >
             {foul !== EMPTY_FOUL ? (
@@ -645,8 +659,10 @@ function defineFoulBorders(
   currentIndex: number,
   hasGameEnded: boolean = false,
 ) {
+  const coachHasNoFoulsAndGameEnded =
+    foul === EMPTY_FOUL && hasGameEnded && currentIndex === 0;
   const borderLeft =
-    (foul === EMPTY_FOUL || foul.period >= 3) && currentIndex === 0
+    coachHasNoFoulsAndGameEnded || foul.period >= 3
       ? `2px solid ${BLUE}`
       : '1px solid #000';
 
@@ -771,20 +787,47 @@ export default function TeamBox({
             <Text>Faltas</Text>
           </View>
         </View>
-        {sortedRenderPlayers.map((player, index) => (
-          <PlayerRow
-            key={index}
-            player={player}
-            isGameEnded={isGameEnded}
-            isFirstEmpty={index === firstEmptyPlayerIndex}
-          />
-        ))}
-        <CoachRow coach={renderCoach} type="head" isGameEnded={isGameEnded} />
-        <CoachRow
-          coach={renderAssistantCoach}
-          type="assistant"
-          isGameEnded={isGameEnded}
-        />
+        {team.has_walkover ? (
+          <>
+            {sortedRenderPlayers.map((player, index) => (
+              <PlayerRow
+                key={index}
+                player={player}
+                isGameEnded={false}
+              ></PlayerRow>
+            ))}
+            <CoachRow coach={renderCoach} type="head" isGameEnded={false} />
+            <CoachRow
+              coach={renderAssistantCoach}
+              type="assistant"
+              isGameEnded={false}
+            ></CoachRow>
+            <View style={styles.teamContainer.table.walkoverMessage}>
+              <Text>AUSENTE</Text>
+            </View>
+          </>
+        ) : (
+          <>
+            {sortedRenderPlayers.map((player, index) => (
+              <PlayerRow
+                key={index}
+                player={player}
+                isGameEnded={isGameEnded}
+                isFirstEmpty={index === firstEmptyPlayerIndex}
+              />
+            ))}
+            <CoachRow
+              coach={renderCoach}
+              type="head"
+              isGameEnded={isGameEnded}
+            />
+            <CoachRow
+              coach={renderAssistantCoach}
+              type="assistant"
+              isGameEnded={isGameEnded}
+            />
+          </>
+        )}
       </View>
     </View>
   );

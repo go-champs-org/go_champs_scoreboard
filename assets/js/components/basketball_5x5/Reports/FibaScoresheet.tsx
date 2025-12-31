@@ -81,6 +81,7 @@ export interface Team {
   assistant_coach: Coach;
   score: number;
   all_fouls: PlayerFoul[];
+  has_walkover: boolean;
 }
 
 export interface Info {
@@ -194,6 +195,7 @@ interface Period {
   periodLabel: string;
   teamAScore: number;
   teamBScore: number;
+  shouldDisplayZero?: boolean;
 }
 
 function Period({
@@ -202,6 +204,7 @@ function Period({
   teamAScore,
   teamBScore,
   isQuarterCentered = false,
+  shouldDisplayZero = false,
 }: Period) {
   const quarterStyle = isQuarterCentered
     ? {
@@ -210,6 +213,7 @@ function Period({
         alignItems: 'center',
       }
     : styles.periods.period.quarter;
+  const defaultNoScoreDisplay = shouldDisplayZero ? 0 : '-';
   return (
     <View style={styles.periods.period}>
       <View style={quarterStyle}>
@@ -218,11 +222,11 @@ function Period({
       <View style={styles.periods.period.score}>
         <Text>A</Text>
         <Text style={textColorForPeriod(period)}>
-          {teamAScore ? teamAScore : '-'}
+          {teamAScore ? teamAScore : defaultNoScoreDisplay}
         </Text>
         <Text>B</Text>
         <Text style={textColorForPeriod(period)}>
-          {teamBScore ? teamBScore : '-'}
+          {teamBScore ? teamBScore : defaultNoScoreDisplay}
         </Text>
       </View>
     </View>
@@ -252,6 +256,7 @@ function generateTeamPeriodsScores(team: Team) {
 function Periods({ teamA, teamB }: { teamA: Team; teamB: Team }) {
   const teamAPeriodsScores = generateTeamPeriodsScores(teamA);
   const teamBPeriodsScores = generateTeamPeriodsScores(teamB);
+  const hasWalkoverTeam = teamA.has_walkover || teamB.has_walkover;
   return (
     <View style={styles.periods}>
       <View style={styles.periods.row}>
@@ -297,8 +302,8 @@ function Periods({ teamA, teamB }: { teamA: Team; teamB: Team }) {
           <Period
             period={5}
             periodLabel="Quarto extras"
-            teamAScore={teamAPeriodsScores[5]}
-            teamBScore={teamBPeriodsScores[5]}
+            teamAScore={hasWalkoverTeam ? 0 : teamAPeriodsScores[5]}
+            teamBScore={hasWalkoverTeam ? 0 : teamBPeriodsScores[5]}
           />
         </View>
         <View style={styles.periods.row.column}></View>
@@ -318,6 +323,7 @@ function EndResults({ teamA, teamB }: { teamA: Team; teamB: Team }) {
             period={5}
             teamAScore={teamA.score}
             teamBScore={teamB.score}
+            shouldDisplayZero={teamA.has_walkover || teamB.has_walkover}
           />
         </View>
         <View style={styles.periods.row.column}></View>
@@ -510,6 +516,10 @@ function ScoresheetPage({ scoresheetData }: FibaScoresheetProps) {
               bTeamRunningScore={scoresheetData.team_b.running_score}
               bTeamLastScore={scoresheetData.team_b.score}
               isGameEnded={!!scoresheetData.info.actual_end_datetime}
+              hasWalkoverTeam={
+                scoresheetData.team_a.has_walkover ||
+                scoresheetData.team_b.has_walkover
+              }
             />
             <Periods
               teamA={scoresheetData.team_a}
