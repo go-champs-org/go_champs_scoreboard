@@ -11,7 +11,6 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
           url: String.t()
         }
 
-
   @type t :: %__MODULE__{
           datetime: DateTime.t(),
           tournament_id: String.t(),
