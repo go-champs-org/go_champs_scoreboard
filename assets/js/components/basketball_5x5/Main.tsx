@@ -44,6 +44,7 @@ function BasicView({
 
         <div className="column is-4">
           <PlayersControls
+            clockState={game_state.clock_state}
             team={game_state.home_team}
             pushEvent={pushEvent}
             teamType="home"
@@ -65,6 +66,7 @@ function BasicView({
 
         <div className="column is-4">
           <PlayersControls
+            clockState={game_state.clock_state}
             team={game_state.away_team}
             pushEvent={pushEvent}
             teamType="away"
@@ -100,6 +102,7 @@ function MediumView({
             </div>
             <div className="column is-12">
               <PlayersControls
+                clockState={game_state.clock_state}
                 pushEvent={pushEvent}
                 selectEntity={setSelection}
                 selection={selection}
@@ -152,6 +155,7 @@ function MediumView({
             </div>
             <div className="column is-12">
               <PlayersControls
+                clockState={game_state.clock_state}
                 pushEvent={pushEvent}
                 selectEntity={setSelection}
                 selection={selection}

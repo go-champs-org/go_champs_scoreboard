@@ -325,8 +325,7 @@ function ClockControls({
 
   const clockButtonsDisabled = live_state?.state !== 'in_progress';
   const isGameTied =
-    away_team.total_player_stats['points'] ===
-    home_team.total_player_stats['points'];
+    away_team.stats_values['points'] === home_team.stats_values['points'];
   const endQuarterButtonDisabled = clock_state.period >= 4 && !isGameTied;
   const isClockRunning = clock_state.state === 'running';
   const isTimeZero = clock_state.time === 0;

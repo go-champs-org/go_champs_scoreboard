@@ -208,6 +208,19 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
     {:noreply, socket}
   end
 
+  def handle_event("register-team-wo", params, socket) do
+    {:ok, event} =
+      ValidatorCreator.validate_and_create(
+        "register-team-wo",
+        socket.assigns.game_state.result.id,
+        params
+      )
+
+    {:noreply,
+     event
+     |> react_and_update_game_state(socket.assigns.game_state.result.id, socket)}
+  end
+
   def handle_event("reset-game-live-mode", _, socket) do
     # TODO: Implement logic to reset game
     {:noreply, socket}

@@ -7,6 +7,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateCloc
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet
   alias GoChampsScoreboard.Events.EventLog
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScoresheetManager
+  alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManager
 
   @doc """
   Processes the update clock state event and updates the FIBA scoresheet.
@@ -19,45 +20,19 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateCloc
     state = event_log.payload["state"]
 
     if game_clock_time == initial_period_time and game_clock_period == 1 and state == "running" do
-      home_playing_players = get_playing_player_ids(event_log.snapshot.state.home_team)
-      away_playing_players = get_playing_player_ids(event_log.snapshot.state.away_team)
-
       data
-      |> update_team_starting_players("home", home_playing_players)
-      |> update_team_starting_players("away", away_playing_players)
+      |> FibaScoresheetManager.update_team(
+        "home",
+        FibaScoresheetManager.find_team(data, "home")
+        |> TeamManager.set_players_starters(event_log.snapshot.state.home_team)
+      )
+      |> FibaScoresheetManager.update_team(
+        "away",
+        FibaScoresheetManager.find_team(data, "away")
+        |> TeamManager.set_players_starters(event_log.snapshot.state.away_team)
+      )
     else
       data
     end
-  end
-
-  defp get_playing_player_ids(team_state) do
-    team_state.players
-    |> Enum.filter(fn player -> player.state == :playing end)
-    |> Enum.map(fn player -> player.id end)
-  end
-
-  defp update_team_starting_players(data, team_type, playing_player_ids) do
-    current_team = FibaScoresheetManager.find_team(data, team_type)
-
-    updated_players =
-      current_team.players
-      |> Enum.map(fn player ->
-        if player.id in playing_player_ids do
-          update_playing_player(player)
-        else
-          player
-        end
-      end)
-
-    updated_team = %{current_team | players: updated_players}
-
-    FibaScoresheetManager.update_team(data, team_type, updated_team)
-  end
-
-  defp update_playing_player(player) do
-    player
-    |> Map.put(:has_played, true)
-    |> Map.put(:has_started, true)
-    |> Map.put(:first_played_period, 1)
   end
 end

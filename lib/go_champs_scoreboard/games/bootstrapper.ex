@@ -9,9 +9,11 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
   alias GoChampsScoreboard.Games.Models.ViewSettingsState
   alias GoChampsScoreboard.Games.Models.InfoState
   alias GoChampsScoreboard.Games.Models.ProtestState
+  alias GoChampsScoreboard.Sports
 
   @mock_initial_period_time 600
   @mock_initial_extra_period_time 300
+  @mock_sport_slug "basketball"
 
   @spec bootstrap() :: GameState.t()
   def bootstrap() do
@@ -54,9 +56,9 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
       home_team,
       clock_state,
       live_state,
-      "basketball",
+      @mock_sport_slug,
       view_settings_state,
-      [],
+      Sports.Sports.bootstrap_officials(@mock_sport_slug),
       ProtestState.new("", "", :no_protest),
       info
     )

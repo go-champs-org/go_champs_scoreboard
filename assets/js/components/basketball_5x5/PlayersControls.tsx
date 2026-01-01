@@ -6,6 +6,8 @@ import {
   TeamState,
   TeamType,
   Selection,
+  GameClockState,
+  ClockStateStates,
 } from '../../types';
 import { default as PlayerButton } from './Players/Button';
 import { default as CoachButton } from './Coaches/Button';
@@ -13,6 +15,7 @@ import { wherePlaying, whereNotPlaying, byPlayer } from './Players/utils';
 import { t } from 'i18next';
 
 interface PlayersControlsProps {
+  clockState: GameClockState;
   team: TeamState;
   pushEvent: (event: string, payload: any) => void;
   teamType: TeamType;
@@ -23,6 +26,7 @@ interface PlayersControlsProps {
 }
 
 function PlayersControls({
+  clockState,
   team,
   pushEvent,
   teamType,
@@ -37,6 +41,10 @@ function PlayersControls({
   );
   const [benchPlayers, setBenchPlayers] = React.useState<PlayerState[]>([]);
   const [playingPlayers, setPlayingPlayers] = React.useState<PlayerState[]>([]);
+
+  const shouldDisplayerWOButton =
+    clockState.state === ClockStateStates.NOT_STARTED &&
+    playingPlayers.length === 0;
 
   useEffect(() => {
     const bench = team.players.filter(whereNotPlaying).sort(byPlayer);
@@ -189,7 +197,21 @@ function PlayersControls({
           <span className="caption">
             {t('basketball.players.onCourt').toUpperCase()}
           </span>
+
           <div className="columns is-multiline is-centered">
+            {shouldDisplayerWOButton && (
+              <div className="column is-12 has-text-centered">
+                <button
+                  className="button is-warning has-text-weight-bold"
+                  disabled={liveState.state === LiveStateStates.NOT_STARTED}
+                  onClick={() =>
+                    pushEvent('register-team-wo', { 'team-type': teamType })
+                  }
+                >
+                  W.O
+                </button>
+              </div>
+            )}
             {playingPlayers.map((player) => (
               <div key={player.id} className="column is-4 has-text-centered">
                 <PlayerButton

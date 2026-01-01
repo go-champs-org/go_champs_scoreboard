@@ -37,7 +37,8 @@ function EventLogRow({
     eventLog.key === EVENT_KEYS.UPDATE_PLAYER_STAT ||
     eventLog.key === EVENT_KEYS.UPDATE_TEAM_STAT ||
     eventLog.key === EVENT_KEYS.UPDATE_COACH_STAT ||
-    eventLog.key === EVENT_KEYS.UPDATE_PLAYERS_STATE;
+    eventLog.key === EVENT_KEYS.UPDATE_PLAYERS_STATE ||
+    eventLog.key === EVENT_KEYS.REGISTER_TEAM_WO;
 
   const canEdit =
     eventLog.key === EVENT_KEYS.UPDATE_PLAYER_STAT ||

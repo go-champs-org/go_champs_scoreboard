@@ -5,6 +5,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
   alias GoChampsScoreboard.Games.Models.CoachState
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManager
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet
+  alias GoChampsScoreboard.Games.Models.{TeamState, PlayerState}
 
   describe "bootstrap/1" do
     test "returns a FibaScoresheet.Team struct with initial values for 2PT" do
@@ -56,7 +57,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
         all_fouls: [],
         timeouts: [],
         running_score: %{},
-        score: 0
+        score: 0,
+        has_walkover: false
       }
 
       assert expected == TeamManager.bootstrap(team_state)
@@ -103,7 +105,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
         all_fouls: [],
         timeouts: [],
         running_score: %{},
-        score: 0
+        score: 0,
+        has_walkover: false
       }
 
       assert expected == TeamManager.bootstrap(team_state)
@@ -143,7 +146,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
         all_fouls: [],
         timeouts: [],
         running_score: %{},
-        score: 0
+        score: 0,
+        has_walkover: false
       }
 
       assert expected == TeamManager.bootstrap(team_state)
@@ -172,7 +176,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
         all_fouls: [],
         timeouts: [],
         running_score: %{},
-        score: 0
+        score: 0,
+        has_walkover: false
       }
 
       assert expected == TeamManager.bootstrap(team_state)
@@ -1220,6 +1225,145 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       # Coaches should remain nil
       assert updated_team.coach == nil
       assert updated_team.assistant_coach == nil
+    end
+  end
+
+  describe "set_winning_wo/1" do
+    test "sets the score to 20" do
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [],
+        running_score: %{},
+        score: 0
+      }
+
+      updated_team = TeamManager.set_winning_wo(team)
+      assert updated_team.score == 20
+    end
+  end
+
+  describe "set_losing_wo/1" do
+    test "sets the score to 0" do
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [],
+        running_score: %{},
+        score: 10
+      }
+
+      updated_team = TeamManager.set_losing_wo(team)
+      assert updated_team.score == 0
+    end
+
+    test "clears players and coaches" do
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [
+          %FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: []}
+        ],
+        coach: %FibaScoresheet.Coach{id: "coach-id", name: "Coach 1", fouls: []},
+        assistant_coach: %FibaScoresheet.Coach{
+          id: "assistant-coach-id",
+          name: "Assistant Coach 1",
+          fouls: []
+        },
+        all_fouls: [],
+        running_score: %{},
+        score: 10
+      }
+
+      updated_team = TeamManager.set_losing_wo(team)
+      assert updated_team.players == []
+
+      assert updated_team.coach == %FibaScoresheet.Coach{
+               id: "",
+               name: "",
+               fouls: []
+             }
+
+      assert updated_team.assistant_coach == %FibaScoresheet.Coach{
+               id: "",
+               name: "",
+               fouls: []
+             }
+    end
+
+    test "set has_walkover to true" do
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [],
+        running_score: %{},
+        score: 10,
+        has_walkover: false
+      }
+
+      updated_team = TeamManager.set_losing_wo(team)
+      assert updated_team.has_walkover == true
+    end
+  end
+
+  describe "set_players_starters/2" do
+    test "returns the team with updated players starters according to a give TeamState" do
+      player1 = %FibaScoresheet.Player{
+        id: "1",
+        name: "Player 1",
+        number: 10,
+        fouls: [],
+        has_started: false
+      }
+
+      player2 = %FibaScoresheet.Player{
+        id: "2",
+        name: "Player 2",
+        number: 12,
+        fouls: [],
+        has_started: false
+      }
+
+      player3 = %FibaScoresheet.Player{
+        id: "3",
+        name: "Player 3",
+        number: 14,
+        fouls: [],
+        has_started: false
+      }
+
+      team = %FibaScoresheet.Team{
+        name: "Some team",
+        players: [player1, player2, player3],
+        coach: %FibaScoresheet.Coach{},
+        assistant_coach: %FibaScoresheet.Coach{},
+        all_fouls: [],
+        running_score: %{},
+        score: 0
+      }
+
+      team_state = %TeamState{
+        players: [
+          %PlayerState{id: "1", state: :playing},
+          %PlayerState{id: "2", state: :bench},
+          %PlayerState{id: "3", state: :playing}
+        ]
+      }
+
+      updated_team = TeamManager.set_players_starters(team, team_state)
+
+      updated_player1 = Enum.find(updated_team.players, fn p -> p.id == "1" end)
+      updated_player2 = Enum.find(updated_team.players, fn p -> p.id == "2" end)
+      updated_player3 = Enum.find(updated_team.players, fn p -> p.id == "3" end)
+
+      assert updated_player1.has_started == true
+      assert updated_player2.has_started == false
+      assert updated_player3.has_started == true
     end
   end
 end

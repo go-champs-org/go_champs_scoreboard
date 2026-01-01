@@ -439,6 +439,7 @@
     "gameTick": "Tick do Jogo",
     "loadFromLastEventLog": "Recalcular estado de jogo",
     "protestGame": "Protestar Jogo",
+    "registerTeamWO": "Registro W.O",
     "removeCoachInTeam": "Remover Técnico",
     "removeOfficialInGame": "Remover Oficial",
     "removePlayerInTeam": "Remover Atleta",

@@ -1,4 +1,6 @@
 defmodule GoChampsScoreboard.Sports.Basketball.GameState do
+  alias GoChampsScoreboard.Sports.Basketball.TeamState
+  alias GoChampsScoreboard.Sports.Basketball.GameClock
   alias GoChampsScoreboard.Events.GameSnapshot
   alias GoChampsScoreboard.Games.Models.GameState
   alias GoChampsScoreboard.Sports.Basketball.Basketball
@@ -26,21 +28,42 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameState do
       %GameState{} = restored_state ->
         valid_keys = get_valid_stat_keys()
 
-        ["home", "away"]
-        |> Enum.reduce(game_state, fn team_type, acc_game_state ->
-          updated_team =
-            update_team_from_snapshot(
-              acc_game_state,
-              restored_state,
-              team_type,
-              valid_keys
-            )
+        updated_game =
+          ["home", "away"]
+          |> Enum.reduce(game_state, fn team_type, acc_game_state ->
+            updated_team =
+              update_team_from_snapshot(
+                acc_game_state,
+                restored_state,
+                team_type,
+                valid_keys
+              )
 
-          Games.update_team(acc_game_state, team_type, updated_team)
-        end)
+            Games.update_team(acc_game_state, team_type, updated_team)
+          end)
+
+        updated_game
+        |> maybe_update_info(restored_state)
+        |> maybe_update_clock_state(restored_state)
 
       _ ->
         game_state
+    end
+  end
+
+  defp maybe_update_clock_state(game_state, restored_state) do
+    if restored_state.clock_state.state == :not_started do
+      Games.update_clock_state(game_state, restored_state.clock_state)
+    else
+      game_state
+    end
+  end
+
+  defp maybe_update_info(game_state, restored_state) do
+    if restored_state.clock_state.state == :not_started do
+      Games.update_info(game_state, restored_state.info)
+    else
+      game_state
     end
   end
 
@@ -306,5 +329,57 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameState do
 
     game_state
     |> Games.update_protest_state(protest_state)
+  end
+
+  @spec register_team_wo(GameState.t(), String.t()) :: GameState.t()
+  def register_team_wo(game_state, team) do
+    updated_game_state =
+      game_state
+      |> Games.update_clock_state(GameClock.set_clock_for_wo(game_state.clock_state))
+      |> Games.update_info(set_info_for_wo(game_state.info, team))
+
+    case team do
+      "home" -> set_team_stats_for_home_wo(updated_game_state)
+      "away" -> set_team_stats_for_away_wo(updated_game_state)
+      _ -> updated_game_state
+    end
+  end
+
+  defp set_info_for_wo(info_state, "home") do
+    info_state
+    |> Map.put(:result_type, :home_team_walkover)
+  end
+
+  defp set_info_for_wo(info_state, "away") do
+    info_state
+    |> Map.put(:result_type, :away_team_walkover)
+  end
+
+  defp set_team_stats_for_home_wo(game_state) do
+    updated_home_team =
+      Teams.find_team(game_state, "home")
+      |> TeamState.set_walkover()
+
+    updated_away_team =
+      Teams.find_team(game_state, "away")
+      |> TeamState.set_walkover_against()
+
+    game_state
+    |> Games.update_team("home", updated_home_team)
+    |> Games.update_team("away", updated_away_team)
+  end
+
+  defp set_team_stats_for_away_wo(game_state) do
+    updated_away_team =
+      Teams.find_team(game_state, "away")
+      |> TeamState.set_walkover()
+
+    updated_home_team =
+      Teams.find_team(game_state, "home")
+      |> TeamState.set_walkover_against()
+
+    game_state
+    |> Games.update_team("away", updated_away_team)
+    |> Games.update_team("home", updated_home_team)
   end
 end

@@ -131,7 +131,7 @@ function StreamViews({ game_data }: StreamViewsProps) {
         <div className="column has-text-centered away">
           <TeamScore
             team={game_state.home_team}
-            score={game_state.home_team.total_player_stats['points'] || 0}
+            score={game_state.home_team.stats_values['points'] || 0}
             defaultColor="#2b5615"
             currentPeriod={game_state.clock_state.period}
           />
@@ -139,7 +139,7 @@ function StreamViews({ game_data }: StreamViewsProps) {
         <div className="column has-text-centered home">
           <TeamScore
             team={game_state.away_team}
-            score={game_state.away_team.total_player_stats['points'] || 0}
+            score={game_state.away_team.stats_values['points'] || 0}
             defaultColor="#970c10"
             currentPeriod={game_state.clock_state.period}
           />

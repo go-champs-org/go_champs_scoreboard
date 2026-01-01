@@ -12,6 +12,7 @@ export const EVENT_KEYS_EDITABLE = [
   EVENT_KEYS.UPDATE_PLAYERS_STATE,
   EVENT_KEYS.UPDATE_COACH_STAT,
   EVENT_KEYS.UPDATE_TEAM_STAT,
+  EVENT_KEYS.REGISTER_TEAM_WO,
 ];
 
 // Stat keys constant for semantic ordering and reference

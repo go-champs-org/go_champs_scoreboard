@@ -208,7 +208,9 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
         "fouls_technical" => 0,
         "points" => 0,
         "fouls" => 0,
-        "total_fouls_technical" => 0
+        "total_fouls_technical" => 0,
+        "game_walkover_against" => 0,
+        "game_walkover" => 0
       }
 
       assert expected == Basketball.bootstrap_team_stats()
@@ -263,7 +265,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
     test "returns all team stats matching the given types" do
       # Test with manual stats
       manual_stats = Basketball.find_team_stat_by_type([:manual])
-      assert length(manual_stats) == 3
+      assert length(manual_stats) == 5
       assert Enum.all?(manual_stats, fn stat -> stat.type == :manual end)
 
       # Test with calculated stats

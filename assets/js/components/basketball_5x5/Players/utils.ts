@@ -137,10 +137,12 @@ export const getPlayerButtonClassName = (
   // Player info states
   const isDisqualified = player.state === 'disqualified';
   const technicalFouls = player.stats_values['fouls_technical'] || 0;
+  const fouls = player.stats_values['fouls'] || 0;
   const unsportsmanlikeFouls =
     player.stats_values['fouls_unsportsmanlike'] || 0;
   const isWarning =
-    (technicalFouls >= 1 || unsportsmanlikeFouls >= 1) && !isDisqualified;
+    (technicalFouls >= 1 || unsportsmanlikeFouls >= 1 || fouls == 4) &&
+    !isDisqualified;
 
   // User action state calculation
   const isButtonDisabled = disabled || isDisqualified;

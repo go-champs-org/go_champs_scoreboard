@@ -340,7 +340,8 @@ defmodule GoChampsScoreboard.GameStateFixtures do
         tournament_name: "Tournament Name",
         tournament_id: "tournament-id",
         game_report: "This is a game report.",
-        web_url: "http://example.com/game_report"
+        web_url: "http://example.com/game_report",
+        result_type: :automatic
       },
       protest_state: %ProtestState{
         team_type: :home,

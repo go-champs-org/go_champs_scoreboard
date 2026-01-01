@@ -11,6 +11,7 @@ export const EVENT_KEYS = {
   UPDATE_OFFICIAL_IN_GAME: 'update-official-in-game',
   ADD_OFFICIAL_TO_GAME: 'add-official-to-game',
   REMOVE_OFFICIAL_IN_GAME: 'remove-official-in-game',
+  REGISTER_TEAM_WO: 'register-team-wo',
   UPDATE_TEAM_STAT: 'update-team-stat',
   UPDATE_PLAYERS_STATE: 'update-players-state',
   UPDATE_CLOCK_STATE: 'update-clock-state',

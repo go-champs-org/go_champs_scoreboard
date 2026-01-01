@@ -4,10 +4,13 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
   Contains game-related metadata such as dates, times, and tournament information.
   """
 
+  @type result_type :: :automatic | :home_team_walkover | :away_team_walkover
+
   @type asset :: %{
           type: String.t(),
           url: String.t()
         }
+
 
   @type t :: %__MODULE__{
           datetime: DateTime.t(),
@@ -21,6 +24,7 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
           number: String.t(),
           game_report: String.t(),
           web_url: String.t(),
+          result_type: result_type(),
           assets: [asset()]
         }
 
@@ -36,6 +40,7 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
     :number,
     :game_report,
     :web_url,
+    :result_type,
     :assets
   ]
 
@@ -56,6 +61,7 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
       number: Keyword.get(opts, :number, ""),
       game_report: Keyword.get(opts, :game_report, ""),
       web_url: Keyword.get(opts, :web_url, ""),
+      result_type: Keyword.get(opts, :result_type, :automatic),
       assets: Keyword.get(opts, :assets, [])
     }
   end
@@ -72,6 +78,13 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
               {:ok, parsed_datetime, _} -> parsed_datetime
               {:error, _} -> DateTime.utc_now()
             end
+        end
+
+      result_type =
+        case Map.get(values, :result_type) || Map.get(values, "result_type") do
+          "home_team_walkover" -> :home_team_walkover
+          "away_team_walkover" -> :away_team_walkover
+          _ -> :automatic
         end
 
       %GoChampsScoreboard.Games.Models.InfoState{
@@ -92,6 +105,7 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
         number: Map.get(values, :number) || Map.get(values, "number") || "",
         game_report: Map.get(values, :game_report) || Map.get(values, "game_report") || "",
         web_url: Map.get(values, :web_url) || Map.get(values, "web_url") || "",
+        result_type: result_type,
         assets: Map.get(values, :assets) || Map.get(values, "assets") || []
       }
     end

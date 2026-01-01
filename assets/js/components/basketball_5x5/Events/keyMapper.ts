@@ -10,6 +10,7 @@ const KEY_TO_EVENT_TYPE_KEY: { [key: string]: string } = {
   [EVENT_KEYS.GAME_TICK]: 'eventKeys.gameTick',
   [EVENT_KEYS.LOAD_FROM_LAST_EVENT_LOG]: 'eventKeys.loadFromLastEventLog',
   [EVENT_KEYS.PROTEST_GAME]: 'eventKeys.protestGame',
+  [EVENT_KEYS.REGISTER_TEAM_WO]: 'eventKeys.registerTeamWO',
   [EVENT_KEYS.REMOVE_COACH_IN_TEAM]: 'eventKeys.removeCoachInTeam',
   [EVENT_KEYS.REMOVE_OFFICIAL_IN_GAME]: 'eventKeys.removeOfficialInGame',
   [EVENT_KEYS.REMOVE_PLAYER_IN_TEAM]: 'eventKeys.removePlayerInTeam',

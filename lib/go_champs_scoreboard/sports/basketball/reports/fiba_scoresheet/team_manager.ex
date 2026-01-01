@@ -32,7 +32,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       all_fouls: [],
       timeouts: [],
       running_score: %{},
-      score: 0
+      score: 0,
+      has_walkover: false
     }
   end
 
@@ -286,5 +287,51 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
 
   defp update_person_fouls(person, updated_fouls, :coach) do
     %FibaScoresheet.Coach{person | fouls: updated_fouls}
+  end
+
+  @doc """
+  Set team with winning wo result.
+  """
+  @spec set_winning_wo(FibaScoresheet.Team.t()) :: FibaScoresheet.Team.t()
+  def set_winning_wo(team) do
+    %FibaScoresheet.Team{team | score: 20}
+  end
+
+  @doc """
+  Set team with losing wo result.
+  """
+  @spec set_losing_wo(FibaScoresheet.Team.t()) :: FibaScoresheet.Team.t()
+  def set_losing_wo(team) do
+    %FibaScoresheet.Team{
+      team
+      | players: [],
+        coach: bootstrap_coach(nil),
+        assistant_coach: bootstrap_coach(nil),
+        score: 0,
+        has_walkover: true
+    }
+  end
+
+  @doc """
+  Set team players starters according to a given TeamState.
+  """
+  @spec set_players_starters(FibaScoresheet.Team.t(), TeamState.t()) :: FibaScoresheet.Team.t()
+  def set_players_starters(team, team_state) do
+    playing_player_ids =
+      team_state.players
+      |> Enum.filter(fn player -> player.state == :playing end)
+      |> Enum.map(fn player -> player.id end)
+
+    updated_players =
+      team.players
+      |> Enum.map(fn player ->
+        if player.id in playing_player_ids do
+          PlayerManager.set_as_starter(player)
+        else
+          player
+        end
+      end)
+
+    %FibaScoresheet.Team{team | players: updated_players}
   end
 end

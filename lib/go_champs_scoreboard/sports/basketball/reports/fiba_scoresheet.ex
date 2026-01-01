@@ -172,7 +172,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
             all_fouls: list(Foul.t()),
             timeouts: list(Timeout.t()),
             running_score: %{Integer.t() => PointScore.t()},
-            score: integer()
+            score: integer(),
+            has_walkover: boolean()
           }
 
     defstruct [
@@ -183,7 +184,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
       :all_fouls,
       :timeouts,
       :running_score,
-      :score
+      :score,
+      :has_walkover
     ]
   end
 
