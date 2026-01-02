@@ -111,7 +111,7 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
   const liveSocket = useConnectionState();
 
   return (
-    <nav className="level nav-level">
+    <nav className="level nav-level top-level">
       <div className="level-left">
         <img
           src="/images/go-champs-logo.png"
