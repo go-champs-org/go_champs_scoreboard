@@ -1,5 +1,8 @@
 {
   "basketball": {
+    "reports": {
+      "fibaScoresheet": "Súmula"
+    },
     "navigation": {
       "boxScore": "Estatísticas",
       "editPlayers": "Editar Jogadores",
@@ -7,7 +10,6 @@
       "editGame": "Editar Jogo",
       "eventLogs": "Eventos",
       "streamViews": "Telas para Stream (OBS)",
-      "fibaScoresheet": "Súmula",
       "startLive": "Iniciar Ao Vivo",
       "endLive": "Finalizar Ao Vivo"
     },
@@ -34,6 +36,13 @@
         "title": "Finalizar Jogo",
         "endSoonWarning": "Esse jogo foi iniciado há menos de 45 minutos!",
         "message": "Tem certeza que deseja finalizar o modo ao vivo? O jogo será considerado finalizado e você não poderá iniciá-lo novamente.",
+        "messageWithReports": "Tem certeza que deseja finalizar o modo ao vivo? O jogo será considerado finalizado e você não poderá iniciá-lo novamente. Os relatórios serão gerados e enviados automaticamente.",
+        "reportGenerationInfo": "Os seguintes relatórios serão gerados:",
+        "generatingReports": "Gerando e enviando relatórios...",
+        "cannotClose": "Por favor, aguarde enquanto os relatórios estão sendo processados. Você não pode fechar esta janela durante a geração.",
+        "errorTitle": "Falha ao gerar relatórios",
+        "retry": "Tentar Novamente",
+        "processing": "Processando...",
         "endLive": "Finalizar Ao Vivo",
         "cancel": "Cancelar"
       },

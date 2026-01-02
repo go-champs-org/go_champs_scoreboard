@@ -19,7 +19,7 @@ export const fibaScoresheet = async ({
 }) => {
   try {
     const reportFile = await generate(REPORT_SLUGS.FIBA_SCORESHEET, gameId);
-    const filename = `${gameId}_${REPORT_SLUGS.FIBA_SCORESHEET}.pdf`;
+    const filename = `${REPORT_SLUGS.FIBA_SCORESHEET}.pdf`;
 
     await uploadHttpClient.singAndUpload({
       baseGoChampsApi: goChampsApiBaseUrl,

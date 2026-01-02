@@ -36,7 +36,15 @@ declare module 'react-i18next' {
             };
             endLiveConfirmation: {
               title: string;
+              endSoonWarning: string;
               message: string;
+              messageWithReports: string;
+              reportGenerationInfo: string;
+              generatingReports: string;
+              cannotClose: string;
+              errorTitle: string;
+              retry: string;
+              processing: string;
               endLive: string;
               cancel: string;
             };
@@ -145,6 +153,9 @@ declare module 'react-i18next' {
             alerts: {
               enterName: string;
             };
+          };
+          reports: {
+            fibaScoresheet: string;
           };
         };
       };
