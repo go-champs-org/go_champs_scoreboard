@@ -93,4 +93,29 @@ defmodule GoChampsScoreboard.Sports.SportsTest do
       assert result.stats_values["fouls"] == 3
     end
   end
+
+  describe "add_game_asset/3" do
+    test "adds a new asset to the info state" do
+      initial_info_state = %GoChampsScoreboard.Games.Models.InfoState{
+        assets: [
+          %{type: "logo", url: "http://example.com/logo1.png"},
+          %{type: "banner", url: "http://example.com/banner1.png"}
+        ]
+      }
+
+      updated_info_state =
+        Sports.add_game_asset(
+          "random_sport",
+          initial_info_state,
+          "logo",
+          "http://example.com/logo2.png"
+        )
+
+      assert length(updated_info_state.assets) == 3
+
+      assert Enum.any?(updated_info_state.assets, fn asset ->
+               asset.type == "logo" and asset.url == "http://example.com/logo2.png"
+             end)
+    end
+  end
 end

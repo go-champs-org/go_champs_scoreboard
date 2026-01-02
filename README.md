@@ -9,6 +9,11 @@ A real-time scoreboard application built with Phoenix LiveView for managing and 
 - Live score tracking and display
 - Responsive design for various devices
 - WebSocket-based real-time communication
+- Interactive React components integrated with Phoenix LiveView
+
+## Documentation
+
+- **[React Implementation Guide](REACT_IMPLEMENTATION.md)** - Comprehensive guide for developing React components, including architecture patterns, Phoenix LiveView integration, and best practices
 
 ## Getting Started
 

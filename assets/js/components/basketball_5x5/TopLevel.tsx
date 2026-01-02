@@ -99,7 +99,7 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
                 }
               }}
             >
-              {t('basketball.navigation.fibaScoresheet')}
+              {t('basketball.reports.fibaScoresheet')}
             </button>
           </p>
         )}

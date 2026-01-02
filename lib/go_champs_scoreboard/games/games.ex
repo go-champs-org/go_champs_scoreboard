@@ -65,8 +65,8 @@ defmodule GoChampsScoreboard.Games.Games do
     end
   end
 
-  @spec end_live_mode(String.t(), module()) :: GameState.t()
-  def end_live_mode(game_id, resource_manager \\ ResourceManager) do
+  @spec end_live_mode(String.t(), map(), module()) :: GameState.t()
+  def end_live_mode(game_id, params \\ %{}, resource_manager \\ ResourceManager) do
     case GameStateCache.get(game_id) do
       {:ok, nil} ->
         raise RuntimeError, message: "Game not found"
@@ -74,7 +74,7 @@ defmodule GoChampsScoreboard.Games.Games do
       {:ok, _current_game_state} ->
         {:ok, end_event} =
           EndGameLiveModeDefinition.key()
-          |> ValidatorCreator.validate_and_create(game_id)
+          |> ValidatorCreator.validate_and_create(game_id, params)
 
         reacted_game = react_to_event(end_event, game_id)
 

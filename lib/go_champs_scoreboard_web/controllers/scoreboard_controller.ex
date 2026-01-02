@@ -18,8 +18,10 @@ defmodule GoChampsScoreboardWeb.ScoreboardController do
             |> Poison.decode!()
         })
 
-      {:error, reason} ->
-        Logger.error("Failed to fetch report data: #{inspect(reason)}")
+      _ ->
+        Logger.error(
+          "Failed to fetch report data for game_id=#{game_id}, report_slug=#{report_slug}"
+        )
 
         conn
         |> put_status(:internal_server_error)

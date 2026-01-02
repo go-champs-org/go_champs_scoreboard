@@ -9,6 +9,9 @@ module.exports = {
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest',
   },
+  moduleNameMapper: {
+    '^@react-pdf/renderer$': '<rootDir>/assets/js/__mocks__/react-pdf-renderer.js',
+  },
   collectCoverageFrom: [
     'assets/**/*.{ts,tsx}',
     '!assets/**/*.d.ts',

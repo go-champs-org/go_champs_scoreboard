@@ -15,6 +15,53 @@
     margin-top: 1rem;
   }
 
+  .reports-list {
+    ul {
+      margin-left: 0;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    li {
+      padding: 0.25rem 0;
+    }
+
+    .icon {
+      min-width: 1.25rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
+    .spinner {
+      width: 12px;
+      height: 12px;
+      border: 2px dotted $green-light;
+      border-top: 2px dotted $green-light;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  }
+
+  .processing-message {
+    padding: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+    border-left: 3px solid $white;
+  }
+
   .footer {
     gap: 0.5rem;
   }

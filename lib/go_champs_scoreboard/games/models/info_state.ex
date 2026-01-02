@@ -6,6 +6,11 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
 
   @type result_type :: :automatic | :home_team_walkover | :away_team_walkover
 
+  @type asset :: %{
+          type: String.t(),
+          url: String.t()
+        }
+
   @type t :: %__MODULE__{
           datetime: DateTime.t(),
           tournament_id: String.t(),
@@ -18,7 +23,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
           number: String.t(),
           game_report: String.t(),
           web_url: String.t(),
-          result_type: result_type()
+          result_type: result_type(),
+          assets: [asset()]
         }
 
   defstruct [
@@ -33,7 +39,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
     :number,
     :game_report,
     :web_url,
-    :result_type
+    :result_type,
+    :assets
   ]
 
   @doc """
@@ -53,7 +60,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
       number: Keyword.get(opts, :number, ""),
       game_report: Keyword.get(opts, :game_report, ""),
       web_url: Keyword.get(opts, :web_url, ""),
-      result_type: Keyword.get(opts, :result_type, :automatic)
+      result_type: Keyword.get(opts, :result_type, :automatic),
+      assets: Keyword.get(opts, :assets, [])
     }
   end
 
@@ -96,7 +104,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
         number: Map.get(values, :number) || Map.get(values, "number") || "",
         game_report: Map.get(values, :game_report) || Map.get(values, "game_report") || "",
         web_url: Map.get(values, :web_url) || Map.get(values, "web_url") || "",
-        result_type: result_type
+        result_type: result_type,
+        assets: Map.get(values, :assets) || Map.get(values, "assets") || []
       }
     end
   end

@@ -1,5 +1,8 @@
 {
   "basketball": {
+    "reports": {
+      "fibaScoresheet": "Scoresheet"
+    },
     "navigation": {
       "boxScore": "Box Score",
       "editPlayers": "Edit Players",
@@ -7,7 +10,6 @@
       "editGame": "Edit Game",
       "eventLogs": "Event Logs",
       "streamViews": "Stream Views (OBS)",
-      "fibaScoresheet": "Scoresheet",
       "startLive": "Start Live",
       "endLive": "End Live"
     },
@@ -34,6 +36,13 @@
         "title": "Are you sure?",
         "endSoonWarning": "This game started less than 45 minutes ago!",
         "message": "Are you sure you want to end the live mode? The game will be considered finished and you will not be able to start it again.",
+        "messageWithReports": "Are you sure you want to end the live mode? The game will be considered finished and you will not be able to start it again. Reports will be generated and uploaded automatically.",
+        "reportGenerationInfo": "The following reports will be generated:",
+        "generatingReports": "Generating and uploading reports...",
+        "cannotClose": "Please wait while reports are being processed. You cannot close this dialog during generation.",
+        "errorTitle": "Failed to generate reports",
+        "retry": "Retry",
+        "processing": "Processing...",
         "endLive": "End Live",
         "cancel": "Cancel"
       },

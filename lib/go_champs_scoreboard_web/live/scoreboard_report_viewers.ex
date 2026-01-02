@@ -12,8 +12,11 @@ defmodule GoChampsScoreboardWeb.ScoreboardReportViewers do
         {:ok, data} ->
           data
 
-        {:error, reason} ->
-          Logger.error("Failed to fetch report data: #{inspect(reason)}")
+        _ ->
+          Logger.error(
+            "Failed to fetch report data for game_id=#{game_id}, report_slug=#{report_slug}"
+          )
+
           # fallback empty data
           %{}
       end
