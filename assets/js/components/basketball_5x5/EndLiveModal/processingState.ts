@@ -1,10 +1,26 @@
-export type ProcessingState = 'idle' | 'generating' | 'error';
+import { REPORT_SLUGS } from '../../../shared/reportRegistry';
 
-export type ReportStatus = 'pending' | 'generating' | 'completed' | 'error';
+export const PROCESSING_STATES = {
+  IDLE: 'idle',
+  GENERATING: 'generating',
+  ERROR: 'error',
+} as const;
+
+export const REPORT_STATUSES = {
+  PENDING: 'pending',
+  GENERATING: 'generating',
+  COMPLETED: 'completed',
+  ERROR: 'error',
+} as const;
+
+export type ProcessingState =
+  (typeof PROCESSING_STATES)[keyof typeof PROCESSING_STATES];
+
+export type ReportStatus =
+  (typeof REPORT_STATUSES)[keyof typeof REPORT_STATUSES];
 
 export interface ReportItem {
   id: string;
-  name: string;
   translationKey: string;
   status: ReportStatus;
   error?: string;
@@ -18,18 +34,17 @@ export interface ProcessingStateManager {
 }
 
 export function createProcessingStateManager(
-  initialState: ProcessingState = 'idle',
+  initialState: ProcessingState = PROCESSING_STATES.IDLE,
 ): ProcessingStateManager {
   return {
     state: initialState,
     error: null,
-    isProcessing: initialState === 'generating',
+    isProcessing: initialState === PROCESSING_STATES.GENERATING,
     reports: [
       {
-        id: 'fiba-scoresheet',
-        name: 'FIBA Scoresheet',
+        id: REPORT_SLUGS.FIBA_SCORESHEET,
         translationKey: 'basketball.reports.fibaScoresheet',
-        status: 'pending',
+        status: REPORT_STATUSES.PENDING,
       },
     ],
   };
@@ -43,8 +58,9 @@ export function updateProcessingState(
   return {
     ...currentManager,
     state: newState,
-    error: newState === 'error' ? error || 'Unknown error' : null,
-    isProcessing: newState === 'generating',
+    error:
+      newState === PROCESSING_STATES.ERROR ? error || 'Unknown error' : null,
+    isProcessing: newState === PROCESSING_STATES.GENERATING,
   };
 }
 
@@ -61,7 +77,7 @@ export function updateReportStatus(
         ? {
             ...report,
             status,
-            error: status === 'error' ? error : undefined,
+            error: status === REPORT_STATUSES.ERROR ? error : undefined,
           }
         : report,
     ),
@@ -69,5 +85,5 @@ export function updateReportStatus(
 }
 
 export function resetProcessingState(): ProcessingStateManager {
-  return createProcessingStateManager('idle');
+  return createProcessingStateManager(PROCESSING_STATES.IDLE);
 }

@@ -3,6 +3,7 @@ import {
   createProcessingStateManager,
   updateProcessingState,
   resetProcessingState,
+  PROCESSING_STATES,
 } from '../processingState';
 
 describe('processingState', () => {
@@ -10,15 +11,17 @@ describe('processingState', () => {
     it('creates initial state with idle by default', () => {
       const manager = createProcessingStateManager();
 
-      expect(manager.state).toBe('idle');
+      expect(manager.state).toBe(PROCESSING_STATES.IDLE);
       expect(manager.error).toBeNull();
       expect(manager.isProcessing).toBe(false);
     });
 
     it('creates initial state with custom state', () => {
-      const manager = createProcessingStateManager('generating');
+      const manager = createProcessingStateManager(
+        PROCESSING_STATES.GENERATING,
+      );
 
-      expect(manager.state).toBe('generating');
+      expect(manager.state).toBe(PROCESSING_STATES.GENERATING);
       expect(manager.error).toBeNull();
       expect(manager.isProcessing).toBe(true);
     });
@@ -26,49 +29,62 @@ describe('processingState', () => {
 
   describe('updateProcessingState', () => {
     it('updates state to generating', () => {
-      const currentManager = createProcessingStateManager('idle');
+      const currentManager = createProcessingStateManager(
+        PROCESSING_STATES.IDLE,
+      );
       const updatedManager = updateProcessingState(
         currentManager,
-        'generating',
+        PROCESSING_STATES.GENERATING,
       );
 
-      expect(updatedManager.state).toBe('generating');
+      expect(updatedManager.state).toBe(PROCESSING_STATES.GENERATING);
       expect(updatedManager.error).toBeNull();
       expect(updatedManager.isProcessing).toBe(true);
     });
 
     it('updates state to error with error message', () => {
-      const currentManager = createProcessingStateManager('generating');
+      const currentManager = createProcessingStateManager(
+        PROCESSING_STATES.GENERATING,
+      );
       const errorMessage = 'Something went wrong';
       const updatedManager = updateProcessingState(
         currentManager,
-        'error',
+        PROCESSING_STATES.ERROR,
         errorMessage,
       );
 
-      expect(updatedManager.state).toBe('error');
+      expect(updatedManager.state).toBe(PROCESSING_STATES.ERROR);
       expect(updatedManager.error).toBe(errorMessage);
       expect(updatedManager.isProcessing).toBe(false);
     });
 
     it('updates state to error with default error message when none provided', () => {
-      const currentManager = createProcessingStateManager('generating');
-      const updatedManager = updateProcessingState(currentManager, 'error');
+      const currentManager = createProcessingStateManager(
+        PROCESSING_STATES.GENERATING,
+      );
+      const updatedManager = updateProcessingState(
+        currentManager,
+        PROCESSING_STATES.ERROR,
+      );
 
-      expect(updatedManager.state).toBe('error');
+      expect(updatedManager.state).toBe(PROCESSING_STATES.ERROR);
       expect(updatedManager.error).toBe('Unknown error');
       expect(updatedManager.isProcessing).toBe(false);
     });
 
     it('clears error when updating to non-error state', () => {
       const currentManager = {
-        state: 'error' as ProcessingState,
+        state: PROCESSING_STATES.ERROR as ProcessingState,
         error: 'Previous error',
         isProcessing: false,
+        reports: [],
       };
-      const updatedManager = updateProcessingState(currentManager, 'idle');
+      const updatedManager = updateProcessingState(
+        currentManager,
+        PROCESSING_STATES.IDLE,
+      );
 
-      expect(updatedManager.state).toBe('idle');
+      expect(updatedManager.state).toBe(PROCESSING_STATES.IDLE);
       expect(updatedManager.error).toBeNull();
       expect(updatedManager.isProcessing).toBe(false);
     });
@@ -78,7 +94,7 @@ describe('processingState', () => {
     it('resets to initial idle state', () => {
       const resetManager = resetProcessingState();
 
-      expect(resetManager.state).toBe('idle');
+      expect(resetManager.state).toBe(PROCESSING_STATES.IDLE);
       expect(resetManager.error).toBeNull();
       expect(resetManager.isProcessing).toBe(false);
     });

@@ -7,6 +7,7 @@ import {
   resetProcessingState,
   ProcessingStateManager,
   ReportStatus,
+  PROCESSING_STATES,
 } from './processingState';
 
 export interface UseProcessingStateReturn {
@@ -24,7 +25,7 @@ export interface UseProcessingStateReturn {
 }
 
 export function useProcessingState(
-  initialState: ProcessingState = 'idle',
+  initialState: ProcessingState = PROCESSING_STATES.IDLE,
 ): UseProcessingStateReturn {
   const [processingManager, setProcessingManager] = useState(() =>
     createProcessingStateManager(initialState),
@@ -32,17 +33,19 @@ export function useProcessingState(
 
   const startProcessing = useCallback(() => {
     setProcessingManager((current) =>
-      updateProcessingState(current, 'generating'),
+      updateProcessingState(current, PROCESSING_STATES.GENERATING),
     );
   }, []);
 
   const completeProcessing = useCallback(() => {
-    setProcessingManager((current) => updateProcessingState(current, 'idle'));
+    setProcessingManager((current) =>
+      updateProcessingState(current, PROCESSING_STATES.IDLE),
+    );
   }, []);
 
   const setError = useCallback((error: string) => {
     setProcessingManager((current) =>
-      updateProcessingState(current, 'error', error),
+      updateProcessingState(current, PROCESSING_STATES.ERROR, error),
     );
   }, []);
 
