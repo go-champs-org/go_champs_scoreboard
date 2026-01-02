@@ -13,6 +13,72 @@ import LanguageSwitcher from '../LanguageSwitcher';
 import { useTranslation } from '../../hooks/useTranslation';
 import EndLiveModal from './EndLiveModal';
 
+interface ReportsProps {
+  game_state: GameState;
+  t: (key: string) => string;
+}
+
+function Reports({ game_state, t }: ReportsProps) {
+  const [showFibaDropdown, setShowFibaDropdown] = React.useState(false);
+
+  // Close dropdown when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const dropdown = (event.target as Element)?.closest('.dropdown');
+      if (!dropdown) {
+        setShowFibaDropdown(false);
+      }
+    };
+
+    if (showFibaDropdown) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [showFibaDropdown]);
+
+  return (
+    <div className={`dropdown ${showFibaDropdown ? 'is-active' : ''}`}>
+      <div className="dropdown-trigger">
+        <button
+          className="button is-info is-small"
+          disabled={game_state.live_state.state === 'not_started'}
+          aria-haspopup="true"
+          aria-controls="dropdown-menu"
+          onClick={() => setShowFibaDropdown(!showFibaDropdown)}
+        >
+          <span>{t('basketball.navigation.reports')}</span>
+        </button>
+      </div>
+      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+        <div className="dropdown-content">
+          <a
+            className="dropdown-item"
+            onClick={() => {
+              if (game_state.live_state.state !== 'not_started') {
+                window.open(
+                  `/scoreboard/report_viewer/${game_state.id}?report_slug=fiba-scoresheet`,
+                  '_blank',
+                );
+              }
+              setShowFibaDropdown(false);
+            }}
+          >
+            {t('basketball.reports.fibaScoresheet')}
+          </a>
+          <a
+            className="dropdown-item"
+            onClick={() => {
+              setShowFibaDropdown(false);
+            }}
+          >
+            {t('basketball.reports.signReports')}
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 interface TopLevelProps {
   game_state: GameState;
   pushEvent: (event: string, payload: any) => void;
@@ -87,20 +153,7 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
         </p>
         {game_state.view_settings_state.view !== 'basketball-basic' && (
           <p className="level-item">
-            <button
-              className="button is-info is-small"
-              disabled={game_state.live_state.state === 'not_started'}
-              onClick={() => {
-                if (game_state.live_state.state !== 'not_started') {
-                  window.open(
-                    `/scoreboard/report_viewer/${game_state.id}?report_slug=fiba-scoresheet`,
-                    '_blank',
-                  );
-                }
-              }}
-            >
-              {t('basketball.reports.fibaScoresheet')}
-            </button>
+            <Reports game_state={game_state} t={t} />
           </p>
         )}
         <Modal

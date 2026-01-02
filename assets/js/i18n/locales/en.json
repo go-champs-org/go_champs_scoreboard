@@ -1,7 +1,8 @@
 {
   "basketball": {
     "reports": {
-      "fibaScoresheet": "Scoresheet"
+      "fibaScoresheet": "Scoresheet",
+      "signReports": "Sign Reports"
     },
     "navigation": {
       "boxScore": "Box Score",
@@ -9,6 +10,7 @@
       "editCoaches": "Edit Coaches",
       "editGame": "Edit Game",
       "eventLogs": "Event Logs",
+      "reports": "Reports",
       "streamViews": "Stream Views (OBS)",
       "startLive": "Start Live",
       "endLive": "End Live"
