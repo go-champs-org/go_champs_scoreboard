@@ -12,14 +12,17 @@ import EditGameModal from './Officials/EditGameModal';
 import LanguageSwitcher from '../LanguageSwitcher';
 import { useTranslation } from '../../hooks/useTranslation';
 import EndLiveModal from './EndLiveModal';
+import SignatureModal from './Reports/SignatureModal';
 
 interface ReportsProps {
   game_state: GameState;
   t: (key: string) => string;
+  pushEvent: (event: string, payload: any) => void;
 }
 
-function Reports({ game_state, t }: ReportsProps) {
+function Reports({ game_state, t, pushEvent }: ReportsProps) {
   const [showFibaDropdown, setShowFibaDropdown] = React.useState(false);
+  const [showSignatureModal, setShowSignatureModal] = React.useState(false);
 
   // Close dropdown when clicking outside
   React.useEffect(() => {
@@ -36,46 +39,55 @@ function Reports({ game_state, t }: ReportsProps) {
     }
   }, [showFibaDropdown]);
 
+  const handleSignatureClick = () => {
+    setShowFibaDropdown(false);
+    setShowSignatureModal(true);
+  };
+
   return (
-    <div className={`dropdown ${showFibaDropdown ? 'is-active' : ''}`}>
-      <div className="dropdown-trigger">
-        <button
-          className="button is-info is-small"
-          disabled={game_state.live_state.state === 'not_started'}
-          aria-haspopup="true"
-          aria-controls="dropdown-menu"
-          onClick={() => setShowFibaDropdown(!showFibaDropdown)}
-        >
-          <span>{t('basketball.navigation.reports')}</span>
-        </button>
-      </div>
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a
-            className="dropdown-item"
-            onClick={() => {
-              if (game_state.live_state.state !== 'not_started') {
-                window.open(
-                  `/scoreboard/report_viewer/${game_state.id}?report_slug=fiba-scoresheet`,
-                  '_blank',
-                );
-              }
-              setShowFibaDropdown(false);
-            }}
+    <>
+      <div className={`dropdown ${showFibaDropdown ? 'is-active' : ''}`}>
+        <div className="dropdown-trigger">
+          <button
+            className="button is-info is-small"
+            disabled={game_state.live_state.state === 'not_started'}
+            aria-haspopup="true"
+            aria-controls="dropdown-menu"
+            onClick={() => setShowFibaDropdown(!showFibaDropdown)}
           >
-            {t('basketball.reports.fibaScoresheet')}
-          </a>
-          <a
-            className="dropdown-item"
-            onClick={() => {
-              setShowFibaDropdown(false);
-            }}
-          >
-            {t('basketball.reports.signReports')}
-          </a>
+            <span>{t('basketball.navigation.reports')}</span>
+          </button>
+        </div>
+        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+          <div className="dropdown-content">
+            <a
+              className="dropdown-item"
+              onClick={() => {
+                if (game_state.live_state.state !== 'not_started') {
+                  window.open(
+                    `/scoreboard/report_viewer/${game_state.id}?report_slug=fiba-scoresheet`,
+                    '_blank',
+                  );
+                }
+                setShowFibaDropdown(false);
+              }}
+            >
+              {t('basketball.reports.fibaScoresheet')}
+            </a>
+            <a className="dropdown-item" onClick={handleSignatureClick}>
+              {t('basketball.reports.collectSignatures')}
+            </a>
+          </div>
         </div>
       </div>
-    </div>
+
+      <SignatureModal
+        game_state={game_state}
+        showModal={showSignatureModal}
+        onCloseModal={() => setShowSignatureModal(false)}
+        pushEvent={pushEvent}
+      />
+    </>
   );
 }
 
@@ -152,9 +164,9 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
           </button>
         </p>
         {game_state.view_settings_state.view !== 'basketball-basic' && (
-          <p className="level-item">
-            <Reports game_state={game_state} t={t} />
-          </p>
+          <div className="level-item">
+            <Reports game_state={game_state} t={t} pushEvent={pushEvent} />
+          </div>
         )}
         <Modal
           title={t('basketball.navigation.boxScore')}
@@ -196,9 +208,9 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
       </div>
 
       <div className="level-right">
-        <p className="level-item">
+        <div className="level-item">
           <LanguageSwitcher />
-        </p>
+        </div>
         <p className="level-item">
           {liveSocket === 'connected' ? <OnlineIcon /> : <OfflineIcon />}
         </p>

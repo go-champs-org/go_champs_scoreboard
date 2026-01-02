@@ -2,7 +2,7 @@
   "basketball": {
     "reports": {
       "fibaScoresheet": "Súmula",
-      "signReports": "Assinar Relatórios"
+      "collectSignatures": "Coletar Assinaturas"
     },
     "navigation": {
       "boxScore": "Estatísticas",
@@ -157,6 +157,25 @@
           "selectTeam": "Por favor, selecione uma equipe primeiro",
           "selectPersonType": "Agora selecione se deseja adicionar faltas a atletas ou técnicos",
           "instruction": "Siga os passos acima para registrar faltas"
+        }
+      },
+      "signatures": {
+        "title": "Coletar Assinaturas",
+        "officials": "Oficiais",
+        "coaches": "Técnicos",
+        "players": "Atletas",
+        "status": "Status",
+        "actionsHeader": "Ações",
+        "signed": "Assinado",
+        "pending": "Pendente",
+        "noOfficials": "Nenhum oficial disponível",
+        "noCoaches": "Nenhum técnico disponível",
+        "noPlayers": "Nenhum atleta disponível",
+        "actions": {
+          "clear": "Limpar",
+          "cancel": "Cancelar",
+          "save": "Salvar",
+          "sign": "Assinar"
         }
       }
     },

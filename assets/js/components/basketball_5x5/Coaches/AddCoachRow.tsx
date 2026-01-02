@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import FormField from '../../FormField';
 import { TeamType } from '../../../types';
+import { COACH_TYPE_LABELS, COACH_TYPES } from './constants';
 
 interface AddCoachRowProps {
   teamType: TeamType;
@@ -21,7 +22,7 @@ function AddCoachRow({
   );
 
   const onCancelClick = () => {
-    setType('');
+    setType('head_coach');
     setName('');
     onConfirmAction();
   };
@@ -61,10 +62,10 @@ function AddCoachRow({
             <div className="select is-small">
               <select value={value} onChange={onChange}>
                 <option value="head_coach">
-                  {t('basketball.coaches.types.headCoach')}
+                  {t(COACH_TYPE_LABELS[COACH_TYPES.HEAD_COACH])}
                 </option>
                 <option value="assistant_coach">
-                  {t('basketball.coaches.types.assistantCoach')}
+                  {t(COACH_TYPE_LABELS[COACH_TYPES.ASSISTANT_COACH])}
                 </option>
               </select>
             </div>

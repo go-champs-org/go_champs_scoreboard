@@ -63,14 +63,16 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinition d
       type: get_updated_type(payload, "type", existing_official.type),
       license_number:
         get_updated_value(payload, "license_number", existing_official.license_number),
-      federation: get_updated_value(payload, "federation", existing_official.federation)
+      federation: get_updated_value(payload, "federation", existing_official.federation),
+      signature: get_updated_value(payload, "signature", existing_official.signature)
     }
   end
 
   defp get_updated_value(payload, key, current_value) do
-    case Map.get(payload, key) do
-      nil -> current_value
-      new_value -> new_value
+    if Map.has_key?(payload, key) do
+      Map.get(payload, key)
+    else
+      current_value
     end
   end
 

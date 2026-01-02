@@ -12,11 +12,21 @@ defmodule GoChampsScoreboard.Games.Models.PlayerState do
           license_number: String.t() | nil,
           state: state(),
           stats_values: map(),
-          is_captain: boolean()
+          is_captain: boolean(),
+          signature: String.t() | nil
         }
-  defstruct [:id, :name, :number, :license_number, :state, :stats_values, :is_captain]
+  defstruct [:id, :name, :number, :license_number, :state, :stats_values, :is_captain, :signature]
 
-  @spec new(String.t(), String.t(), String.t(), String.t(), state(), map(), boolean()) :: t()
+  @spec new(
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          state(),
+          map(),
+          boolean(),
+          String.t() | nil
+        ) :: t()
   def new(
         id,
         name,
@@ -24,7 +34,8 @@ defmodule GoChampsScoreboard.Games.Models.PlayerState do
         license_number \\ "",
         state \\ :available,
         stats_values \\ Basketball.bootstrap_player_stats(),
-        is_captain \\ false
+        is_captain \\ false,
+        signature \\ nil
       ) do
     %__MODULE__{
       id: id,
@@ -33,7 +44,8 @@ defmodule GoChampsScoreboard.Games.Models.PlayerState do
       license_number: license_number,
       state: state,
       stats_values: stats_values,
-      is_captain: is_captain
+      is_captain: is_captain,
+      signature: signature
     }
   end
 
@@ -67,8 +79,9 @@ defmodule GoChampsScoreboard.Games.Models.PlayerState do
             license_number: license_number,
             state: state,
             stats_values: stats_values,
-            is_captain: is_captain
-          },
+            is_captain: is_captain,
+            signature: signature
+          } = value,
           _options
         ) do
       %GoChampsScoreboard.Games.Models.PlayerState{
@@ -78,7 +91,8 @@ defmodule GoChampsScoreboard.Games.Models.PlayerState do
         number: number,
         license_number: license_number,
         stats_values: stats_values,
-        is_captain: if(is_nil(is_captain), do: false, else: is_captain)
+        is_captain: if(is_nil(is_captain), do: false, else: is_captain),
+        signature: signature
       }
     end
   end

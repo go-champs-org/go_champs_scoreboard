@@ -2,7 +2,7 @@
   "basketball": {
     "reports": {
       "fibaScoresheet": "Scoresheet",
-      "signReports": "Sign Reports"
+      "collectSignatures": "Collect Signatures"
     },
     "navigation": {
       "boxScore": "Box Score",
@@ -157,6 +157,25 @@
           "selectTeam": "Please select a team first",
           "selectPersonType": "Now select whether to add fouls to players or coaches",
           "instruction": "Follow the steps above to record fouls"
+        }
+      },
+      "signatures": {
+        "title": "Collect Signatures",
+        "officials": "Officials",
+        "coaches": "Coaches",
+        "players": "Players",
+        "status": "Status",
+        "actionsHeader": "Actions",
+        "signed": "Signed",
+        "pending": "Pending",
+        "noOfficials": "No officials available",
+        "noCoaches": "No coaches available",
+        "noPlayers": "No players available",
+        "actions": {
+          "clear": "Clear",
+          "cancel": "Cancel",
+          "save": "Save",
+          "sign": "Sign"
         }
       }
     },

@@ -225,5 +225,66 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayerInTeamDefinitionTest
       assert player.is_captain == true
       assert player.name == "Updated Player 1"
     end
+
+    test "updates player signature" do
+      game_state = %GameState{
+        id: "1",
+        away_team: %TeamState{players: []},
+        home_team: %TeamState{
+          players: [%PlayerState{id: "player-1", name: "John Player", number: "10"}]
+        }
+      }
+
+      update_player_payload = %{
+        "team-type" => "home",
+        "player" => %{
+          "id" => "player-1",
+          "signature" => "base64_signature_data"
+        }
+      }
+
+      event = UpdatePlayerInTeamDefinition.create(game_state.id, 10, 1, update_player_payload)
+      updated_game = UpdatePlayerInTeamDefinition.handle(game_state, event)
+
+      player = Enum.find(updated_game.home_team.players, &(&1.id == "player-1"))
+      assert player.signature == "base64_signature_data"
+      # Other fields unchanged
+      assert player.name == "John Player"
+      assert player.number == "10"
+    end
+
+    test "clears player signature when nil provided" do
+      game_state = %GameState{
+        id: "1",
+        away_team: %TeamState{players: []},
+        home_team: %TeamState{
+          players: [
+            %PlayerState{
+              id: "player-1",
+              name: "John Player",
+              number: "10",
+              signature: "existing_signature"
+            }
+          ]
+        }
+      }
+
+      update_player_payload = %{
+        "team-type" => "home",
+        "player" => %{
+          "id" => "player-1",
+          "signature" => nil
+        }
+      }
+
+      event = UpdatePlayerInTeamDefinition.create(game_state.id, 10, 1, update_player_payload)
+      updated_game = UpdatePlayerInTeamDefinition.handle(game_state, event)
+
+      player = Enum.find(updated_game.home_team.players, &(&1.id == "player-1"))
+      assert player.signature == nil
+      # Other fields unchanged
+      assert player.name == "John Player"
+      assert player.number == "10"
+    end
   end
 end

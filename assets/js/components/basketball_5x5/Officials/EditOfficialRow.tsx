@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { OfficialState } from '../../../types';
 import DoubleClickButton from '../../DoubleClickButton';
 import { OFFICIAL_TYPES } from './constants';
+import { selectOfficialLabelKey } from './selectors';
 
 interface EditOfficialRowProps {
   key: string;
@@ -54,8 +55,8 @@ function EditOfficialRow({ official, pushEvent }: EditOfficialRowProps) {
   };
 
   const getOfficialTypeLabel = (typeValue: string) => {
-    const officialType = OFFICIAL_TYPES.find((t) => t.value === typeValue);
-    return officialType ? t(officialType.labelKey) : typeValue;
+    const officialLabelKey = selectOfficialLabelKey(typeValue);
+    return officialLabelKey ? t(officialLabelKey) : typeValue;
   };
 
   if (isEditing) {

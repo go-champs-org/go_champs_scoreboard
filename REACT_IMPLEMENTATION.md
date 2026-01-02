@@ -464,6 +464,73 @@ npm run test:coverage # Run tests with coverage report
 - `assets/package.json` - Node.js dependencies
 - `config/dev.exs` / `config/prod.exs` - Phoenix asset configuration
 
+## CSS/SCSS Styling Conventions
+
+### File Naming
+
+CSS/SCSS files should follow these naming conventions:
+
+- **File names**: Match the component name exactly (PascalCase): `SignatureModal.scss`, `EndLiveModal.scss`
+- **File location**: Place in the same folder as the component or in a dedicated styles folder
+- **Import naming**: Use the exact file name in imports
+
+```scss
+// ✅ Good: SignatureModal.scss
+// ❌ Bad: signature-modal.scss, signatureModal.scss
+```
+
+### CSS Class Naming
+
+- **Root class**: Always start with a root class matching the component name in kebab-case
+- **Nested classes**: Use BEM-like naming or logical nesting
+- **Consistency**: Match the component's main container class
+
+```scss
+// SignatureModal.scss
+.signature-modal {  // Root class matches component name
+  .tab-content {
+    min-height: 400px;
+  }
+
+  .signature-pad-container {
+    .signature-canvas {
+      border: 2px solid #dbdbdb;
+      // ...
+    }
+  }
+}
+```
+
+### React Component Integration
+
+```typescript
+// SignatureModal.tsx
+function SignatureModal({ showModal, onCloseModal }: Props) {
+  return (
+    <Modal
+      className="signature-modal"  // Matches root SCSS class
+      showModal={showModal}
+      onClose={onCloseModal}
+    >
+      <div className="tab-content">
+        <div className="signature-pad-container">
+          {/* Component content */}
+        </div>
+      </div>
+    </Modal>
+  );
+}
+```
+
+### Import Structure
+
+```scss
+// components/index.scss
+@import './SignatureModal.scss';  // Exact filename
+@import './EndLiveModal.scss';
+@import './PlayerControls.scss';
+```
+
 ## Best Practices Summary
 
 ### Component Structure
