@@ -42,7 +42,7 @@ defmodule GoChampsScoreboard.Games.Models.CoachState do
             state: state,
             stats_values: stats_values,
             signature: signature
-          } = value,
+          } = _value,
           _options
         ) do
       %GoChampsScoreboard.Games.Models.CoachState{

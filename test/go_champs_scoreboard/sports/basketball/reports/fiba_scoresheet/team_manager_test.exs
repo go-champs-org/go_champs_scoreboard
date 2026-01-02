@@ -19,7 +19,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
             number: 23,
             state: :available,
             license_number: "CD34",
-            is_captain: false
+            is_captain: false,
+            signature: "some-player-signature"
           }
         ]
       }
@@ -41,7 +42,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
             number: 23,
             fouls: [],
             license_number: "CD34",
-            is_captain: false
+            is_captain: false,
+            signature: "some-player-signature"
           }
         ],
         coach: %FibaScoresheet.Coach{
@@ -120,6 +122,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
           %CoachState{
             id: "coach-id",
             name: "Eric Spoltra",
+            signature: "some-coach-signature",
             type: :head_coach
           },
           %CoachState{
@@ -136,6 +139,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
         coach: %FibaScoresheet.Coach{
           id: "coach-id",
           name: "Eric Spoltra",
+          signature: "some-coach-signature",
           fouls: []
         },
         assistant_coach: %FibaScoresheet.Coach{

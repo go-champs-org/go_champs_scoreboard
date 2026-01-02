@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, StyleSheet } from '@react-pdf/renderer';
+import { Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import { Official } from '../FibaScoresheet';
 
 const styles = StyleSheet.create({
@@ -59,7 +59,14 @@ function FiscalsBox({ crewChief, umpire1, umpire2 }: FiscalsBoxProps) {
             {crewChief.name}
           </Text>
         </View>
-        <View style={styles.fiscalsBox.row.signatureBox}></View>
+        <View style={styles.fiscalsBox.row.signatureBox}>
+          {crewChief.signature && (
+            <Image
+              src={crewChief.signature}
+              style={{ width: '100%', height: '100%' }}
+            />
+          )}
+        </View>
       </View>
       <View style={styles.fiscalsBox.row}>
         <View style={styles.fiscalsBox.row.label}>
@@ -68,7 +75,14 @@ function FiscalsBox({ crewChief, umpire1, umpire2 }: FiscalsBoxProps) {
         <View style={styles.fiscalsBox.row.name}>
           <Text style={styles.fiscalsBox.row.name.content}>{umpire1.name}</Text>
         </View>
-        <View style={styles.fiscalsBox.row.signatureBox}></View>
+        <View style={styles.fiscalsBox.row.signatureBox}>
+          {umpire1.signature && (
+            <Image
+              src={umpire1.signature}
+              style={{ width: '100%', height: '100%' }}
+            />
+          )}
+        </View>
       </View>
       <View style={styles.fiscalsBox.row}>
         <View style={styles.fiscalsBox.row.label}>
@@ -77,7 +91,14 @@ function FiscalsBox({ crewChief, umpire1, umpire2 }: FiscalsBoxProps) {
         <View style={styles.fiscalsBox.row.name}>
           <Text style={styles.fiscalsBox.row.name.content}>{umpire2.name}</Text>
         </View>
-        <View style={styles.fiscalsBox.row.signatureBox}></View>
+        <View style={styles.fiscalsBox.row.signatureBox}>
+          {umpire2.signature && (
+            <Image
+              src={umpire2.signature}
+              style={{ width: '100%', height: '100%' }}
+            />
+          )}
+        </View>
       </View>
     </View>
   );

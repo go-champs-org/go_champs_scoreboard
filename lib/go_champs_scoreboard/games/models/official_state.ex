@@ -97,7 +97,7 @@ defmodule GoChampsScoreboard.Games.Models.OfficialState do
             license_number: license_number,
             federation: federation,
             signature: signature
-          } = value,
+          } = _value,
           _options
         ) do
       %GoChampsScoreboard.Games.Models.OfficialState{

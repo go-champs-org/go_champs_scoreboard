@@ -45,10 +45,11 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.ProtestMan
       assert protest.player_name == "Home Player Name"
     end
 
-    test "initializes protest with player name when game has protest_filed for away team" do
+    test "initializes protest with player name and signature when game has protest_filed for away team" do
       player = %PlayerState{
         id: "away-player-456",
-        name: "Away Player Name"
+        name: "Away Player Name",
+        signature: "some-signature-data"
       }
 
       away_team = %TeamState{
@@ -67,9 +68,10 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.ProtestMan
       assert %FibaScoresheet.Protest{} = protest
       assert protest.state == :protest_filed
       assert protest.player_name == "Away Player Name"
+      assert protest.signature == "some-signature-data"
     end
 
-    test "returns empty player name when protest_filed but player not found" do
+    test "returns empty player name and signature when protest_filed but player not found" do
       game_state = %GameState{
         home_team: %TeamState{name: "Home Team", players: []},
         away_team: %TeamState{name: "Away Team", players: []},
@@ -81,6 +83,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.ProtestMan
       assert %FibaScoresheet.Protest{} = protest
       assert protest.state == :protest_filed
       assert protest.player_name == ""
+      assert protest.signature == nil
     end
 
     test "handles nil protest state gracefully" do

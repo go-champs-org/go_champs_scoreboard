@@ -42,6 +42,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       id: player.id,
       name: player.name,
       number: player.number,
+      signature: Map.get(player, :signature, nil),
       fouls: [],
       license_number: Map.get(player, :license_number, ""),
       is_captain: player.is_captain,
@@ -62,6 +63,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
     %FibaScoresheet.Coach{
       id: Map.get(coach, :id, ""),
       name: Map.get(coach, :name, ""),
+      signature: Map.get(coach, :signature, nil),
       fouls: []
     }
   end

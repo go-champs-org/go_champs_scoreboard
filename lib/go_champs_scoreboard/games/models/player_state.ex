@@ -81,7 +81,7 @@ defmodule GoChampsScoreboard.Games.Models.PlayerState do
             stats_values: stats_values,
             is_captain: is_captain,
             signature: signature
-          } = value,
+          } = _value,
           _options
         ) do
       %GoChampsScoreboard.Games.Models.PlayerState{

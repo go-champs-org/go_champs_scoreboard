@@ -27,7 +27,6 @@ function SignaturePad({ onSave, onCancel }: SignaturePadProps) {
 
   const handleSave = () => {
     if (sigCanvas.current && !sigCanvas.current.isEmpty()) {
-      debugger;
       try {
         const trimmedCanvas = sigCanvas.current.getTrimmedCanvas();
         const signature = trimmedCanvas.toDataURL('image/png');
@@ -50,7 +49,7 @@ function SignaturePad({ onSave, onCancel }: SignaturePadProps) {
         <div className="box">
           <SignatureCanvas
             ref={sigCanvas}
-            penColor="black"
+            penColor="blue"
             canvasProps={{
               width: 400,
               height: 200,
