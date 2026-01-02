@@ -6,6 +6,7 @@
 @use '../../node_modules/bulma/sass/form';
 
 // Load other Bulma components
+@use '../../node_modules/bulma/sass/components/dropdown.scss';
 @use '../../node_modules/bulma/sass/components/panel.scss';
 @use '../../node_modules/bulma/sass/components/modal.scss';
 @use '../../node_modules/bulma/sass/components/tabs.scss';
@@ -13,6 +14,7 @@
 @use '../../node_modules/bulma/sass/elements/button';
 @use '../../node_modules/bulma/sass/elements/content';
 @use '../../node_modules/bulma/sass/elements/table';
+@use '../../node_modules/bulma/sass/elements/tag';
 @use '../../node_modules/bulma/sass/elements/title';
 @use '../../node_modules/bulma/sass/layout/level';
 

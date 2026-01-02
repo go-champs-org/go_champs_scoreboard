@@ -1,0 +1,13 @@
+.top-level {
+  .dropdown-item {
+    background-color: transparent;
+
+    &:hover {
+      background-color: hsl(
+        var(--bulma-scheme-h),
+        var(--bulma-scheme-s),
+        calc(var(--bulma-scheme-main-l) + var(--bulma-hover-border-l-delta))
+      );
+    }
+  }
+}

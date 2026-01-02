@@ -51,6 +51,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
             number: String.t(),
             fouls: list(Foul.t()),
             license_number: String.t(),
+            signature: String.t() | nil,
             has_started: boolean(),
             has_played: boolean(),
             first_played_period: integer(),
@@ -63,6 +64,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
       :number,
       :fouls,
       :license_number,
+      :signature,
       :has_started,
       :has_played,
       :first_played_period,
@@ -78,12 +80,14 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
     @type t :: %__MODULE__{
             id: String.t(),
             name: String.t(),
+            signature: String.t() | nil,
             fouls: list(Foul.t())
           }
 
     defstruct [
       :id,
       :name,
+      :signature,
       :fouls
     ]
   end
@@ -95,12 +99,14 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
 
     @type t :: %__MODULE__{
             id: String.t(),
-            name: String.t()
+            name: String.t(),
+            signature: String.t() | nil
           }
 
     defstruct [
       :id,
-      :name
+      :name,
+      :signature
     ]
   end
 
@@ -234,12 +240,14 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
 
     @type t :: %__MODULE__{
             player_name: String.t(),
-            state: :no_protest | :protest_filed
+            state: :no_protest | :protest_filed,
+            signature: String.t() | nil
           }
 
     defstruct [
       :player_name,
-      :state
+      :state,
+      :signature
     ]
   end
 

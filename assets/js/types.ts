@@ -27,6 +27,7 @@ export interface CoachState {
   type: 'head_coach' | 'assistant_coach';
   stats_values: { [key: string]: number };
   state: 'available' | 'not_available';
+  signature?: string;
 }
 
 export const DEFAULT_PLAYER_STATE: PlayerState = {
@@ -37,6 +38,7 @@ export const DEFAULT_PLAYER_STATE: PlayerState = {
   license_number: '',
   stats_values: {},
   is_captain: false,
+  signature: null,
 };
 
 export interface PlayerState {
@@ -53,6 +55,7 @@ export interface PlayerState {
   license_number: string;
   stats_values: { [key: string]: number };
   is_captain: boolean;
+  signature?: string;
 }
 
 export interface TeamState {
@@ -88,6 +91,7 @@ export interface OfficialState {
     | 'umpire_2';
   license_number?: string;
   federation?: string;
+  signature?: string;
 }
 
 export const ClockStateStates = {

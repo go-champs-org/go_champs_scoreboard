@@ -296,6 +296,62 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
       # updated
       assert updated_official.federation == "NBA"
     end
+
+    test "updates official signature", %{game_state: game_state} do
+      # Add an official first
+      original_official =
+        OfficialState.new(Ecto.UUID.generate(), "John Doe", :scorer, "SC001", "FIBA")
+
+      game_with_official = Games.add_official(game_state, original_official)
+
+      # Update signature
+      payload = %{
+        "id" => original_official.id,
+        "signature" => "base64_signature_data"
+      }
+
+      event = Event.new("update-official-in-game", "game-123", 600, 1, payload)
+      updated_game = UpdateOfficialInGameDefinition.handle(game_with_official, event)
+
+      updated_official =
+        Enum.find(updated_game.officials, fn o -> o.id == original_official.id end)
+
+      assert updated_official.signature == "base64_signature_data"
+      # Other fields unchanged
+      assert updated_official.name == "John Doe"
+      assert updated_official.type == :scorer
+    end
+
+    test "clears official signature when nil provided", %{game_state: game_state} do
+      # Add an official with existing signature
+      original_official = %OfficialState{
+        id: Ecto.UUID.generate(),
+        name: "John Doe",
+        type: :scorer,
+        license_number: "SC001",
+        federation: "FIBA",
+        signature: "existing_signature"
+      }
+
+      game_with_official = Games.add_official(game_state, original_official)
+
+      # Clear signature
+      payload = %{
+        "id" => original_official.id,
+        "signature" => nil
+      }
+
+      event = Event.new("update-official-in-game", "game-123", 600, 1, payload)
+      updated_game = UpdateOfficialInGameDefinition.handle(game_with_official, event)
+
+      updated_official =
+        Enum.find(updated_game.officials, fn o -> o.id == original_official.id end)
+
+      assert updated_official.signature == nil
+      # Other fields unchanged
+      assert updated_official.name == "John Doe"
+      assert updated_official.type == :scorer
+    end
   end
 
   describe "stream_config/0" do

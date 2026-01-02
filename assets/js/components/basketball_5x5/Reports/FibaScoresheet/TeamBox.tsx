@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, StyleSheet } from '@react-pdf/renderer';
+import { Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import { Coach, CoachFoul, Team, Timeout } from '../FibaScoresheet';
 import { textColorForPeriod, RED, BLUE, colorForPeriod } from './styles';
 
@@ -193,9 +193,20 @@ const styles = StyleSheet.create({
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
+          position: 'relative',
           flex: '1 1 auto',
           maxWidth: '100%',
           overflow: 'hidden',
+          signatureBox: {
+            position: 'absolute',
+            top: '0',
+            right: '0',
+            borderLeft: '1px solid #000',
+            backgroundColor: '#fff',
+            padding: '1px',
+            width: '43px',
+            height: '100%',
+          },
         },
         label: {
           margin: '2px',
@@ -608,6 +619,14 @@ function CoachRow({
       <View style={styles.teamContainer.table.coachRow.name}>
         <ConditionalCell isUnsed={isGameEnded && coach.name === ''}>
           <Text>{coach.name}</Text>
+          {coach.signature && (
+            <View style={styles.teamContainer.table.coachRow.name.signatureBox}>
+              <Image
+                src={coach.signature}
+                style={{ width: '100%', height: '100%' }}
+              />
+            </View>
+          )}
         </ConditionalCell>
       </View>
       <View style={styles.teamContainer.table.coachRow.columnFouls}>

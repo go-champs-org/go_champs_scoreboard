@@ -1,7 +1,8 @@
 {
   "basketball": {
     "reports": {
-      "fibaScoresheet": "Scoresheet"
+      "fibaScoresheet": "Scoresheet",
+      "collectSignatures": "Collect Signatures"
     },
     "navigation": {
       "boxScore": "Box Score",
@@ -9,6 +10,7 @@
       "editCoaches": "Edit Coaches",
       "editGame": "Edit Game",
       "eventLogs": "Event Logs",
+      "reports": "Reports",
       "streamViews": "Stream Views (OBS)",
       "startLive": "Start Live",
       "endLive": "End Live"
@@ -155,6 +157,25 @@
           "selectTeam": "Please select a team first",
           "selectPersonType": "Now select whether to add fouls to players or coaches",
           "instruction": "Follow the steps above to record fouls"
+        }
+      },
+      "signatures": {
+        "title": "Collect Signatures",
+        "officials": "Officials",
+        "coaches": "Coaches",
+        "players": "Players",
+        "status": "Status",
+        "actionsHeader": "Actions",
+        "signed": "Signed",
+        "pending": "Pending",
+        "noOfficials": "No officials available",
+        "noCoaches": "No coaches available",
+        "noPlayers": "No players available",
+        "actions": {
+          "clear": "Clear",
+          "cancel": "Cancel",
+          "save": "Save",
+          "sign": "Sign"
         }
       }
     },

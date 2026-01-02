@@ -65,11 +65,13 @@ export interface RunningScore {
 export interface Official {
   id: string;
   name: string;
+  signature?: string;
 }
 
 export interface Protest {
   state: 'no_protest' | 'protest_filed';
   player_name: string;
+  signature?: string;
 }
 
 export interface Team {
@@ -179,11 +181,32 @@ const styles = StyleSheet.create({
         display: 'flex',
         flex: '1 1',
       },
-      score: {
+      cell: {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
         flex: '1 1',
+      },
+    },
+  },
+  protest: {
+    padding: '3px 5px',
+    row: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      cell: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '2px',
+        signatureBox: {
+          padding: '1px',
+          width: '60px',
+          height: '12px',
+          borderBottom: '1px solid #000',
+        },
       },
     },
   },
@@ -219,7 +242,7 @@ function Period({
       <View style={quarterStyle}>
         <Text>{periodLabel}</Text>
       </View>
-      <View style={styles.periods.period.score}>
+      <View style={styles.periods.period.cell}>
         <Text>A</Text>
         <Text style={textColorForPeriod(period)}>
           {teamAScore ? teamAScore : defaultNoScoreDisplay}
@@ -334,7 +357,7 @@ function EndResults({ teamA, teamB }: { teamA: Team; teamB: Team }) {
             <View style={styles.periods.period.quarter}>
               <Text>Equipe vencedora</Text>
             </View>
-            <View style={styles.periods.period.score}>
+            <View style={styles.periods.period.cell}>
               <Text>{winnerTeam.name}</Text>
             </View>
           </View>
@@ -346,32 +369,28 @@ function EndResults({ teamA, teamB }: { teamA: Team; teamB: Team }) {
 
 function Protest({ protest }: { protest: Protest }) {
   return (
-    <View style={styles.periods}>
-      <View style={styles.periods.row}>
-        <View style={styles.periods.row.column}>
-          <View style={styles.periods.period}>
-            <View style={styles.periods.period.quarter}>
-              <Text>
-                Súmula protestada?{' '}
-                {protest.state === 'no_protest' ? ' Não' : ' Sim'}
-              </Text>
+    <View style={styles.protest}>
+      <View style={styles.protest.row}>
+        <View style={styles.protest.row.cell}>
+          <Text>Assinatura do capitão em caso de protesto:</Text>
+        </View>
+        <View style={styles.protest.row.cell}>
+          {protest.signature && (
+            <View style={styles.protest.row.cell.signatureBox}>
+              <Image
+                src={protest.signature}
+                style={{ width: '100%', height: '100%' }}
+              />
             </View>
-            <View style={styles.periods.period.score}>
-              <Text>Assinatura</Text>
-            </View>
-          </View>
+          )}
         </View>
       </View>
-      <View style={styles.periods.row}>
-        <View style={styles.periods.row.column}>
-          <View style={styles.periods.period}>
-            <View style={styles.periods.period.quarter}>
-              <Text>
-                Atleta: {protest.player_name ? protest.player_name : 'N/A'}
-              </Text>
-            </View>
-            <View style={styles.periods.period.score}></View>
-          </View>
+      <View style={styles.protest.row}>
+        <View style={styles.protest.row.cell}>
+          <Text>
+            Atleta:{' '}
+            {protest.state === 'protest_filed' ? protest.player_name : 'N/A'}
+          </Text>
         </View>
       </View>
     </View>
@@ -394,7 +413,7 @@ function EndGame({ endDatetime }: { endDatetime: string }) {
             <View style={styles.periods.period.quarter}>
               <Text>Fim de jogo às (hh:mm)</Text>
             </View>
-            <View style={styles.periods.period.score}>
+            <View style={styles.periods.period.cell}>
               <Text>{formattedEndDatetime}</Text>
             </View>
           </View>

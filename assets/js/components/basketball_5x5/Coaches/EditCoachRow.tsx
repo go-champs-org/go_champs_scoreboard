@@ -2,6 +2,7 @@ import React from 'react';
 import { CoachState, TeamType } from '../../../types';
 import DoubleClickButton from '../../DoubleClickButton';
 import { t } from 'i18next';
+import { selectCoachTypeLabelKey } from './selectors';
 
 interface StatInputProps {
   teamType: TeamType;
@@ -92,10 +93,7 @@ function EditCoachRow({ coach, teamType, pushEvent }: EditCoachRowProps) {
       ['coach-id']: coach.id,
     });
   };
-  const typeLabelResource =
-    coach.type === 'head_coach'
-      ? 'basketball.coaches.types.headCoach'
-      : 'basketball.coaches.types.assistantCoach';
+  const typeLabelResource = selectCoachTypeLabelKey(coach.type);
   return (
     <tr key={coach.id}>
       <td

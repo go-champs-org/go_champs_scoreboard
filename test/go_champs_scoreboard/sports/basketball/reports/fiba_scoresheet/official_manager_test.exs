@@ -22,15 +22,21 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.OfficialMa
     test "returns the official with the correct type" do
       game_state = %{
         officials: [
-          %OfficialState{id: "1", name: "John Doe", type: :scorer}
+          %OfficialState{
+            id: "1",
+            name: "John Doe",
+            signature: "some-official-signature",
+            type: :scorer
+          }
         ]
       }
 
-      %FibaScoresheet.Official{id: id, name: name} =
+      %FibaScoresheet.Official{id: id, name: name, signature: signature} =
         OfficialManager.bootstrap(game_state, :scorer)
 
       assert id == "1"
       assert name == "John Doe"
+      assert signature == "some-official-signature"
     end
   end
 end

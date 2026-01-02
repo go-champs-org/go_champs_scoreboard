@@ -246,7 +246,7 @@ function EditGameModal({
       showModal={showModal}
       modalCardStyle={{ width: '800px' }}
     >
-      <div className="tabs">
+      <div className="tabs is-boxed">
         <ul>
           <li className={activeTab === 'officials' ? 'is-active' : ''}>
             <a onClick={() => setActiveTab('officials')}>

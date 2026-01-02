@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, StyleSheet } from '@react-pdf/renderer';
+import { Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import { Official } from '../FibaScoresheet';
 
 const styles = StyleSheet.create({
@@ -65,7 +65,14 @@ function OfficialsBox({
             {scorer.name}
           </Text>
         </View>
-        <View style={styles.officialsBox.row.signatureBox}></View>
+        <View style={styles.officialsBox.row.signatureBox}>
+          {scorer.signature && (
+            <Image
+              src={scorer.signature}
+              style={{ width: '100%', height: '100%' }}
+            />
+          )}
+        </View>
       </View>
       <View style={styles.officialsBox.row}>
         <View style={styles.officialsBox.row.label}>
@@ -76,7 +83,14 @@ function OfficialsBox({
             {timekeeper.name}
           </Text>
         </View>
-        <View style={styles.officialsBox.row.signatureBox}></View>
+        <View style={styles.officialsBox.row.signatureBox}>
+          {timekeeper.signature && (
+            <Image
+              src={timekeeper.signature}
+              style={{ width: '100%', height: '100%' }}
+            />
+          )}
+        </View>
       </View>
       <View style={styles.officialsBox.row}>
         <View style={styles.officialsBox.row.label}>
@@ -87,7 +101,14 @@ function OfficialsBox({
             {shotClockOperator.name}
           </Text>
         </View>
-        <View style={styles.officialsBox.row.signatureBox}></View>
+        <View style={styles.officialsBox.row.signatureBox}>
+          {shotClockOperator.signature && (
+            <Image
+              src={shotClockOperator.signature}
+              style={{ width: '100%', height: '100%' }}
+            />
+          )}
+        </View>
       </View>
       <View style={styles.officialsBox.row}>
         <View style={styles.officialsBox.row.label}>
@@ -98,7 +119,14 @@ function OfficialsBox({
             {assistantScorer.name}
           </Text>
         </View>
-        <View style={styles.officialsBox.row.signatureBox}></View>
+        <View style={styles.officialsBox.row.signatureBox}>
+          {assistantScorer.signature && (
+            <Image
+              src={assistantScorer.signature}
+              style={{ width: '100%', height: '100%' }}
+            />
+          )}
+        </View>
       </View>
     </View>
   );

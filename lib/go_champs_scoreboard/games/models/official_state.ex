@@ -17,7 +17,8 @@ defmodule GoChampsScoreboard.Games.Models.OfficialState do
           name: String.t(),
           type: official_type(),
           license_number: String.t() | nil,
-          federation: String.t() | nil
+          federation: String.t() | nil,
+          signature: String.t() | nil
         }
 
   defstruct [
@@ -25,20 +26,29 @@ defmodule GoChampsScoreboard.Games.Models.OfficialState do
     :name,
     :type,
     :license_number,
-    :federation
+    :federation,
+    :signature
   ]
 
   @doc """
   Creates a new OfficialState
   """
-  @spec new(String.t(), String.t(), official_type(), String.t() | nil, String.t() | nil) :: t()
-  def new(id, name, type, license_number \\ nil, federation \\ nil) do
+  @spec new(
+          String.t(),
+          String.t(),
+          official_type(),
+          String.t() | nil,
+          String.t() | nil,
+          String.t() | nil
+        ) :: t()
+  def new(id, name, type, license_number \\ nil, federation \\ nil, signature \\ nil) do
     %__MODULE__{
       id: id,
       name: name,
       type: type,
       license_number: license_number,
-      federation: federation
+      federation: federation,
+      signature: signature
     }
   end
 
@@ -85,8 +95,9 @@ defmodule GoChampsScoreboard.Games.Models.OfficialState do
             name: name,
             type: type,
             license_number: license_number,
-            federation: federation
-          },
+            federation: federation,
+            signature: signature
+          } = _value,
           _options
         ) do
       %GoChampsScoreboard.Games.Models.OfficialState{
@@ -94,7 +105,8 @@ defmodule GoChampsScoreboard.Games.Models.OfficialState do
         id: id,
         name: name,
         license_number: license_number,
-        federation: federation
+        federation: federation,
+        signature: signature
       }
     end
   end

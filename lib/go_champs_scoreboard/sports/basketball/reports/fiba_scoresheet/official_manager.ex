@@ -8,10 +8,14 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.OfficialMa
            official.type == official_type
          end) do
       nil ->
-        %FibaScoresheet.Official{id: "", name: ""}
+        %FibaScoresheet.Official{id: "", name: "", signature: nil}
 
       official ->
-        %FibaScoresheet.Official{id: official.id, name: official.name}
+        %FibaScoresheet.Official{
+          id: official.id,
+          name: official.name,
+          signature: Map.get(official, :signature, nil)
+        }
     end
   end
 end

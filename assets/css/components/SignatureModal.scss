@@ -1,0 +1,55 @@
+.signature-modal {
+  .tab-content {
+    min-height: 400px;
+  }
+
+  .signature-pad-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    .signature-canvas {
+      border: 2px solid #dbdbdb;
+      background-color: white;
+      border-radius: 6px;
+      cursor: crosshair;
+
+      &:focus {
+        border-color: #3273dc;
+        box-shadow: 0 0 0 0.125em rgba(50, 115, 220, 0.25);
+      }
+    }
+
+    .box {
+      border-radius: 6px;
+      padding: 1.25rem;
+    }
+
+    .buttons {
+      margin-top: 1rem;
+    }
+  }
+
+  .table {
+    .tag {
+      &.is-success {
+        background-color: #48c774;
+        color: white;
+      }
+
+      &.is-warning {
+        background-color: $warning;
+        color: rgba(0, 0, 0, 0.7);
+      }
+
+      &.is-info {
+        &.is-light {
+          background-color: $green-light;
+          color: black;
+          font-size: 0.75rem;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+}
