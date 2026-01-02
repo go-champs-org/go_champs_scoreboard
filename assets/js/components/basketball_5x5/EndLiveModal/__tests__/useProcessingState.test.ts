@@ -237,9 +237,6 @@ describe('useProcessingState', () => {
   it('handles report error workflow with retry', () => {
     const { result } = renderHook(() => useProcessingState());
 
-  it('handles report error workflow with retry', () => {
-    const { result } = renderHook(() => useProcessingState());
-
     // Start processing
     act(() => {
       result.current.startProcessing();
