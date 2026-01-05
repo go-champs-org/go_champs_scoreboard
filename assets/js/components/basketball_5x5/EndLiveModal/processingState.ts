@@ -46,6 +46,11 @@ export function createProcessingStateManager(
         translationKey: 'basketball.reports.fibaScoresheet',
         status: REPORT_STATUSES.PENDING,
       },
+      {
+        id: REPORT_SLUGS.FIBA_BOXSCORE,
+        translationKey: 'basketball.reports.fibaBoxScore.title',
+        status: REPORT_STATUSES.PENDING,
+      },
     ],
   };
 }

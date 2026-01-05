@@ -9,6 +9,7 @@ import { REPORT_SLUGS } from '../../../../shared/reportRegistry';
 // Mock the generatorAndUploaders
 jest.mock('../../Reports/generatorAndUploaders', () => ({
   fibaScoresheet: jest.fn(),
+  fibaBoxScore: jest.fn(),
 }));
 
 import generatorAndUploaders from '../../Reports/generatorAndUploaders';
@@ -42,6 +43,8 @@ describe('endLiveFlows', () => {
       onProcessingStart: jest.fn(),
       onProcessingComplete: jest.fn(),
       onError: jest.fn(),
+      onReportComplete: jest.fn(),
+      onReportError: jest.fn(),
     };
 
     const gameId = 'test-game-id';
@@ -52,19 +55,29 @@ describe('endLiveFlows', () => {
         generatorAndUploaders.fibaScoresheet as jest.MockedFunction<
           typeof generatorAndUploaders.fibaScoresheet
         >;
+      const mockFibaBoxScore =
+        generatorAndUploaders.fibaBoxScore as jest.MockedFunction<
+          typeof generatorAndUploaders.fibaBoxScore
+        >;
       mockFibaScoresheet.mockImplementation(() => Promise.resolve());
+      mockFibaBoxScore.mockImplementation(() => Promise.resolve());
 
       await executeMediumEndLive(gameId, apiBaseUrl, mockCallbacks);
 
       expect(mockCallbacks.onProcessingStart).toHaveBeenCalled();
     });
 
-    it('calls generatorAndUploaders.fibaScoresheet with correct parameters', async () => {
+    it('calls generatorAndUploaders for both reports with correct parameters', async () => {
       const mockFibaScoresheet =
         generatorAndUploaders.fibaScoresheet as jest.MockedFunction<
           typeof generatorAndUploaders.fibaScoresheet
         >;
+      const mockFibaBoxScore =
+        generatorAndUploaders.fibaBoxScore as jest.MockedFunction<
+          typeof generatorAndUploaders.fibaBoxScore
+        >;
       mockFibaScoresheet.mockImplementation(() => Promise.resolve());
+      mockFibaBoxScore.mockImplementation(() => Promise.resolve());
 
       await executeMediumEndLive(gameId, apiBaseUrl, mockCallbacks);
 
@@ -74,25 +87,52 @@ describe('endLiveFlows', () => {
         onSuccess: expect.any(Function),
         onError: expect.any(Function),
       });
+
+      expect(mockFibaBoxScore).toHaveBeenCalledWith({
+        goChampsApiBaseUrl: apiBaseUrl,
+        gameId,
+        onSuccess: expect.any(Function),
+        onError: expect.any(Function),
+      });
     });
 
-    it('handles successful report generation', async () => {
-      const mockFileReference = {
-        publicUrl: 'http://example.com/report.pdf',
-        filename: 'report.pdf',
+    it('handles successful generation of both reports', async () => {
+      const mockScoresheetFileReference = {
+        publicUrl: 'http://example.com/scoresheet.pdf',
+        filename: 'scoresheet.pdf',
+      };
+      const mockBoxScoreFileReference = {
+        publicUrl: 'http://example.com/boxscore.pdf',
+        filename: 'boxscore.pdf',
       };
 
       const mockFibaScoresheet =
         generatorAndUploaders.fibaScoresheet as jest.MockedFunction<
           typeof generatorAndUploaders.fibaScoresheet
         >;
+      const mockFibaBoxScore =
+        generatorAndUploaders.fibaBoxScore as jest.MockedFunction<
+          typeof generatorAndUploaders.fibaBoxScore
+        >;
+
       mockFibaScoresheet.mockImplementation(({ onSuccess }) => {
-        if (onSuccess) onSuccess(mockFileReference as any);
+        if (onSuccess) onSuccess(mockScoresheetFileReference as any);
+        return Promise.resolve();
+      });
+
+      mockFibaBoxScore.mockImplementation(({ onSuccess }) => {
+        if (onSuccess) onSuccess(mockBoxScoreFileReference as any);
         return Promise.resolve();
       });
 
       await executeMediumEndLive(gameId, apiBaseUrl, mockCallbacks);
 
+      expect(mockCallbacks.onReportComplete).toHaveBeenCalledWith(
+        REPORT_SLUGS.FIBA_SCORESHEET,
+      );
+      expect(mockCallbacks.onReportComplete).toHaveBeenCalledWith(
+        REPORT_SLUGS.FIBA_BOXSCORE,
+      );
       expect(mockCallbacks.onProcessingComplete).toHaveBeenCalled();
       expect(mockCallbacks.pushEvent).toHaveBeenCalledWith(
         'end-game-live-mode',
@@ -100,7 +140,11 @@ describe('endLiveFlows', () => {
           assets: [
             {
               type: REPORT_SLUGS.FIBA_SCORESHEET,
-              url: mockFileReference.publicUrl,
+              url: mockScoresheetFileReference.publicUrl,
+            },
+            {
+              type: REPORT_SLUGS.FIBA_BOXSCORE,
+              url: mockBoxScoreFileReference.publicUrl,
             },
           ],
         },
@@ -115,14 +159,27 @@ describe('endLiveFlows', () => {
         generatorAndUploaders.fibaScoresheet as jest.MockedFunction<
           typeof generatorAndUploaders.fibaScoresheet
         >;
+      const mockFibaBoxScore =
+        generatorAndUploaders.fibaBoxScore as jest.MockedFunction<
+          typeof generatorAndUploaders.fibaBoxScore
+        >;
+
       mockFibaScoresheet.mockImplementation(({ onError }) => {
         if (onError) onError(mockError);
         return Promise.resolve();
       });
 
+      mockFibaBoxScore.mockImplementation(() => Promise.resolve());
+
       await executeMediumEndLive(gameId, apiBaseUrl, mockCallbacks);
 
-      expect(mockCallbacks.onError).toHaveBeenCalledWith('Generation failed');
+      expect(mockCallbacks.onReportError).toHaveBeenCalledWith(
+        REPORT_SLUGS.FIBA_SCORESHEET,
+        'Generation failed',
+      );
+      expect(mockCallbacks.onError).toHaveBeenCalledWith(
+        'FIBA Scoresheet: Generation failed',
+      );
     });
 
     it('handles unexpected errors', async () => {
@@ -130,11 +187,19 @@ describe('endLiveFlows', () => {
         generatorAndUploaders.fibaScoresheet as jest.MockedFunction<
           typeof generatorAndUploaders.fibaScoresheet
         >;
+      const mockFibaBoxScore =
+        generatorAndUploaders.fibaBoxScore as jest.MockedFunction<
+          typeof generatorAndUploaders.fibaBoxScore
+        >;
+
       mockFibaScoresheet.mockRejectedValue(new Error('Unexpected error'));
+      mockFibaBoxScore.mockImplementation(() => Promise.resolve());
 
       await executeMediumEndLive(gameId, apiBaseUrl, mockCallbacks);
 
-      expect(mockCallbacks.onError).toHaveBeenCalledWith('Unexpected error');
+      expect(mockCallbacks.onError).toHaveBeenCalledWith(
+        'FIBA Scoresheet: Unexpected error',
+      );
     });
 
     it('handles non-Error exceptions', async () => {
@@ -142,12 +207,18 @@ describe('endLiveFlows', () => {
         generatorAndUploaders.fibaScoresheet as jest.MockedFunction<
           typeof generatorAndUploaders.fibaScoresheet
         >;
+      const mockFibaBoxScore =
+        generatorAndUploaders.fibaBoxScore as jest.MockedFunction<
+          typeof generatorAndUploaders.fibaBoxScore
+        >;
+
       mockFibaScoresheet.mockRejectedValue('String error');
+      mockFibaBoxScore.mockImplementation(() => Promise.resolve());
 
       await executeMediumEndLive(gameId, apiBaseUrl, mockCallbacks);
 
       expect(mockCallbacks.onError).toHaveBeenCalledWith(
-        'An unexpected error occurred',
+        'FIBA Scoresheet: String error',
       );
     });
   });

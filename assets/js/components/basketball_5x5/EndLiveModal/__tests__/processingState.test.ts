@@ -2,9 +2,12 @@ import {
   ProcessingState,
   createProcessingStateManager,
   updateProcessingState,
+  updateReportStatus,
   resetProcessingState,
   PROCESSING_STATES,
+  REPORT_STATUSES,
 } from '../processingState';
+import { REPORT_SLUGS } from '../../../../shared/reportRegistry';
 
 describe('processingState', () => {
   describe('createProcessingStateManager', () => {
@@ -14,6 +17,17 @@ describe('processingState', () => {
       expect(manager.state).toBe(PROCESSING_STATES.IDLE);
       expect(manager.error).toBeNull();
       expect(manager.isProcessing).toBe(false);
+      expect(manager.reports).toHaveLength(2);
+      expect(manager.reports[0]).toEqual({
+        id: REPORT_SLUGS.FIBA_SCORESHEET,
+        translationKey: 'basketball.reports.fibaScoresheet',
+        status: REPORT_STATUSES.PENDING,
+      });
+      expect(manager.reports[1]).toEqual({
+        id: REPORT_SLUGS.FIBA_BOXSCORE,
+        translationKey: 'basketball.reports.fibaBoxScore.title',
+        status: REPORT_STATUSES.PENDING,
+      });
     });
 
     it('creates initial state with custom state', () => {
@@ -24,6 +38,7 @@ describe('processingState', () => {
       expect(manager.state).toBe(PROCESSING_STATES.GENERATING);
       expect(manager.error).toBeNull();
       expect(manager.isProcessing).toBe(true);
+      expect(manager.reports).toHaveLength(2);
     });
   });
 
@@ -87,6 +102,57 @@ describe('processingState', () => {
       expect(updatedManager.state).toBe(PROCESSING_STATES.IDLE);
       expect(updatedManager.error).toBeNull();
       expect(updatedManager.isProcessing).toBe(false);
+    });
+  });
+
+  describe('updateReportStatus', () => {
+    it('updates specific report status to completed', () => {
+      const currentManager = createProcessingStateManager();
+      const updatedManager = updateReportStatus(
+        currentManager,
+        REPORT_SLUGS.FIBA_SCORESHEET,
+        REPORT_STATUSES.COMPLETED,
+      );
+
+      expect(updatedManager.reports[0].status).toBe(REPORT_STATUSES.COMPLETED);
+      expect(updatedManager.reports[0].error).toBeUndefined();
+      expect(updatedManager.reports[1].status).toBe(REPORT_STATUSES.PENDING);
+    });
+
+    it('updates specific report status to error with error message', () => {
+      const currentManager = createProcessingStateManager();
+      const errorMessage = 'Report generation failed';
+      const updatedManager = updateReportStatus(
+        currentManager,
+        REPORT_SLUGS.FIBA_BOXSCORE,
+        REPORT_STATUSES.ERROR,
+        errorMessage,
+      );
+
+      expect(updatedManager.reports[1].status).toBe(REPORT_STATUSES.ERROR);
+      expect(updatedManager.reports[1].error).toBe(errorMessage);
+      expect(updatedManager.reports[0].status).toBe(REPORT_STATUSES.PENDING);
+    });
+
+    it('clears error when updating to non-error status', () => {
+      const currentManager = createProcessingStateManager();
+      // First set an error
+      const managerWithError = updateReportStatus(
+        currentManager,
+        REPORT_SLUGS.FIBA_SCORESHEET,
+        REPORT_STATUSES.ERROR,
+        'Some error',
+      );
+
+      // Then clear it
+      const updatedManager = updateReportStatus(
+        managerWithError,
+        REPORT_SLUGS.FIBA_SCORESHEET,
+        REPORT_STATUSES.COMPLETED,
+      );
+
+      expect(updatedManager.reports[0].status).toBe(REPORT_STATUSES.COMPLETED);
+      expect(updatedManager.reports[0].error).toBeUndefined();
     });
   });
 

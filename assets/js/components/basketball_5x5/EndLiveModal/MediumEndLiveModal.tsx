@@ -210,21 +210,22 @@ function MediumEndLiveModal({
           REPORT_SLUGS.FIBA_SCORESHEET,
           REPORT_STATUSES.GENERATING,
         );
+        updateReportState(
+          REPORT_SLUGS.FIBA_BOXSCORE,
+          REPORT_STATUSES.GENERATING,
+        );
       },
       onProcessingComplete: () => {
-        updateReportState(
-          REPORT_SLUGS.FIBA_SCORESHEET,
-          REPORT_STATUSES.COMPLETED,
-        );
         completeProcessing();
       },
       onError: (error: string) => {
-        updateReportState(
-          REPORT_SLUGS.FIBA_SCORESHEET,
-          REPORT_STATUSES.ERROR,
-          error,
-        );
         setError(error);
+      },
+      onReportComplete: (reportId: string) => {
+        updateReportState(reportId, REPORT_STATUSES.COMPLETED);
+      },
+      onReportError: (reportId: string, error: string) => {
+        updateReportState(reportId, REPORT_STATUSES.ERROR, error);
       },
     };
 

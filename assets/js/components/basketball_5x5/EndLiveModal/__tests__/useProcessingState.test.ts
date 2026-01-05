@@ -10,10 +10,15 @@ describe('useProcessingState', () => {
     expect(result.current.processingManager.state).toBe(PROCESSING_STATES.IDLE);
     expect(result.current.processingManager.error).toBeNull();
     expect(result.current.processingManager.isProcessing).toBe(false);
-    expect(result.current.processingManager.reports).toHaveLength(1);
+    expect(result.current.processingManager.reports).toHaveLength(2);
     expect(result.current.processingManager.reports[0]).toEqual({
       id: REPORT_SLUGS.FIBA_SCORESHEET,
       translationKey: 'basketball.reports.fibaScoresheet',
+      status: REPORT_STATUSES.PENDING,
+    });
+    expect(result.current.processingManager.reports[1]).toEqual({
+      id: REPORT_SLUGS.FIBA_BOXSCORE,
+      translationKey: 'basketball.reports.fibaBoxScore.title',
       status: REPORT_STATUSES.PENDING,
     });
   });
