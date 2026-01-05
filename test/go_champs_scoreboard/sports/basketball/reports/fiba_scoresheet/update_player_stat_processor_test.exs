@@ -484,5 +484,90 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
       # Should be unchanged since it's not a scoring or foul stat
       assert result_scoresheet == original_fiba_scoresheet
     end
+
+    test "skips processing when player-id does not exist in scoresheet for scoring stats" do
+      game_state = basketball_game_state_fixture()
+
+      # Use the first player from the game state
+      existing_player_in_game = List.first(game_state.home_team.players)
+
+      event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          game_state.clock_state.time,
+          game_state.clock_state.period,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => existing_player_in_game.id,
+            "stat-id" => "free_throws_made"
+          }
+        )
+
+      updated_game_state = GoChampsScoreboard.Events.Handler.handle(game_state, event)
+
+      {:ok, event_log} = EventLogs.persist(event, updated_game_state)
+
+      # Create scoresheet with different player ID (not the one from event)
+      team_a_players = [
+        %FibaScoresheet.Player{id: "different-player-id", name: "Player 1", number: 12, fouls: []}
+      ]
+
+      fiba_scoresheet =
+        fiba_scoresheet_fixture(game_id: event_log.game_id, team_a_players: team_a_players)
+
+      result_scoresheet =
+        UpdatePlayerStatProcessor.process(event_log, fiba_scoresheet)
+
+      # Should be unchanged since player was not found in scoresheet
+      assert result_scoresheet == fiba_scoresheet
+      assert result_scoresheet.team_a.running_score == %{}
+      assert result_scoresheet.team_a.score == 0
+    end
+
+    test "skips processing when player-id does not exist in scoresheet for foul stats" do
+      game_state = basketball_game_state_fixture()
+
+      # Use the first player from the game state
+      existing_player_in_game = List.first(game_state.home_team.players)
+
+      event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          game_state.clock_state.time,
+          game_state.clock_state.period,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => existing_player_in_game.id,
+            "stat-id" => "fouls_personal"
+          }
+        )
+
+      updated_game_state = GoChampsScoreboard.Events.Handler.handle(game_state, event)
+
+      {:ok, event_log} = EventLogs.persist(event, updated_game_state)
+
+      # Create scoresheet with different player ID (not the one from event)
+      team_a_players = [
+        %FibaScoresheet.Player{id: "different-player-id", name: "Player 1", number: 12, fouls: []}
+      ]
+
+      fiba_scoresheet =
+        fiba_scoresheet_fixture(game_id: event_log.game_id, team_a_players: team_a_players)
+
+      result_scoresheet =
+        UpdatePlayerStatProcessor.process(event_log, fiba_scoresheet)
+
+      # Should be unchanged since player was not found in scoresheet
+      assert result_scoresheet == fiba_scoresheet
+
+      # Verify no fouls were added to any player
+      existing_player =
+        Enum.find(result_scoresheet.team_a.players, fn p -> p.id == "different-player-id" end)
+
+      assert existing_player.fouls == []
+      assert result_scoresheet.team_a.all_fouls == []
+    end
   end
 end

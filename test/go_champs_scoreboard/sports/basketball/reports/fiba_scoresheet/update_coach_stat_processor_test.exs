@@ -383,5 +383,50 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateCoac
       # Should be unchanged since it's not a foul stat
       assert result_scoresheet == original_fiba_scoresheet
     end
+
+    test "skips processing when coach-id does not exist in scoresheet" do
+      game_state = basketball_game_state_fixture()
+
+      # Use the first coach from the game state
+      existing_coach_in_game = List.first(game_state.home_team.coaches)
+
+      event =
+        GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinition.create(
+          game_state.id,
+          game_state.clock_state.time,
+          game_state.clock_state.period,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "coach-id" => existing_coach_in_game.id,
+            "stat-id" => "fouls_technical"
+          }
+        )
+
+      updated_game_state = GoChampsScoreboard.Events.Handler.handle(game_state, event)
+
+      {:ok, event_log} = EventLogs.persist(event, updated_game_state)
+
+      # Create scoresheet with different coach ID (not the one from event)
+      team_a_coach =
+        %FibaScoresheet.Coach{
+          id: "different-coach-id",
+          name: "Different Coach",
+          fouls: []
+        }
+
+      fiba_scoresheet =
+        fiba_scoresheet_fixture(game_id: event_log.game_id, team_a_coach: team_a_coach)
+
+      result_scoresheet =
+        UpdateCoachStatProcessor.process(event_log, fiba_scoresheet)
+
+      # Should be unchanged since coach was not found in scoresheet
+      assert result_scoresheet == fiba_scoresheet
+
+      # Verify no fouls were added to any coach
+      assert result_scoresheet.team_a.coach.fouls == []
+      assert result_scoresheet.team_a.assistant_coach.fouls == []
+    end
   end
 end

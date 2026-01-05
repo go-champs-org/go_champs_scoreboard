@@ -2,6 +2,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateCoac
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScoresheetManager
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManager
+  alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.CoachManager
   alias GoChampsScoreboard.Events.EventLog
 
   # Non-scoring stats that need special handling
@@ -39,31 +40,38 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateCoac
   def process_foul_stat(team, stat_id, event_log) do
     coach_id = event_log.payload["coach-id"]
 
-    foul_type =
-      case stat_id do
-        "fouls_technical" -> "C"
-        "fouls_disqualifying" -> "D"
-        "fouls_disqualifying_fighting" -> "F"
-        "fouls_technical_bench" -> "B"
-        "fouls_technical_bench_disqualifying" -> "BD"
-        "fouls_game_disqualifying" -> "GD"
-      end
+    # Skip processing if coach not found
+    coach = CoachManager.find_coach(team, coach_id)
 
-    # Extract extra_action from metadata if present
-    extra_action =
-      case get_in(event_log.payload, ["metadata", "free-throws-awarded"]) do
-        nil -> nil
-        value -> value
-      end
+    if is_nil(coach) do
+      team
+    else
+      foul_type =
+        case stat_id do
+          "fouls_technical" -> "C"
+          "fouls_disqualifying" -> "D"
+          "fouls_disqualifying_fighting" -> "F"
+          "fouls_technical_bench" -> "B"
+          "fouls_technical_bench_disqualifying" -> "BD"
+          "fouls_game_disqualifying" -> "GD"
+        end
 
-    foul = %FibaScoresheet.Foul{
-      type: foul_type,
-      period: event_log.game_clock_period,
-      extra_action: extra_action,
-      is_last_of_half: false
-    }
+      # Extract extra_action from metadata if present
+      extra_action =
+        case get_in(event_log.payload, ["metadata", "free-throws-awarded"]) do
+          nil -> nil
+          value -> value
+        end
 
-    team
-    |> TeamManager.add_coach_foul(coach_id, foul)
+      foul = %FibaScoresheet.Foul{
+        type: foul_type,
+        period: event_log.game_clock_period,
+        extra_action: extra_action,
+        is_last_of_half: false
+      }
+
+      team
+      |> TeamManager.add_coach_foul(coach_id, foul)
+    end
   end
 end

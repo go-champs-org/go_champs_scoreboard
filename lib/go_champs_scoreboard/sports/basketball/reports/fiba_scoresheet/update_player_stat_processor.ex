@@ -61,52 +61,64 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
       team
       |> PlayerManager.find_player(player_id)
 
-    point_score_type =
-      case stat_id do
-        "free_throws_made" -> "FT"
-        "field_goals_made" -> "2PT"
-        "three_point_field_goals_made" -> "3PT"
-      end
+    # Skip processing if player not found
+    if is_nil(player) do
+      team
+    else
+      point_score_type =
+        case stat_id do
+          "free_throws_made" -> "FT"
+          "field_goals_made" -> "2PT"
+          "three_point_field_goals_made" -> "3PT"
+        end
 
-    point_score = %FibaScoresheet.PointScore{
-      type: point_score_type,
-      player_number: player.number,
-      period: event_log.game_clock_period,
-      is_last_of_period: false
-    }
+      point_score = %FibaScoresheet.PointScore{
+        type: point_score_type,
+        player_number: player.number,
+        period: event_log.game_clock_period,
+        is_last_of_period: false
+      }
 
-    team
-    |> TeamManager.add_score(point_score)
+      team
+      |> TeamManager.add_score(point_score)
+    end
   end
 
   def process_foul_stat(team, stat_id, event_log) do
     player_id = event_log.payload["player-id"]
 
-    foul_type =
-      case stat_id do
-        "fouls_personal" -> "P"
-        "fouls_technical" -> "T"
-        "fouls_unsportsmanlike" -> "U"
-        "fouls_disqualifying" -> "D"
-        "fouls_disqualifying_fighting" -> "F"
-        "fouls_game_disqualifying" -> "GD"
-      end
+    # Skip processing if player not found
+    player = PlayerManager.find_player(team, player_id)
 
-    # Extract extra_action from metadata if present
-    extra_action =
-      case get_in(event_log.payload, ["metadata", "free-throws-awarded"]) do
-        nil -> nil
-        value -> value
-      end
+    if is_nil(player) do
+      team
+    else
+      foul_type =
+        case stat_id do
+          "fouls_personal" -> "P"
+          "fouls_technical" -> "T"
+          "fouls_unsportsmanlike" -> "U"
+          "fouls_disqualifying" -> "D"
+          "fouls_disqualifying_fighting" -> "F"
+          "fouls_game_disqualifying" -> "GD"
+        end
 
-    foul = %FibaScoresheet.Foul{
-      type: foul_type,
-      period: event_log.game_clock_period,
-      extra_action: extra_action,
-      is_last_of_half: false
-    }
+      # Extract extra_action from metadata if present
+      extra_action =
+        case get_in(event_log.payload, ["metadata", "free-throws-awarded"]) do
+          nil -> nil
+          value -> value
+        end
 
-    team
-    |> TeamManager.add_player_foul(player_id, foul)
+      foul = %FibaScoresheet.Foul{
+        type: foul_type,
+        period: event_log.game_clock_period,
+        extra_action: extra_action,
+        is_last_of_half: false
+      }
+
+      team
+      |> TeamManager.add_player_foul(player_id, foul)
+    end
   end
 end
