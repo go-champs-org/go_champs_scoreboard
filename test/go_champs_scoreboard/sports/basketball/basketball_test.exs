@@ -82,6 +82,13 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
     test "returns all calculated player stats" do
       expected = [
         %GoChampsScoreboard.Statistics.Models.Stat{
+          key: "efficiency",
+          type: :calculated,
+          operations: [],
+          calculation_function:
+            &GoChampsScoreboard.Sports.Basketball.Statistics.calc_player_efficiency/1
+        },
+        %GoChampsScoreboard.Statistics.Models.Stat{
           key: "field_goal_percentage",
           type: :calculated,
           operations: [],
@@ -154,7 +161,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
     test "returns all player stats matching the given types" do
       # Test with calculated stats
       calculated_stats = Basketball.find_player_stat_by_type([:calculated])
-      assert length(calculated_stats) == 9
+      assert length(calculated_stats) == 10
       assert Enum.all?(calculated_stats, fn stat -> stat.type == :calculated end)
 
       # Test with manual stats

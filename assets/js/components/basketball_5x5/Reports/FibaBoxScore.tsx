@@ -4,6 +4,7 @@ import PageHeader from './Shared/PageHeader';
 import GameInfo from './FibaBoxScore/GameInfo';
 import TeamBoxScore from './FibaBoxScore/TeamBoxScore';
 import ScorePerPeriod from './FibaBoxScore/ScorePerPeriod';
+import Legend from './FibaBoxScore/Legend';
 
 export interface Player {
   id: string;
@@ -69,6 +70,7 @@ function BoxScorePage({ scoreBoxData }: FibaBoxScoreProps) {
         homeTeam={scoreBoxData.home_team}
         awayTeam={scoreBoxData.away_team}
       />
+      <Legend />
     </Page>
   );
 }

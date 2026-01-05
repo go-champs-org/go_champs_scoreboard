@@ -3,6 +3,29 @@ defmodule GoChampsScoreboard.Sports.Basketball.Statistics do
   alias GoChampsScoreboard.Games.Models.PlayerState
   alias GoChampsScoreboard.Games.Models.TeamState
 
+  @spec calc_player_efficiency(PlayerState.t()) :: float()
+  def calc_player_efficiency(player_state) do
+    points = calc_player_points(player_state)
+    rebounds = calc_player_rebounds(player_state)
+    assists = Map.get(player_state.stats_values, "assists", 0)
+    steals = Map.get(player_state.stats_values, "steals", 0)
+    blocks = Map.get(player_state.stats_values, "blocks", 0)
+
+    field_goals_missed =
+      Map.get(player_state.stats_values, "field_goals_missed", 0)
+
+    free_throws_missed =
+      Map.get(player_state.stats_values, "free_throws_missed", 0)
+
+    three_point_field_goals_missed =
+      Map.get(player_state.stats_values, "three_point_field_goals_missed", 0)
+
+    turnovers = Map.get(player_state.stats_values, "turnovers", 0)
+
+    points + rebounds + assists + steals + blocks - field_goals_missed -
+      free_throws_missed - three_point_field_goals_missed - turnovers
+  end
+
   @spec calc_player_field_goal_percentage(PlayerState.t()) :: float()
   def calc_player_field_goal_percentage(player_state) do
     field_goals_made = Map.get(player_state.stats_values, "field_goals_made", 0)

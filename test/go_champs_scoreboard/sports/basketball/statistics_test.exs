@@ -2,6 +2,32 @@ defmodule GoChampsScoreboard.Sports.Basketball.StatisticsTest do
   use ExUnit.Case
   alias GoChampsScoreboard.Sports.Basketball.Statistics
 
+  describe "calc_player_efficiency" do
+    test "returns the sum of points (1pt for FTM, 2pt for FGM, 3pt for 3PM), RO, RD, ASS, STL, BLK, and subtracts FTMM, FGMM, 3PMM and TO" do
+      # Player with 20 points, 10 rebounds, 5 assists, 3 steals, 2 blocks,
+      # 4 missed free throws, 6 missed field goals, 2 missed three point field goals, and 3 turnovers
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        stats_values: %{
+          "free_throws_made" => 4,
+          "field_goals_made" => 5,
+          "three_point_field_goals_made" => 2,
+          "rebounds_offensive" => 3,
+          "rebounds_defensive" => 7,
+          "assists" => 5,
+          "steals" => 2,
+          "blocks" => 3,
+          "free_throws_missed" => 4,
+          "field_goals_missed" => 6,
+          "three_point_field_goals_missed" => 2,
+          "turnovers" => 3
+        }
+      }
+
+      # Efficiency = (20 + 10 + 5 + 3 + 2) - (4 + 6 + 2 + 3) = 40 - 15 = 25
+      assert Statistics.calc_player_efficiency(player_state) == 25
+    end
+  end
+
   describe "calc_player_field_goal_percentage" do
     test "returns the percentage of field goals made" do
       player_state = %GoChampsScoreboard.Games.Models.PlayerState{

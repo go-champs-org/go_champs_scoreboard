@@ -7,7 +7,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Basketball do
     Stat.new("blocks", :manual, [:increment, :decrement]),
     Stat.new("disqualifications", :manual, [:increment, :decrement]),
     Stat.new("ejections", :manual, [:increment, :decrement]),
-    Stat.new("efficiency", :manual, [:increment, :decrement]),
+    Stat.new("efficiency", :calculated, [], &Statistics.calc_player_efficiency/1),
     Stat.new(
       "field_goal_percentage",
       :calculated,

@@ -6,7 +6,7 @@ defmodule GoChampsScoreboard.Sports.SportsTest do
   describe "find_player_stat_by_type/2" do
     test "delegates to Basketball.Basketball.find_player_stat_by_type for basketball sport" do
       calculated_stats = Sports.find_player_stat_by_type("basketball", [:calculated])
-      assert length(calculated_stats) == 9
+      assert length(calculated_stats) == 10
       assert Enum.all?(calculated_stats, fn stat -> stat.type == :calculated end)
 
       manual_stats = Sports.find_player_stat_by_type("basketball", [:manual])
