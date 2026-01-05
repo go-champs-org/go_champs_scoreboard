@@ -108,15 +108,23 @@ export interface PlayerStat {
   view: BasketballViews[];
   abbreviationTranslationKey: string;
   labelTranslationKey: string;
+  boxScoreMetadata?: {
+    displayInBoxScore: boolean;
+    boxScoreOrder?: number;
+  };
 }
 
-export const PLAYER_STATS = [
+export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.ASSISTS,
     type: STAT_TYPES.MANUAL,
     view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.assists',
     labelTranslationKey: 'basketball.stats.labels.assists',
+    boxScoreMetadata: {
+      displayInBoxScore: true,
+      boxScoreOrder: 4,
+    },
   },
   {
     key: STAT_KEYS.BLOCKS,
@@ -124,6 +132,10 @@ export const PLAYER_STATS = [
     view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.blocks',
     labelTranslationKey: 'basketball.stats.labels.blocks',
+    boxScoreMetadata: {
+      displayInBoxScore: true,
+      boxScoreOrder: 6,
+    },
   },
   {
     key: STAT_KEYS.EFFICIENCY,
@@ -131,6 +143,10 @@ export const PLAYER_STATS = [
     view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.efficiency',
     labelTranslationKey: 'basketball.stats.labels.efficiency',
+    boxScoreMetadata: {
+      displayInBoxScore: true,
+      boxScoreOrder: 20,
+    },
   },
   {
     key: STAT_KEYS.FIELD_GOAL_PERCENTAGE,
@@ -139,6 +155,9 @@ export const PLAYER_STATS = [
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.fieldGoalPercentage',
     labelTranslationKey: 'basketball.stats.labels.fieldGoalPercentage',
+    boxScoreMetadata: {
+      displayInBoxScore: false,
+    },
   },
   {
     key: STAT_KEYS.FIELD_GOALS_ATTEMPTED,
@@ -147,6 +166,10 @@ export const PLAYER_STATS = [
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.fieldGoalsAttempted',
     labelTranslationKey: 'basketball.stats.labels.fieldGoalsAttempted',
+    boxScoreMetadata: {
+      displayInBoxScore: true,
+      boxScoreOrder: 10,
+    },
   },
   {
     key: STAT_KEYS.FIELD_GOALS_MISSED,
@@ -155,6 +178,9 @@ export const PLAYER_STATS = [
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.fieldGoalsMissed',
     labelTranslationKey: 'basketball.stats.labels.fieldGoalsMissed',
+    boxScoreMetadata: {
+      displayInBoxScore: false,
+    },
   },
   {
     key: STAT_KEYS.FIELD_GOALS_MADE,
@@ -162,6 +188,10 @@ export const PLAYER_STATS = [
     view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.fieldGoalsMade',
     labelTranslationKey: 'basketball.stats.labels.fieldGoalsMade',
+    boxScoreMetadata: {
+      displayInBoxScore: true,
+      boxScoreOrder: 9,
+    },
   },
   {
     key: STAT_KEYS.FOULS,
@@ -169,6 +199,10 @@ export const PLAYER_STATS = [
     view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.fouls',
     labelTranslationKey: 'basketball.stats.labels.fouls',
+    boxScoreMetadata: {
+      displayInBoxScore: true,
+      boxScoreOrder: 19,
+    },
   },
   {
     key: STAT_KEYS.FOULS_UNSPORTSMANLIKE,
@@ -177,6 +211,9 @@ export const PLAYER_STATS = [
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.unsportsmanlikeFouls',
     labelTranslationKey: 'basketball.stats.labels.unsportsmanlikeFouls',
+    boxScoreMetadata: {
+      displayInBoxScore: false,
+    },
   },
   {
     key: STAT_KEYS.FOULS_PERSONAL,
@@ -184,6 +221,9 @@ export const PLAYER_STATS = [
     view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.personalFouls',
     labelTranslationKey: 'basketball.stats.labels.personalFouls',
+    boxScoreMetadata: {
+      displayInBoxScore: false,
+    },
   },
   {
     key: STAT_KEYS.FOULS_TECHNICAL,
@@ -191,6 +231,9 @@ export const PLAYER_STATS = [
     view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.technicalFouls',
     labelTranslationKey: 'basketball.stats.labels.technicalFouls',
+    boxScoreMetadata: {
+      displayInBoxScore: false,
+    },
   },
   {
     key: STAT_KEYS.FOULS_DISQUALIFYING,
@@ -199,6 +242,9 @@ export const PLAYER_STATS = [
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.disqualifyingFouls',
     labelTranslationKey: 'basketball.stats.labels.disqualifyingFouls',
+    boxScoreMetadata: {
+      displayInBoxScore: false,
+    },
   },
   {
     key: STAT_KEYS.FOULS_DISQUALIFYING_FIGHTING,
@@ -207,6 +253,9 @@ export const PLAYER_STATS = [
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.disqualifyingFightingFouls',
     labelTranslationKey: 'basketball.stats.labels.disqualifyingFightingFouls',
+    boxScoreMetadata: {
+      displayInBoxScore: false,
+    },
   },
   {
     key: STAT_KEYS.FOULS_GAME_DISQUALIFYING,
@@ -215,6 +264,9 @@ export const PLAYER_STATS = [
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.gameDisqualifyingFouls',
     labelTranslationKey: 'basketball.stats.labels.gameDisqualifyingFouls',
+    boxScoreMetadata: {
+      displayInBoxScore: false,
+    },
   },
   {
     key: STAT_KEYS.FREE_THROW_PERCENTAGE,
@@ -223,6 +275,9 @@ export const PLAYER_STATS = [
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.onePointPercentage',
     labelTranslationKey: 'basketball.stats.labels.freeThrowPercentage',
+    boxScoreMetadata: {
+      displayInBoxScore: false,
+    },
   },
   {
     key: STAT_KEYS.FREE_THROWS_ATTEMPTED,
@@ -231,6 +286,10 @@ export const PLAYER_STATS = [
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.freeThrowsAttempted',
     labelTranslationKey: 'basketball.stats.labels.freeThrowsAttempted',
+    boxScoreMetadata: {
+      displayInBoxScore: true,
+      boxScoreOrder: 8,
+    },
   },
   {
     key: STAT_KEYS.FREE_THROWS_MISSED,
@@ -239,6 +298,9 @@ export const PLAYER_STATS = [
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.freeThrowsMissed',
     labelTranslationKey: 'basketball.stats.labels.freeThrowsMissed',
+    boxScoreMetadata: {
+      displayInBoxScore: false,
+    },
   },
   {
     key: STAT_KEYS.FREE_THROWS_MADE,
@@ -246,6 +308,10 @@ export const PLAYER_STATS = [
     view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.onePoint',
     labelTranslationKey: 'basketball.stats.labels.freeThrowsMade',
+    boxScoreMetadata: {
+      displayInBoxScore: true,
+      boxScoreOrder: 7,
+    },
   },
   {
     key: STAT_KEYS.MINUTES_PLAYED,
@@ -253,6 +319,10 @@ export const PLAYER_STATS = [
     view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.minutesPlayed',
     labelTranslationKey: 'basketball.stats.labels.minutesPlayed',
+    boxScoreMetadata: {
+      displayInBoxScore: true,
+      boxScoreOrder: 1,
+    },
   },
   {
     key: STAT_KEYS.PLUS_MINUS,
@@ -260,6 +330,9 @@ export const PLAYER_STATS = [
     view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.plusMinus',
     labelTranslationKey: 'basketball.stats.labels.plusMinus',
+    boxScoreMetadata: {
+      displayInBoxScore: false,
+    },
   },
   {
     key: STAT_KEYS.POINTS,
@@ -267,6 +340,10 @@ export const PLAYER_STATS = [
     view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.points',
     labelTranslationKey: 'basketball.stats.labels.points',
+    boxScoreMetadata: {
+      displayInBoxScore: true,
+      boxScoreOrder: 2,
+    },
   },
   {
     key: STAT_KEYS.REBOUNDS,
@@ -274,6 +351,10 @@ export const PLAYER_STATS = [
     view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.rebounds',
     labelTranslationKey: 'basketball.stats.labels.rebounds',
+    boxScoreMetadata: {
+      displayInBoxScore: true,
+      boxScoreOrder: 3,
+    },
   },
   {
     key: STAT_KEYS.REBOUNDS_DEFENSIVE,
@@ -282,6 +363,10 @@ export const PLAYER_STATS = [
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.defensiveRebounds',
     labelTranslationKey: 'basketball.stats.labels.defensiveRebounds',
+    boxScoreMetadata: {
+      displayInBoxScore: true,
+      boxScoreOrder: 16,
+    },
   },
   {
     key: STAT_KEYS.REBOUNDS_OFFENSIVE,
@@ -290,6 +375,10 @@ export const PLAYER_STATS = [
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.offensiveRebounds',
     labelTranslationKey: 'basketball.stats.labels.offensiveRebounds',
+    boxScoreMetadata: {
+      displayInBoxScore: true,
+      boxScoreOrder: 17,
+    },
   },
   {
     key: STAT_KEYS.STEALS,
@@ -297,6 +386,10 @@ export const PLAYER_STATS = [
     view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.steals',
     labelTranslationKey: 'basketball.stats.labels.steals',
+    boxScoreMetadata: {
+      displayInBoxScore: true,
+      boxScoreOrder: 5,
+    },
   },
   {
     key: STAT_KEYS.THREE_POINT_FIELD_GOAL_PERCENTAGE,
@@ -306,6 +399,9 @@ export const PLAYER_STATS = [
       'basketball.stats.abbreviations.threePointPercentage',
     labelTranslationKey:
       'basketball.stats.labels.threePointFieldGoalPercentage',
+    boxScoreMetadata: {
+      displayInBoxScore: false,
+    },
   },
   {
     key: STAT_KEYS.THREE_POINT_FIELD_GOALS_ATTEMPTED,
@@ -315,6 +411,10 @@ export const PLAYER_STATS = [
       'basketball.stats.abbreviations.threePointsAttempted',
     labelTranslationKey:
       'basketball.stats.labels.threePointFieldGoalsAttempted',
+    boxScoreMetadata: {
+      displayInBoxScore: true,
+      boxScoreOrder: 13,
+    },
   },
   {
     key: STAT_KEYS.THREE_POINT_FIELD_GOALS_MISSED,
@@ -323,6 +423,9 @@ export const PLAYER_STATS = [
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.threePointsMissed',
     labelTranslationKey: 'basketball.stats.labels.threePointFieldGoalsMissed',
+    boxScoreMetadata: {
+      displayInBoxScore: false,
+    },
   },
   {
     key: STAT_KEYS.THREE_POINT_FIELD_GOALS_MADE,
@@ -330,6 +433,10 @@ export const PLAYER_STATS = [
     view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.threePoints',
     labelTranslationKey: 'basketball.stats.labels.threePointFieldGoalsMade',
+    boxScoreMetadata: {
+      displayInBoxScore: true,
+      boxScoreOrder: 12,
+    },
   },
   {
     key: STAT_KEYS.TURNOVERS,
@@ -337,6 +444,10 @@ export const PLAYER_STATS = [
     view: [BASKETBALL_VIEWS.MEDIUM],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.turnovers',
     labelTranslationKey: 'basketball.stats.labels.turnovers',
+    boxScoreMetadata: {
+      displayInBoxScore: true,
+      boxScoreOrder: 19,
+    },
   },
 ] as const;
 

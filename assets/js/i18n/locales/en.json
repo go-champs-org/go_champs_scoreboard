@@ -2,7 +2,20 @@
   "basketball": {
     "reports": {
       "fibaScoresheet": "Scoresheet",
-      "collectSignatures": "Collect Signatures"
+      "collectSignatures": "Collect Signatures",
+      "fibaBoxScore": {
+        "title": "Box Score",
+        "date": "Date",
+        "location": "Location",
+        "gameNumber": "Game Number",
+        "startAt": "Started At",
+        "endAt": "Ended At",
+        "scorePerPeriod": "Score per period",
+        "period": "Quarter",
+        "overtimeAbbreviation": "OT",
+        "final": "FINAL",
+        "totals": "Totals"
+      }
     },
     "navigation": {
       "boxScore": "Box Score",

@@ -1,7 +1,13 @@
 defmodule GoChampsScoreboard.Sports.Basketball.Reports do
+  alias GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.FibaBoxScoreManager
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScoresheetManager
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.EventProcessor
   alias GoChampsScoreboard.Games.EventLogs
+
+  def fetch_report_data("fiba-boxscore", game_id) do
+    EventLogs.get_last_by_game_id(game_id)
+    |> FibaBoxScoreManager.bootstrap()
+  end
 
   def fetch_report_data("fiba-scoresheet", game_id) do
     game_events = EventLogs.get_all_by_game_id(game_id, with_snapshot: true)

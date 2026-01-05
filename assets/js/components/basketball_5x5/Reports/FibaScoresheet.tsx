@@ -7,13 +7,13 @@ import {
   StyleSheet,
   Image,
 } from '@react-pdf/renderer';
-import QRCode from 'qrcode';
 import RunningScoreBox from './FibaScoresheet/RunningScoreBox';
 import TeamBox from './FibaScoresheet/TeamBox';
 import OfficialsBox from './FibaScoresheet/OfficialsBox';
 import FiscalsBox from './FibaScoresheet/FiscalsBox';
 import HeaderBox from './FibaScoresheet/HeaderBox';
 import { textColorForPeriod } from './FibaScoresheet/styles';
+import PageHeader from './Shared/PageHeader';
 
 export interface PlayerFoul {
   type: 'P' | 'T' | 'U' | 'D' | 'GD';
@@ -107,32 +107,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     padding: '12px 12px 20px 12px',
     fontSize: 8,
-  },
-  pageHeader: {
-    display: 'flex',
-    flexDirection: 'row',
-    width: '100%',
-    position: 'relative',
-    nameContainer: {
-      alignItems: 'center',
-      fontSize: 10,
-      fontWeight: 'bold',
-      width: '100%',
-    },
-    organizationLogo: {
-      height: 24,
-      width: 24,
-      position: 'absolute',
-      left: 0,
-      top: 0,
-    },
-    qrCodeContainer: {
-      position: 'absolute',
-      right: 0,
-      top: 0,
-      height: 24,
-      width: 24,
-    },
   },
   main: {
     border: '2px solid #000',
@@ -423,51 +397,6 @@ function EndGame({ endDatetime }: { endDatetime: string }) {
   );
 }
 
-function PageHeader({ scoresheetData }: FibaScoresheetProps) {
-  const qrCodeDataUrl = useMemo(() => {
-    if (!scoresheetData.info.web_url) return null;
-
-    try {
-      return QRCode.toDataURL(scoresheetData.info.web_url, {
-        width: 24,
-        margin: 1,
-        color: {
-          dark: '#000000',
-          light: '#FFFFFF',
-        },
-      });
-    } catch (error) {
-      console.warn('Failed to generate QR code:', error);
-      return null;
-    }
-  }, [scoresheetData.info.web_url]);
-
-  return (
-    <View style={styles.pageHeader}>
-      {scoresheetData.info.organization_logo_url && (
-        <View style={styles.pageHeader.organizationLogo}>
-          <Image
-            src={scoresheetData.info.organization_logo_url}
-            style={{ height: '100%', width: '100%' }}
-          />
-        </View>
-      )}
-      <View style={styles.pageHeader.nameContainer}>
-        <Text>{scoresheetData.info.organization_name.toUpperCase()}</Text>
-        <Text>{`COMPETIÇÃO: ${scoresheetData.info.tournament_name.toUpperCase()}`}</Text>
-      </View>
-      {qrCodeDataUrl && (
-        <View style={styles.pageHeader.qrCodeContainer}>
-          <Image
-            src={qrCodeDataUrl}
-            style={{ height: '100%', width: '100%' }}
-          />
-        </View>
-      )}
-    </View>
-  );
-}
-
 export interface FibaScoresheetData {
   game_id: string;
   team_a: Team;
@@ -490,7 +419,12 @@ interface FibaScoresheetProps {
 function ScoresheetPage({ scoresheetData }: FibaScoresheetProps) {
   return (
     <Page size="A4" style={styles.page}>
-      <PageHeader scoresheetData={scoresheetData} />
+      <PageHeader
+        organizationName={scoresheetData.info.organization_name}
+        tournamentName={scoresheetData.info.tournament_name}
+        organizationLogoUrl={scoresheetData.info.organization_logo_url}
+        qrCodeUrl={scoresheetData.info.web_url}
+      />
       <View style={styles.main}>
         <View style={styles.main.header}>
           <HeaderBox

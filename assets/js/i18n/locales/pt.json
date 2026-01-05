@@ -2,7 +2,20 @@
   "basketball": {
     "reports": {
       "fibaScoresheet": "Súmula",
-      "collectSignatures": "Coletar Assinaturas"
+      "collectSignatures": "Coletar Assinaturas",
+      "fibaBoxScore": {
+        "title": "Estatísticas",
+        "date": "Data",
+        "location": "Local",
+        "gameNumber": "Número do Jogo",
+        "startAt": "Iniciado às",
+        "endAt": "Finalizado às",
+        "scorePerPeriod": "Pontuação por Período",
+        "period": "Quarto",
+        "overtimeAbbreviation": "PRT",
+        "final": "FINAL",
+        "totals": "Totais"
+      }
     },
     "navigation": {
       "boxScore": "Estatísticas",
@@ -228,7 +241,7 @@
         "freeThrowsMissed": "LLE",
         "minutesPlayed": "MIN",
         "plusMinus": "+/-",
-        "threePointsAttempted": "3 PT",
+        "threePointsAttempted": "3 PTT",
         "threePointsMissed": "3 PTE"
       },
       "labels": {

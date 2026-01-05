@@ -1,14 +1,15 @@
 import React from 'react';
 import FibaScoresheet, {
-  FibaScoresheetData,
   parseFibaScoresheetData,
 } from '../components/basketball_5x5/Reports/FibaScoresheet';
+import FibaBoxScore from '../components/basketball_5x5/Reports/FibaBoxScore';
 import SimpleExample from '../components/shared/Reports/SimpleExample';
 
-export type ReportSlug = 'fiba-scoresheet' | 'simple-example';
+export type ReportSlug = 'fiba-scoresheet' | 'fiba-boxscore' | 'simple-example';
 
 export const REPORT_SLUGS: Record<string, ReportSlug> = {
   FIBA_SCORESHEET: 'fiba-scoresheet' as ReportSlug,
+  FIBA_BOXSCORE: 'fiba-boxscore' as ReportSlug,
   SIMPLE_EXAMPLE: 'simple-example' as ReportSlug,
 };
 // Standard props interface that all report components should accept
@@ -26,6 +27,10 @@ export interface ReportConfig {
 }
 
 // Wrapper components that adapt each report component to the standard interface
+export const FibaBoxScoreWrapper: ReportComponent = ({ data }) => (
+  <FibaBoxScore scoreBoxData={data} />
+);
+
 export const FibaScoresheetWrapper: ReportComponent = ({ data }) => (
   <FibaScoresheet scoresheetData={data} />
 );
@@ -36,6 +41,16 @@ export const SimpleExampleWrapper: ReportComponent = ({ data }) => (
 
 // Registry of all available reports
 export const REPORT_REGISTRY: { [key: string]: ReportConfig } = {
+  [REPORT_SLUGS.FIBA_BOXSCORE]: {
+    component: FibaBoxScoreWrapper,
+    parseData: (rawData: string) => {
+      try {
+        return JSON.parse(rawData);
+      } catch (error) {
+        throw new Error(`Invalid JSON data: ${error}`);
+      }
+    },
+  },
   [REPORT_SLUGS.FIBA_SCORESHEET]: {
     component: FibaScoresheetWrapper,
     parseData: parseFibaScoresheetData,

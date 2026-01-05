@@ -339,6 +339,8 @@ defmodule GoChampsScoreboard.GameStateFixtures do
         datetime: datetime,
         tournament_name: "Tournament Name",
         tournament_id: "tournament-id",
+        organization_name: "Organization Name",
+        organization_logo_url: "http://example.com/logo.png",
         game_report: "This is a game report.",
         web_url: "http://example.com/game_report",
         result_type: :automatic

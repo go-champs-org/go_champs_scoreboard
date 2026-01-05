@@ -13,6 +13,7 @@ import LanguageSwitcher from '../LanguageSwitcher';
 import { useTranslation } from '../../hooks/useTranslation';
 import EndLiveModal from './EndLiveModal';
 import SignatureModal from './Reports/SignatureModal';
+import { REPORT_SLUGS } from '../../shared/reportRegistry';
 
 interface ReportsProps {
   game_state: GameState;
@@ -65,7 +66,7 @@ function Reports({ game_state, t, pushEvent }: ReportsProps) {
               onClick={() => {
                 if (game_state.live_state.state !== 'not_started') {
                   window.open(
-                    `/scoreboard/report_viewer/${game_state.id}?report_slug=fiba-scoresheet`,
+                    `/scoreboard/report_viewer/${game_state.id}?report_slug=${REPORT_SLUGS.FIBA_SCORESHEET}`,
                     '_blank',
                   );
                 }
@@ -73,6 +74,20 @@ function Reports({ game_state, t, pushEvent }: ReportsProps) {
               }}
             >
               {t('basketball.reports.fibaScoresheet')}
+            </a>
+            <a
+              className="dropdown-item"
+              onClick={() => {
+                if (game_state.live_state.state !== 'not_started') {
+                  window.open(
+                    `/scoreboard/report_viewer/${game_state.id}?report_slug=${REPORT_SLUGS.FIBA_BOXSCORE}`,
+                    '_blank',
+                  );
+                }
+                setShowFibaDropdown(false);
+              }}
+            >
+              {t('basketball.reports.fibaBoxScore.title')}
             </a>
             <a className="dropdown-item" onClick={handleSignatureClick}>
               {t('basketball.reports.collectSignatures')}

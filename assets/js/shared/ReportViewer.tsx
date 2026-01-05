@@ -1,10 +1,6 @@
 import React from 'react';
 import { PDFViewer } from '@react-pdf/renderer';
-import {
-  REPORT_REGISTRY,
-  ReportComponentProps,
-  ReportConfig,
-} from './reportRegistry';
+import { REPORT_REGISTRY } from './reportRegistry';
 
 interface ReportViewerProps {
   report_data: string;
