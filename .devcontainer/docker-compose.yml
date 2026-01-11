@@ -1,8 +1,3 @@
-networks:
-  shared-network:
-    name: go-champs-shared-network
-    external: true
-
 services:
   app:
     build:
@@ -22,7 +17,6 @@ services:
     # Connect to both networks to access db and shared RabbitMQ
     networks:
       - default
-      - shared-network
 
     # Expose ports for the Phoenix app
     ports:
