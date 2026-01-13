@@ -26,9 +26,10 @@ export interface UseProcessingStateReturn {
 
 export function useProcessingState(
   initialState: ProcessingState = PROCESSING_STATES.IDLE,
+  reportSlugs?: string[],
 ): UseProcessingStateReturn {
   const [processingManager, setProcessingManager] = useState(() =>
-    createProcessingStateManager(initialState),
+    createProcessingStateManager(initialState, reportSlugs),
   );
 
   const startProcessing = useCallback(() => {
@@ -59,12 +60,14 @@ export function useProcessingState(
   );
 
   const retry = useCallback(() => {
-    setProcessingManager(resetProcessingState());
-  }, []);
+    setProcessingManager(resetProcessingState(reportSlugs));
+  }, [reportSlugs]);
 
   const reset = useCallback(() => {
-    setProcessingManager(createProcessingStateManager(initialState));
-  }, [initialState]);
+    setProcessingManager(
+      createProcessingStateManager(initialState, reportSlugs),
+    );
+  }, [initialState, reportSlugs]);
 
   return {
     processingManager,

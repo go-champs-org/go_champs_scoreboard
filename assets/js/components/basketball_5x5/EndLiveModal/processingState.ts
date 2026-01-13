@@ -33,25 +33,31 @@ export interface ProcessingStateManager {
   reports: ReportItem[];
 }
 
+const REPORT_METADATA: Record<string, { translationKey: string }> = {
+  [REPORT_SLUGS.FIBA_SCORESHEET]: {
+    translationKey: 'basketball.reports.fibaScoresheet',
+  },
+  [REPORT_SLUGS.FIBA_BOXSCORE]: {
+    translationKey: 'basketball.reports.fibaBoxScore.title',
+  },
+};
+
 export function createProcessingStateManager(
   initialState: ProcessingState = PROCESSING_STATES.IDLE,
+  reportSlugs: string[] = [
+    REPORT_SLUGS.FIBA_SCORESHEET,
+    REPORT_SLUGS.FIBA_BOXSCORE,
+  ],
 ): ProcessingStateManager {
   return {
     state: initialState,
     error: null,
     isProcessing: initialState === PROCESSING_STATES.GENERATING,
-    reports: [
-      {
-        id: REPORT_SLUGS.FIBA_SCORESHEET,
-        translationKey: 'basketball.reports.fibaScoresheet',
-        status: REPORT_STATUSES.PENDING,
-      },
-      {
-        id: REPORT_SLUGS.FIBA_BOXSCORE,
-        translationKey: 'basketball.reports.fibaBoxScore.title',
-        status: REPORT_STATUSES.PENDING,
-      },
-    ],
+    reports: reportSlugs.map((slug) => ({
+      id: slug,
+      translationKey: REPORT_METADATA[slug]?.translationKey || slug,
+      status: REPORT_STATUSES.PENDING,
+    })),
   };
 }
 
@@ -89,6 +95,8 @@ export function updateReportStatus(
   };
 }
 
-export function resetProcessingState(): ProcessingStateManager {
-  return createProcessingStateManager(PROCESSING_STATES.IDLE);
+export function resetProcessingState(
+  reportSlugs?: string[],
+): ProcessingStateManager {
+  return createProcessingStateManager(PROCESSING_STATES.IDLE, reportSlugs);
 }

@@ -3,6 +3,7 @@ import { GameState } from '../../types';
 import { BASKETBALL_VIEWS } from './constants';
 import BasicEndLiveModal from './EndLiveModal/BasicEndLiveModal';
 import MediumEndLiveModal from './EndLiveModal/MediumEndLiveModal';
+import MediumPlusEndLiveModal from './EndLiveModal/MediumPlusEndLiveModal';
 import { useSelectedView } from '../../shared/ViewSettingsContext';
 
 interface EndLiveModalProps {
@@ -21,6 +22,8 @@ function EndLiveModal(props: EndLiveModalProps) {
       return <BasicEndLiveModal {...props} />;
     case BASKETBALL_VIEWS.MEDIUM:
       return <MediumEndLiveModal {...props} />;
+    case BASKETBALL_VIEWS.MEDIUM_PLUS:
+      return <MediumPlusEndLiveModal {...props} />;
     default:
       // Fallback to basic for unknown view types
       return <BasicEndLiveModal {...props} />;

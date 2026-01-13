@@ -19,22 +19,25 @@ import {
 } from './EndLiveModalComponents';
 
 // Main Component
-interface MediumEndLiveModalProps {
+interface MediumPlusEndLiveModalProps {
   game_state: GameState;
   showModal: boolean;
   onCloseModal: () => void;
   pushEvent: (event: string, payload: any) => void;
 }
 
-// Only generate fiba_boxscore for Medium view
-const MEDIUM_REPORTS = [REPORT_SLUGS.FIBA_BOXSCORE];
+// Generate both reports for MediumPlus view
+const MEDIUM_PLUS_REPORTS = [
+  REPORT_SLUGS.FIBA_SCORESHEET,
+  REPORT_SLUGS.FIBA_BOXSCORE,
+];
 
-function MediumEndLiveModal({
+function MediumPlusEndLiveModal({
   game_state,
   showModal,
   onCloseModal,
   pushEvent,
-}: MediumEndLiveModalProps) {
+}: MediumPlusEndLiveModalProps) {
   const { t } = useTranslation();
   const config = useConfig();
   const {
@@ -44,7 +47,7 @@ function MediumEndLiveModal({
     setError,
     updateReportState,
     retry,
-  } = useProcessingState(PROCESSING_STATES.IDLE, MEDIUM_REPORTS);
+  } = useProcessingState(PROCESSING_STATES.IDLE, MEDIUM_PLUS_REPORTS);
 
   const shouldShowWarning = shouldShowEarlyEndWarning(
     game_state.live_state.started_at,
@@ -57,7 +60,7 @@ function MediumEndLiveModal({
       onProcessingStart: () => {
         startProcessing();
         // Mark all reports as generating
-        MEDIUM_REPORTS.forEach((reportSlug) => {
+        MEDIUM_PLUS_REPORTS.forEach((reportSlug) => {
           updateReportState(reportSlug, REPORT_STATUSES.GENERATING);
         });
       },
@@ -119,4 +122,4 @@ function MediumEndLiveModal({
   );
 }
 
-export default MediumEndLiveModal;
+export default MediumPlusEndLiveModal;
