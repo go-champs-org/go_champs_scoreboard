@@ -117,7 +117,10 @@ export interface LiveState {
   ended_at: string;
 }
 
-export type BasketballViews = 'basketball-medium' | 'basketball-basic';
+export type BasketballViews =
+  | 'basketball-medium'
+  | 'basketball-medium-plus'
+  | 'basketball-basic';
 
 export interface ViewSettingsState {
   view: BasketballViews;

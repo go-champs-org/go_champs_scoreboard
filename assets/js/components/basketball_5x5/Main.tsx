@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
-import { EventLog, GameState, TeamType, Selection } from '../../types';
-import { BasicStatsControls, MediumStatsControls } from './StatsControls';
-import MediumTopLevel, { BasicTopLevel } from './TopLevel';
+import { EventLog, GameState, Selection } from '../../types';
 import LiveEndedModal from './LiveEndedModal';
-import { BasicTopControls } from './TopControls';
-import PlayersControls from './PlayersControls';
-import TeamControls from './TeamControls';
-import ClockControls from './ClockControls';
-import ProtestControls from './ProtestControls';
 import { BASKETBALL_VIEWS } from './constants';
 import { useSelectedView } from '../../shared/ViewSettingsContext';
+import MediumView from './Views/MediumView';
+import BasicView from './Views/BasicView';
 
 export interface LiveReactBase {
   pushEvent: (event: string, payload: any) => void;
@@ -22,158 +17,6 @@ interface MainProps extends LiveReactBase {
   recent_events: EventLog[];
 }
 
-interface ViewProps {
-  game_state: GameState;
-  recent_events: EventLog[];
-  pushEvent: (event: string, payload: any) => void;
-  selection: Selection | null;
-  setSelection: (selection: Selection | null) => void;
-}
-
-function BasicView({
-  game_state,
-  recent_events,
-  pushEvent,
-  selection,
-  setSelection,
-}: ViewProps) {
-  return (
-    <>
-      <div className="columns is-multiline">
-        <div className="column is-12">
-          <BasicTopControls game_state={game_state} pushEvent={pushEvent} />
-        </div>
-
-        <div className="column is-4">
-          <PlayersControls
-            clockState={game_state.clock_state}
-            team={game_state.home_team}
-            pushEvent={pushEvent}
-            teamType="home"
-            selectEntity={setSelection}
-            selection={selection}
-            liveState={game_state.live_state}
-            maxNumberOfPlayerInCourt={5}
-          />
-        </div>
-
-        <div className="column is-4">
-          <BasicStatsControls
-            liveState={game_state.live_state}
-            selection={selection}
-            pushEvent={pushEvent}
-            selectEntity={setSelection}
-          />
-        </div>
-
-        <div className="column is-4">
-          <PlayersControls
-            clockState={game_state.clock_state}
-            team={game_state.away_team}
-            pushEvent={pushEvent}
-            teamType="away"
-            selectEntity={setSelection}
-            selection={selection}
-            liveState={game_state.live_state}
-            maxNumberOfPlayerInCourt={5}
-          />
-        </div>
-      </div>
-    </>
-  );
-}
-
-function MediumView({
-  game_state,
-  recent_events,
-  pushEvent,
-  selection,
-  setSelection,
-}: ViewProps) {
-  return (
-    <>
-      <div className="columns is-multiline">
-        <div className="column is-4">
-          <div className="columns is-multiline">
-            <div className="column is-12">
-              <TeamControls
-                team={game_state.home_team}
-                teamType="home"
-                clock_state={game_state.clock_state}
-              />
-            </div>
-            <div className="column is-12">
-              <PlayersControls
-                clockState={game_state.clock_state}
-                pushEvent={pushEvent}
-                selectEntity={setSelection}
-                selection={selection}
-                team={game_state.home_team}
-                teamType="home"
-                liveState={game_state.live_state}
-                maxNumberOfPlayerInCourt={5}
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="column is-4">
-          <div className="columns is-multiline">
-            <div className="column is-12">
-              {game_state.clock_state.state === 'finished' ? (
-                <ProtestControls
-                  game_state={game_state}
-                  pushEvent={pushEvent}
-                />
-              ) : (
-                <ClockControls
-                  away_team={game_state.away_team}
-                  clock_state={game_state.clock_state}
-                  home_team={game_state.home_team}
-                  live_state={game_state.live_state}
-                  pushEvent={pushEvent}
-                />
-              )}
-            </div>
-            <div className="column is-12">
-              <MediumStatsControls
-                liveState={game_state.live_state}
-                selection={selection}
-                pushEvent={pushEvent}
-                selectEntity={setSelection}
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="column is-4">
-          <div className="columns is-multiline">
-            <div className="column is-12">
-              <TeamControls
-                team={game_state.away_team}
-                teamType="away"
-                clock_state={game_state.clock_state}
-              />
-            </div>
-            <div className="column is-12">
-              <PlayersControls
-                clockState={game_state.clock_state}
-                pushEvent={pushEvent}
-                selectEntity={setSelection}
-                selection={selection}
-                team={game_state.away_team}
-                teamType="away"
-                liveState={game_state.live_state}
-                maxNumberOfPlayerInCourt={5}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}
-
 function Main({ game_state, recent_events, pushEvent }: MainProps) {
   const showLiveEndedModal = game_state.live_state.state === 'ended';
   const [selection, setSelection] = useState<Selection | null>(null);
@@ -182,29 +25,21 @@ function Main({ game_state, recent_events, pushEvent }: MainProps) {
   return (
     <>
       {selectedView === BASKETBALL_VIEWS.BASIC ? (
-        <>
-          <BasicTopLevel game_state={game_state} pushEvent={pushEvent} />
-
-          <BasicView
-            game_state={game_state}
-            recent_events={recent_events}
-            pushEvent={pushEvent}
-            selection={selection}
-            setSelection={setSelection}
-          />
-        </>
+        <BasicView
+          game_state={game_state}
+          recent_events={recent_events}
+          pushEvent={pushEvent}
+          selection={selection}
+          setSelection={setSelection}
+        />
       ) : (
-        <>
-          <MediumTopLevel game_state={game_state} pushEvent={pushEvent} />
-
-          <MediumView
-            game_state={game_state}
-            recent_events={recent_events}
-            pushEvent={pushEvent}
-            selection={selection}
-            setSelection={setSelection}
-          />
-        </>
+        <MediumView
+          game_state={game_state}
+          recent_events={recent_events}
+          pushEvent={pushEvent}
+          selection={selection}
+          setSelection={setSelection}
+        />
       )}
 
       <LiveEndedModal showModal={showLiveEndedModal} />

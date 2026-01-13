@@ -100,6 +100,7 @@ export const STAT_TYPES = {
 export const BASKETBALL_VIEWS: Record<string, BasketballViews> = {
   BASIC: 'basketball-basic',
   MEDIUM: 'basketball-medium',
+  MEDIUM_PLUS: 'basketball-medium-plus',
 } as const;
 
 export interface PlayerStat {

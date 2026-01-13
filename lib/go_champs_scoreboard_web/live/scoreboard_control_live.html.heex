@@ -5,7 +5,8 @@
     env: Poison.encode!(@env),
     feature_flags_data: Poison.encode!(@feature_flags),
     game_data: Poison.encode!(@game_state),
-    recent_events_data: Poison.encode!(@recent_events)
+    recent_events_data: Poison.encode!(@recent_events),
+    view: Poison.encode!(@view)
   ],
   id: "main-scoreboard"
 )}
