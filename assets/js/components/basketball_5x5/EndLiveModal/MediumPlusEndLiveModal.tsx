@@ -78,7 +78,12 @@ function MediumPlusEndLiveModal({
       },
     };
 
-    await executeMediumEndLive(game_state.id, config.getApiHost(), callbacks);
+    await executeMediumEndLive(
+      game_state.id,
+      config.getApiHost(),
+      callbacks,
+      MEDIUM_PLUS_REPORTS,
+    );
   };
 
   const handleRetry = () => {

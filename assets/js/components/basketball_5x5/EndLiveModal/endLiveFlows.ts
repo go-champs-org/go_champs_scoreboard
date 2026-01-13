@@ -25,16 +25,27 @@ export async function executeMediumEndLive(
   gameId: string,
   apiBaseUrl: string,
   callbacks: ReportGenerationCallbacks,
+  reportSlugs: string[],
 ): Promise<void> {
+  const reportGenerators = {
+    [REPORT_SLUGS.FIBA_SCORESHEET]: {
+      generator: generatorAndUploaders.fibaScoresheet,
+      displayName: 'FIBA Scoresheet',
+    },
+    [REPORT_SLUGS.FIBA_BOXSCORE]: {
+      generator: generatorAndUploaders.fibaBoxScore,
+      displayName: 'FIBA Box Score',
+    },
+  };
+
   try {
     callbacks.onProcessingStart();
 
-    // Track completed assets
     const completedAssets: Array<{ type: string; url: string }> = [];
     let hasError = false;
 
     const checkCompletion = () => {
-      if (!hasError && completedAssets.length === 2) {
+      if (!hasError && completedAssets.length === reportSlugs.length) {
         callbacks.onProcessingComplete();
         callbacks.pushEvent(EVENT_KEYS.END_GAME_LIVE_MODE, {
           assets: completedAssets,
@@ -51,62 +62,35 @@ export async function executeMediumEndLive(
       }
     };
 
-    // Start both generators
-    const scoresheetPromise = generatorAndUploaders
-      .fibaScoresheet({
-        goChampsApiBaseUrl: apiBaseUrl,
-        gameId,
-        onSuccess: (fileReference: FileReference) => {
-          completedAssets.push({
-            type: REPORT_SLUGS.FIBA_SCORESHEET,
-            url: fileReference.publicUrl,
-          });
-          callbacks.onReportComplete?.(REPORT_SLUGS.FIBA_SCORESHEET);
-          checkCompletion();
-        },
-        onError: (error: Error) => {
-          callbacks.onReportError?.(
-            REPORT_SLUGS.FIBA_SCORESHEET,
-            error.message,
-          );
-          handleError(error, 'FIBA Scoresheet');
-        },
-      })
-      .catch((error: any) => {
-        callbacks.onReportError?.(
-          REPORT_SLUGS.FIBA_SCORESHEET,
-          error instanceof Error ? error.message : String(error),
-        );
-        handleError(error, 'FIBA Scoresheet');
-      });
+    const promises = reportSlugs.map((reportSlug) => {
+      const config = reportGenerators[reportSlug];
 
-    const boxScorePromise = generatorAndUploaders
-      .fibaBoxScore({
-        goChampsApiBaseUrl: apiBaseUrl,
-        gameId,
-        onSuccess: (fileReference: FileReference) => {
-          completedAssets.push({
-            type: REPORT_SLUGS.FIBA_BOXSCORE,
-            url: fileReference.publicUrl,
-          });
-          callbacks.onReportComplete?.(REPORT_SLUGS.FIBA_BOXSCORE);
-          checkCompletion();
-        },
-        onError: (error: Error) => {
-          callbacks.onReportError?.(REPORT_SLUGS.FIBA_BOXSCORE, error.message);
-          handleError(error, 'FIBA Box Score');
-        },
-      })
-      .catch((error: any) => {
-        callbacks.onReportError?.(
-          REPORT_SLUGS.FIBA_BOXSCORE,
-          error instanceof Error ? error.message : String(error),
-        );
-        handleError(error, 'FIBA Box Score');
-      });
+      return config
+        .generator({
+          goChampsApiBaseUrl: apiBaseUrl,
+          gameId,
+          onSuccess: (fileReference: FileReference) => {
+            completedAssets.push({
+              type: reportSlug,
+              url: fileReference.publicUrl,
+            });
+            callbacks.onReportComplete?.(reportSlug);
+            checkCompletion();
+          },
+          onError: (error: Error) => {
+            callbacks.onReportError?.(reportSlug, error.message);
+            handleError(error, config.displayName);
+          },
+        })
+        .catch((error: any) => {
+          const message =
+            error instanceof Error ? error.message : String(error);
+          callbacks.onReportError?.(reportSlug, message);
+          handleError(error, config.displayName);
+        });
+    });
 
-    // Wait for both to complete or fail
-    await Promise.allSettled([scoresheetPromise, boxScorePromise]);
+    await Promise.allSettled(promises);
   } catch (error) {
     const message =
       error instanceof Error ? error.message : 'An unexpected error occurred';
