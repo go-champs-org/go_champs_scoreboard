@@ -62,7 +62,10 @@ describe('endLiveFlows', () => {
       mockFibaScoresheet.mockImplementation(() => Promise.resolve());
       mockFibaBoxScore.mockImplementation(() => Promise.resolve());
 
-      await executeMediumEndLive(gameId, apiBaseUrl, mockCallbacks);
+      await executeMediumEndLive(gameId, apiBaseUrl, mockCallbacks, [
+        REPORT_SLUGS.FIBA_SCORESHEET,
+        REPORT_SLUGS.FIBA_BOXSCORE,
+      ]);
 
       expect(mockCallbacks.onProcessingStart).toHaveBeenCalled();
     });
@@ -79,7 +82,10 @@ describe('endLiveFlows', () => {
       mockFibaScoresheet.mockImplementation(() => Promise.resolve());
       mockFibaBoxScore.mockImplementation(() => Promise.resolve());
 
-      await executeMediumEndLive(gameId, apiBaseUrl, mockCallbacks);
+      await executeMediumEndLive(gameId, apiBaseUrl, mockCallbacks, [
+        REPORT_SLUGS.FIBA_SCORESHEET,
+        REPORT_SLUGS.FIBA_BOXSCORE,
+      ]);
 
       expect(mockFibaScoresheet).toHaveBeenCalledWith({
         goChampsApiBaseUrl: apiBaseUrl,
@@ -125,7 +131,10 @@ describe('endLiveFlows', () => {
         return Promise.resolve();
       });
 
-      await executeMediumEndLive(gameId, apiBaseUrl, mockCallbacks);
+      await executeMediumEndLive(gameId, apiBaseUrl, mockCallbacks, [
+        REPORT_SLUGS.FIBA_SCORESHEET,
+        REPORT_SLUGS.FIBA_BOXSCORE,
+      ]);
 
       expect(mockCallbacks.onReportComplete).toHaveBeenCalledWith(
         REPORT_SLUGS.FIBA_SCORESHEET,
@@ -171,7 +180,10 @@ describe('endLiveFlows', () => {
 
       mockFibaBoxScore.mockImplementation(() => Promise.resolve());
 
-      await executeMediumEndLive(gameId, apiBaseUrl, mockCallbacks);
+      await executeMediumEndLive(gameId, apiBaseUrl, mockCallbacks, [
+        REPORT_SLUGS.FIBA_SCORESHEET,
+        REPORT_SLUGS.FIBA_BOXSCORE,
+      ]);
 
       expect(mockCallbacks.onReportError).toHaveBeenCalledWith(
         REPORT_SLUGS.FIBA_SCORESHEET,
@@ -195,7 +207,10 @@ describe('endLiveFlows', () => {
       mockFibaScoresheet.mockRejectedValue(new Error('Unexpected error'));
       mockFibaBoxScore.mockImplementation(() => Promise.resolve());
 
-      await executeMediumEndLive(gameId, apiBaseUrl, mockCallbacks);
+      await executeMediumEndLive(gameId, apiBaseUrl, mockCallbacks, [
+        REPORT_SLUGS.FIBA_SCORESHEET,
+        REPORT_SLUGS.FIBA_BOXSCORE,
+      ]);
 
       expect(mockCallbacks.onError).toHaveBeenCalledWith(
         'FIBA Scoresheet: Unexpected error',
@@ -215,7 +230,10 @@ describe('endLiveFlows', () => {
       mockFibaScoresheet.mockRejectedValue('String error');
       mockFibaBoxScore.mockImplementation(() => Promise.resolve());
 
-      await executeMediumEndLive(gameId, apiBaseUrl, mockCallbacks);
+      await executeMediumEndLive(gameId, apiBaseUrl, mockCallbacks, [
+        REPORT_SLUGS.FIBA_SCORESHEET,
+        REPORT_SLUGS.FIBA_BOXSCORE,
+      ]);
 
       expect(mockCallbacks.onError).toHaveBeenCalledWith(
         'FIBA Scoresheet: String error',
