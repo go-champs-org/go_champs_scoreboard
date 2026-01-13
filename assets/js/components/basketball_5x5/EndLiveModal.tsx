@@ -3,6 +3,7 @@ import { GameState } from '../../types';
 import { BASKETBALL_VIEWS } from './constants';
 import BasicEndLiveModal from './EndLiveModal/BasicEndLiveModal';
 import MediumEndLiveModal from './EndLiveModal/MediumEndLiveModal';
+import { useSelectedView } from '../../shared/ViewSettingsContext';
 
 interface EndLiveModalProps {
   game_state: GameState;
@@ -12,10 +13,10 @@ interface EndLiveModalProps {
 }
 
 function EndLiveModal(props: EndLiveModalProps) {
-  const { game_state } = props;
+  const selectedView = useSelectedView();
 
   // Route to appropriate modal based on view type
-  switch (game_state.view_settings_state.view) {
+  switch (selectedView) {
     case BASKETBALL_VIEWS.BASIC:
       return <BasicEndLiveModal {...props} />;
     case BASKETBALL_VIEWS.MEDIUM:

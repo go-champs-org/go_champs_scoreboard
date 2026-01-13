@@ -6,6 +6,7 @@ import Modal from '../../Modal';
 import MediumEditPlayerRow, { BasicEditPlayerRow } from './EditPlayerRow';
 import AddPlayerRow from './AddPlayerRow';
 import { BASKETBALL_VIEWS } from '../constants';
+import { useSelectedView } from '../../../shared/ViewSettingsContext';
 
 interface PlayersTableProps {
   team: TeamState;
@@ -245,6 +246,7 @@ function EditPlayersModal({
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = React.useState('home' as TeamType);
   const [showAddPlayerRow, setShowAddPlayerRow] = React.useState(false);
+  const selectedView = useSelectedView();
   const selectedTeam =
     activeTab === 'away' ? game_state.away_team : game_state.home_team;
   return (
@@ -280,7 +282,7 @@ function EditPlayersModal({
         </div>
 
         <div className="column is-12">
-          {game_state.view_settings_state.view === BASKETBALL_VIEWS.BASIC ? (
+          {selectedView === BASKETBALL_VIEWS.BASIC ? (
             <BasicPlayersTable
               team={selectedTeam}
               teamType={activeTab}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { EventLog, GameState, TeamType, Selection } from '../../types';
 import { BasicStatsControls, MediumStatsControls } from './StatsControls';
-import TopLevel from './TopLevel';
+import MediumTopLevel, { BasicTopLevel } from './TopLevel';
 import LiveEndedModal from './LiveEndedModal';
 import { BasicTopControls } from './TopControls';
 import PlayersControls from './PlayersControls';
@@ -9,6 +9,7 @@ import TeamControls from './TeamControls';
 import ClockControls from './ClockControls';
 import ProtestControls from './ProtestControls';
 import { BASKETBALL_VIEWS } from './constants';
+import { useSelectedView } from '../../shared/ViewSettingsContext';
 
 export interface LiveReactBase {
   pushEvent: (event: string, payload: any) => void;
@@ -176,27 +177,34 @@ function MediumView({
 function Main({ game_state, recent_events, pushEvent }: MainProps) {
   const showLiveEndedModal = game_state.live_state.state === 'ended';
   const [selection, setSelection] = useState<Selection | null>(null);
+  const selectedView = useSelectedView();
 
   return (
     <>
-      <TopLevel game_state={game_state} pushEvent={pushEvent} />
+      {selectedView === BASKETBALL_VIEWS.BASIC ? (
+        <>
+          <BasicTopLevel game_state={game_state} pushEvent={pushEvent} />
 
-      {game_state.view_settings_state.view === BASKETBALL_VIEWS.BASIC ? (
-        <BasicView
-          game_state={game_state}
-          recent_events={recent_events}
-          pushEvent={pushEvent}
-          selection={selection}
-          setSelection={setSelection}
-        />
+          <BasicView
+            game_state={game_state}
+            recent_events={recent_events}
+            pushEvent={pushEvent}
+            selection={selection}
+            setSelection={setSelection}
+          />
+        </>
       ) : (
-        <MediumView
-          game_state={game_state}
-          recent_events={recent_events}
-          pushEvent={pushEvent}
-          selection={selection}
-          setSelection={setSelection}
-        />
+        <>
+          <MediumTopLevel game_state={game_state} pushEvent={pushEvent} />
+
+          <MediumView
+            game_state={game_state}
+            recent_events={recent_events}
+            pushEvent={pushEvent}
+            selection={selection}
+            setSelection={setSelection}
+          />
+        </>
       )}
 
       <LiveEndedModal showModal={showLiveEndedModal} />
