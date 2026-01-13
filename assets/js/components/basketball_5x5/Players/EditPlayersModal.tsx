@@ -5,6 +5,7 @@ import { GameState, TeamState, TeamType } from '../../../types';
 import Modal from '../../Modal';
 import MediumEditPlayerRow, { BasicEditPlayerRow } from './EditPlayerRow';
 import AddPlayerRow from './AddPlayerRow';
+import { BASKETBALL_VIEWS } from '../constants';
 
 interface PlayersTableProps {
   team: TeamState;
@@ -279,7 +280,7 @@ function EditPlayersModal({
         </div>
 
         <div className="column is-12">
-          {game_state.view_settings_state.view === 'basketball-basic' ? (
+          {game_state.view_settings_state.view === BASKETBALL_VIEWS.BASIC ? (
             <BasicPlayersTable
               team={selectedTeam}
               teamType={activeTab}

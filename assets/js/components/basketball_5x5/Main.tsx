@@ -8,6 +8,7 @@ import PlayersControls from './PlayersControls';
 import TeamControls from './TeamControls';
 import ClockControls from './ClockControls';
 import ProtestControls from './ProtestControls';
+import { BASKETBALL_VIEWS } from './constants';
 
 export interface LiveReactBase {
   pushEvent: (event: string, payload: any) => void;
@@ -180,7 +181,7 @@ function Main({ game_state, recent_events, pushEvent }: MainProps) {
     <>
       <TopLevel game_state={game_state} pushEvent={pushEvent} />
 
-      {game_state.view_settings_state.view === 'basketball-basic' ? (
+      {game_state.view_settings_state.view === BASKETBALL_VIEWS.BASIC ? (
         <BasicView
           game_state={game_state}
           recent_events={recent_events}

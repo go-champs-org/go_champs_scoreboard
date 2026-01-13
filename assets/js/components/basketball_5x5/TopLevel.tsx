@@ -14,6 +14,7 @@ import { useTranslation } from '../../hooks/useTranslation';
 import EndLiveModal from './EndLiveModal';
 import SignatureModal from './Reports/SignatureModal';
 import { REPORT_SLUGS } from '../../shared/reportRegistry';
+import { BASKETBALL_VIEWS } from './constants';
 
 interface ReportsProps {
   game_state: GameState;
@@ -150,7 +151,7 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
             {t('basketball.navigation.editPlayers')}
           </button>
         </p>
-        {game_state.view_settings_state.view !== 'basketball-basic' && (
+        {game_state.view_settings_state.view !== BASKETBALL_VIEWS.BASIC && (
           <p className="level-item">
             <button
               className="button is-info is-small"
@@ -160,7 +161,7 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
             </button>
           </p>
         )}
-        {game_state.view_settings_state.view !== 'basketball-basic' && (
+        {game_state.view_settings_state.view !== BASKETBALL_VIEWS.BASIC && (
           <p className="level-item">
             <button
               className="button is-info is-small"
@@ -178,7 +179,7 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
             {t('basketball.navigation.eventLogs')}
           </button>
         </p>
-        {game_state.view_settings_state.view !== 'basketball-basic' && (
+        {game_state.view_settings_state.view !== BASKETBALL_VIEWS.BASIC && (
           <div className="level-item">
             <Reports game_state={game_state} t={t} pushEvent={pushEvent} />
           </div>
@@ -229,7 +230,7 @@ function TopLevel({ game_state, pushEvent }: TopLevelProps) {
         <p className="level-item">
           {liveSocket === 'connected' ? <OnlineIcon /> : <OfflineIcon />}
         </p>
-        {game_state.view_settings_state.view !== 'basketball-basic' && (
+        {game_state.view_settings_state.view !== BASKETBALL_VIEWS.BASIC && (
           <p className="level-item">
             <a
               className="button is-info is-small"

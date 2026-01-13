@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { GameState, TeamState, TeamType } from '../../types';
+import { BASKETBALL_VIEWS } from './constants';
 
 function formatPercentage(value: number) {
   return `${value.toFixed(0)}%`;
@@ -318,7 +319,7 @@ function BoxScore({ game_state }: BoxScoreProps) {
       </div>
 
       <div className="column is-12">
-        {game_state.view_settings_state.view === 'basketball-basic' ? (
+        {game_state.view_settings_state.view === BASKETBALL_VIEWS.BASIC ? (
           <BasicTable team={selectedTeam} />
         ) : (
           <MediumTable team={selectedTeam} />
