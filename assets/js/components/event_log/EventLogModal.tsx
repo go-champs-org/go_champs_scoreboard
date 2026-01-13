@@ -18,6 +18,7 @@ import {
   LIVE_MODE_EVENT_KEYS,
 } from '../basketball_5x5/constants';
 import { eventKeyToString } from './contentMappers';
+import { useSelectedView } from '../../shared/ViewSettingsContext';
 
 interface EventLogModalProps {
   game_state: GameState;
@@ -377,6 +378,7 @@ function EventLogModal({
   onCloseModal,
 }: EventLogModalProps) {
   const { t } = useTranslation();
+  const selectedView = useSelectedView();
   const gameId = game_state.id;
   const [showForm, setShowForm] = useState(false);
   const [isPosting, setIsPosting] = useState(false);
@@ -500,7 +502,7 @@ function EventLogModal({
                         selectedStat={selectedStat}
                         onStatFilter={handleStatFilter}
                         showForm={showForm}
-                        currentView={game_state.view_settings_state.view}
+                        currentView={selectedView as BasketballViews}
                         selectedEventKey={selectedEventKey}
                       />
                     </div>

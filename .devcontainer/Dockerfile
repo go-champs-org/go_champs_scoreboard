@@ -1,4 +1,4 @@
-ARG EX_VERSION=latest
+ARG EX_VERSION=1.17.2
 FROM elixir:${EX_VERSION}
 
 RUN apt-get update && \

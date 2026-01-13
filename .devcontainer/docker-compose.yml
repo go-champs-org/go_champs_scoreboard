@@ -1,15 +1,10 @@
-networks:
-  shared-network:
-    name: go-champs-shared-network
-    external: true
-
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        EX_VERSION: latest
+        EX_VERSION: 1.17.2
         PHX_VERSION: 1.6.2
 
     volumes:
@@ -22,7 +17,6 @@ services:
     # Connect to both networks to access db and shared RabbitMQ
     networks:
       - default
-      - shared-network
 
     # Expose ports for the Phoenix app
     ports:

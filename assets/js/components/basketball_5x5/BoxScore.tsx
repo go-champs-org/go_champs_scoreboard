@@ -1,6 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { GameState, TeamState, TeamType } from '../../types';
+import { BASKETBALL_VIEWS } from './constants';
+import { useSelectedView } from '../../shared/ViewSettingsContext';
 
 function formatPercentage(value: number) {
   return `${value.toFixed(0)}%`;
@@ -297,6 +299,7 @@ function BoxScore({ game_state }: BoxScoreProps) {
   const [activeTab, setActiveTab] = React.useState('away' as TeamType);
   const selectedTeam =
     activeTab === 'away' ? game_state.away_team : game_state.home_team;
+  const selectedView = useSelectedView();
 
   return (
     <div className="columns is-multiline">
@@ -318,7 +321,7 @@ function BoxScore({ game_state }: BoxScoreProps) {
       </div>
 
       <div className="column is-12">
-        {game_state.view_settings_state.view === 'basketball-basic' ? (
+        {selectedView === BASKETBALL_VIEWS.BASIC ? (
           <BasicTable team={selectedTeam} />
         ) : (
           <MediumTable team={selectedTeam} />

@@ -8,7 +8,7 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
   use GoChampsScoreboardWeb, :live_view
   require Logger
 
-  def mount(%{"game_id" => game_id}, %{"api_token" => api_token} = _session, socket) do
+  def mount(%{"game_id" => game_id} = params, %{"api_token" => api_token} = _session, socket) do
     if connected?(socket) do
       PubSub.subscribe(game_id)
     end
@@ -16,6 +16,7 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
     {:ok,
      socket
      |> assign(:api_token, api_token)
+     |> assign(:view, params["view"] || "default")
      |> assign(:env, %{
        go_champs_api_token: api_token,
        go_champs_api:
