@@ -120,7 +120,11 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.ASSISTS,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
+    view: [
+      BASKETBALL_VIEWS.BASIC,
+      BASKETBALL_VIEWS.MEDIUM,
+      BASKETBALL_VIEWS.MEDIUM_PLUS,
+    ],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.assists',
     labelTranslationKey: 'basketball.stats.labels.assists',
     descriptionTranslationKey: 'basketball.stats.descriptions.assists',
@@ -132,7 +136,11 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.BLOCKS,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
+    view: [
+      BASKETBALL_VIEWS.BASIC,
+      BASKETBALL_VIEWS.MEDIUM,
+      BASKETBALL_VIEWS.MEDIUM_PLUS,
+    ],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.blocks',
     labelTranslationKey: 'basketball.stats.labels.blocks',
     descriptionTranslationKey: 'basketball.stats.descriptions.blocks',
@@ -195,7 +203,11 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.FIELD_GOALS_MADE,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
+    view: [
+      BASKETBALL_VIEWS.BASIC,
+      BASKETBALL_VIEWS.MEDIUM,
+      BASKETBALL_VIEWS.MEDIUM_PLUS,
+    ],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.fieldGoalsMade',
     labelTranslationKey: 'basketball.stats.labels.fieldGoalsMade',
     descriptionTranslationKey: 'basketball.stats.descriptions.fieldGoalsMade',
@@ -332,7 +344,11 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.FREE_THROWS_MADE,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
+    view: [
+      BASKETBALL_VIEWS.BASIC,
+      BASKETBALL_VIEWS.MEDIUM,
+      BASKETBALL_VIEWS.MEDIUM_PLUS,
+    ],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.onePoint',
     labelTranslationKey: 'basketball.stats.labels.freeThrowsMade',
     descriptionTranslationKey: 'basketball.stats.descriptions.freeThrowsMade',
@@ -367,7 +383,11 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.POINTS,
     type: STAT_TYPES.CALCULATED,
-    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
+    view: [
+      BASKETBALL_VIEWS.BASIC,
+      BASKETBALL_VIEWS.MEDIUM,
+      BASKETBALL_VIEWS.MEDIUM_PLUS,
+    ],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.points',
     labelTranslationKey: 'basketball.stats.labels.points',
     descriptionTranslationKey: 'basketball.stats.descriptions.points',
@@ -379,7 +399,11 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.REBOUNDS,
     type: STAT_TYPES.CALCULATED,
-    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
+    view: [
+      BASKETBALL_VIEWS.BASIC,
+      BASKETBALL_VIEWS.MEDIUM,
+      BASKETBALL_VIEWS.MEDIUM_PLUS,
+    ],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.rebounds',
     labelTranslationKey: 'basketball.stats.labels.rebounds',
     descriptionTranslationKey: 'basketball.stats.descriptions.rebounds',
@@ -419,7 +443,11 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.STEALS,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
+    view: [
+      BASKETBALL_VIEWS.BASIC,
+      BASKETBALL_VIEWS.MEDIUM,
+      BASKETBALL_VIEWS.MEDIUM_PLUS,
+    ],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.steals',
     labelTranslationKey: 'basketball.stats.labels.steals',
     descriptionTranslationKey: 'basketball.stats.descriptions.steals',
@@ -473,7 +501,11 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.THREE_POINT_FIELD_GOALS_MADE,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
+    view: [
+      BASKETBALL_VIEWS.BASIC,
+      BASKETBALL_VIEWS.MEDIUM,
+      BASKETBALL_VIEWS.MEDIUM_PLUS,
+    ],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.threePoints',
     labelTranslationKey: 'basketball.stats.labels.threePointFieldGoalsMade',
     descriptionTranslationKey:
