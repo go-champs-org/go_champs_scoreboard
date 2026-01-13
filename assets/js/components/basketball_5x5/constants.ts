@@ -120,7 +120,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.ASSISTS,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.assists',
     labelTranslationKey: 'basketball.stats.labels.assists',
     descriptionTranslationKey: 'basketball.stats.descriptions.assists',
@@ -132,7 +132,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.BLOCKS,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.blocks',
     labelTranslationKey: 'basketball.stats.labels.blocks',
     descriptionTranslationKey: 'basketball.stats.descriptions.blocks',
@@ -144,7 +144,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.EFFICIENCY,
     type: STAT_TYPES.CALCULATED,
-    view: [BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.efficiency',
     labelTranslationKey: 'basketball.stats.labels.efficiency',
     descriptionTranslationKey: 'basketball.stats.descriptions.efficiency',
@@ -156,7 +156,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.FIELD_GOAL_PERCENTAGE,
     type: STAT_TYPES.CALCULATED,
-    view: [BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.fieldGoalPercentage',
     labelTranslationKey: 'basketball.stats.labels.fieldGoalPercentage',
@@ -169,7 +169,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.FIELD_GOALS_ATTEMPTED,
     type: STAT_TYPES.CALCULATED,
-    view: [BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.fieldGoalsAttempted',
     labelTranslationKey: 'basketball.stats.labels.fieldGoalsAttempted',
@@ -183,7 +183,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.FIELD_GOALS_MISSED,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.fieldGoalsMissed',
     labelTranslationKey: 'basketball.stats.labels.fieldGoalsMissed',
@@ -195,7 +195,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.FIELD_GOALS_MADE,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.fieldGoalsMade',
     labelTranslationKey: 'basketball.stats.labels.fieldGoalsMade',
     descriptionTranslationKey: 'basketball.stats.descriptions.fieldGoalsMade',
@@ -207,7 +207,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.FOULS,
     type: STAT_TYPES.CALCULATED,
-    view: [BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.fouls',
     labelTranslationKey: 'basketball.stats.labels.fouls',
     descriptionTranslationKey: 'basketball.stats.descriptions.fouls',
@@ -219,7 +219,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.FOULS_UNSPORTSMANLIKE,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.unsportsmanlikeFouls',
     labelTranslationKey: 'basketball.stats.labels.unsportsmanlikeFouls',
@@ -232,7 +232,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.FOULS_PERSONAL,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.personalFouls',
     labelTranslationKey: 'basketball.stats.labels.personalFouls',
     descriptionTranslationKey: 'basketball.stats.descriptions.personalFouls',
@@ -243,7 +243,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.FOULS_TECHNICAL,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.technicalFouls',
     labelTranslationKey: 'basketball.stats.labels.technicalFouls',
     descriptionTranslationKey: 'basketball.stats.descriptions.technicalFouls',
@@ -254,7 +254,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.FOULS_DISQUALIFYING,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.disqualifyingFouls',
     labelTranslationKey: 'basketball.stats.labels.disqualifyingFouls',
@@ -267,7 +267,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.FOULS_DISQUALIFYING_FIGHTING,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.disqualifyingFightingFouls',
     labelTranslationKey: 'basketball.stats.labels.disqualifyingFightingFouls',
@@ -280,7 +280,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.FOULS_GAME_DISQUALIFYING,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.gameDisqualifyingFouls',
     labelTranslationKey: 'basketball.stats.labels.gameDisqualifyingFouls',
@@ -293,7 +293,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.FREE_THROW_PERCENTAGE,
     type: STAT_TYPES.CALCULATED,
-    view: [BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.onePointPercentage',
     labelTranslationKey: 'basketball.stats.labels.freeThrowPercentage',
@@ -306,7 +306,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.FREE_THROWS_ATTEMPTED,
     type: STAT_TYPES.CALCULATED,
-    view: [BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.freeThrowsAttempted',
     labelTranslationKey: 'basketball.stats.labels.freeThrowsAttempted',
@@ -320,7 +320,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.FREE_THROWS_MISSED,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.freeThrowsMissed',
     labelTranslationKey: 'basketball.stats.labels.freeThrowsMissed',
@@ -332,7 +332,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.FREE_THROWS_MADE,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.onePoint',
     labelTranslationKey: 'basketball.stats.labels.freeThrowsMade',
     descriptionTranslationKey: 'basketball.stats.descriptions.freeThrowsMade',
@@ -344,7 +344,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.MINUTES_PLAYED,
     type: STAT_TYPES.AUTOMATIC,
-    view: [BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.minutesPlayed',
     labelTranslationKey: 'basketball.stats.labels.minutesPlayed',
     descriptionTranslationKey: 'basketball.stats.descriptions.minutesPlayed',
@@ -356,7 +356,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.PLUS_MINUS,
     type: STAT_TYPES.AUTOMATIC,
-    view: [BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.plusMinus',
     labelTranslationKey: 'basketball.stats.labels.plusMinus',
     descriptionTranslationKey: 'basketball.stats.descriptions.plusMinus',
@@ -367,7 +367,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.POINTS,
     type: STAT_TYPES.CALCULATED,
-    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.points',
     labelTranslationKey: 'basketball.stats.labels.points',
     descriptionTranslationKey: 'basketball.stats.descriptions.points',
@@ -379,7 +379,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.REBOUNDS,
     type: STAT_TYPES.CALCULATED,
-    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.rebounds',
     labelTranslationKey: 'basketball.stats.labels.rebounds',
     descriptionTranslationKey: 'basketball.stats.descriptions.rebounds',
@@ -391,7 +391,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.REBOUNDS_DEFENSIVE,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.defensiveRebounds',
     labelTranslationKey: 'basketball.stats.labels.defensiveRebounds',
@@ -405,7 +405,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.REBOUNDS_OFFENSIVE,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.offensiveRebounds',
     labelTranslationKey: 'basketball.stats.labels.offensiveRebounds',
@@ -419,7 +419,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.STEALS,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.steals',
     labelTranslationKey: 'basketball.stats.labels.steals',
     descriptionTranslationKey: 'basketball.stats.descriptions.steals',
@@ -431,7 +431,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.THREE_POINT_FIELD_GOAL_PERCENTAGE,
     type: STAT_TYPES.CALCULATED,
-    view: [BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.threePointPercentage',
     labelTranslationKey:
@@ -445,7 +445,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.THREE_POINT_FIELD_GOALS_ATTEMPTED,
     type: STAT_TYPES.CALCULATED,
-    view: [BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.threePointsAttempted',
     labelTranslationKey:
@@ -460,7 +460,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.THREE_POINT_FIELD_GOALS_MISSED,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey:
       'basketball.stats.abbreviations.threePointsMissed',
     labelTranslationKey: 'basketball.stats.labels.threePointFieldGoalsMissed',
@@ -473,7 +473,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.THREE_POINT_FIELD_GOALS_MADE,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.BASIC, BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.threePoints',
     labelTranslationKey: 'basketball.stats.labels.threePointFieldGoalsMade',
     descriptionTranslationKey:
@@ -486,7 +486,7 @@ export const PLAYER_STATS: PlayerStat[] = [
   {
     key: STAT_KEYS.TURNOVERS,
     type: STAT_TYPES.MANUAL,
-    view: [BASKETBALL_VIEWS.MEDIUM],
+    view: [BASKETBALL_VIEWS.MEDIUM, BASKETBALL_VIEWS.MEDIUM_PLUS],
     abbreviationTranslationKey: 'basketball.stats.abbreviations.turnovers',
     labelTranslationKey: 'basketball.stats.labels.turnovers',
     descriptionTranslationKey: 'basketball.stats.descriptions.turnovers',

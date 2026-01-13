@@ -273,7 +273,6 @@ function MediumTopLevel({ game_state, pushEvent }: TopLevelProps) {
   const [showBoxScoreModal, setShowBoxScoreModal] = React.useState(false);
   const [showEditPlayersModal, setShowEditPlayersModal] = React.useState(false);
   const [showEditCoachesModal, setShowEditCoachesModal] = React.useState(false);
-  const [showEditGameModal, setShowEditGameModal] = React.useState(false);
   const [showEndLiveWarningModal, setShowEndLiveWarningModal] =
     React.useState(false);
   const onStartLive = () => {
@@ -318,14 +317,6 @@ function MediumTopLevel({ game_state, pushEvent }: TopLevelProps) {
         <p className="level-item">
           <button
             className="button is-info is-small"
-            onClick={() => setShowEditGameModal(true)}
-          >
-            {t('basketball.navigation.editGame')}
-          </button>
-        </p>
-        <p className="level-item">
-          <button
-            className="button is-info is-small"
             onClick={() => setShowEventLogModal(true)}
           >
             {t('basketball.navigation.eventLogs')}
@@ -352,12 +343,6 @@ function MediumTopLevel({ game_state, pushEvent }: TopLevelProps) {
           game_state={game_state}
           showModal={showEditCoachesModal}
           onCloseModal={() => setShowEditCoachesModal(false)}
-          pushEvent={pushEvent}
-        />
-        <EditGameModal
-          game_state={game_state}
-          showModal={showEditGameModal}
-          onCloseModal={() => setShowEditGameModal(false)}
           pushEvent={pushEvent}
         />
         <EventLogModal
