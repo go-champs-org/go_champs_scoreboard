@@ -2,8 +2,10 @@ import React from 'react';
 import { View, Text } from '@react-pdf/renderer';
 import { useTranslation } from 'react-i18next';
 import { boxScorePlayerStats } from '../../selectors';
-import { t } from 'i18next';
 import { Team } from '../FibaBoxScore';
+
+const ROW_EVEN_BG_COLOR = '#cccccc';
+const ROW_ODD_BG_COLOR = '#ffffff';
 
 function TimeStatCell({ value }: { value: number }) {
   const minutes = Math.floor(value / 60);
@@ -35,27 +37,56 @@ const styles = {
     width: 'auto',
     borderStyle: 'solid',
     fontWeight: 'bold',
+    headerRow: {
+      flexDirection: 'row',
+      borderTop: '1pt solid black',
+      borderLeft: '1pt solid black',
+      borderRight: '1pt solid black',
+      borderBottom: '2pt solid black',
+    },
+    playerRow: {
+      flexDirection: 'row',
+      borderBottom: '1pt solid black',
+      borderRight: '1pt solid black',
+      borderLeft: '1pt solid black',
+    },
+    footerRow: {
+      flexDirection: 'row',
+      borderLeft: '1pt solid black',
+      borderRight: '1pt solid black',
+      borderBottom: '2pt solid black',
+    },
     numberColumn: {
       width: 15,
       verticalAlign: 'middle',
       textAlign: 'left',
       margin: 'auto',
+      padding: '1pt',
     },
     nameColumn: {
       width: 130,
-      verticalAlign: 'middle',
-      textAlign: 'left',
-      margin: 'auto',
-      textOverflow: 'ellipsis',
-      overflow: 'hidden',
-      whiteSpace: 'nowrap',
-      maxLines: 1,
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      borderLeft: '1pt solid black',
+      content: {
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        maxLines: 1,
+      },
+      padding: '1pt 0 1pt 2pt',
     },
     statsColumn: {
       width: 28,
+      borderLeft: '1pt solid black',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
       textAlign: 'center',
-      verticalAlign: 'middle',
-      margin: 'auto',
+      padding: '1pt 0',
     },
   },
 };
@@ -78,47 +109,76 @@ function TeamBoxScore({ teamType, team }: TeamBoxScoreProps) {
         <Text>{`${teamLabel}: ${team.name}`}</Text>
       </View>
       <View style={styles.table}>
-        <View
-          style={{
-            flexDirection: 'row',
-            borderBottom: '1pt solid black',
-            marginBottom: 4,
-          }}
-        >
-          <Text style={styles.table.numberColumn}>#</Text>
-          <Text style={styles.table.nameColumn}>Name</Text>
-          {playerStats.map((stat, index) => (
-            <Text key={index} style={styles.table.statsColumn}>
-              {t(stat.abbreviationTranslationKey)}
+        <View style={styles.table.headerRow}>
+          <Text
+            style={{
+              ...styles.table.numberColumn,
+              padding: '2pt 0 2pt 2pt',
+            }}
+          >
+            #
+          </Text>
+          <View
+            style={{ ...styles.table.nameColumn, padding: '2pt 0 2pt 2pt' }}
+          >
+            <Text style={styles.table.nameColumn.content}>
+              {t('basketball.reports.fibaBoxScore.playerName')}
             </Text>
+          </View>
+          {playerStats.map((stat, index) => (
+            <View
+              key={index}
+              style={{ ...styles.table.statsColumn, padding: '2pt 1pt' }}
+            >
+              <Text>{t(stat.abbreviationTranslationKey)}</Text>
+            </View>
           ))}
         </View>
         {team.players.map((player, index) => (
-          <View key={index} style={{ flexDirection: 'row', marginBottom: 2 }}>
+          <View
+            key={index}
+            style={{
+              ...styles.table.playerRow,
+              borderBottom:
+                index === team.players.length - 1
+                  ? '2pt solid black'
+                  : '1pt solid black',
+              backgroundColor:
+                index % 2 === 0 ? ROW_EVEN_BG_COLOR : ROW_ODD_BG_COLOR,
+            }}
+          >
             <Text style={styles.table.numberColumn}>{player.number}</Text>
-            <Text style={styles.table.nameColumn}>{player.name}</Text>
+            <View style={styles.table.nameColumn}>
+              <Text style={styles.table.nameColumn.content}>{player.name}</Text>
+            </View>
             {playerStats.map((stat, statIndex) => (
-              <Text key={statIndex} style={styles.table.statsColumn}>
+              <View key={statIndex} style={styles.table.statsColumn}>
                 <CellValue
                   statSlug={stat.key}
                   value={player.stats_values[stat.key] || 0}
                 />
-              </Text>
+              </View>
             ))}
           </View>
         ))}
-        <View style={{ flexDirection: 'row', marginBottom: 2 }}>
-          <Text style={styles.table.numberColumn}></Text>
-          <Text style={styles.table.nameColumn}>
-            {t('basketball.reports.fibaBoxScore.totals')}
-          </Text>
-          <Text style={styles.table.statsColumn}>-</Text>
+        <View style={styles.table.footerRow}>
+          <View
+            style={{ ...styles.table.numberColumn, padding: '2pt 0' }}
+          ></View>
+          <View
+            style={{ ...styles.table.nameColumn, padding: '2pt 0 2pt 2pt' }}
+          >
+            <Text>{t('basketball.reports.fibaBoxScore.totals')}</Text>
+          </View>
+          <View style={{ ...styles.table.statsColumn, padding: '2pt 0' }}>
+            -
+          </View>
           {playerStats
             .filter((stat) => stat.key !== 'minutes_played')
             .map((stat, statIndex) => (
-              <Text key={statIndex} style={styles.table.statsColumn}>
-                {team.total_player_stats[stat.key] || '-'}
-              </Text>
+              <View key={statIndex} style={styles.table.statsColumn}>
+                <Text>{team.total_player_stats[stat.key] || '-'}</Text>
+              </View>
             ))}
         </View>
       </View>

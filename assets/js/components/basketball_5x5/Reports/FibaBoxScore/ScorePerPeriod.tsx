@@ -8,17 +8,27 @@ const styles = {
     marginTop: 10,
     marginBottom: 10,
     fontWeight: 'bold',
+    summary: {
+      fontSize: 10,
+      fontWeight: 'bold',
+      marginBottom: 4,
+    },
     scoreRow: {
       flexDirection: 'row',
-      marginBottom: 2,
       scoreNameColumn: {
         width: 100,
+        borderBottom: '1pt solid black',
+        borderRight: '1pt solid black',
+        borderLeft: '1pt solid black',
+        paddingLeft: 2,
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         maxLines: 1,
       },
       scoreValueColumn: {
         textAlign: 'center',
+        borderBottom: '1pt solid black',
+        borderRight: '1pt solid black',
         width: 40,
       },
     },
@@ -46,26 +56,45 @@ function ScorePerPeriod({ homeTeam, awayTeam }: ScorePerPeriodProps) {
     .reduce((acc, period) => awayTeam.points_by_period[period] + acc, 0);
   return (
     <View style={styles.scorePerPeriodContainer}>
+      <Text style={styles.scorePerPeriodContainer.summary}>
+        {t('basketball.reports.fibaBoxScore.summaryTitle')}
+      </Text>
       <View style={styles.scorePerPeriodContainer.scoreRow}>
-        <Text style={styles.scorePerPeriodContainer.scoreRow.scoreNameColumn}>
+        <Text
+          style={{
+            ...styles.scorePerPeriodContainer.scoreRow.scoreNameColumn,
+            borderTop: '1pt solid black',
+          }}
+        >
           {t('basketball.reports.fibaBoxScore.scorePerPeriod')}
         </Text>
         {periods.map((_, index) => (
           <Text
             key={index}
-            style={styles.scorePerPeriodContainer.scoreRow.scoreValueColumn}
+            style={{
+              ...styles.scorePerPeriodContainer.scoreRow.scoreValueColumn,
+              borderTop: '1pt solid black',
+            }}
           >
             {index + 1}
           </Text>
         ))}
         {extraTimePeriods > 0 && (
           <Text
-            style={styles.scorePerPeriodContainer.scoreRow.scoreValueColumn}
+            style={{
+              ...styles.scorePerPeriodContainer.scoreRow.scoreValueColumn,
+              borderTop: '1pt solid black',
+            }}
           >
             {t('basketball.reports.fibaBoxScore.overtimeAbbreviation')}
           </Text>
         )}
-        <Text style={styles.scorePerPeriodContainer.scoreRow.scoreValueColumn}>
+        <Text
+          style={{
+            ...styles.scorePerPeriodContainer.scoreRow.scoreValueColumn,
+            borderTop: '1pt solid black',
+          }}
+        >
           {t('basketball.reports.fibaBoxScore.final')}
         </Text>
       </View>

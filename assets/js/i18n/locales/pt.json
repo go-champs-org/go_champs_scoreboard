@@ -4,6 +4,8 @@
       "fibaScoresheet": "Súmula",
       "collectSignatures": "Coletar Assinaturas",
       "fibaBoxScore": {
+        "summaryTitle": "Resumo do Jogo",
+        "playerName": "Nome do Atleta",
         "title": "Estatísticas",
         "date": "Data",
         "location": "Local",

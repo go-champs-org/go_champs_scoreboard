@@ -4,6 +4,8 @@
       "fibaScoresheet": "Scoresheet",
       "collectSignatures": "Collect Signatures",
       "fibaBoxScore": {
+        "summaryTitle": "Game Summary",
+        "playerName": "Player Name",
         "title": "Box Score",
         "date": "Date",
         "location": "Location",
