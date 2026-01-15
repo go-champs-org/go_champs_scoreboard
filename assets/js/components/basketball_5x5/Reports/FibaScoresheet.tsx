@@ -494,7 +494,12 @@ function ScoresheetPage({ scoresheetData }: FibaScoresheetProps) {
 function GameReportPage({ scoresheetData }: FibaScoresheetProps) {
   return (
     <Page size="A4" style={styles.page}>
-      <PageHeader scoresheetData={scoresheetData} />
+      <PageHeader
+        organizationName={scoresheetData.info.organization_name}
+        tournamentName={scoresheetData.info.tournament_name}
+        organizationLogoUrl={scoresheetData.info.organization_logo_url}
+        qrCodeUrl={scoresheetData.info.web_url}
+      />
       <View style={styles.main}>
         <View style={styles.main.header}>
           <HeaderBox
