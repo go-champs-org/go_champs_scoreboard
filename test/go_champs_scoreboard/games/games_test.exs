@@ -427,4 +427,574 @@ defmodule GoChampsScoreboard.Games.GamesTest do
       assert updated_game_state.info.number == "NEW456"
     end
   end
+
+  describe "update_game_level_player_stats/6" do
+    test "returns unchanged game state when game_level_stats is empty" do
+      alias GoChampsScoreboard.Games.Models.PlayerState
+
+      player1 = PlayerState.new("player-1", "Player 1", 10)
+      player2 = PlayerState.new("player-2", "Player 2", 20)
+
+      home_team = %TeamState{
+        name: "Home Team",
+        players: [player1, player2]
+      }
+
+      away_team = %TeamState{
+        name: "Away Team",
+        players: []
+      }
+
+      game_state = %GameState{
+        id: "game-id",
+        home_team: home_team,
+        away_team: away_team,
+        sport_id: "basketball"
+      }
+
+      result =
+        Games.update_game_level_player_stats(
+          game_state,
+          "home",
+          [],
+          "field_goals_made",
+          "increment",
+          "home"
+        )
+
+      assert result == game_state
+    end
+
+    test "updates home team players with game-level stats when home team scores" do
+      alias GoChampsScoreboard.Games.Models.PlayerState
+      alias GoChampsScoreboard.Statistics.Models.Stat
+      alias GoChampsScoreboard.Sports.Basketball.Statistics
+
+      # Create players - player1 is playing, player2 is on bench
+      player1 = %PlayerState{
+        id: "player-1",
+        name: "Player 1",
+        number: 10,
+        state: :playing,
+        stats_values: %{
+          "plus_minus" => 0
+        }
+      }
+
+      player2 = %PlayerState{
+        id: "player-2",
+        name: "Player 2",
+        number: 20,
+        state: :bench,
+        stats_values: %{
+          "plus_minus" => 5
+        }
+      }
+
+      home_team = %TeamState{
+        name: "Home Team",
+        players: [player1, player2]
+      }
+
+      away_team = %TeamState{
+        name: "Away Team",
+        players: []
+      }
+
+      game_state = %GameState{
+        id: "game-id",
+        home_team: home_team,
+        away_team: away_team,
+        sport_id: "basketball"
+      }
+
+      # Create game-level stat (plus_minus)
+      plus_minus_stat =
+        Stat.new("plus_minus", :calculated, [], &Statistics.calc_player_plus_minus/6, :game)
+
+      result =
+        Games.update_game_level_player_stats(
+          game_state,
+          "home",
+          [plus_minus_stat],
+          "field_goals_made",
+          "increment",
+          "home"
+        )
+
+      # Find updated players
+      updated_player1 = Enum.find(result.home_team.players, fn p -> p.id == "player-1" end)
+      updated_player2 = Enum.find(result.home_team.players, fn p -> p.id == "player-2" end)
+
+      # Player 1 is playing and home team scored a field goal (+2)
+      assert updated_player1.stats_values["plus_minus"] == 2
+
+      # Player 2 is on bench, plus_minus should remain unchanged
+      assert updated_player2.stats_values["plus_minus"] == 5
+    end
+
+    test "updates away team players with game-level stats when away team scores" do
+      alias GoChampsScoreboard.Games.Models.PlayerState
+      alias GoChampsScoreboard.Statistics.Models.Stat
+      alias GoChampsScoreboard.Sports.Basketball.Statistics
+
+      player1 = %PlayerState{
+        id: "player-1",
+        name: "Player 1",
+        number: 10,
+        state: :playing,
+        stats_values: %{
+          "plus_minus" => 3
+        }
+      }
+
+      home_team = %TeamState{
+        name: "Home Team",
+        players: []
+      }
+
+      away_team = %TeamState{
+        name: "Away Team",
+        players: [player1]
+      }
+
+      game_state = %GameState{
+        id: "game-id",
+        home_team: home_team,
+        away_team: away_team,
+        sport_id: "basketball"
+      }
+
+      plus_minus_stat =
+        Stat.new("plus_minus", :calculated, [], &Statistics.calc_player_plus_minus/6, :game)
+
+      result =
+        Games.update_game_level_player_stats(
+          game_state,
+          "away",
+          [plus_minus_stat],
+          "three_point_field_goals_made",
+          "increment",
+          "away"
+        )
+
+      updated_player1 = Enum.find(result.away_team.players, fn p -> p.id == "player-1" end)
+
+      # Away team scored a three-pointer (+3), so plus_minus goes from 3 to 6
+      assert updated_player1.stats_values["plus_minus"] == 6
+    end
+
+    test "updates home team players negatively when away team scores" do
+      alias GoChampsScoreboard.Games.Models.PlayerState
+      alias GoChampsScoreboard.Statistics.Models.Stat
+      alias GoChampsScoreboard.Sports.Basketball.Statistics
+
+      player1 = %PlayerState{
+        id: "player-1",
+        name: "Player 1",
+        number: 10,
+        state: :playing,
+        stats_values: %{
+          "plus_minus" => 5
+        }
+      }
+
+      home_team = %TeamState{
+        name: "Home Team",
+        players: [player1]
+      }
+
+      away_team = %TeamState{
+        name: "Away Team",
+        players: []
+      }
+
+      game_state = %GameState{
+        id: "game-id",
+        home_team: home_team,
+        away_team: away_team,
+        sport_id: "basketball"
+      }
+
+      plus_minus_stat =
+        Stat.new("plus_minus", :calculated, [], &Statistics.calc_player_plus_minus/6, :game)
+
+      # Home team player stats updated when away team scores
+      result =
+        Games.update_game_level_player_stats(
+          game_state,
+          "home",
+          [plus_minus_stat],
+          "field_goals_made",
+          "increment",
+          "away"
+        )
+
+      updated_player1 = Enum.find(result.home_team.players, fn p -> p.id == "player-1" end)
+
+      # Away team scored a field goal, so home player's plus_minus decreases by 2 (5 - 2 = 3)
+      assert updated_player1.stats_values["plus_minus"] == 3
+    end
+
+    test "handles decrement operation correctly" do
+      alias GoChampsScoreboard.Games.Models.PlayerState
+      alias GoChampsScoreboard.Statistics.Models.Stat
+      alias GoChampsScoreboard.Sports.Basketball.Statistics
+
+      player1 = %PlayerState{
+        id: "player-1",
+        name: "Player 1",
+        number: 10,
+        state: :playing,
+        stats_values: %{
+          "plus_minus" => 10
+        }
+      }
+
+      home_team = %TeamState{
+        name: "Home Team",
+        players: [player1]
+      }
+
+      away_team = %TeamState{
+        name: "Away Team",
+        players: []
+      }
+
+      game_state = %GameState{
+        id: "game-id",
+        home_team: home_team,
+        away_team: away_team,
+        sport_id: "basketball"
+      }
+
+      plus_minus_stat =
+        Stat.new("plus_minus", :calculated, [], &Statistics.calc_player_plus_minus/6, :game)
+
+      # Decrement a field goal for home team (undo scoring)
+      result =
+        Games.update_game_level_player_stats(
+          game_state,
+          "home",
+          [plus_minus_stat],
+          "field_goals_made",
+          "decrement",
+          "home"
+        )
+
+      updated_player1 = Enum.find(result.home_team.players, fn p -> p.id == "player-1" end)
+
+      # Decrementing own team's field goal: 10 - 2 = 8
+      assert updated_player1.stats_values["plus_minus"] == 8
+    end
+
+    test "updates multiple players on the same team" do
+      alias GoChampsScoreboard.Games.Models.PlayerState
+      alias GoChampsScoreboard.Statistics.Models.Stat
+      alias GoChampsScoreboard.Sports.Basketball.Statistics
+
+      player1 = %PlayerState{
+        id: "player-1",
+        name: "Player 1",
+        number: 10,
+        state: :playing,
+        stats_values: %{
+          "plus_minus" => 2
+        }
+      }
+
+      player2 = %PlayerState{
+        id: "player-2",
+        name: "Player 2",
+        number: 20,
+        state: :playing,
+        stats_values: %{
+          "plus_minus" => -3
+        }
+      }
+
+      player3 = %PlayerState{
+        id: "player-3",
+        name: "Player 3",
+        number: 30,
+        state: :bench,
+        stats_values: %{
+          "plus_minus" => 0
+        }
+      }
+
+      home_team = %TeamState{
+        name: "Home Team",
+        players: [player1, player2, player3]
+      }
+
+      away_team = %TeamState{
+        name: "Away Team",
+        players: []
+      }
+
+      game_state = %GameState{
+        id: "game-id",
+        home_team: home_team,
+        away_team: away_team,
+        sport_id: "basketball"
+      }
+
+      plus_minus_stat =
+        Stat.new("plus_minus", :calculated, [], &Statistics.calc_player_plus_minus/6, :game)
+
+      result =
+        Games.update_game_level_player_stats(
+          game_state,
+          "home",
+          [plus_minus_stat],
+          "free_throws_made",
+          "increment",
+          "home"
+        )
+
+      updated_player1 = Enum.find(result.home_team.players, fn p -> p.id == "player-1" end)
+      updated_player2 = Enum.find(result.home_team.players, fn p -> p.id == "player-2" end)
+      updated_player3 = Enum.find(result.home_team.players, fn p -> p.id == "player-3" end)
+
+      # Both playing players get +1 for free throw
+      assert updated_player1.stats_values["plus_minus"] == 3
+      assert updated_player2.stats_values["plus_minus"] == -2
+
+      # Bench player unchanged
+      assert updated_player3.stats_values["plus_minus"] == 0
+    end
+
+    test "recalculates team total player stats after updating game-level stats" do
+      alias GoChampsScoreboard.Games.Models.PlayerState
+      alias GoChampsScoreboard.Statistics.Models.Stat
+      alias GoChampsScoreboard.Sports.Basketball.Statistics
+
+      # Create players with existing stats including plus_minus
+      player1 = %PlayerState{
+        id: "player-1",
+        name: "Player 1",
+        number: 10,
+        state: :playing,
+        stats_values: %{
+          "plus_minus" => 0,
+          "points" => 10,
+          "rebounds_total" => 5
+        }
+      }
+
+      player2 = %PlayerState{
+        id: "player-2",
+        name: "Player 2",
+        number: 20,
+        state: :playing,
+        stats_values: %{
+          "plus_minus" => 3,
+          "points" => 15,
+          "rebounds_total" => 8
+        }
+      }
+
+      home_team = %TeamState{
+        name: "Home Team",
+        players: [player1, player2],
+        total_player_stats: %{
+          "plus_minus" => 3,
+          "points" => 25,
+          "rebounds_total" => 13
+        }
+      }
+
+      away_team = %TeamState{
+        name: "Away Team",
+        players: []
+      }
+
+      game_state = %GameState{
+        id: "game-id",
+        home_team: home_team,
+        away_team: away_team,
+        sport_id: "basketball"
+      }
+
+      plus_minus_stat =
+        Stat.new("plus_minus", :calculated, [], &Statistics.calc_player_plus_minus/6, :game)
+
+      # Home team scores a field goal (+2 for each playing player)
+      result =
+        Games.update_game_level_player_stats(
+          game_state,
+          "home",
+          [plus_minus_stat],
+          "field_goals_made",
+          "increment",
+          "home"
+        )
+
+      # Verify individual player stats were updated
+      updated_player1 = Enum.find(result.home_team.players, fn p -> p.id == "player-1" end)
+      updated_player2 = Enum.find(result.home_team.players, fn p -> p.id == "player-2" end)
+
+      assert updated_player1.stats_values["plus_minus"] == 2
+      assert updated_player2.stats_values["plus_minus"] == 5
+
+      # Verify team total player stats were recalculated
+      assert result.home_team.total_player_stats["plus_minus"] == 7
+      assert result.home_team.total_player_stats["points"] == 25
+      assert result.home_team.total_player_stats["rebounds_total"] == 13
+    end
+
+    test "team total player stats includes all player stats after game-level stat update" do
+      alias GoChampsScoreboard.Games.Models.PlayerState
+      alias GoChampsScoreboard.Statistics.Models.Stat
+      alias GoChampsScoreboard.Sports.Basketball.Statistics
+
+      player1 = %PlayerState{
+        id: "player-1",
+        name: "Player 1",
+        number: 10,
+        state: :playing,
+        stats_values: %{
+          "plus_minus" => 5,
+          "assists" => 3,
+          "steals" => 2
+        }
+      }
+
+      player2 = %PlayerState{
+        id: "player-2",
+        name: "Player 2",
+        number: 20,
+        state: :bench,
+        stats_values: %{
+          "plus_minus" => -2,
+          "assists" => 1,
+          "steals" => 0
+        }
+      }
+
+      player3 = %PlayerState{
+        id: "player-3",
+        name: "Player 3",
+        number: 30,
+        state: :playing,
+        stats_values: %{
+          "plus_minus" => 0,
+          "assists" => 5,
+          "steals" => 1
+        }
+      }
+
+      away_team = %TeamState{
+        name: "Away Team",
+        players: [player1, player2, player3],
+        total_player_stats: %{}
+      }
+
+      home_team = %TeamState{
+        name: "Home Team",
+        players: []
+      }
+
+      game_state = %GameState{
+        id: "game-id",
+        home_team: home_team,
+        away_team: away_team,
+        sport_id: "basketball"
+      }
+
+      plus_minus_stat =
+        Stat.new("plus_minus", :calculated, [], &Statistics.calc_player_plus_minus/6, :game)
+
+      # Away team scores a three-pointer (+3 for playing players)
+      result =
+        Games.update_game_level_player_stats(
+          game_state,
+          "away",
+          [plus_minus_stat],
+          "three_point_field_goals_made",
+          "increment",
+          "away"
+        )
+
+      # Player1 (playing): 5 + 3 = 8
+      # Player2 (bench): -2 (unchanged)
+      # Player3 (playing): 0 + 3 = 3
+      # Total: 8 + (-2) + 3 = 9
+
+      assert result.away_team.total_player_stats["plus_minus"] == 9
+      assert result.away_team.total_player_stats["assists"] == 9
+      assert result.away_team.total_player_stats["steals"] == 3
+    end
+
+    test "team total player stats correctly updated when opponent scores" do
+      alias GoChampsScoreboard.Games.Models.PlayerState
+      alias GoChampsScoreboard.Statistics.Models.Stat
+      alias GoChampsScoreboard.Sports.Basketball.Statistics
+
+      player1 = %PlayerState{
+        id: "player-1",
+        name: "Player 1",
+        number: 10,
+        state: :playing,
+        stats_values: %{
+          "plus_minus" => 10,
+          "field_goals_made" => 5
+        }
+      }
+
+      player2 = %PlayerState{
+        id: "player-2",
+        name: "Player 2",
+        number: 20,
+        state: :playing,
+        stats_values: %{
+          "plus_minus" => 8,
+          "field_goals_made" => 3
+        }
+      }
+
+      home_team = %TeamState{
+        name: "Home Team",
+        players: [player1, player2],
+        total_player_stats: %{
+          "plus_minus" => 18,
+          "field_goals_made" => 8
+        }
+      }
+
+      away_team = %TeamState{
+        name: "Away Team",
+        players: []
+      }
+
+      game_state = %GameState{
+        id: "game-id",
+        home_team: home_team,
+        away_team: away_team,
+        sport_id: "basketball"
+      }
+
+      plus_minus_stat =
+        Stat.new("plus_minus", :calculated, [], &Statistics.calc_player_plus_minus/6, :game)
+
+      # Away team scores a field goal (-2 for each home playing player)
+      result =
+        Games.update_game_level_player_stats(
+          game_state,
+          "home",
+          [plus_minus_stat],
+          "field_goals_made",
+          "increment",
+          "away"
+        )
+
+      # Player1: 10 - 2 = 8
+      # Player2: 8 - 2 = 6
+      # Total: 8 + 6 = 14
+
+      assert result.home_team.total_player_stats["plus_minus"] == 14
+      assert result.home_team.total_player_stats["field_goals_made"] == 8
+    end
+  end
 end

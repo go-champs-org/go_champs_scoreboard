@@ -47,7 +47,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Basketball do
     Stat.new("game_played", :manual, [:increment, :decrement]),
     Stat.new("game_started", :manual, [:increment, :decrement]),
     Stat.new("minutes_played", :automatic, [:increment, :decrement]),
-    Stat.new("plus_minus", :manual, [:increment, :decrement]),
+    Stat.new("plus_minus", :calculated, [], &Statistics.calc_player_plus_minus/6, :game),
     Stat.new("points", :calculated, [], &Statistics.calc_player_points/1),
     Stat.new("rebounds", :calculated, [], &Statistics.calc_player_rebounds/1),
     Stat.new("rebounds_defensive", :manual, [:increment, :decrement]),
@@ -119,7 +119,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Basketball do
 
   @spec find_calculated_player_stats() :: [Stat.t()]
   def find_calculated_player_stats() do
-    Enum.filter(@player_stats, fn stat -> stat.type == :calculated end)
+    Enum.filter(@player_stats, fn stat -> stat.type == :calculated and stat.level == :player end)
   end
 
   @spec find_player_stat_by_type([atom()]) :: [Stat.t()]
@@ -155,5 +155,10 @@ defmodule GoChampsScoreboard.Sports.Basketball.Basketball do
   @spec find_team_stat_by_type([atom()]) :: [Stat.t()]
   def find_team_stat_by_type(types) when is_list(types) do
     Enum.filter(@team_stats, fn stat -> stat.type in types end)
+  end
+
+  @spec find_player_stats_by_level(atom()) :: [Stat.t()]
+  def find_player_stats_by_level(level) do
+    Enum.filter(@player_stats, fn stat -> stat.level == level end)
   end
 end

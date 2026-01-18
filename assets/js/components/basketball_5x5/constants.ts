@@ -377,7 +377,8 @@ export const PLAYER_STATS: PlayerStat[] = [
     labelTranslationKey: 'basketball.stats.labels.plusMinus',
     descriptionTranslationKey: 'basketball.stats.descriptions.plusMinus',
     boxScoreMetadata: {
-      displayInBoxScore: false,
+      displayInBoxScore: true,
+      boxScoreOrder: 18,
     },
   },
   {

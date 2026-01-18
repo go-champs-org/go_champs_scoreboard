@@ -48,7 +48,7 @@ defmodule GoChampsScoreboard.Games.Players do
   end
 
   @spec update_stats_values(PlayerState.t(), Stat.t(), number()) :: PlayerState.t()
-  defp update_stats_values(player_state, player_stat, new_value) do
+  def update_stats_values(player_state, player_stat, new_value) do
     %{
       player_state
       | stats_values: Map.replace(player_state.stats_values, player_stat.key, new_value)

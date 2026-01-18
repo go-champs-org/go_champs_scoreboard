@@ -1,6 +1,4 @@
 defmodule GoChampsScoreboard.Games.Games do
-  alias GoChampsScoreboard.Games.Models.ProtestState
-  alias GoChampsScoreboard.Games.Models.InfoState
   alias GoChampsScoreboard.Events.Definitions.EndGameLiveModeDefinition
   alias GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition
   alias GoChampsScoreboard.Events.ValidatorCreator
@@ -15,6 +13,9 @@ defmodule GoChampsScoreboard.Games.Games do
   alias GoChampsScoreboard.Games.Models.OfficialState
   alias GoChampsScoreboard.Games.Models.GameClockState
   alias GoChampsScoreboard.Games.Models.ProtestState
+  alias GoChampsScoreboard.Games.Models.InfoState
+  alias GoChampsScoreboard.Games.Teams
+  alias GoChampsScoreboard.Statistics.Models.Stat
 
   @spec find_or_bootstrap(String.t()) :: GameState.t()
   @spec find_or_bootstrap(String.t(), String.t()) :: GameState.t()
@@ -152,5 +153,41 @@ defmodule GoChampsScoreboard.Games.Games do
   @spec update_info(GameState.t(), InfoState.t()) :: GameState.t()
   def update_info(game_state, info_state) do
     %{game_state | info: info_state}
+  end
+
+  @spec update_game_level_player_stats(
+          GameState.t(),
+          String.t(),
+          [Stat.t()],
+          String.t(),
+          String.t(),
+          String.t()
+        ) :: GameState.t()
+  def update_game_level_player_stats(
+        game_state,
+        player_team_type,
+        game_level_stats,
+        event_stat_id,
+        event_operation,
+        event_team_type
+      ) do
+    if Enum.empty?(game_level_stats) do
+      game_state
+    else
+      updated_team =
+        game_state
+        |> Teams.find_team(player_team_type)
+        |> Teams.update_game_level_stats_values(
+          game_level_stats,
+          game_state,
+          player_team_type,
+          event_stat_id,
+          event_operation,
+          event_team_type
+        )
+        |> Teams.calculate_team_total_player_stats()
+
+      update_team(game_state, player_team_type, updated_team)
+    end
   end
 end
