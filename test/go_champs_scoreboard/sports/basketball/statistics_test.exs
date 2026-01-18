@@ -365,4 +365,298 @@ defmodule GoChampsScoreboard.Sports.Basketball.StatisticsTest do
       assert Statistics.calc_coach_fouls(coach_state) == 6
     end
   end
+
+  describe "calc_player_plus_minus" do
+    setup do
+      game_state = %GoChampsScoreboard.Games.Models.GameState{}
+      %{game_state: game_state}
+    end
+
+    test "returns current plus_minus when player is not playing", %{game_state: game_state} do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        state: :bench,
+        stats_values: %{
+          "plus_minus" => 5
+        }
+      }
+
+      result =
+        Statistics.calc_player_plus_minus(
+          player_state,
+          game_state,
+          "home",
+          "field_goals_made",
+          "increment",
+          "home"
+        )
+
+      assert result == 5
+    end
+
+    test "adds 2 points when player is playing and own team scores field goal", %{
+      game_state: game_state
+    } do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        state: :playing,
+        stats_values: %{
+          "plus_minus" => 0
+        }
+      }
+
+      result =
+        Statistics.calc_player_plus_minus(
+          player_state,
+          game_state,
+          "home",
+          "field_goals_made",
+          "increment",
+          "home"
+        )
+
+      assert result == 2
+    end
+
+    test "subtracts 2 points when player is playing and opponent scores field goal", %{
+      game_state: game_state
+    } do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        state: :playing,
+        stats_values: %{
+          "plus_minus" => 0
+        }
+      }
+
+      result =
+        Statistics.calc_player_plus_minus(
+          player_state,
+          game_state,
+          "home",
+          "field_goals_made",
+          "increment",
+          "away"
+        )
+
+      assert result == -2
+    end
+
+    test "adds 1 point for free throw made", %{game_state: game_state} do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        state: :playing,
+        stats_values: %{
+          "plus_minus" => 5
+        }
+      }
+
+      result =
+        Statistics.calc_player_plus_minus(
+          player_state,
+          game_state,
+          "away",
+          "free_throws_made",
+          "increment",
+          "away"
+        )
+
+      assert result == 6
+    end
+
+    test "adds 3 points for three-pointer made", %{game_state: game_state} do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        state: :playing,
+        stats_values: %{
+          "plus_minus" => -2
+        }
+      }
+
+      result =
+        Statistics.calc_player_plus_minus(
+          player_state,
+          game_state,
+          "home",
+          "three_point_field_goals_made",
+          "increment",
+          "home"
+        )
+
+      assert result == 1
+    end
+
+    test "handles decrement operation (undo scoring)", %{game_state: game_state} do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        state: :playing,
+        stats_values: %{
+          "plus_minus" => 10
+        }
+      }
+
+      result =
+        Statistics.calc_player_plus_minus(
+          player_state,
+          game_state,
+          "home",
+          "field_goals_made",
+          "decrement",
+          "home"
+        )
+
+      assert result == 8
+    end
+
+    test "handles decrement of opponent score", %{game_state: game_state} do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        state: :playing,
+        stats_values: %{
+          "plus_minus" => -5
+        }
+      }
+
+      result =
+        Statistics.calc_player_plus_minus(
+          player_state,
+          game_state,
+          "home",
+          "three_point_field_goals_made",
+          "decrement",
+          "away"
+        )
+
+      # Decrementing opponent's 3-pointer: -5 - (-3) = -2
+      assert result == -2
+    end
+
+    test "returns current value for non-scoring stats", %{game_state: game_state} do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        state: :playing,
+        stats_values: %{
+          "plus_minus" => 7
+        }
+      }
+
+      result =
+        Statistics.calc_player_plus_minus(
+          player_state,
+          game_state,
+          "home",
+          "rebounds_defensive",
+          "increment",
+          "home"
+        )
+
+      assert result == 7
+    end
+
+    test "accumulates over multiple scoring events", %{game_state: game_state} do
+      # Start with 0
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        state: :playing,
+        stats_values: %{
+          "plus_minus" => 0
+        }
+      }
+
+      # Event 1: Team scores field goal (+2)
+      result1 =
+        Statistics.calc_player_plus_minus(
+          player_state,
+          game_state,
+          "home",
+          "field_goals_made",
+          "increment",
+          "home"
+        )
+
+      assert result1 == 2
+
+      # Event 2: Opponent scores three-pointer (-3)
+      player_state2 = %{player_state | stats_values: %{"plus_minus" => result1}}
+
+      result2 =
+        Statistics.calc_player_plus_minus(
+          player_state2,
+          game_state,
+          "home",
+          "three_point_field_goals_made",
+          "increment",
+          "away"
+        )
+
+      assert result2 == -1
+
+      # Event 3: Team scores free throw (+1)
+      player_state3 = %{player_state | stats_values: %{"plus_minus" => result2}}
+
+      result3 =
+        Statistics.calc_player_plus_minus(
+          player_state3,
+          game_state,
+          "home",
+          "free_throws_made",
+          "increment",
+          "home"
+        )
+
+      assert result3 == 0
+    end
+
+    test "handles injured player state (not playing)", %{game_state: game_state} do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        state: :injured,
+        stats_values: %{
+          "plus_minus" => 3
+        }
+      }
+
+      result =
+        Statistics.calc_player_plus_minus(
+          player_state,
+          game_state,
+          "home",
+          "field_goals_made",
+          "increment",
+          "home"
+        )
+
+      assert result == 3
+    end
+
+    test "handles missing plus_minus stat (defaults to 0)", %{game_state: game_state} do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        state: :playing,
+        stats_values: %{}
+      }
+
+      result =
+        Statistics.calc_player_plus_minus(
+          player_state,
+          game_state,
+          "home",
+          "field_goals_made",
+          "increment",
+          "home"
+        )
+
+      assert result == 2
+    end
+
+    test "handles missing state field (defaults to bench)", %{game_state: game_state} do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        stats_values: %{
+          "plus_minus" => 4
+        }
+      }
+
+      result =
+        Statistics.calc_player_plus_minus(
+          player_state,
+          game_state,
+          "home",
+          "field_goals_made",
+          "increment",
+          "home"
+        )
+
+      # Should return unchanged since state defaults to :bench
+      assert result == 4
+    end
+  end
 end

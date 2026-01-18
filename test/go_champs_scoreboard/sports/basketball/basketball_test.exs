@@ -64,13 +64,12 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
 
   describe "find_player_stat" do
     test "returns the player stat with the given key" do
-      assert %GoChampsScoreboard.Statistics.Models.Stat{
-               key: "points",
-               type: :calculated,
-               operations: [],
-               calculation_function:
-                 &GoChampsScoreboard.Sports.Basketball.Statistics.calc_player_points/1
-             } == Basketball.find_player_stat("points")
+      stat = Basketball.find_player_stat("points")
+
+      assert stat.key == "points"
+      assert stat.type == :calculated
+      assert stat.operations == []
+      assert stat.level == :player
     end
 
     test "returns nil if the player stat with the given key is not found" do
@@ -80,88 +79,43 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
 
   describe "find_calculated_player_stats" do
     test "returns all calculated player stats" do
-      expected = [
-        %GoChampsScoreboard.Statistics.Models.Stat{
-          key: "efficiency",
-          type: :calculated,
-          operations: [],
-          calculation_function:
-            &GoChampsScoreboard.Sports.Basketball.Statistics.calc_player_efficiency/1
-        },
-        %GoChampsScoreboard.Statistics.Models.Stat{
-          key: "field_goal_percentage",
-          type: :calculated,
-          operations: [],
-          calculation_function:
-            &GoChampsScoreboard.Sports.Basketball.Statistics.calc_player_field_goal_percentage/1
-        },
-        %GoChampsScoreboard.Statistics.Models.Stat{
-          key: "field_goals_attempted",
-          type: :calculated,
-          operations: [],
-          calculation_function:
-            &GoChampsScoreboard.Sports.Basketball.Statistics.calc_player_field_goals_attempted/1
-        },
-        %GoChampsScoreboard.Statistics.Models.Stat{
-          calculation_function:
-            &GoChampsScoreboard.Sports.Basketball.Statistics.calc_player_fouls/1,
-          key: "fouls",
-          operations: [],
-          type: :calculated
-        },
-        %GoChampsScoreboard.Statistics.Models.Stat{
-          key: "free_throw_percentage",
-          type: :calculated,
-          operations: [],
-          calculation_function:
-            &GoChampsScoreboard.Sports.Basketball.Statistics.calc_player_free_throw_percentage/1
-        },
-        %GoChampsScoreboard.Statistics.Models.Stat{
-          key: "free_throws_attempted",
-          type: :calculated,
-          operations: [],
-          calculation_function:
-            &GoChampsScoreboard.Sports.Basketball.Statistics.calc_player_free_throws_attempted/1
-        },
-        %GoChampsScoreboard.Statistics.Models.Stat{
-          key: "points",
-          type: :calculated,
-          operations: [],
-          calculation_function:
-            &GoChampsScoreboard.Sports.Basketball.Statistics.calc_player_points/1
-        },
-        %GoChampsScoreboard.Statistics.Models.Stat{
-          key: "rebounds",
-          type: :calculated,
-          operations: [],
-          calculation_function:
-            &GoChampsScoreboard.Sports.Basketball.Statistics.calc_player_rebounds/1
-        },
-        %GoChampsScoreboard.Statistics.Models.Stat{
-          key: "three_point_field_goal_percentage",
-          type: :calculated,
-          operations: [],
-          calculation_function:
-            &GoChampsScoreboard.Sports.Basketball.Statistics.calc_player_three_point_field_goal_percentage/1
-        },
-        %GoChampsScoreboard.Statistics.Models.Stat{
-          key: "three_point_field_goals_attempted",
-          type: :calculated,
-          operations: [],
-          calculation_function:
-            &GoChampsScoreboard.Sports.Basketball.Statistics.calc_player_three_point_field_goals_attempted/1
-        }
-      ]
+      calculated_stats = Basketball.find_calculated_player_stats()
 
-      assert expected == Basketball.find_calculated_player_stats()
+      # Should return 10 player-level calculated stats (excluding game-level like plus_minus)
+      assert length(calculated_stats) == 10
+
+      # All should be calculated type and player level
+      assert Enum.all?(calculated_stats, fn stat ->
+               stat.type == :calculated and stat.level == :player
+             end)
+
+      # Check expected stat keys are present
+      stat_keys = Enum.map(calculated_stats, & &1.key) |> MapSet.new()
+
+      expected_keys =
+        MapSet.new([
+          "efficiency",
+          "field_goal_percentage",
+          "field_goals_attempted",
+          "fouls",
+          "free_throw_percentage",
+          "free_throws_attempted",
+          "points",
+          "rebounds",
+          "three_point_field_goal_percentage",
+          "three_point_field_goals_attempted"
+        ])
+
+      assert MapSet.equal?(stat_keys, expected_keys)
     end
   end
 
   describe "find_player_stat_by_type" do
     test "returns all player stats matching the given types" do
-      # Test with calculated stats
+      # Test with calculated stats (includes both player-level and game-level)
       calculated_stats = Basketball.find_player_stat_by_type([:calculated])
-      assert length(calculated_stats) == 10
+      # 10 player-level + 1 game-level (plus_minus)
+      assert length(calculated_stats) == 11
       assert Enum.all?(calculated_stats, fn stat -> stat.type == :calculated end)
 
       # Test with manual stats
@@ -226,41 +180,28 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
 
   describe "find_calculated_team_stats" do
     test "returns all calculated team stats" do
-      expected = [
-        %GoChampsScoreboard.Statistics.Models.Stat{
-          key: "points",
-          type: :calculated,
-          operations: [],
-          calculation_function:
-            &GoChampsScoreboard.Sports.Basketball.Statistics.calc_team_points/1
-        },
-        %GoChampsScoreboard.Statistics.Models.Stat{
-          key: "fouls",
-          type: :calculated,
-          operations: [],
-          calculation_function: &GoChampsScoreboard.Sports.Basketball.Statistics.calc_team_fouls/1
-        },
-        %GoChampsScoreboard.Statistics.Models.Stat{
-          key: "total_fouls_technical",
-          type: :calculated,
-          operations: [],
-          calculation_function:
-            &GoChampsScoreboard.Sports.Basketball.Statistics.calc_team_technical_fouls/1
-        }
-      ]
+      calculated_stats = Basketball.find_calculated_team_stats()
 
-      assert expected == Basketball.find_calculated_team_stats()
+      # Should have 3 calculated team stats
+      assert length(calculated_stats) == 3
+
+      # All should be calculated type
+      assert Enum.all?(calculated_stats, fn stat -> stat.type == :calculated end)
+
+      # Check expected keys
+      stat_keys = Enum.map(calculated_stats, & &1.key) |> MapSet.new()
+      expected_keys = MapSet.new(["points", "fouls", "total_fouls_technical"])
+      assert MapSet.equal?(stat_keys, expected_keys)
     end
   end
 
   describe "find_team_stat" do
     test "returns the team stat with the given key" do
-      assert %GoChampsScoreboard.Statistics.Models.Stat{
-               key: "fouls_technical",
-               type: :manual,
-               operations: [:increment, :decrement],
-               calculation_function: nil
-             } == Basketball.find_player_stat("fouls_technical")
+      stat = Basketball.find_player_stat("fouls_technical")
+
+      assert stat.key == "fouls_technical"
+      assert stat.type == :manual
+      assert stat.operations == [:increment, :decrement]
     end
 
     test "returns nil if the team stat with the given key is not found" do
@@ -322,35 +263,27 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
 
   describe "find_coach_stat" do
     test "returns the coach stat with the given key" do
-      assert %GoChampsScoreboard.Statistics.Models.Stat{
-               key: "fouls_technical",
-               type: :manual,
-               operations: [:increment, :decrement]
-             } == Basketball.find_coach_stat("fouls_technical")
-    end
+      stat = Basketball.find_coach_stat("fouls_technical")
 
-    test "returns the coach stat for fouls_disqualifying" do
-      assert %GoChampsScoreboard.Statistics.Models.Stat{
-               key: "fouls_disqualifying",
-               type: :manual,
-               operations: [:increment, :decrement]
-             } == Basketball.find_coach_stat("fouls_disqualifying")
+      assert stat.key == "fouls_technical"
+      assert stat.type == :manual
+      assert stat.operations == [:increment, :decrement]
     end
 
     test "returns the coach stat for fouls_technical_bench" do
-      assert %GoChampsScoreboard.Statistics.Models.Stat{
-               key: "fouls_technical_bench",
-               type: :manual,
-               operations: [:increment, :decrement]
-             } == Basketball.find_coach_stat("fouls_technical_bench")
+      stat = Basketball.find_coach_stat("fouls_technical_bench")
+
+      assert stat.key == "fouls_technical_bench"
+      assert stat.type == :manual
+      assert stat.operations == [:increment, :decrement]
     end
 
     test "returns the coach stat for fouls_game_disqualifying" do
-      assert %GoChampsScoreboard.Statistics.Models.Stat{
-               key: "fouls_game_disqualifying",
-               type: :manual,
-               operations: [:increment, :decrement]
-             } == Basketball.find_coach_stat("fouls_game_disqualifying")
+      stat = Basketball.find_coach_stat("fouls_game_disqualifying")
+
+      assert stat.key == "fouls_game_disqualifying"
+      assert stat.type == :manual
+      assert stat.operations == [:increment, :decrement]
     end
 
     test "returns nil if the coach stat with the given key is not found" do

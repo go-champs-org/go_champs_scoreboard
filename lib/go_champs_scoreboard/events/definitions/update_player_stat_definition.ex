@@ -44,6 +44,16 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition do
           }
         }
       ) do
+    # This function needs to be refactor, we want to split the player stats calculation from team stats calculation and game level stats calculation.
+    # The other problem is we are dealing with too many parameters here.
+    # We are waiting this logic to run in produciton for a while before doing the refactor.
+    # We also want to adjusted the execution order of the stats calculation functions.
+    # First update the player manual stats that this event is targeting
+    # Then update the calculated player's player level stats
+    # Then update the calculated player's game level stats
+    # Then update the total player_stats_values in team level
+    # Then update the calculated team's team level stats
+    # Then update the period stats in team level
     player_stat =
       current_game.sport_id
       |> Sports.find_player_stat(stat_id)
@@ -56,6 +66,11 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition do
       current_game.sport_id
       |> Sports.find_calculated_team_stats()
 
+    game_level_stats =
+      current_game.sport_id
+      |> Sports.find_player_stats_by_level(:game)
+
+    # Update player stats
     updated_player =
       current_game
       |> Teams.find_player(team_type, player_id)
@@ -64,6 +79,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition do
 
     updated_player = Sports.update_player_state(current_game.sport_id, updated_player)
 
+    # Update team stats
     updated_team =
       current_game
       |> Teams.find_team(team_type)
@@ -72,8 +88,12 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition do
       |> Teams.update_calculated_stats_values(calculated_team_stats)
       |> Teams.calculate_period_stats(period)
 
-    current_game
-    |> Games.update_team(team_type, updated_team)
+    updated_game = Games.update_team(current_game, team_type, updated_team)
+
+    # Update game-level player stats for both teams
+    updated_game
+    |> Games.update_game_level_player_stats("home", game_level_stats, stat_id, op, team_type)
+    |> Games.update_game_level_player_stats("away", game_level_stats, stat_id, op, team_type)
   end
 
   @impl true

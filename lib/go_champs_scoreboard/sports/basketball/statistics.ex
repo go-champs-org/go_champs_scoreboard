@@ -2,6 +2,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Statistics do
   alias GoChampsScoreboard.Games.Models.CoachState
   alias GoChampsScoreboard.Games.Models.PlayerState
   alias GoChampsScoreboard.Games.Models.TeamState
+  alias GoChampsScoreboard.Games.Models.GameState
 
   @spec calc_player_efficiency(PlayerState.t()) :: float()
   def calc_player_efficiency(player_state) do
@@ -150,6 +151,55 @@ defmodule GoChampsScoreboard.Sports.Basketball.Statistics do
     case made do
       0 -> 0
       _ -> (made / (made + missed) * 100) |> Float.round(3)
+    end
+  end
+
+  @spec calc_player_plus_minus(
+          PlayerState.t(),
+          GameState.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t()
+        ) :: float()
+  def calc_player_plus_minus(
+        player_state,
+        _game_state,
+        player_team_type,
+        stat_id,
+        operation,
+        event_team_type
+      ) do
+    current_plus_minus = Map.get(player_state.stats_values, "plus_minus", 0)
+
+    player_state_value = Map.get(player_state, :state, :bench)
+
+    if player_state_value != :playing do
+      current_plus_minus
+    else
+      points =
+        case stat_id do
+          "free_throws_made" -> 1
+          "field_goals_made" -> 2
+          "three_point_field_goals_made" -> 3
+          _ -> 0
+        end
+
+      points =
+        case operation do
+          "increment" -> points
+          "decrement" -> -points
+          _ -> 0
+        end
+
+      delta =
+        if event_team_type == player_team_type do
+          points
+        else
+          -points
+        end
+
+      current_plus_minus + delta
     end
   end
 end

@@ -5,6 +5,7 @@ defmodule GoChampsScoreboard.Games.Teams do
   alias GoChampsScoreboard.Games.Models.TeamState
   alias GoChampsScoreboard.Statistics.Operations
   alias GoChampsScoreboard.Statistics.Models.Stat
+  alias GoChampsScoreboard.Games.Players
 
   @spec add_coach(GameState.t(), String.t(), CoachState.t()) :: GameState.t()
   def add_coach(game_state, team_type, coach) do
@@ -239,5 +240,51 @@ defmodule GoChampsScoreboard.Games.Teams do
     updated_period_stats = Map.put(existing_periods, current_period_key, current_period_stats)
 
     %{team | period_stats: updated_period_stats}
+  end
+
+  @spec update_game_level_stats_values(
+          TeamState.t(),
+          [Stat.t()],
+          GameState.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t()
+        ) :: TeamState.t()
+  def update_game_level_stats_values(
+        team_state,
+        game_level_stats,
+        game_state,
+        player_team_type,
+        stat_id,
+        operation,
+        event_team_type
+      ) do
+    updated_players =
+      team_state.players
+      |> Enum.map(fn player ->
+        game_level_stats
+        |> Enum.reduce(player, fn stat, current_player ->
+          # Calculate new value (function handles aggregation internally)
+          new_value =
+            stat.calculation_function.(
+              current_player,
+              game_state,
+              player_team_type,
+              stat_id,
+              operation,
+              event_team_type
+            )
+
+          # Update the stat value
+          Players.update_stats_values(
+            current_player,
+            stat,
+            new_value
+          )
+        end)
+      end)
+
+    %{team_state | players: updated_players}
   end
 end

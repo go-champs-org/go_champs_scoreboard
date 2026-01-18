@@ -16,65 +16,43 @@ function boxScorePlayers(team: TeamState) {
   return team.players.filter((player) => player.state !== 'not_available');
 }
 
+const STAT_COLUMN_STYLE = { minWidth: '60px', maxWidth: '60px' };
+
 function BasicTable({ team }: TableProps) {
   const { t } = useTranslation();
   return (
     <div className="table-container">
-      <table className="table is-fullwidth">
+      <table className="table is-fullwidth is-striped">
         <thead>
           <tr>
             <th style={{ minWidth: '50px', maxWidth: '50px' }}>#</th>
             <th style={{ minWidth: '140px', maxWidth: '140px' }}>
               {t('basketball.stats.abbreviations.player')}
             </th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
               {t('basketball.stats.abbreviations.points')}
             </th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
               {t('basketball.stats.abbreviations.assists')}
             </th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
               {t('basketball.stats.abbreviations.rebounds')}
             </th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
               {t('basketball.stats.abbreviations.steals')}
             </th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
               {t('basketball.stats.abbreviations.blocks')}
             </th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
               {t('basketball.stats.abbreviations.onePoint')}
             </th>
 
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
               {t('basketball.stats.abbreviations.twoPoints')}
             </th>
 
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
               {t('basketball.stats.abbreviations.threePoints')}
             </th>
           </tr>
@@ -120,113 +98,62 @@ function MediumTable({ team }: TableProps) {
   const { t } = useTranslation();
   return (
     <div className="table-container">
-      <table className="table is-fullwidth">
+      <table className="table is-fullwidth is-striped">
         <thead>
           <tr>
             <th style={{ minWidth: '50px', maxWidth: '50px' }}>#</th>
             <th style={{ minWidth: '140px', maxWidth: '140px' }}>
               {t('basketball.stats.abbreviations.player')}
             </th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
               {t('basketball.stats.abbreviations.points')}
             </th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
               {t('basketball.stats.abbreviations.assists')}
             </th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
               {t('basketball.stats.abbreviations.rebounds')}
             </th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
               {t('basketball.stats.abbreviations.steals')}
             </th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
               {t('basketball.stats.abbreviations.blocks')}
             </th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
               {t('basketball.stats.abbreviations.turnovers')}
             </th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
-              {t('basketball.stats.abbreviations.personalFouls')}
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
+              {t('basketball.stats.abbreviations.efficiency')}
             </th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
-              {t('basketball.stats.abbreviations.flagrantFouls')}
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
+              {t('basketball.stats.abbreviations.plusMinus')}
             </th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
-              {t('basketball.stats.abbreviations.technicalFouls')}
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
+              {t('basketball.stats.abbreviations.fouls')}
             </th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
               {t('basketball.stats.abbreviations.onePoint')}
             </th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
               {t('basketball.stats.abbreviations.onePointPercentage')}
             </th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
               {t('basketball.stats.abbreviations.twoPoints')}
             </th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
               {t('basketball.stats.abbreviations.twoPointPercentage')}
             </th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
               {t('basketball.stats.abbreviations.threePoints')}
             </th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
               {t('basketball.stats.abbreviations.threePointPercentage')}
             </th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
               {t('basketball.stats.abbreviations.offensiveRebounds')}
             </th>
-            <th
-              className="has-text-centered"
-              style={{ minWidth: '80px', maxWidth: '80px' }}
-            >
+            <th className="has-text-centered" style={STAT_COLUMN_STYLE}>
               {t('basketball.stats.abbreviations.defensiveRebounds')}
             </th>
           </tr>
@@ -255,13 +182,13 @@ function MediumTable({ team }: TableProps) {
                 {player.stats_values['turnovers']}
               </td>
               <td className="has-text-centered">
-                {player.stats_values['fouls_personal']}
+                {player.stats_values['efficiency']}
               </td>
               <td className="has-text-centered">
-                {player.stats_values['fouls_unsportsmanlike']}
+                {player.stats_values['plus_minus']}
               </td>
               <td className="has-text-centered">
-                {player.stats_values['fouls_technical']}
+                {player.stats_values['fouls']}
               </td>
               <td className="has-text-centered">{`${player.stats_values['free_throws_made']} / ${player.stats_values['free_throws_attempted']}`}</td>
               <td className="has-text-centered">
