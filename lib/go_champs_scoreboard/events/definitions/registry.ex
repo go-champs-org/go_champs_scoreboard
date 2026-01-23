@@ -26,6 +26,7 @@ defmodule GoChampsScoreboard.Events.Definitions.Registry do
   alias GoChampsScoreboard.Events.Definitions.UpdatePlayerInTeamDefinition
   alias GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition
   alias GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinition
+  alias GoChampsScoreboard.Events.Definitions.UpdateTeamMetadataDefinition
   alias GoChampsScoreboard.Events.Definitions.UpdateTeamStatDefinition
 
   @registry %{
@@ -56,6 +57,7 @@ defmodule GoChampsScoreboard.Events.Definitions.Registry do
     UpdatePlayerInTeamDefinition.key() => UpdatePlayerInTeamDefinition,
     UpdatePlayerStatDefinition.key() => UpdatePlayerStatDefinition,
     UpdatePlayersStateDefinition.key() => UpdatePlayersStateDefinition,
+    UpdateTeamMetadataDefinition.key() => UpdateTeamMetadataDefinition,
     UpdateTeamStatDefinition.key() => UpdateTeamStatDefinition
   }
 

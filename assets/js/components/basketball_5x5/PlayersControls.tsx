@@ -13,6 +13,7 @@ import { default as PlayerButton } from './Players/Button';
 import { default as CoachButton } from './Coaches/Button';
 import { wherePlaying, whereNotPlaying, byPlayer } from './Players/utils';
 import { t } from 'i18next';
+import { teamBorderStyle } from './Shared/styleHelpers';
 
 interface PlayersControlsProps {
   clockState: GameClockState;
@@ -189,9 +190,14 @@ function PlayersControls({
   };
   const reverseClass =
     teamType === 'away' ? 'is-flex-direction-row-reverse' : '';
+  const playersControlsStyle = teamBorderStyle(teamType, team.primary_color);
 
   return (
-    <div className="players-controls controls" ref={playersControlsRef}>
+    <div
+      className="players-controls controls"
+      ref={playersControlsRef}
+      style={playersControlsStyle}
+    >
       <div className="columns is-multiline">
         <div className="on-court column is-12 has-text-centered">
           <span className="caption">

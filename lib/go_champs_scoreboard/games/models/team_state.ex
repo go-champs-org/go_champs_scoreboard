@@ -12,7 +12,8 @@ defmodule GoChampsScoreboard.Games.Models.TeamState do
           stats_values: map(),
           tri_code: String.t(),
           logo_url: String.t(),
-          period_stats: map()
+          period_stats: map(),
+          primary_color: String.t() | nil
         }
   defstruct [
     :name,
@@ -23,7 +24,8 @@ defmodule GoChampsScoreboard.Games.Models.TeamState do
     :stats_values,
     :tri_code,
     :logo_url,
-    :period_stats
+    :period_stats,
+    :primary_color
   ]
 
   @spec new(String.t(), list(PlayerState.t()), map()) :: t()
@@ -35,7 +37,8 @@ defmodule GoChampsScoreboard.Games.Models.TeamState do
         tri_code \\ "",
         logo_url \\ "",
         coaches \\ [],
-        total_coach_stats \\ %{}
+        total_coach_stats \\ %{},
+        primary_color \\ ""
       ) do
     final_stats_values =
       if is_nil(stats_values), do: Basketball.bootstrap_team_stats(), else: stats_values
@@ -49,7 +52,8 @@ defmodule GoChampsScoreboard.Games.Models.TeamState do
       stats_values: final_stats_values,
       tri_code: tri_code,
       logo_url: logo_url,
-      period_stats: %{}
+      period_stats: %{},
+      primary_color: primary_color
     }
   end
 end

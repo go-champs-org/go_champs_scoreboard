@@ -197,6 +197,17 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
      |> react_and_update_game_state(game_id, socket)}
   end
 
+  def handle_event("update-team-metadata", params, socket) do
+    game_id = socket.assigns.game_state.result.id
+
+    {:ok, event} =
+      ValidatorCreator.validate_and_create("update-team-metadata", game_id, params)
+
+    {:noreply,
+     event
+     |> react_and_update_game_state(game_id, socket)}
+  end
+
   def handle_event("end-game-live-mode", params, socket) do
     Games.end_live_mode(socket.assigns.game_state.result.id, params)
 

@@ -67,6 +67,7 @@ export interface TeamState {
   logo_url: string;
   coaches: CoachState[];
   period_stats: { [key: string]: { [key: string]: number } };
+  primary_color: string;
 }
 
 export interface GameClockState {

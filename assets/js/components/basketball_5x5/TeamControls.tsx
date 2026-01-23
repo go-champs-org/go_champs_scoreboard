@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from '../../hooks/useTranslation';
 
 import { GameClockState, TeamState, TeamType } from '../../types';
+import { teamBorderStyle } from './Shared/styleHelpers';
 
 interface TeamControlsProps {
   team: TeamState;
@@ -300,8 +301,9 @@ export function BasicTeamControls({ team, teamType }: TeamControlsProps) {
   const reverseClass =
     teamType === 'away' ? 'is-flex-direction-row-reverse' : '';
   const teamNameClass = teamType === 'away' ? 'is-justify-content-right' : '';
+  const teamControlsStyle = teamBorderStyle(teamType, team.primary_color);
   return (
-    <div className="controls team-controls">
+    <div className="controls team-controls" style={teamControlsStyle}>
       <div className={`columns is-multiline ${reverseClass}`}>
         <div
           className={`team-name column is-7 is-flex is-align-items-center ${teamNameClass}`}
@@ -382,8 +384,9 @@ function TeamControls({ team, clock_state, teamType }: TeamControlsProps) {
     teamType === 'home'
       ? t('basketball.teams.teamA')
       : t('basketball.teams.teamB');
+  const teamControlsStyle = teamBorderStyle(teamType, team.primary_color);
   return (
-    <div className="controls team-controls">
+    <div className="controls team-controls" style={teamControlsStyle}>
       <span className={`caption ${teamType}`}>{teamCaption}</span>
       <div className={`columns is-multiline ${reverseClass}`}>
         <div
