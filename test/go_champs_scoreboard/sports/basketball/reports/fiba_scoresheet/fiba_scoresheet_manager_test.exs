@@ -42,7 +42,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
           tournament_slug: "",
           organization_name: "Organization Name",
           organization_slug: "",
-          organization_logo_url: "http://example.com/logo.png",
+          organization_logo_url: "/media/logo.png",
           actual_start_datetime: actual_start_datetime,
           actual_end_datetime: actual_end_datetime,
           initial_period_time: game_state.clock_state.initial_period_time,

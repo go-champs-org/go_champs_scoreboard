@@ -5,6 +5,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.FibaBoxScore
 
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.{Team, Player}
+  alias GoChampsScoreboard.Sports.Basketball.Reports.UrlHelper
   alias GoChampsScoreboard.Events.EventLog
   alias GoChampsScoreboard.Games.Models.TeamState
   alias GoChampsScoreboard.Games.Models.PlayerState
@@ -24,7 +25,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.FibaBoxScore
       actual_end_datetime: state.clock_state.finished_at,
       tournament_name: state.info.tournament_name,
       organization_name: state.info.organization_name,
-      organization_logo_url: state.info.organization_logo_url,
+      organization_logo_url: UrlHelper.extract_path_from_url(state.info.organization_logo_url),
       web_url: state.info.web_url,
       home_team: bootstrap_team(state.home_team),
       away_team: bootstrap_team(state.away_team)

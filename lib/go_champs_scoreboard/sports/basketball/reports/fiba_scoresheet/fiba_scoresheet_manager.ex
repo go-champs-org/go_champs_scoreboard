@@ -6,6 +6,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.ProtestManager
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.OfficialManager
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManager
+  alias GoChampsScoreboard.Sports.Basketball.Reports.UrlHelper
   alias GoChampsScoreboard.Events.EventLog
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet
   alias GoChampsScoreboard.Games.Models.GameState
@@ -42,7 +43,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
       tournament_slug: game_state.info.tournament_slug,
       organization_name: game_state.info.organization_name,
       organization_slug: game_state.info.organization_slug,
-      organization_logo_url: game_state.info.organization_logo_url,
+      organization_logo_url:
+        UrlHelper.extract_path_from_url(game_state.info.organization_logo_url),
       game_report: game_state.info.game_report,
       actual_start_datetime: game_state.clock_state.started_at,
       actual_end_datetime: game_state.clock_state.finished_at,

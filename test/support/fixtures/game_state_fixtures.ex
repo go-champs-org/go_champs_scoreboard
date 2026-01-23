@@ -340,7 +340,7 @@ defmodule GoChampsScoreboard.GameStateFixtures do
         tournament_name: "Tournament Name",
         tournament_id: "tournament-id",
         organization_name: "Organization Name",
-        organization_logo_url: "http://example.com/logo.png",
+        organization_logo_url: "https://go-champs.com/media/logo.png",
         game_report: "This is a game report.",
         web_url: "http://example.com/game_report",
         result_type: :automatic
