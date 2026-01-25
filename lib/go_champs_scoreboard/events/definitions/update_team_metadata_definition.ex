@@ -49,8 +49,8 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateTeamMetadataDefinition do
   defp update_team_metadata(team, payload) do
     team
     |> maybe_update_field(:name, payload["name"])
-    |> maybe_update_field(:tri_code, payload["tri_code"])
-    |> maybe_update_field(:primary_color, payload["primary_color"])
+    |> maybe_update_nullable_field(payload, "tri_code")
+    |> maybe_update_nullable_field(payload, "primary_color")
   end
 
   defp maybe_update_field(team, _field, nil), do: team
@@ -58,4 +58,13 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateTeamMetadataDefinition do
   defp maybe_update_field(team, field, value) do
     Map.put(team, field, value)
   end
+
+  defp maybe_update_nullable_field(team, payload, field_string)
+       when is_map_key(payload, field_string) do
+    field_atom = String.to_atom(field_string)
+    value = Map.get(payload, field_string)
+    Map.put(team, field_atom, value)
+  end
+
+  defp maybe_update_nullable_field(team, _payload, _field_string), do: team
 end

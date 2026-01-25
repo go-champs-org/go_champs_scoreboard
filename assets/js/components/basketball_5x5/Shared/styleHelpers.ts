@@ -1,13 +1,7 @@
-const teamBorderStyle = (
-  teamType: 'home' | 'away',
-  teamPrimaryColor: string | null,
-) => {
-  const borderConfiguration = teamPrimaryColor
-    ? `12px solid ${teamPrimaryColor}`
-    : '';
-  return teamType === 'home'
-    ? { borderRight: borderConfiguration }
-    : { borderLeft: borderConfiguration };
+const teamBackgroundStyle = (teamPrimaryColor: string | null) => {
+  return teamPrimaryColor
+    ? { backgroundColor: teamPrimaryColor + '30' } // Adding '30' for 12.5% opacity
+    : {};
 };
 
-export { teamBorderStyle };
+export { teamBackgroundStyle };

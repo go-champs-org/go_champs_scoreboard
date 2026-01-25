@@ -10,6 +10,7 @@ declare module 'react-i18next' {
             boxScore: string;
             editPlayers: string;
             editCoaches: string;
+            editTeams: string;
             editOfficials: string;
             eventLogs: string;
             streamViews: string;

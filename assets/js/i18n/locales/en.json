@@ -24,6 +24,7 @@
       "boxScore": "Box Score",
       "editPlayers": "Edit Players",
       "editCoaches": "Edit Coaches",
+      "editTeams": "Edit Teams",
       "editGame": "Edit Game",
       "eventLogs": "Event Logs",
       "reports": "Reports",
@@ -490,7 +491,18 @@
     },
     "teams": {
       "teamA": "Team A",
-      "teamB": "Team B"
+      "teamB": "Team B",
+      "modal": {
+        "title": "Edit Teams",
+        "name": "Team Name",
+        "nameHelp": "Team name cannot be changed from this interface.",
+        "triCode": "Tri Code",
+        "triCodeHelp": "3-letter abbreviation for the team (e.g., LAL, GSW).",
+        "primaryColor": "Primary Color",
+        "primaryColorHelp": "Choose the team's primary color for display purposes.",
+        "defaultColorHelp": "Using default color. Click the color picker to set a custom color.",
+        "removeColor": "Remove custom color"
+      }
     },
     "quarterStats": {
       "firstHalfTimeouts": "1st Half Timeouts",

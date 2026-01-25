@@ -4,7 +4,7 @@ import { GameState } from '../../types';
 import Modal from '../Modal';
 import BoxScore from './BoxScore';
 import EditPlayersModal from './Players/EditPlayersModal';
-import EditCoachesModal from './Coaches/EditCoachesModal';
+import EditTeamsModal from './Teams/EditTeamsModal';
 import useConnectionState from '../../shared/useConnectionState';
 import { OnlineIcon, OfflineIcon } from '../../shared/ConnectionStatusesIcon';
 import EventLogModal from '../event_log/EventLogModal';
@@ -272,7 +272,7 @@ function MediumTopLevel({ game_state, pushEvent }: TopLevelProps) {
   const { t } = useTranslation();
   const [showBoxScoreModal, setShowBoxScoreModal] = React.useState(false);
   const [showEditPlayersModal, setShowEditPlayersModal] = React.useState(false);
-  const [showEditCoachesModal, setShowEditCoachesModal] = React.useState(false);
+  const [showEditTeamsModal, setShowEditTeamsModal] = React.useState(false);
   const [showEndLiveWarningModal, setShowEndLiveWarningModal] =
     React.useState(false);
   const onStartLive = () => {
@@ -309,9 +309,9 @@ function MediumTopLevel({ game_state, pushEvent }: TopLevelProps) {
         <p className="level-item">
           <button
             className="button is-info is-small"
-            onClick={() => setShowEditCoachesModal(true)}
+            onClick={() => setShowEditTeamsModal(true)}
           >
-            {t('basketball.navigation.editCoaches')}
+            {t('basketball.navigation.editTeams')}
           </button>
         </p>
         <p className="level-item">
@@ -339,10 +339,10 @@ function MediumTopLevel({ game_state, pushEvent }: TopLevelProps) {
           onCloseModal={() => setShowEditPlayersModal(false)}
           pushEvent={pushEvent}
         />
-        <EditCoachesModal
+        <EditTeamsModal
           game_state={game_state}
-          showModal={showEditCoachesModal}
-          onCloseModal={() => setShowEditCoachesModal(false)}
+          showModal={showEditTeamsModal}
+          onCloseModal={() => setShowEditTeamsModal(false)}
           pushEvent={pushEvent}
         />
         <EventLogModal
@@ -400,7 +400,7 @@ function MediumPlusTopLevel({ game_state, pushEvent }: TopLevelProps) {
   const { t } = useTranslation();
   const [showBoxScoreModal, setShowBoxScoreModal] = React.useState(false);
   const [showEditPlayersModal, setShowEditPlayersModal] = React.useState(false);
-  const [showEditCoachesModal, setShowEditCoachesModal] = React.useState(false);
+  const [showEditTeamsModal, setShowEditTeamsModal] = React.useState(false);
   const [showEditGameModal, setShowEditGameModal] = React.useState(false);
   const [showEndLiveWarningModal, setShowEndLiveWarningModal] =
     React.useState(false);
@@ -438,9 +438,9 @@ function MediumPlusTopLevel({ game_state, pushEvent }: TopLevelProps) {
         <p className="level-item">
           <button
             className="button is-info is-small"
-            onClick={() => setShowEditCoachesModal(true)}
+            onClick={() => setShowEditTeamsModal(true)}
           >
-            {t('basketball.navigation.editCoaches')}
+            {t('basketball.navigation.editTeams')}
           </button>
         </p>
         <p className="level-item">
@@ -480,10 +480,10 @@ function MediumPlusTopLevel({ game_state, pushEvent }: TopLevelProps) {
           onCloseModal={() => setShowEditPlayersModal(false)}
           pushEvent={pushEvent}
         />
-        <EditCoachesModal
+        <EditTeamsModal
           game_state={game_state}
-          showModal={showEditCoachesModal}
-          onCloseModal={() => setShowEditCoachesModal(false)}
+          showModal={showEditTeamsModal}
+          onCloseModal={() => setShowEditTeamsModal(false)}
           pushEvent={pushEvent}
         />
         <EditGameModal

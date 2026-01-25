@@ -1,11 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { GameState, TeamState, TeamType } from '../../../types';
-import Modal from '../../Modal';
-import AddCoachRow from './AddCoachRow';
-import EditCoachRow from './EditCoachRow';
+import { TeamState, TeamType } from '../../../types';
+import AddCoachRow from '../Coaches/AddCoachRow';
+import EditCoachRow from '../Coaches/EditCoachRow';
 
-interface CoachesTableProps {
+interface EditTeamCoachesProps {
   team: TeamState;
   teamType: TeamType;
   showAddCoachRow: boolean;
@@ -13,16 +12,37 @@ interface CoachesTableProps {
   setShowAddCoachRow: (show: boolean) => void;
 }
 
-function CoachesTable({
+function EditTeamCoaches({
   team,
   teamType,
   showAddCoachRow,
   pushEvent,
   setShowAddCoachRow,
-}: CoachesTableProps) {
+}: EditTeamCoachesProps) {
   const { t } = useTranslation();
+
   return (
-    <div>
+    <div className="box">
+      <div className="level">
+        <div className="level-left">
+          <div className="level-item">
+            <h5 className="title is-6">
+              {t('basketball.coaches.modal.title')}
+            </h5>
+          </div>
+        </div>
+        <div className="level-right">
+          <div className="level-item">
+            <button
+              className="button is-info is-small"
+              onClick={() => setShowAddCoachRow(true)}
+            >
+              {t('basketball.coaches.modal.addCoach')}
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div className="table-container">
         <table className="table is-fullwidth">
           <thead>
@@ -80,67 +100,4 @@ function CoachesTable({
   );
 }
 
-interface EditCoachesModalProps {
-  game_state: GameState;
-  showModal: boolean;
-  onCloseModal: () => void;
-  pushEvent: (event: string, data: any) => void;
-}
-
-function EditCoachesModal({
-  game_state,
-  showModal,
-  onCloseModal,
-  pushEvent,
-}: EditCoachesModalProps) {
-  const { t } = useTranslation();
-  const [activeTab, setActiveTab] = React.useState('home' as TeamType);
-  const [showAddCoachRow, setShowAddCoachRow] = React.useState(false);
-  const selectedTeam =
-    activeTab === 'away' ? game_state.away_team : game_state.home_team;
-  return (
-    <Modal
-      title={t('basketball.coaches.modal.title')}
-      showModal={showModal}
-      onClose={onCloseModal}
-    >
-      <div className="tabs is-boxed">
-        <ul>
-          <li className={activeTab === 'home' ? 'is-active' : ''}>
-            <a onClick={() => setActiveTab('home')}>
-              <span>{game_state.home_team.name}</span>
-            </a>
-          </li>
-          <li className={activeTab === 'away' ? 'is-active' : ''}>
-            <a onClick={() => setActiveTab('away')}>
-              <span>{game_state.away_team.name}</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div className="columns is-multiline">
-        <div className="column is-12 has-text-right">
-          <button
-            className="button is-info is-small"
-            onClick={() => setShowAddCoachRow(true)}
-          >
-            {t('basketball.coaches.modal.addCoach')}
-          </button>
-        </div>
-
-        <div className="column is-12">
-          <CoachesTable
-            team={selectedTeam}
-            teamType={activeTab}
-            showAddCoachRow={showAddCoachRow}
-            pushEvent={pushEvent}
-            setShowAddCoachRow={setShowAddCoachRow}
-          />
-        </div>
-      </div>
-    </Modal>
-  );
-}
-
-export default EditCoachesModal;
+export default EditTeamCoaches;

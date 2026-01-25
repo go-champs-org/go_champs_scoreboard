@@ -25,6 +25,7 @@
       "editPlayers": "Editar Jogadores",
       "editCoaches": "Editar Técnicos",
       "editGame": "Editar Jogo",
+      "editTeams": "Editar Equipes",
       "eventLogs": "Eventos",
       "reports": "Relatórios",
       "streamViews": "Telas para Stream (OBS)",
@@ -490,7 +491,18 @@
     },
     "teams": {
       "teamA": "Equipe A",
-      "teamB": "Equipe B"
+      "teamB": "Equipe B",
+      "modal": {
+        "title": "Editar Equipes",
+        "name": "Nome da Equipe",
+        "nameHelp": "O nome da equipe não pode ser alterado por esta interface.",
+        "triCode": "Código",
+        "triCodeHelp": "Abreviação de 3 letras para a equipe (ex: LAL, GSW).",
+        "primaryColor": "Cor Primária",
+        "primaryColorHelp": "Escolha a cor primária da equipe para fins de exibição.",
+        "defaultColorHelp": "Usando cor padrão. Clique no seletor de cor para definir uma cor personalizada.",
+        "removeColor": "Remover cor personalizada"
+      }
     },
     "quarterStats": {
       "firstHalfTimeouts": "T. Téc 1º Tempo",

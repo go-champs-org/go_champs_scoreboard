@@ -156,7 +156,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateTeamMetadataDefinitionTest
       assert result != @initial_state
     end
 
-    test "ignores nil values" do
+    test "sets nil values for nullable fields" do
       payload = %{
         "team-type" => "home",
         "name" => "New Name",
@@ -168,10 +168,25 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateTeamMetadataDefinitionTest
       result = UpdateTeamMetadataDefinition.handle(@initial_state, event)
 
       assert result.home_team.name == "New Name"
-      # unchanged
-      assert result.home_team.tri_code == "HOM"
-      # unchanged
-      assert result.home_team.primary_color == "#FF0000"
+      # nil values should be set for nullable fields
+      assert result.home_team.tri_code == nil
+      assert result.home_team.primary_color == nil
+      assert result != @initial_state
+    end
+
+    test "ignores nil values for name field" do
+      payload = %{
+        "team-type" => "home",
+        "name" => nil,
+        "tri_code" => "NEW"
+      }
+
+      event = UpdateTeamMetadataDefinition.create("game-id", 10, 1, payload)
+      result = UpdateTeamMetadataDefinition.handle(@initial_state, event)
+
+      # name should remain unchanged when nil
+      assert result.home_team.name == "Original Home Team"
+      assert result.home_team.tri_code == "NEW"
       assert result != @initial_state
     end
 

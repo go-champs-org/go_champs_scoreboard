@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GameState } from '../../../types';
-import {
-  TEAM_STAT_KEYS,
-  TEAM_STATS,
-  STAT_TYPES,
-} from '../../basketball_5x5/constants';
+import { TEAM_STAT_KEYS, TEAM_STATS } from '../../basketball_5x5/constants';
 import TeamSelect from './TeamSelect';
 
 interface UpdateTeamStatFormProps {

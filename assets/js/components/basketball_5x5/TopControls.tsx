@@ -1,8 +1,6 @@
 import React from 'react';
 import { GameState } from '../../types';
-import TeamControls, { BasicTeamControls } from './TeamControls';
-import ClockControls from './ClockControls';
-import ProtestControls from './ProtestControls';
+import { BasicTeamControls } from './TeamControls';
 
 interface TopControlsProps {
   game_state: GameState;
