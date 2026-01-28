@@ -5,7 +5,7 @@
 
   .caption {
     position: absolute;
-    top: 0;
+    top: 15px;
     font-size: 0.75rem;
 
     &.home {
@@ -25,19 +25,33 @@
 
   .logo-container {
     position: relative;
+    padding-bottom: 0;
+    margin-bottom: 0.3rem;
 
     .logo {
       top: 0;
       right: 5px;
       position: absolute;
       width: 65px;
+      max-width: 65px;
       height: 65px;
+      max-height: 65px;
     }
   }
 
-  .team-name p {
-    text-wrap-mode: nowrap;
-    overflow: hidden;
+  .team-name {
+    padding-bottom: 0;
+    margin-bottom: 0.3rem;
+
+    p {
+      text-wrap-mode: nowrap;
+      overflow: hidden;
+    }
+  }
+
+  .score-container {
+    padding-bottom: 0;
+    margin-bottom: 0.3rem;
   }
 
   .team-stats {

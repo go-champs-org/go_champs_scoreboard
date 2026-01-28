@@ -68,6 +68,7 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
     name = Map.get(team, "name", "No team")
     logo_url = Map.get(team, "logo_url", "")
     tri_code = Map.get(team, "tri_code", "")
+    primary_color = Map.get(team, "primary_color", nil)
     players = map_team_players_to_players(team)
     coaches = map_team_coaches_to_coaches(team)
 
@@ -78,7 +79,9 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
       nil,
       tri_code,
       logo_url,
-      coaches
+      coaches,
+      %{},
+      primary_color
     )
   end
 

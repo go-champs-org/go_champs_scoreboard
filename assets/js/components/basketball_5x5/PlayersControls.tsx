@@ -13,7 +13,7 @@ import { default as PlayerButton } from './Players/Button';
 import { default as CoachButton } from './Coaches/Button';
 import { wherePlaying, whereNotPlaying, byPlayer } from './Players/utils';
 import { t } from 'i18next';
-import { teamBackgroundStyle } from './Shared/styleHelpers';
+import { teamBorderStyle } from './Shared/styleHelpers';
 
 interface PlayersControlsProps {
   clockState: GameClockState;
@@ -190,16 +190,13 @@ function PlayersControls({
   };
   const reverseClass =
     teamType === 'away' ? 'is-flex-direction-row-reverse' : '';
-  const playersControlsStyle = teamBackgroundStyle(team.primary_color);
-
   return (
-    <div
-      className="players-controls controls"
-      ref={playersControlsRef}
-      style={playersControlsStyle}
-    >
+    <div className="players-controls controls" ref={playersControlsRef}>
       <div className="columns is-multiline">
-        <div className="on-court column is-12 has-text-centered">
+        <div
+          className="on-court column is-12 has-text-centered"
+          style={teamBorderStyle(team.primary_color)}
+        >
           <span className="caption">
             {t('basketball.players.onCourt').toUpperCase()}
           </span>

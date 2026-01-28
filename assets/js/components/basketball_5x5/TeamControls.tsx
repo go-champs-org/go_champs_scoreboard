@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from '../../hooks/useTranslation';
 
 import { GameClockState, TeamState, TeamType } from '../../types';
-import { teamBackgroundStyle } from './Shared/styleHelpers';
+import { teamBorderStyle } from './Shared/styleHelpers';
 
 interface TeamControlsProps {
   team: TeamState;
@@ -301,25 +301,32 @@ export function BasicTeamControls({ team, teamType }: TeamControlsProps) {
   const reverseClass =
     teamType === 'away' ? 'is-flex-direction-row-reverse' : '';
   const teamNameClass = teamType === 'away' ? 'is-justify-content-right' : '';
-  const teamControlsStyle = teamBackgroundStyle(team.primary_color);
+  const teamCaption =
+    teamType === 'home'
+      ? t('basketball.teams.teamA')
+      : t('basketball.teams.teamB');
   return (
-    <div className="controls team-controls" style={teamControlsStyle}>
-      <div className={`columns is-multiline ${reverseClass}`}>
+    <div className="controls team-controls">
+      <span className={`caption ${teamType}`}>{teamCaption}</span>
+      <div
+        className={`columns is-multiline ${reverseClass}`}
+        style={teamBorderStyle(team.primary_color)}
+      >
         <div
           className={`team-name column is-7 is-flex is-align-items-center ${teamNameClass}`}
         >
           <p className="title is-4">{team.name}</p>
         </div>
-        <div className="column is-2">
+        <div className="column is-2 logo-container">
           {team.logo_url && (
             <img
               src={team.logo_url}
               alt={`${team.name} logo`}
-              className="team-logo"
+              className="logo"
             />
           )}
         </div>
-        <div className="column is-3">
+        <div className="column is-3 score-container">
           <p className="chip-label title is-4">
             {team.stats_values['points'] || 0}
           </p>
@@ -384,11 +391,13 @@ function TeamControls({ team, clock_state, teamType }: TeamControlsProps) {
     teamType === 'home'
       ? t('basketball.teams.teamA')
       : t('basketball.teams.teamB');
-  const teamControlsStyle = teamBackgroundStyle(team.primary_color);
   return (
-    <div className="controls team-controls" style={teamControlsStyle}>
+    <div className="controls team-controls">
       <span className={`caption ${teamType}`}>{teamCaption}</span>
-      <div className={`columns is-multiline ${reverseClass}`}>
+      <div
+        className={`columns is-multiline ${reverseClass}`}
+        style={teamBorderStyle(team.primary_color)}
+      >
         <div
           className={`team-name column is-7 is-flex is-align-items-center ${teamNameClass}`}
         >
@@ -403,7 +412,7 @@ function TeamControls({ team, clock_state, teamType }: TeamControlsProps) {
             />
           )}
         </div>
-        <div className="column is-3">
+        <div className="column is-3 score-container">
           <p className="chip-label title is-4">
             {team.stats_values['points'] || 0}
           </p>

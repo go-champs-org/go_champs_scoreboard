@@ -241,6 +241,38 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
       }
     }
 
+    @response_body_with_primary_colors %{
+      "data" => %{
+        "id" => "game-id",
+        "away_team" => %{
+          "name" => "Team A",
+          "tri_code" => "ABC",
+          "logo_url" => "https://example.com/logo.png",
+          "primary_color" => "#FF0000",
+          "players" => [
+            %{
+              "id" => "player-1",
+              "name" => "Player 1",
+              "shirt_name" => "P 1",
+              "shirt_number" => "1"
+            }
+          ]
+        },
+        "home_team" => %{
+          "name" => "Team B",
+          "primary_color" => "#0000FF",
+          "players" => [
+            %{
+              "id" => "player-2",
+              "name" => "Player 2",
+              "shirt_name" => "P 2",
+              "shirt_number" => "2"
+            }
+          ]
+        }
+      }
+    }
+
     @response_setting_full_body %{
       "data" => %{
         "view" => "basketball-basic",
@@ -565,6 +597,60 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
       assert :assistant_scorer in types
       assert :timekeeper in types
       assert :shot_clock_operator in types
+    end
+
+    test "maps team primary colors when provided by API" do
+      expect(@http_client, :get, fn url, headers ->
+        assert url =~ "game-id"
+        assert headers == [{"Authorization", "Bearer token"}]
+
+        {:ok,
+         %HTTPoison.Response{
+           body: @response_body_with_primary_colors |> Poison.encode!(),
+           status_code: 200
+         }}
+      end)
+
+      expect(@http_client, :get, fn url ->
+        assert url =~ "game-id/scoreboard-setting"
+
+        {:ok, %HTTPoison.Response{body: %{"data" => nil} |> Poison.encode!(), status_code: 200}}
+      end)
+
+      game =
+        Bootstrapper.bootstrap_from_go_champs(
+          GoChampsScoreboard.Games.Bootstrapper.bootstrap(),
+          "game-id",
+          "token"
+        )
+
+      assert game.away_team.primary_color == "#FF0000"
+      assert game.home_team.primary_color == "#0000FF"
+    end
+
+    test "defaults primary color to nil when not provided by API" do
+      expect(@http_client, :get, fn url, headers ->
+        assert url =~ "game-id"
+        assert headers == [{"Authorization", "Bearer token"}]
+
+        {:ok, %HTTPoison.Response{body: @response_body |> Poison.encode!(), status_code: 200}}
+      end)
+
+      expect(@http_client, :get, fn url ->
+        assert url =~ "game-id/scoreboard-setting"
+
+        {:ok, %HTTPoison.Response{body: %{"data" => nil} |> Poison.encode!(), status_code: 200}}
+      end)
+
+      game =
+        Bootstrapper.bootstrap_from_go_champs(
+          GoChampsScoreboard.Games.Bootstrapper.bootstrap(),
+          "game-id",
+          "token"
+        )
+
+      assert game.away_team.primary_color == nil
+      assert game.home_team.primary_color == nil
     end
   end
 end

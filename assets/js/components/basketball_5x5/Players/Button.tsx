@@ -1,7 +1,8 @@
 import React from 'react';
-import { PlayerState } from '../../../types';
+import { PlayerState, TeamState } from '../../../types';
 import { useTranslation } from '../../../hooks/useTranslation';
 import { getPlayerTooltipText, getPlayerButtonClassName } from './utils';
+import { teamColorStyle } from '../Shared/styleHelpers';
 
 interface ButtonProps {
   player: PlayerState;

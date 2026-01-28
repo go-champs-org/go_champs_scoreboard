@@ -72,6 +72,10 @@ function TeamScore({
   const { t } = useTranslation();
   const [color, setColor] = React.useState(defaultColor);
   const [contrastColor, setContrastColor] = React.useState('#FFFFFF');
+  React.useEffect(() => {
+    setColor(defaultColor);
+    setContrastColor(getContrastColor(defaultColor));
+  }, [defaultColor]);
   const quarteFouls =
     currentPeriod && team.period_stats[currentPeriod]
       ? team.period_stats[currentPeriod]['fouls'] || 0
@@ -132,7 +136,7 @@ function StreamViews({ game_data }: StreamViewsProps) {
           <TeamScore
             team={game_state.home_team}
             score={game_state.home_team.stats_values['points'] || 0}
-            defaultColor="#2b5615"
+            defaultColor={game_state.home_team.primary_color || '#2b5615'}
             currentPeriod={game_state.clock_state.period}
           />
         </div>
@@ -140,7 +144,7 @@ function StreamViews({ game_data }: StreamViewsProps) {
           <TeamScore
             team={game_state.away_team}
             score={game_state.away_team.stats_values['points'] || 0}
-            defaultColor="#970c10"
+            defaultColor={game_state.away_team.primary_color || '#970c10'}
             currentPeriod={game_state.clock_state.period}
           />
         </div>

@@ -1,7 +1,7 @@
-const teamBackgroundStyle = (teamPrimaryColor: string | null) => {
+const teamBorderStyle = (teamPrimaryColor: string | null) => {
   return teamPrimaryColor
-    ? { backgroundColor: teamPrimaryColor + '30' } // Adding '30' for 12.5% opacity
+    ? { border: `3px solid ${teamPrimaryColor}`, borderRadius: '5px' }
     : {};
 };
 
-export { teamBackgroundStyle };
+export { teamBorderStyle };
