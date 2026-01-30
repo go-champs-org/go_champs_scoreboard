@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import { Official } from '../FibaScoresheet';
 
@@ -54,11 +55,12 @@ function OfficialsBox({
   timekeeper,
   shotClockOperator,
 }: OfficialsBoxProps) {
+  const { t } = useTranslation();
   return (
     <View style={styles.officialsBox}>
       <View style={styles.officialsBox.row}>
         <View style={styles.officialsBox.row.label}>
-          <Text>Apontador</Text>
+          <Text>{t('basketball.reports.fibaScoresheet.officials.scorer')}</Text>
         </View>
         <View style={styles.officialsBox.row.name}>
           <Text style={styles.officialsBox.row.name.content}>
@@ -76,7 +78,9 @@ function OfficialsBox({
       </View>
       <View style={styles.officialsBox.row}>
         <View style={styles.officialsBox.row.label}>
-          <Text>Cronometrista</Text>
+          <Text>
+            {t('basketball.reports.fibaScoresheet.officials.timekeeper')}
+          </Text>
         </View>
         <View style={styles.officialsBox.row.name}>
           <Text style={styles.officialsBox.row.name.content}>
@@ -94,7 +98,9 @@ function OfficialsBox({
       </View>
       <View style={styles.officialsBox.row}>
         <View style={styles.officialsBox.row.label}>
-          <Text>Operador 24s</Text>
+          <Text>
+            {t('basketball.reports.fibaScoresheet.officials.shotClockOperator')}
+          </Text>
         </View>
         <View style={styles.officialsBox.row.name}>
           <Text style={styles.officialsBox.row.name.content}>
@@ -112,7 +118,9 @@ function OfficialsBox({
       </View>
       <View style={styles.officialsBox.row}>
         <View style={styles.officialsBox.row.label}>
-          <Text>Representante</Text>
+          <Text>
+            {t('basketball.reports.fibaScoresheet.officials.assistantScorer')}
+          </Text>
         </View>
         <View style={styles.officialsBox.row.name}>
           <Text style={styles.officialsBox.row.name.content}>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Text, View, StyleSheet } from '@react-pdf/renderer';
 import { RunningScore, ScoreMark } from '../FibaScoresheet';
 import { backgroundColorForPeriod, BLUE, textColorForPeriod } from './styles';
@@ -289,6 +290,7 @@ export default function RunningScoreBox({
   isGameEnded?: boolean;
   hasWalkoverTeam?: boolean;
 }) {
+  const { t } = useTranslation();
   const aTeamFullRunningScore = generateRunningScoreData(aTeamRunningScore);
   const bTeamFullRunningScore = generateRunningScoreData(bTeamRunningScore);
   const aTeamLastScoreAdjusted = hasWalkoverTeam ? 0 : aTeamLastScore;
@@ -296,7 +298,7 @@ export default function RunningScoreBox({
   return (
     <View style={styles.runningScore}>
       <View style={styles.runningScore.header}>
-        <Text>CONTAGEM PROGRESSIVA</Text>
+        <Text>{t('basketball.reports.fibaScoresheet.runningScore')}</Text>
       </View>
       <View style={styles.runningScore.columnsContainer}>
         <View style={styles.runningScore.columnsContainer.column}>

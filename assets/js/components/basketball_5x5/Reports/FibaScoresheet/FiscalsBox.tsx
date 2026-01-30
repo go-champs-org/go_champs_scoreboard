@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import { Official } from '../FibaScoresheet';
 
@@ -48,11 +49,14 @@ interface FiscalsBoxProps {
 }
 
 function FiscalsBox({ crewChief, umpire1, umpire2 }: FiscalsBoxProps) {
+  const { t } = useTranslation();
   return (
     <View style={styles.fiscalsBox}>
       <View style={styles.fiscalsBox.row}>
         <View style={styles.fiscalsBox.row.label}>
-          <Text>Crew Chief</Text>
+          <Text>
+            {t('basketball.reports.fibaScoresheet.officials.crewChief')}
+          </Text>
         </View>
         <View style={styles.fiscalsBox.row.name}>
           <Text style={styles.fiscalsBox.row.name.content}>
@@ -70,7 +74,9 @@ function FiscalsBox({ crewChief, umpire1, umpire2 }: FiscalsBoxProps) {
       </View>
       <View style={styles.fiscalsBox.row}>
         <View style={styles.fiscalsBox.row.label}>
-          <Text>Fiscal 1</Text>
+          <Text>
+            {t('basketball.reports.fibaScoresheet.officials.umpire1')}
+          </Text>
         </View>
         <View style={styles.fiscalsBox.row.name}>
           <Text style={styles.fiscalsBox.row.name.content}>{umpire1.name}</Text>
@@ -86,7 +92,9 @@ function FiscalsBox({ crewChief, umpire1, umpire2 }: FiscalsBoxProps) {
       </View>
       <View style={styles.fiscalsBox.row}>
         <View style={styles.fiscalsBox.row.label}>
-          <Text>Fiscal 2</Text>
+          <Text>
+            {t('basketball.reports.fibaScoresheet.officials.umpire2')}
+          </Text>
         </View>
         <View style={styles.fiscalsBox.row.name}>
           <Text style={styles.fiscalsBox.row.name.content}>{umpire2.name}</Text>
