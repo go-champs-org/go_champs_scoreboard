@@ -35,7 +35,7 @@ export interface ProcessingStateManager {
 
 const REPORT_METADATA: Record<string, { translationKey: string }> = {
   [REPORT_SLUGS.FIBA_SCORESHEET]: {
-    translationKey: 'basketball.reports.fibaScoresheet',
+    translationKey: 'basketball.reports.fibaScoresheet.title',
   },
   [REPORT_SLUGS.FIBA_BOXSCORE]: {
     translationKey: 'basketball.reports.fibaBoxScore.title',

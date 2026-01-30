@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { View, Text, Image } from '@react-pdf/renderer';
 import QRCode from 'qrcode';
+import { useTranslation } from 'react-i18next';
 
 const styles = {
   pageHeader: {
@@ -44,6 +45,7 @@ function PageHeader({
   tournamentName,
   qrCodeUrl,
 }: PageHeaderProps) {
+  const { t } = useTranslation();
   const qrCodeDataUrl = useMemo(() => {
     if (!qrCodeUrl) return null;
 
@@ -74,7 +76,9 @@ function PageHeader({
       )}
       <View style={styles.pageHeader.nameContainer}>
         <Text>{organizationName.toUpperCase()}</Text>
-        <Text>{`COMPETIÇÃO: ${tournamentName.toUpperCase()}`}</Text>
+        <Text>{`${t(
+          'basketball.reports.pageHeader.competition',
+        ).toUpperCase()}: ${tournamentName.toUpperCase()}`}</Text>
       </View>
       {qrCodeDataUrl && (
         <View style={styles.pageHeader.qrCodeContainer}>

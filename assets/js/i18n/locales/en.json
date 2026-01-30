@@ -1,7 +1,46 @@
 {
   "basketball": {
     "reports": {
-      "fibaScoresheet": "Scoresheet",
+      "fibaScoresheet": {
+        "periods": {
+          "quarter": "Quarter",
+          "extraTime": "Extra Time"
+        },
+        "title": "Scoresheet",
+        "finalResult": "Final Result",
+        "winningTeam": "Winning Team",
+        "gameEndTime": "Game ended at (hh:mm)",
+        "gameReport": "Game Report",
+        "gameNumber": "Game No.",
+        "location": "Location",
+        "dateTime": "Date - Time",
+        "runningScore": "PROGRESSIVE SCORE",
+        "teamFouls": "Team Fouls",
+        "timeouts": "Timeouts Charged",
+        "fouls": "Fouls",
+        "absent": "ABSENT",
+        "license": "Lic #",
+        "playerNames": "Player Names",
+        "number": "No.",
+        "starter": "S.",
+        "team": "Team",
+        "coach": "Coach",
+        "assistantCoach": "Asst. Coach",
+        "captain": "CAP.",
+        "protest": {
+          "captainSignature": "Captain signature in case of protest:",
+          "player": "Player"
+        },
+        "officials": {
+          "scorer": "Scorer",
+          "timekeeper": "Timekeeper",
+          "shotClockOperator": "Shot Clock Operator",
+          "assistantScorer": "Representative",
+          "crewChief": "Crew Chief",
+          "umpire1": "Umpire 1",
+          "umpire2": "Umpire 2"
+        }
+      },
       "collectSignatures": "Collect Signatures",
       "fibaBoxScore": {
         "summaryTitle": "Game Summary",
@@ -18,6 +57,9 @@
         "overtimeAbbreviation": "OT",
         "final": "FINAL",
         "totals": "Totals"
+      },
+      "pageHeader": {
+        "competition": "Competition"
       }
     },
     "navigation": {

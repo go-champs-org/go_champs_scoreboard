@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Document,
   Page,
@@ -251,6 +252,7 @@ function generateTeamPeriodsScores(team: Team) {
 }
 
 function Periods({ teamA, teamB }: { teamA: Team; teamB: Team }) {
+  const { t } = useTranslation();
   const teamAPeriodsScores = generateTeamPeriodsScores(teamA);
   const teamBPeriodsScores = generateTeamPeriodsScores(teamB);
   const hasWalkoverTeam = teamA.has_walkover || teamB.has_walkover;
@@ -260,7 +262,9 @@ function Periods({ teamA, teamB }: { teamA: Team; teamB: Team }) {
         <View style={styles.periods.row.column}>
           <Period
             period={1}
-            periodLabel="Quarto 1"
+            periodLabel={`${t(
+              'basketball.reports.fibaScoresheet.periods.quarter',
+            )} 1`}
             teamAScore={teamAPeriodsScores[1]}
             teamBScore={teamBPeriodsScores[1]}
           />
@@ -279,7 +283,9 @@ function Periods({ teamA, teamB }: { teamA: Team; teamB: Team }) {
         <View style={styles.periods.row.column}>
           <Period
             period={3}
-            periodLabel="Quarto 3"
+            periodLabel={`${t(
+              'basketball.reports.fibaScoresheet.periods.quarter',
+            )} 3`}
             teamAScore={teamAPeriodsScores[3]}
             teamBScore={teamBPeriodsScores[3]}
           />
@@ -298,7 +304,9 @@ function Periods({ teamA, teamB }: { teamA: Team; teamB: Team }) {
         <View style={styles.periods.row.column}>
           <Period
             period={5}
-            periodLabel="Quarto extras"
+            periodLabel={t(
+              'basketball.reports.fibaScoresheet.periods.extraTime',
+            )}
             teamAScore={hasWalkoverTeam ? 0 : teamAPeriodsScores[5]}
             teamBScore={hasWalkoverTeam ? 0 : teamBPeriodsScores[5]}
           />
@@ -310,13 +318,14 @@ function Periods({ teamA, teamB }: { teamA: Team; teamB: Team }) {
 }
 
 function EndResults({ teamA, teamB }: { teamA: Team; teamB: Team }) {
+  const { t } = useTranslation();
   const winnerTeam = teamA.score > teamB.score ? teamA : teamB;
   return (
     <View style={styles.periods}>
       <View style={styles.periods.row}>
         <View style={styles.periods.row.column}>
           <Period
-            periodLabel="Resultado final"
+            periodLabel={t('basketball.reports.fibaScoresheet.finalResult')}
             period={5}
             teamAScore={teamA.score}
             teamBScore={teamB.score}
@@ -329,7 +338,7 @@ function EndResults({ teamA, teamB }: { teamA: Team; teamB: Team }) {
         <View style={styles.periods.row.column}>
           <View style={styles.periods.period}>
             <View style={styles.periods.period.quarter}>
-              <Text>Equipe vencedora</Text>
+              <Text>{t('basketball.reports.fibaScoresheet.winningTeam')}</Text>
             </View>
             <View style={styles.periods.period.cell}>
               <Text>{winnerTeam.name}</Text>
@@ -342,11 +351,14 @@ function EndResults({ teamA, teamB }: { teamA: Team; teamB: Team }) {
 }
 
 function Protest({ protest }: { protest: Protest }) {
+  const { t } = useTranslation();
   return (
     <View style={styles.protest}>
       <View style={styles.protest.row}>
         <View style={styles.protest.row.cell}>
-          <Text>Assinatura do capitão em caso de protesto:</Text>
+          <Text>
+            {t('basketball.reports.fibaScoresheet.protest.captainSignature')}
+          </Text>
         </View>
         <View style={styles.protest.row.cell}>
           {protest.signature && (
@@ -362,7 +374,7 @@ function Protest({ protest }: { protest: Protest }) {
       <View style={styles.protest.row}>
         <View style={styles.protest.row.cell}>
           <Text>
-            Atleta:{' '}
+            {t('basketball.reports.fibaScoresheet.protest.player')}:{' '}
             {protest.state === 'protest_filed' ? protest.player_name : 'N/A'}
           </Text>
         </View>
@@ -372,6 +384,7 @@ function Protest({ protest }: { protest: Protest }) {
 }
 
 function EndGame({ endDatetime }: { endDatetime: string }) {
+  const { t } = useTranslation();
   const formattedEndDatetime = new Date(endDatetime).toLocaleTimeString(
     'pt-BR',
     {
@@ -385,7 +398,7 @@ function EndGame({ endDatetime }: { endDatetime: string }) {
         <View style={styles.periods.row.column}>
           <View style={styles.periods.period}>
             <View style={styles.periods.period.quarter}>
-              <Text>Fim de jogo às (hh:mm)</Text>
+              <Text>{t('basketball.reports.fibaScoresheet.gameEndTime')}</Text>
             </View>
             <View style={styles.periods.period.cell}>
               <Text>{formattedEndDatetime}</Text>
@@ -492,6 +505,7 @@ function ScoresheetPage({ scoresheetData }: FibaScoresheetProps) {
 }
 
 function GameReportPage({ scoresheetData }: FibaScoresheetProps) {
+  const { t } = useTranslation();
   return (
     <Page size="A4" style={styles.page}>
       <PageHeader
@@ -527,7 +541,7 @@ function GameReportPage({ scoresheetData }: FibaScoresheetProps) {
               textAlign: 'center',
             }}
           >
-            Relatório do Jogo
+            {t('basketball.reports.fibaScoresheet.gameReport')}
           </Text>
           <Text
             style={{

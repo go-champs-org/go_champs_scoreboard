@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Text, View, StyleSheet } from '@react-pdf/renderer';
 
 const styles = StyleSheet.create({
@@ -53,6 +54,7 @@ function HeaderBox({
   location,
   datetime,
 }: HeaderBoxProps) {
+  const { t } = useTranslation();
   const date = new Date(datetime).toLocaleDateString('pt-BR', {
     day: '2-digit',
     month: '2-digit',
@@ -67,7 +69,7 @@ function HeaderBox({
       <View style={styles.headerBox.row}>
         <View style={styles.headerBox.row.column}>
           <View style={styles.headerBox.row.column.label}>
-            <Text>Local</Text>
+            <Text>{t('basketball.reports.fibaScoresheet.location')}</Text>
           </View>
           <View style={styles.headerBox.row.column.value}>
             <Text style={styles.headerBox.row.column.value.content}>
@@ -77,7 +79,7 @@ function HeaderBox({
         </View>
         <View style={styles.headerBox.row.column}>
           <View style={styles.headerBox.row.column.label}>
-            <Text>Data - Hora I</Text>
+            <Text>{t('basketball.reports.fibaScoresheet.dateTime')}</Text>
           </View>
           <View style={styles.headerBox.row.column.value}>
             <Text>{`${date} - ${time}`}</Text>
@@ -91,7 +93,7 @@ function HeaderBox({
           }}
         >
           <View style={styles.headerBox.row.column.label}>
-            <Text>Nro Jogo</Text>
+            <Text>{t('basketball.reports.fibaScoresheet.gameNumber')}</Text>
           </View>
           <View style={styles.headerBox.row.column.value}>
             <Text>{number}</Text>
@@ -101,7 +103,9 @@ function HeaderBox({
       <View style={styles.headerBox.row}>
         <View style={styles.headerBox.row.column}>
           <View style={styles.headerBox.row.column.label}>
-            <Text>Crew Chief</Text>
+            <Text>
+              {t('basketball.reports.fibaScoresheet.officials.crewChief')}
+            </Text>
           </View>
           <View style={styles.headerBox.row.column.value}>
             <Text style={styles.headerBox.row.column.value.content}>
@@ -111,7 +115,9 @@ function HeaderBox({
         </View>
         <View style={styles.headerBox.row.column}>
           <View style={styles.headerBox.row.column.label}>
-            <Text>Fiscal 1</Text>
+            <Text>
+              {t('basketball.reports.fibaScoresheet.officials.umpire1')}
+            </Text>
           </View>
           <View style={styles.headerBox.row.column.value}>
             <Text style={styles.headerBox.row.column.value.content}>
@@ -127,7 +133,9 @@ function HeaderBox({
           }}
         >
           <View style={styles.headerBox.row.column.label}>
-            <Text>Fiscal 2</Text>
+            <Text>
+              {t('basketball.reports.fibaScoresheet.officials.umpire2')}
+            </Text>
           </View>
           <View style={styles.headerBox.row.column.value}>
             <Text style={styles.headerBox.row.column.value.content}>

@@ -1,7 +1,46 @@
 {
   "basketball": {
     "reports": {
-      "fibaScoresheet": "Súmula",
+      "fibaScoresheet": {
+        "periods": {
+          "quarter": "Quarto",
+          "extraTime": "Quarto extras"
+        },
+        "title": "Súmula",
+        "finalResult": "Resultado final",
+        "winningTeam": "Equipe vencedora",
+        "gameEndTime": "Fim de jogo às (hh:mm)",
+        "gameReport": "Relatório do Jogo",
+        "gameNumber": "Nro Jogo",
+        "location": "Local",
+        "dateTime": "Data - Hora",
+        "runningScore": "CONTAGEM PROGRESSIVA",
+        "teamFouls": "Faltas de Equipe",
+        "timeouts": "Tempos Debitados",
+        "fouls": "Faltas",
+        "absent": "AUSENTE",
+        "license": "Lic #",
+        "playerNames": "Nome de atletas",
+        "number": "Nº",
+        "starter": "E.",
+        "team": "Equipe",
+        "coach": "Técnico",
+        "assistantCoach": "Ass. Técnico",
+        "captain": "CAP.",
+        "protest": {
+          "captainSignature": "Assinatura do capitão em caso de protesto:",
+          "player": "Atleta"
+        },
+        "officials": {
+          "scorer": "Apontador",
+          "timekeeper": "Cronometrista",
+          "shotClockOperator": "Operador 24s",
+          "assistantScorer": "Representante",
+          "crewChief": "Crew Chief",
+          "umpire1": "Fiscal 1",
+          "umpire2": "Fiscal 2"
+        }
+      },
       "collectSignatures": "Coletar Assinaturas",
       "fibaBoxScore": {
         "summaryTitle": "Resumo do Jogo",
@@ -18,6 +57,9 @@
         "overtimeAbbreviation": "PRT",
         "final": "FINAL",
         "totals": "Totais"
+      },
+      "pageHeader": {
+        "competition": "Competição"
       }
     },
     "navigation": {

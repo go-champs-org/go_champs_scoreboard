@@ -14,7 +14,6 @@ import { useTranslation } from '../../hooks/useTranslation';
 import EndLiveModal from './EndLiveModal';
 import SignatureModal from './Reports/SignatureModal';
 import { REPORT_SLUGS } from '../../shared/reportRegistry';
-import { BASKETBALL_VIEWS } from './constants';
 
 interface ReportsProps {
   game_state: GameState;
@@ -74,7 +73,7 @@ function MediumPlusReports({ game_state, t, pushEvent }: ReportsProps) {
                 setShowFibaDropdown(false);
               }}
             >
-              {t('basketball.reports.fibaScoresheet')}
+              {t('basketball.reports.fibaScoresheet.title')}
             </a>
             <a
               className="dropdown-item"

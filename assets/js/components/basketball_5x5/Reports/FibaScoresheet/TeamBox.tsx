@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import { Coach, CoachFoul, Team, Timeout } from '../FibaScoresheet';
 import { textColorForPeriod, RED, BLUE, colorForPeriod } from './styles';
@@ -335,12 +336,15 @@ function PeriodFouls({
   team: Team;
   isGameEnded?: boolean;
 }) {
+  const { t } = useTranslation();
   const periodFouls = team.all_fouls.filter((foul) => foul.period === period);
 
   return (
     <View style={styles.teamContainer.teamFoulBoxes}>
       <View style={styles.teamContainer.teamFoulBoxes.periodContainer}>
-        {(period === 1 || period === 3) && <Text>Quarto</Text>}
+        {(period === 1 || period === 3) && (
+          <Text>{t('basketball.reports.fibaScoresheet.periods.quarter')}</Text>
+        )}
         <Text style={styles.teamContainer.teamFoulBoxes.periodContainer.period}>
           {period}
         </Text>
@@ -497,6 +501,7 @@ function PlayerRow({
   isGameEnded?: boolean;
   isFirstEmpty?: boolean;
 }) {
+  const { t } = useTranslation();
   const isFirstEmptyPlayerAndGameEnded = isFirstEmpty && isGameEnded;
   const isLicenseNumberUnsed =
     isFirstEmptyPlayerAndGameEnded ||
@@ -525,7 +530,7 @@ function PlayerRow({
             {player.is_captain && (
               <Text
                 style={styles.teamContainer.table.row.columnName.playerCaptain}
-              >{`(CAP.)`}</Text>
+              >{`(${t('basketball.reports.fibaScoresheet.captain')})`}</Text>
             )}
           </View>
         </ConditionalCell>
@@ -610,7 +615,11 @@ function CoachRow({
   type: 'head' | 'assistant';
   isGameEnded?: boolean;
 }) {
-  const label = type === 'head' ? 'Técnico' : 'Ass. Técnico';
+  const { t } = useTranslation();
+  const label =
+    type === 'head'
+      ? t('basketball.reports.fibaScoresheet.coach')
+      : t('basketball.reports.fibaScoresheet.assistantCoach');
   return (
     <View style={styles.teamContainer.table.coachRow}>
       <View style={styles.teamContainer.table.coachRow.label}>
@@ -713,6 +722,7 @@ export default function TeamBox({
   team,
   isGameEnded = false,
 }: TeamProps) {
+  const { t } = useTranslation();
   const renderPlayers = Array.from({ length: 12 }).map((_, index) => {
     const teamPlayer = team.players[index] || null;
     const fouls = Array.from({ length: 6 }).fill({});
@@ -766,17 +776,17 @@ export default function TeamBox({
       <View style={styles.teamContainer.header}>
         <View style={styles.teamContainer.header.row}>
           <Text style={styles.teamContainer.header.teamLabel}>
-            Equipe {type}
+            {t('basketball.reports.fibaScoresheet.team')} {type}
           </Text>
           <Text style={styles.teamContainer.header.teamName}>{team.name}</Text>
         </View>
         <View style={styles.teamContainer.header.row}>
           <View style={styles.teamContainer.header.row.column}>
-            <Text>Tempos Debitados</Text>
+            <Text>{t('basketball.reports.fibaScoresheet.timeouts')}</Text>
             <Timeouts team={team} isGameEnded={isGameEnded} />
           </View>
           <View style={styles.teamContainer.header.row.column}>
-            <Text>Faltas de Equipe </Text>
+            <Text>{t('basketball.reports.fibaScoresheet.teamFouls')} </Text>
             <TeamFouls team={team} isGameEnded={isGameEnded} />
           </View>
         </View>
@@ -784,18 +794,24 @@ export default function TeamBox({
       <View style={styles.teamContainer.table}>
         <View style={styles.teamContainer.table.row}>
           <View style={styles.teamContainer.table.row.columnLic}>
-            <Text style={styles.teamContainer.table.content}>Lic #</Text>
+            <Text style={styles.teamContainer.table.content}>
+              {t('basketball.reports.fibaScoresheet.license')}
+            </Text>
           </View>
           <View style={styles.teamContainer.table.row.column}>
             <Text style={styles.teamContainer.table.content}>
-              Nome de atletas
+              {t('basketball.reports.fibaScoresheet.playerNames')}
             </Text>
           </View>
           <View style={styles.teamContainer.table.row.columnBox}>
-            <Text style={styles.teamContainer.table.content}>Nº</Text>
+            <Text style={styles.teamContainer.table.content}>
+              {t('basketball.reports.fibaScoresheet.number')}
+            </Text>
           </View>
           <View style={styles.teamContainer.table.row.columnBox}>
-            <Text style={styles.teamContainer.table.content}>E.</Text>
+            <Text style={styles.teamContainer.table.content}>
+              {t('basketball.reports.fibaScoresheet.starter')}
+            </Text>
           </View>
           <View
             style={{
@@ -803,7 +819,7 @@ export default function TeamBox({
               borderLeft: '1px solid #000',
             }}
           >
-            <Text>Faltas</Text>
+            <Text>{t('basketball.reports.fibaScoresheet.fouls')}</Text>
           </View>
         </View>
         {team.has_walkover ? (
@@ -822,7 +838,7 @@ export default function TeamBox({
               isGameEnded={false}
             ></CoachRow>
             <View style={styles.teamContainer.table.walkoverMessage}>
-              <Text>AUSENTE</Text>
+              <Text>{t('basketball.reports.fibaScoresheet.absent')}</Text>
             </View>
           </>
         ) : (

@@ -20,7 +20,7 @@ describe('processingState', () => {
       expect(manager.reports).toHaveLength(2);
       expect(manager.reports[0]).toEqual({
         id: REPORT_SLUGS.FIBA_SCORESHEET,
-        translationKey: 'basketball.reports.fibaScoresheet',
+        translationKey: 'basketball.reports.fibaScoresheet.title',
         status: REPORT_STATUSES.PENDING,
       });
       expect(manager.reports[1]).toEqual({
