@@ -2,7 +2,6 @@ import React from 'react';
 import { useTranslation } from '../../hooks/useTranslation';
 
 import { GameClockState, TeamState, TeamType } from '../../types';
-import { teamBorderStyle } from './Shared/styleHelpers';
 
 interface TeamControlsProps {
   team: TeamState;
@@ -308,13 +307,16 @@ export function BasicTeamControls({ team, teamType }: TeamControlsProps) {
   return (
     <div className="controls team-controls">
       <span className={`caption ${teamType}`}>{teamCaption}</span>
-      <div
-        className={`columns is-multiline ${reverseClass}`}
-        style={teamBorderStyle(team.primary_color)}
-      >
+      <div className={`columns is-multiline ${reverseClass}`}>
         <div
-          className={`team-name column is-7 is-flex is-align-items-center ${teamNameClass}`}
+          className={`team-name column is-7 is-flex is-align-items-center ${teamNameClass} ${reverseClass}`}
         >
+          {team.primary_color && (
+            <span
+              className="team-color"
+              style={{ backgroundColor: team.primary_color }}
+            ></span>
+          )}
           <p className="title is-4">{team.name}</p>
         </div>
         <div className="column is-2 logo-container">
@@ -394,13 +396,16 @@ function TeamControls({ team, clock_state, teamType }: TeamControlsProps) {
   return (
     <div className="controls team-controls">
       <span className={`caption ${teamType}`}>{teamCaption}</span>
-      <div
-        className={`columns is-multiline ${reverseClass}`}
-        style={teamBorderStyle(team.primary_color)}
-      >
+      <div className={`columns is-multiline ${reverseClass}`}>
         <div
-          className={`team-name column is-7 is-flex is-align-items-center ${teamNameClass}`}
+          className={`team-name column is-7 is-flex is-align-items-center ${teamNameClass} ${reverseClass}`}
         >
+          {team.primary_color && (
+            <span
+              className="team-color"
+              style={{ backgroundColor: team.primary_color }}
+            ></span>
+          )}
           <p className="title is-4">{team.name}</p>
         </div>
         <div className="column is-2 logo-container">

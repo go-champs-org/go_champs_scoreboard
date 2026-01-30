@@ -5,7 +5,7 @@
 
   .caption {
     position: absolute;
-    top: 15px;
+    top: 5px;
     font-size: 0.75rem;
 
     &.home {
@@ -43,9 +43,19 @@
     padding-bottom: 0;
     margin-bottom: 0.3rem;
 
+    .team-color {
+      display: inline-block;
+      width: 30px;
+      min-width: 30px;
+      height: 30px;
+      min-height: 30px;
+      border-radius: 3px;
+    }
+
     p {
       text-wrap-mode: nowrap;
       overflow: hidden;
+      margin: 0 0.5rem;
     }
   }
 

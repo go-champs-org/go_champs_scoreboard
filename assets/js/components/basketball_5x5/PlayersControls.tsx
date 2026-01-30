@@ -13,7 +13,7 @@ import { default as PlayerButton } from './Players/Button';
 import { default as CoachButton } from './Coaches/Button';
 import { wherePlaying, whereNotPlaying, byPlayer } from './Players/utils';
 import { t } from 'i18next';
-import { teamBorderStyle } from './Shared/styleHelpers';
+import { teamPlayersCaptionStyle } from '../../shared/styleHelpers';
 
 interface PlayersControlsProps {
   clockState: GameClockState;
@@ -193,11 +193,11 @@ function PlayersControls({
   return (
     <div className="players-controls controls" ref={playersControlsRef}>
       <div className="columns is-multiline">
-        <div
-          className="on-court column is-12 has-text-centered"
-          style={teamBorderStyle(team.primary_color)}
-        >
-          <span className="caption">
+        <div className="on-court column is-12 has-text-centered">
+          <span
+            className="caption"
+            style={teamPlayersCaptionStyle(team.primary_color)}
+          >
             {t('basketball.players.onCourt').toUpperCase()}
           </span>
 
@@ -292,7 +292,10 @@ function PlayersControls({
         </div>
 
         <div className="on-bench column is-12 has-text-centered">
-          <span className="caption">
+          <span
+            className="caption"
+            style={teamPlayersCaptionStyle(team.primary_color)}
+          >
             {t('basketball.players.onBench').toUpperCase()}
           </span>
           <div className="columns is-multiline is-centered">

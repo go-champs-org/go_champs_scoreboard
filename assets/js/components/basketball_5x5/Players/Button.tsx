@@ -2,7 +2,7 @@ import React from 'react';
 import { PlayerState, TeamState } from '../../../types';
 import { useTranslation } from '../../../hooks/useTranslation';
 import { getPlayerTooltipText, getPlayerButtonClassName } from './utils';
-import { teamColorStyle } from '../Shared/styleHelpers';
+import { teamColorStyle } from '../../../shared/styleHelpers';
 
 interface ButtonProps {
   player: PlayerState;
