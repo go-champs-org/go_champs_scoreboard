@@ -273,6 +273,113 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
       }
     }
 
+    @response_body_with_officials %{
+      "data" => %{
+        "id" => "game-id",
+        "away_team" => %{
+          "name" => "Team A",
+          "players" => []
+        },
+        "home_team" => %{
+          "name" => "Team B",
+          "players" => []
+        },
+        "officials" => [
+          %{
+            "id" => "embedded-official-1",
+            "official_id" => "official-uuid-1",
+            "role" => "crew_chief",
+            "official" => %{
+              "id" => "official-uuid-1",
+              "name" => "John Chief",
+              "license_number" => "REF001",
+              "username" => "johnchief",
+              "tournament_id" => "tournament-uuid"
+            }
+          },
+          %{
+            "id" => "embedded-official-2",
+            "official_id" => "official-uuid-2",
+            "role" => "scorer",
+            "official" => %{
+              "id" => "official-uuid-2",
+              "name" => "Jane Scorer",
+              "license_number" => "SCR001",
+              "username" => "janescorer",
+              "tournament_id" => "tournament-uuid"
+            }
+          }
+        ],
+        "live_state" => "not_started"
+      }
+    }
+
+    @response_body_with_referee_role %{
+      "data" => %{
+        "id" => "game-id",
+        "away_team" => %{
+          "name" => "Team A",
+          "players" => []
+        },
+        "home_team" => %{
+          "name" => "Team B",
+          "players" => []
+        },
+        "officials" => [
+          %{
+            "id" => "embedded-official-1",
+            "official_id" => "official-uuid-1",
+            "role" => "referee",
+            "official" => %{
+              "id" => "official-uuid-1",
+              "name" => "John Referee",
+              "license_number" => "REF001",
+              "username" => "johnref",
+              "tournament_id" => "tournament-uuid"
+            }
+          }
+        ],
+        "live_state" => "not_started"
+      }
+    }
+
+    @response_body_with_invalid_officials %{
+      "data" => %{
+        "id" => "game-id",
+        "away_team" => %{
+          "name" => "Team A",
+          "players" => []
+        },
+        "home_team" => %{
+          "name" => "Team B",
+          "players" => []
+        },
+        "officials" => [
+          %{
+            "id" => "embedded-official-1",
+            "official_id" => "official-uuid-1",
+            "role" => "invalid_role",
+            "official" => %{
+              "id" => "official-uuid-1",
+              "name" => "Invalid Official",
+              "license_number" => "INV001"
+            }
+          },
+          %{
+            "id" => "embedded-official-2",
+            "official_id" => "official-uuid-2",
+            "role" => "scorer",
+            "official" => %{
+              "id" => "official-uuid-2",
+              "name" => "Valid Scorer",
+              "license_number" => "SCR001"
+            }
+          }
+        ],
+        "live_state" => "not_started"
+      }
+    }
+
     @response_setting_full_body %{
       "data" => %{
         "view" => "basketball-basic",
@@ -651,6 +758,135 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
 
       assert game.away_team.primary_color == nil
       assert game.home_team.primary_color == nil
+    end
+
+    test "maps API officials when provided" do
+      expect(@http_client, :get, fn url, headers ->
+        assert url =~ "game-id"
+        assert headers == [{"Authorization", "Bearer token"}]
+
+        {:ok,
+         %HTTPoison.Response{
+           body: @response_body_with_officials |> Poison.encode!(),
+           status_code: 200
+         }}
+      end)
+
+      expect(@http_client, :get, fn url ->
+        assert url =~ "game-id/scoreboard-setting"
+
+        {:ok, %HTTPoison.Response{body: %{"data" => nil} |> Poison.encode!(), status_code: 200}}
+      end)
+
+      game =
+        Bootstrapper.bootstrap_from_go_champs(
+          GoChampsScoreboard.Games.Bootstrapper.bootstrap(),
+          "game-id",
+          "token"
+        )
+
+      assert length(game.officials) == 7
+
+      # Find the specific officials that were replaced
+      crew_chief = Enum.find(game.officials, &(&1.type == :crew_chief))
+      scorer = Enum.find(game.officials, &(&1.type == :scorer))
+
+      # Assert API officials replaced defaults
+      assert crew_chief.id == "official-uuid-1"
+      assert crew_chief.name == "John Chief"
+      assert crew_chief.license_number == "REF001"
+
+      assert scorer.id == "official-uuid-2"
+      assert scorer.name == "Jane Scorer"
+      assert scorer.license_number == "SCR001"
+
+      # Assert other officials remain as defaults (empty names but have UUIDs)
+      other_officials = Enum.filter(game.officials, &(&1.type not in [:crew_chief, :scorer]))
+
+      Enum.each(other_officials, fn official ->
+        # Default officials have UUID ids
+        assert String.length(official.id) > 0
+        assert official.name == ""
+      end)
+    end
+
+    test "maps referee role to crew_chief type" do
+      expect(@http_client, :get, fn url, headers ->
+        assert url =~ "game-id"
+        assert headers == [{"Authorization", "Bearer token"}]
+
+        {:ok,
+         %HTTPoison.Response{
+           body: @response_body_with_referee_role |> Poison.encode!(),
+           status_code: 200
+         }}
+      end)
+
+      expect(@http_client, :get, fn url ->
+        assert url =~ "game-id/scoreboard-setting"
+
+        {:ok, %HTTPoison.Response{body: %{"data" => nil} |> Poison.encode!(), status_code: 200}}
+      end)
+
+      game =
+        Bootstrapper.bootstrap_from_go_champs(
+          GoChampsScoreboard.Games.Bootstrapper.bootstrap(),
+          "game-id",
+          "token"
+        )
+
+      crew_chief = Enum.find(game.officials, &(&1.type == :crew_chief))
+      assert crew_chief.id == "official-uuid-1"
+      assert crew_chief.name == "John Referee"
+      assert crew_chief.license_number == "REF001"
+    end
+
+    test "handles invalid official roles gracefully" do
+      expect(@http_client, :get, fn url, headers ->
+        assert url =~ "game-id"
+        assert headers == [{"Authorization", "Bearer token"}]
+
+        {:ok,
+         %HTTPoison.Response{
+           body: @response_body_with_invalid_officials |> Poison.encode!(),
+           status_code: 200
+         }}
+      end)
+
+      expect(@http_client, :get, fn url ->
+        assert url =~ "game-id/scoreboard-setting"
+
+        {:ok, %HTTPoison.Response{body: %{"data" => nil} |> Poison.encode!(), status_code: 200}}
+      end)
+
+      import ExUnit.CaptureLog
+
+      log =
+        capture_log(fn ->
+          game =
+            Bootstrapper.bootstrap_from_go_champs(
+              GoChampsScoreboard.Games.Bootstrapper.bootstrap(),
+              "game-id",
+              "token"
+            )
+
+          # Should still have all 7 default officials
+          assert length(game.officials) == 7
+
+          # Valid scorer should be mapped
+          scorer = Enum.find(game.officials, &(&1.type == :scorer))
+          assert scorer.id == "official-uuid-2"
+          assert scorer.name == "Valid Scorer"
+
+          # Invalid official should be ignored, default crew_chief remains
+          crew_chief = Enum.find(game.officials, &(&1.type == :crew_chief))
+          # Default has UUID
+          assert String.length(crew_chief.id) > 0
+          assert crew_chief.name == ""
+        end)
+
+      # Verify warning was logged
+      assert log =~ "Invalid official role received from API: invalid_role"
     end
   end
 end

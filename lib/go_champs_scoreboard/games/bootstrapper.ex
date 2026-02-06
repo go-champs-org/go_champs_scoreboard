@@ -1,4 +1,5 @@
 defmodule GoChampsScoreboard.Games.Bootstrapper do
+  require Logger
   alias GoChampsScoreboard.Games.Models.LiveState
   alias GoChampsScoreboard.ApiClient
   alias GoChampsScoreboard.Games.Models.CoachState
@@ -9,6 +10,7 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
   alias GoChampsScoreboard.Games.Models.ViewSettingsState
   alias GoChampsScoreboard.Games.Models.InfoState
   alias GoChampsScoreboard.Games.Models.ProtestState
+  alias GoChampsScoreboard.Games.Models.OfficialState
   alias GoChampsScoreboard.Sports
 
   @mock_initial_period_time 600
@@ -50,6 +52,8 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
 
     info = map_info_state(game_response)
 
+    officials = map_api_officials_to_officials(game_response, @mock_sport_slug)
+
     GameState.new(
       game_id,
       away_team,
@@ -58,7 +62,7 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
       live_state,
       @mock_sport_slug,
       view_settings_state,
-      Sports.Sports.bootstrap_officials(@mock_sport_slug),
+      officials,
       ProtestState.new("", "", :no_protest),
       info
     )
@@ -115,6 +119,84 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
       )
     end)
   end
+
+  defp map_api_officials_to_officials(game_response, sport_id) do
+    api_officials = Map.get(game_response, "officials", [])
+    default_officials = Sports.Sports.bootstrap_officials(sport_id)
+
+    case api_officials do
+      [] ->
+        default_officials
+
+      nil ->
+        default_officials
+
+      officials when is_list(officials) ->
+        merge_officials_with_defaults(officials, default_officials)
+    end
+  end
+
+  defp merge_officials_with_defaults(api_officials, default_officials) do
+    # Create a map of API officials by type for efficient lookup
+    api_officials_by_type =
+      api_officials
+      |> Enum.map(&map_api_official_to_official/1)
+      # Remove invalid officials
+      |> Enum.filter(&(&1 != nil))
+      |> Enum.group_by(& &1.type)
+      |> Enum.map(fn {type, officials} -> {type, List.first(officials)} end)
+      |> Map.new()
+
+    # Replace defaults with API officials where available, maintaining order
+    Enum.map(default_officials, fn default_official ->
+      case Map.get(api_officials_by_type, default_official.type) do
+        nil -> default_official
+        api_official -> api_official
+      end
+    end)
+  end
+
+  defp map_api_official_to_official(api_official) do
+    official_data = Map.get(api_official, "official", %{})
+    official_id = Map.get(api_official, "official_id", "")
+    role = Map.get(api_official, "role", "")
+    name = Map.get(official_data, "name", "")
+    license_number = Map.get(official_data, "license_number")
+
+    case map_role_to_type(role) do
+      {:ok, type} ->
+        OfficialState.new(
+          official_id,
+          name,
+          type,
+          license_number,
+          # federation
+          nil,
+          # signature
+          nil
+        )
+
+      {:error, _} ->
+        Logger.warning("Invalid official role received from API: #{role}")
+        nil
+    end
+  end
+
+  defp map_role_to_type(role) when is_binary(role) do
+    case role do
+      "referee" -> {:ok, :crew_chief}
+      "crew_chief" -> {:ok, :crew_chief}
+      "umpire_1" -> {:ok, :umpire_1}
+      "umpire_2" -> {:ok, :umpire_2}
+      "scorer" -> {:ok, :scorer}
+      "assistant_scorer" -> {:ok, :assistant_scorer}
+      "timekeeper" -> {:ok, :timekeeper}
+      "shot_clock_operator" -> {:ok, :shot_clock_operator}
+      _ -> {:error, :invalid_role}
+    end
+  end
+
+  defp map_role_to_type(_), do: {:error, :invalid_role}
 
   defp map_live_state(live_state) do
     case live_state do
