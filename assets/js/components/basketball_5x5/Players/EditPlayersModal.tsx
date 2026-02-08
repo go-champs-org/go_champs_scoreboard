@@ -1,7 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { GameState, TeamState, TeamType } from '../../../types';
+import { GameState, TeamState, TeamType, PlayerState } from '../../../types';
+import { ApiPlayer } from '../../../goChampsApiTypes';
+import { useConfig } from '../../../shared/Config';
+import playersHttpClient from '../../../features/players/playersHttpClient';
 import Modal from '../../Modal';
 import MediumEditPlayerRow, { BasicEditPlayerRow } from './EditPlayerRow';
 import AddPlayerRow from './AddPlayerRow';
@@ -14,6 +17,7 @@ interface PlayersTableProps {
   showAddPlayerRow: boolean;
   pushEvent: (event: string, data: any) => void;
   setShowAddPlayerRow: (show: boolean) => void;
+  apiPlayers: ApiPlayer[];
 }
 
 function BasicPlayersTable({
@@ -22,8 +26,10 @@ function BasicPlayersTable({
   showAddPlayerRow,
   pushEvent,
   setShowAddPlayerRow,
+  apiPlayers,
 }: PlayersTableProps) {
   const { t } = useTranslation();
+
   return (
     <div>
       <div className="table-container">
@@ -116,6 +122,7 @@ function BasicPlayersTable({
                 teamType={teamType}
                 pushEvent={pushEvent}
                 onConfirmAction={() => setShowAddPlayerRow(false)}
+                teamPlayers={apiPlayers}
               />
             )}
             {team.players.map((player, index) => (
@@ -140,8 +147,10 @@ function MediumPlayersTable({
   showAddPlayerRow,
   pushEvent,
   setShowAddPlayerRow,
+  apiPlayers,
 }: PlayersTableProps) {
   const { t } = useTranslation();
+
   return (
     <div className="table-container">
       <table className="table is-fullwidth">
@@ -213,6 +222,7 @@ function MediumPlayersTable({
               teamType={teamType}
               pushEvent={pushEvent}
               onConfirmAction={() => setShowAddPlayerRow(false)}
+              teamPlayers={apiPlayers}
             />
           )}
           {team.players.map((player, index) => (
@@ -244,11 +254,55 @@ function EditPlayersModal({
   pushEvent,
 }: EditPlayersModalProps) {
   const { t } = useTranslation();
+  const config = useConfig();
+  const goChampsApi = config.getApiHost();
   const [activeTab, setActiveTab] = React.useState('home' as TeamType);
   const [showAddPlayerRow, setShowAddPlayerRow] = React.useState(false);
+  const [homeTeamPlayers, setHomeTeamPlayers] = React.useState<ApiPlayer[]>([]);
+  const [awayTeamPlayers, setAwayTeamPlayers] = React.useState<ApiPlayer[]>([]);
+  const [loading, setLoading] = React.useState(false);
   const selectedView = useSelectedView();
   const selectedTeam =
     activeTab === 'away' ? game_state.away_team : game_state.home_team;
+  const selectedApiPlayers =
+    activeTab === 'away' ? awayTeamPlayers : homeTeamPlayers;
+  const homeTeamId = game_state.home_team.id;
+  const awayTeamId = game_state.away_team.id;
+
+  // Fetch team players from API
+  React.useEffect(() => {
+    if (showModal) {
+      const fetchPlayers = async () => {
+        setLoading(true);
+        try {
+          // Fetch home team players if ID is provided
+          if (homeTeamId) {
+            const homeResponse = await playersHttpClient.fetchTeamPlayers(
+              goChampsApi,
+              homeTeamId,
+            );
+            setHomeTeamPlayers(homeResponse.data.players);
+          }
+
+          // Fetch away team players if ID is provided
+          if (awayTeamId) {
+            const awayResponse = await playersHttpClient.fetchTeamPlayers(
+              goChampsApi,
+              awayTeamId,
+            );
+            setAwayTeamPlayers(awayResponse.data.players);
+          }
+        } catch (error) {
+          console.error('Failed to fetch team players:', error);
+          // Keep empty arrays on error
+        } finally {
+          setLoading(false);
+        }
+      };
+      console.log('Fetching players for teams:', { homeTeamId, awayTeamId });
+      fetchPlayers();
+    }
+  }, [showModal, homeTeamId, awayTeamId, goChampsApi]);
   return (
     <Modal
       title={t('basketball.players.modal.title')}
@@ -256,51 +310,61 @@ function EditPlayersModal({
       onClose={onCloseModal}
       modalCardStyle={{ width: '1024px' }}
     >
-      <div className="tabs is-boxed">
-        <ul>
-          <li className={activeTab === 'home' ? 'is-active' : ''}>
-            <a onClick={() => setActiveTab('home')}>
-              <span>{game_state.home_team.name}</span>
-            </a>
-          </li>
-          <li className={activeTab === 'away' ? 'is-active' : ''}>
-            <a onClick={() => setActiveTab('away')}>
-              <span>{game_state.away_team.name}</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div className="columns is-multiline">
-        <div className="column is-12 has-text-right">
-          <button
-            className="button is-info is-small"
-            onClick={() => setShowAddPlayerRow(true)}
-          >
-            {t('basketball.players.modal.addPlayer')}
-          </button>
+      {loading ? (
+        <div className="loading-container">
+          <div className="loader"></div>
         </div>
+      ) : (
+        <>
+          <div className="tabs is-boxed">
+            <ul>
+              <li className={activeTab === 'home' ? 'is-active' : ''}>
+                <a onClick={() => setActiveTab('home')}>
+                  <span>{game_state.home_team.name}</span>
+                </a>
+              </li>
+              <li className={activeTab === 'away' ? 'is-active' : ''}>
+                <a onClick={() => setActiveTab('away')}>
+                  <span>{game_state.away_team.name}</span>
+                </a>
+              </li>
+            </ul>
+          </div>
 
-        <div className="column is-12">
-          {selectedView === BASKETBALL_VIEWS.BASIC ? (
-            <BasicPlayersTable
-              team={selectedTeam}
-              teamType={activeTab}
-              showAddPlayerRow={showAddPlayerRow}
-              pushEvent={pushEvent}
-              setShowAddPlayerRow={setShowAddPlayerRow}
-            />
-          ) : (
-            <MediumPlayersTable
-              team={selectedTeam}
-              teamType={activeTab}
-              showAddPlayerRow={showAddPlayerRow}
-              pushEvent={pushEvent}
-              setShowAddPlayerRow={setShowAddPlayerRow}
-            />
-          )}
-        </div>
-      </div>
+          <div className="columns is-multiline">
+            <div className="column is-12 has-text-right">
+              <button
+                className="button is-info is-small"
+                onClick={() => setShowAddPlayerRow(true)}
+              >
+                {t('basketball.players.modal.addPlayer')}
+              </button>
+            </div>
+
+            <div className="column is-12">
+              {selectedView === BASKETBALL_VIEWS.BASIC ? (
+                <BasicPlayersTable
+                  team={selectedTeam}
+                  teamType={activeTab}
+                  showAddPlayerRow={showAddPlayerRow}
+                  pushEvent={pushEvent}
+                  setShowAddPlayerRow={setShowAddPlayerRow}
+                  apiPlayers={selectedApiPlayers}
+                />
+              ) : (
+                <MediumPlayersTable
+                  team={selectedTeam}
+                  teamType={activeTab}
+                  showAddPlayerRow={showAddPlayerRow}
+                  pushEvent={pushEvent}
+                  setShowAddPlayerRow={setShowAddPlayerRow}
+                  apiPlayers={selectedApiPlayers}
+                />
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </Modal>
   );
 }

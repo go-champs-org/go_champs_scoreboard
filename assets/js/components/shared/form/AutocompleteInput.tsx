@@ -8,6 +8,7 @@ interface AutocompleteInputProps<T> {
   getItemText: (item: T) => string;
   getItemKey: (item: T) => string;
   getItemSubtitle?: (item: T) => string | null;
+  getSearchableText?: (item: T) => string;
   placeholder?: string;
   className?: string;
   autoFocus?: boolean;
@@ -21,6 +22,7 @@ function AutocompleteInput<T>({
   getItemText,
   getItemKey,
   getItemSubtitle,
+  getSearchableText,
   placeholder,
   className = 'input is-small',
   autoFocus = false,
@@ -35,9 +37,13 @@ function AutocompleteInput<T>({
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Filter items based on input value (case-insensitive partial matching)
-  const filteredItems = items.filter((item) =>
-    getItemText(item).toLowerCase().includes(value.toLowerCase()),
-  );
+  // Use getSearchableText if provided, otherwise fall back to getItemText
+  const filteredItems = items.filter((item) => {
+    const searchText = getSearchableText
+      ? getSearchableText(item)
+      : getItemText(item);
+    return searchText.toLowerCase().includes(value.toLowerCase());
+  });
 
   // Check if current value matches any item exactly
   const isExistingItem = items.some(

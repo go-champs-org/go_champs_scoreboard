@@ -4,6 +4,7 @@ defmodule GoChampsScoreboard.Games.Models.TeamState do
   alias GoChampsScoreboard.Sports.Basketball.Basketball
 
   @type t :: %__MODULE__{
+          id: String.t(),
           name: String.t(),
           players: list(PlayerState.t()),
           coaches: list(CoachState.t()),
@@ -16,6 +17,7 @@ defmodule GoChampsScoreboard.Games.Models.TeamState do
           primary_color: String.t() | nil
         }
   defstruct [
+    :id,
     :name,
     :players,
     :coaches,
@@ -28,8 +30,9 @@ defmodule GoChampsScoreboard.Games.Models.TeamState do
     :primary_color
   ]
 
-  @spec new(String.t(), list(PlayerState.t()), map()) :: t()
+  @spec new(String.t(), String.t(), list(PlayerState.t()), map()) :: t()
   def new(
+        id,
         name,
         players \\ [],
         total_player_stats \\ %{},
@@ -44,6 +47,7 @@ defmodule GoChampsScoreboard.Games.Models.TeamState do
       if is_nil(stats_values), do: Basketball.bootstrap_team_stats(), else: stats_values
 
     %__MODULE__{
+      id: id,
       name: name,
       players: players,
       coaches: coaches,

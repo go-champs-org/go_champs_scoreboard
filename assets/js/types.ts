@@ -59,6 +59,7 @@ export interface PlayerState {
 }
 
 export interface TeamState {
+  id: string;
   name: string;
   players: PlayerState[];
   total_player_stats: { [key: string]: number };

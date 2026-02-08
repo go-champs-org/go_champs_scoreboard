@@ -33,8 +33,8 @@ defmodule GoChampsScoreboard.GameStateFixtures do
     away_team_name = Keyword.get(opts, :away_team_name, "Some away team")
     home_team_name = Keyword.get(opts, :home_team_name, "Some home team")
 
-    away_team = TeamState.new(away_team_name)
-    home_team = TeamState.new(home_team_name)
+    away_team = TeamState.new(Ecto.UUID.generate(), away_team_name)
+    home_team = TeamState.new(Ecto.UUID.generate(), home_team_name)
     clock_state = Keyword.get(opts, :clock_state, GameClockState.new())
     live_state = Keyword.get(opts, :live_state, LiveState.new())
 
@@ -97,8 +97,8 @@ defmodule GoChampsScoreboard.GameStateFixtures do
     away_coaches = Keyword.get(opts, :away_coaches, [])
 
     # Create base teams
-    home_team = TeamState.new(home_team_name)
-    away_team = TeamState.new(away_team_name)
+    home_team = TeamState.new(Ecto.UUID.generate(), home_team_name)
+    away_team = TeamState.new(Ecto.UUID.generate(), away_team_name)
 
     # Add players and calculate team totals
     home_team = add_players_to_team(home_team, home_players)

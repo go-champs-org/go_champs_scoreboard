@@ -70,8 +70,8 @@ defmodule GoChampsScoreboard.Events.ValidatorCreatorTest do
   end
 
   defp set_test_game() do
-    away_team = TeamState.new("Some away team")
-    home_team = TeamState.new("Some home team")
+    away_team = TeamState.new(Ecto.UUID.generate(), "Some away team")
+    home_team = TeamState.new(Ecto.UUID.generate(), "Some home team")
     clock_state = GameClockState.new()
     live_state = LiveState.new()
     game_state = GameState.new("some-game-id", away_team, home_team, clock_state, live_state)

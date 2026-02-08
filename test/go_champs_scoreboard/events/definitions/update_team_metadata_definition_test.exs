@@ -8,8 +8,8 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateTeamMetadataDefinitionTest
   describe "validate/2" do
     test "returns :ok" do
       game_state = %GameState{
-        home_team: TeamState.new("Home Team"),
-        away_team: TeamState.new("Away Team")
+        home_team: TeamState.new(Ecto.UUID.generate(), "Home Team"),
+        away_team: TeamState.new(Ecto.UUID.generate(), "Away Team")
       }
 
       payload = %{

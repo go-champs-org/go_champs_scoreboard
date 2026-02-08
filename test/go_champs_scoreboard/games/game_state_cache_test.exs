@@ -43,8 +43,8 @@ defmodule GoChampsScoreboard.Games.GameStateCacheTest do
     end
 
     test "properly deserializes complex game state from JSON", %{game_id: game_id} do
-      away_team = TeamState.new("Complex Away Team")
-      home_team = TeamState.new("Complex Home Team")
+      away_team = TeamState.new(Ecto.UUID.generate(), "Complex Away Team")
+      home_team = TeamState.new(Ecto.UUID.generate(), "Complex Home Team")
 
       clock_state = %GameClockState{
         time: 720,
@@ -105,8 +105,8 @@ defmodule GoChampsScoreboard.Games.GameStateCacheTest do
       initial_game_state = create_test_game_state(game_id)
       GameStateCache.update(initial_game_state)
 
-      away_team = TeamState.new("Updated Away Team")
-      home_team = TeamState.new("Updated Home Team")
+      away_team = TeamState.new(Ecto.UUID.generate(), "Updated Away Team")
+      home_team = TeamState.new(Ecto.UUID.generate(), "Updated Home Team")
       clock_state = GameClockState.new()
       live_state = LiveState.new(:in_progress)
       updated_game_state = GameState.new(game_id, away_team, home_team, clock_state, live_state)
@@ -121,8 +121,8 @@ defmodule GoChampsScoreboard.Games.GameStateCacheTest do
     end
 
     test "handles game state with complex nested data", %{game_id: game_id} do
-      away_team = TeamState.new("Away Team")
-      home_team = TeamState.new("Home Team")
+      away_team = TeamState.new(Ecto.UUID.generate(), "Away Team")
+      home_team = TeamState.new(Ecto.UUID.generate(), "Home Team")
 
       official1 = %OfficialState{
         id: "official-1",
@@ -229,8 +229,8 @@ defmodule GoChampsScoreboard.Games.GameStateCacheTest do
   end
 
   defp create_test_game_state(game_id, home_name \\ "Home Team", away_name \\ "Away Team") do
-    away_team = TeamState.new(away_name)
-    home_team = TeamState.new(home_name)
+    away_team = TeamState.new(Ecto.UUID.generate(), away_name)
+    home_team = TeamState.new(Ecto.UUID.generate(), home_name)
     clock_state = GameClockState.new()
     live_state = LiveState.new()
 

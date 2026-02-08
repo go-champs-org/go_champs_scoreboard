@@ -451,6 +451,19 @@
         "captain": "Cap",
         "name": "Nome",
         "remove": "Remover"
+      },
+      "alerts": {
+        "selectPlayer": "Por favor, selecione um jogador da lista ou clique em + para criar um novo",
+        "enterName": "Por favor, insira o nome do jogador",
+        "enterNumber": "Por favor, insira o número do jogador"
+      },
+      "buttons": {
+        "createNew": "Criar novo jogador",
+        "selectFromList": "Selecionar da lista"
+      },
+      "placeholders": {
+        "playerName": "Nome do jogador",
+        "number": "Número"
       }
     },
     "protest": {

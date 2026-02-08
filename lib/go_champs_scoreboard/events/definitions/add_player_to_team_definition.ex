@@ -35,9 +35,23 @@ defmodule GoChampsScoreboard.Events.Definitions.AddPlayerToTeamDefinition do
   @impl true
   @spec handle(GameState.t(), Event.t()) :: GameState.t()
   def handle(game_state, %Event{
-        payload: %{"name" => name, "number" => number, "team-type" => team_type}
+        payload: %{"name" => name, "number" => number, "team-type" => team_type} = payload
       }) do
-    player = Players.bootstrap(name, number)
+    # Check if payload includes an ID (player selected from autocomplete)
+    player =
+      case Map.get(payload, "id") do
+        nil ->
+          # No ID provided, generate new UUID
+          Players.bootstrap(name, number)
+
+        id when is_binary(id) ->
+          # ID provided, use it
+          Players.bootstrap_with_id(id, name, number)
+
+        _ ->
+          # Invalid ID, generate new UUID
+          Players.bootstrap(name, number)
+      end
 
     game_state
     |> Teams.add_player(team_type, player)

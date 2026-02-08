@@ -9,6 +9,11 @@ defmodule GoChampsScoreboard.Games.Players do
     |> PlayerState.new(name, number)
   end
 
+  @spec bootstrap_with_id(String.t(), String.t(), number()) :: PlayerState.t()
+  def bootstrap_with_id(id, name, number) do
+    PlayerState.new(id, name, number)
+  end
+
   @spec update_manual_stats_values(PlayerState.t(), Stat.t(), String.t()) :: PlayerState.t()
   def update_manual_stats_values(player_state, player_stat, operation) do
     new_stat_value =

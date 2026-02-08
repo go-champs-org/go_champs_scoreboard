@@ -340,8 +340,8 @@ defmodule GoChampsScoreboard.Games.GamesTest do
   end
 
   defp set_test_game(live_state \\ :not_started) do
-    away_team = TeamState.new("Some away team")
-    home_team = TeamState.new("Some home team")
+    away_team = TeamState.new(Ecto.UUID.generate(), "Some away team")
+    home_team = TeamState.new(Ecto.UUID.generate(), "Some home team")
     clock_state = GameClockState.new()
     live_state = LiveState.new(live_state)
 

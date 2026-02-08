@@ -61,5 +61,65 @@ defmodule GoChampsScoreboard.Events.Definitions.AddPlayerToTeamDefinitionTest do
       assert player.name == "Michael Jordan"
       assert player.number == 23
     end
+
+    test "returns the game state with new player using provided id" do
+      game_state = %GameState{
+        id: "1",
+        away_team: %TeamState{
+          players: []
+        },
+        home_team: %TeamState{
+          players: []
+        }
+      }
+
+      player_id = "existing-player-id-123"
+
+      add_player_to_team_payload = %{
+        "team-type" => "home",
+        "name" => "Michael Jordan",
+        "number" => 23,
+        "id" => player_id
+      }
+
+      event = AddPlayerToTeamDefinition.create(game_state.id, 10, 1, add_player_to_team_payload)
+
+      game = AddPlayerToTeamDefinition.handle(game_state, event)
+      [player] = game.home_team.players
+
+      assert player.id == player_id
+      assert player.name == "Michael Jordan"
+      assert player.number == 23
+    end
+
+    test "generates new id when provided id is invalid" do
+      game_state = %GameState{
+        id: "1",
+        away_team: %TeamState{
+          players: []
+        },
+        home_team: %TeamState{
+          players: []
+        }
+      }
+
+      add_player_to_team_payload = %{
+        "team-type" => "home",
+        "name" => "Michael Jordan",
+        "number" => 23,
+        "id" => 12345
+      }
+
+      event = AddPlayerToTeamDefinition.create(game_state.id, 10, 1, add_player_to_team_payload)
+
+      game = AddPlayerToTeamDefinition.handle(game_state, event)
+      [player] = game.home_team.players
+
+      # Should generate a new UUID since the provided id is not a string
+      assert is_binary(player.id)
+      assert player.id != 12345
+      assert player.name == "Michael Jordan"
+      assert player.number == 23
+    end
   end
 end
