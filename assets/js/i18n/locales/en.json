@@ -528,7 +528,12 @@
         "federation": "Federation"
       },
       "alerts": {
-        "enterName": "Please enter an official name"
+        "enterName": "Please enter an official name",
+        "selectOfficial": "Please select an official from the list or click + to create a new one"
+      },
+      "buttons": {
+        "createNew": "Create new official",
+        "selectFromList": "Select from list"
       }
     },
     "teams": {

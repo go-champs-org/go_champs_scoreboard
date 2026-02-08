@@ -28,4 +28,25 @@ defmodule GoChampsScoreboard.Games.Officials do
     Ecto.UUID.generate()
     |> OfficialState.new(name, type_atom, license_number, federation)
   end
+
+  @doc """
+  Bootstraps a new official with a specific ID (from tournament officials database).
+  """
+  @spec bootstrap_with_id(
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t() | nil,
+          String.t() | nil
+        ) :: OfficialState.t()
+  def bootstrap_with_id(id, name, type, license_number, federation)
+      when is_binary(id) and is_binary(name) and is_binary(type) do
+    type_atom = String.to_atom(type)
+
+    if not OfficialState.valid_type?(type_atom) do
+      raise ArgumentError, "Invalid official type: #{type}"
+    end
+
+    OfficialState.new(id, name, type_atom, license_number, federation)
+  end
 end

@@ -1,6 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { GameState } from '../../../types';
+import { ApiOfficial } from '../../../goChampsApiTypes';
+import { useConfig } from '../../../shared/Config';
+import officialsHttpClient from '../../../features/officials/officialsHttpClient';
 import Modal from '../../Modal';
 import AddOfficialRow from './AddOfficialRow';
 import EditOfficialRow from './EditOfficialRow';
@@ -157,6 +160,8 @@ interface OfficialsTabProps {
   showAddOfficialRow: boolean;
   pushEvent: (event: string, data: any) => void;
   setShowAddOfficialRow: (show: boolean) => void;
+  tournamentOfficials: ApiOfficial[];
+  loadingOfficials: boolean;
 }
 
 function OfficialsTab({
@@ -164,8 +169,19 @@ function OfficialsTab({
   showAddOfficialRow,
   pushEvent,
   setShowAddOfficialRow,
+  tournamentOfficials,
+  loadingOfficials,
 }: OfficialsTabProps) {
   const { t } = useTranslation();
+
+  if (loadingOfficials) {
+    return (
+      <div className="loading-container">
+        <div className="loader"></div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="has-text-right mb-4">
@@ -206,6 +222,7 @@ function OfficialsTab({
               <AddOfficialRow
                 pushEvent={pushEvent}
                 onConfirmAction={() => setShowAddOfficialRow(false)}
+                tournamentOfficials={tournamentOfficials}
               />
             )}
             {game_state.officials.map((official) => (
@@ -213,6 +230,7 @@ function OfficialsTab({
                 key={official.id}
                 official={official}
                 pushEvent={pushEvent}
+                tournamentOfficials={tournamentOfficials}
               />
             ))}
           </tbody>
@@ -236,8 +254,36 @@ function EditGameModal({
   pushEvent,
 }: EditGameModalProps) {
   const { t } = useTranslation();
+  const config = useConfig();
   const [showAddOfficialRow, setShowAddOfficialRow] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState<TabType>('officials');
+  const [tournamentOfficials, setTournamentOfficials] = React.useState<
+    ApiOfficial[]
+  >([]);
+  const [loadingOfficials, setLoadingOfficials] = React.useState(false);
+
+  // Load tournament officials when modal opens
+  React.useEffect(() => {
+    if (showModal && game_state.info.tournament_id) {
+      setLoadingOfficials(true);
+      officialsHttpClient
+        .fetchTournamentOfficials(
+          config.getApiHost(),
+          game_state.info.tournament_id,
+        )
+        .then((response) => {
+          setTournamentOfficials(response.data);
+        })
+        .catch((error) => {
+          console.error('Failed to load tournament officials:', error);
+          // Silently fall back to empty list
+          setTournamentOfficials([]);
+        })
+        .finally(() => {
+          setLoadingOfficials(false);
+        });
+    }
+  }, [showModal, game_state.info.tournament_id, config]);
 
   return (
     <Modal
@@ -246,41 +292,45 @@ function EditGameModal({
       showModal={showModal}
       modalCardStyle={{ width: '800px' }}
     >
-      <div className="tabs is-boxed">
-        <ul>
-          <li className={activeTab === 'officials' ? 'is-active' : ''}>
-            <a onClick={() => setActiveTab('officials')}>
-              {t('basketball.game.modal.officialsTab')}
-            </a>
-          </li>
-          <li className={activeTab === 'gameInfo' ? 'is-active' : ''}>
-            <a onClick={() => setActiveTab('gameInfo')}>
-              {t('basketball.game.modal.gameInfoTab')}
-            </a>
-          </li>
-          <li className={activeTab === 'gameReport' ? 'is-active' : ''}>
-            <a onClick={() => setActiveTab('gameReport')}>
-              {t('basketball.game.modal.gameReportTab')}
-            </a>
-          </li>
-        </ul>
-      </div>
+      <div className="edit-game-modal">
+        <div className="tabs is-boxed">
+          <ul>
+            <li className={activeTab === 'officials' ? 'is-active' : ''}>
+              <a onClick={() => setActiveTab('officials')}>
+                {t('basketball.game.modal.officialsTab')}
+              </a>
+            </li>
+            <li className={activeTab === 'gameInfo' ? 'is-active' : ''}>
+              <a onClick={() => setActiveTab('gameInfo')}>
+                {t('basketball.game.modal.gameInfoTab')}
+              </a>
+            </li>
+            <li className={activeTab === 'gameReport' ? 'is-active' : ''}>
+              <a onClick={() => setActiveTab('gameReport')}>
+                {t('basketball.game.modal.gameReportTab')}
+              </a>
+            </li>
+          </ul>
+        </div>
 
-      <div className="tab-content">
-        {activeTab === 'officials' && (
-          <OfficialsTab
-            game_state={game_state}
-            showAddOfficialRow={showAddOfficialRow}
-            pushEvent={pushEvent}
-            setShowAddOfficialRow={setShowAddOfficialRow}
-          />
-        )}
-        {activeTab === 'gameInfo' && (
-          <GameInfoTab game_state={game_state} pushEvent={pushEvent} />
-        )}
-        {activeTab === 'gameReport' && (
-          <GameReportTab game_state={game_state} pushEvent={pushEvent} />
-        )}
+        <div className="tab-content">
+          {activeTab === 'officials' && (
+            <OfficialsTab
+              game_state={game_state}
+              showAddOfficialRow={showAddOfficialRow}
+              pushEvent={pushEvent}
+              setShowAddOfficialRow={setShowAddOfficialRow}
+              tournamentOfficials={tournamentOfficials}
+              loadingOfficials={loadingOfficials}
+            />
+          )}
+          {activeTab === 'gameInfo' && (
+            <GameInfoTab game_state={game_state} pushEvent={pushEvent} />
+          )}
+          {activeTab === 'gameReport' && (
+            <GameReportTab game_state={game_state} pushEvent={pushEvent} />
+          )}
+        </div>
       </div>
     </Modal>
   );

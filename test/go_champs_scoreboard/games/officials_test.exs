@@ -96,4 +96,86 @@ defmodule GoChampsScoreboard.Games.OfficialsTest do
       end
     end
   end
+
+  describe "bootstrap_with_id" do
+    test "returns a new official state with provided id" do
+      custom_id = Ecto.UUID.generate()
+      official_state = Officials.bootstrap_with_id(custom_id, "Referee", "crew_chief", nil, nil)
+
+      assert custom_id == official_state.id
+      assert "Referee" == official_state.name
+      assert :crew_chief == official_state.type
+      assert nil == official_state.license_number
+      assert nil == official_state.federation
+    end
+
+    test "returns official with provided id and all arguments" do
+      custom_id = Ecto.UUID.generate()
+
+      official_state =
+        Officials.bootstrap_with_id(custom_id, "Jane Smith", "timekeeper", "TK001", "FIBA")
+
+      assert custom_id == official_state.id
+      assert "Jane Smith" == official_state.name
+      assert :timekeeper == official_state.type
+      assert "TK001" == official_state.license_number
+      assert "FIBA" == official_state.federation
+    end
+
+    test "handles nil license_number and federation with provided id" do
+      custom_id = Ecto.UUID.generate()
+
+      official_state =
+        Officials.bootstrap_with_id(custom_id, "Mike Johnson", "umpire_1", nil, nil)
+
+      assert custom_id == official_state.id
+      assert "Mike Johnson" == official_state.name
+      assert :umpire_1 == official_state.type
+      assert nil == official_state.license_number
+      assert nil == official_state.federation
+    end
+
+    test "creates different officials with different provided ids" do
+      id1 = Ecto.UUID.generate()
+      id2 = Ecto.UUID.generate()
+
+      official1 = Officials.bootstrap_with_id(id1, "Official 1", "scorer", nil, nil)
+      official2 = Officials.bootstrap_with_id(id2, "Official 2", "scorer", nil, nil)
+
+      assert official1.id == id1
+      assert official2.id == id2
+      assert official1.id != official2.id
+    end
+
+    test "handles all valid official types with provided id" do
+      valid_types = [
+        "scorer",
+        "assistant_scorer",
+        "timekeeper",
+        "shot_clock_operator",
+        "crew_chief",
+        "umpire_1",
+        "umpire_2"
+      ]
+
+      Enum.each(valid_types, fn type ->
+        custom_id = Ecto.UUID.generate()
+        official = Officials.bootstrap_with_id(custom_id, "Test Official", type, "LIC001", "TEST")
+
+        assert custom_id == official.id
+        assert "Test Official" == official.name
+        assert String.to_existing_atom(type) == official.type
+        assert "LIC001" == official.license_number
+        assert "TEST" == official.federation
+      end)
+    end
+
+    test "raises ArgumentError for invalid official type with provided id" do
+      custom_id = Ecto.UUID.generate()
+
+      assert_raise ArgumentError, "Invalid official type: invalid_type", fn ->
+        Officials.bootstrap_with_id(custom_id, "Invalid Official", "invalid_type", nil, nil)
+      end
+    end
+  end
 end

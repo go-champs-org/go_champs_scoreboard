@@ -139,6 +139,7 @@ export interface InfoState {
   tournament_name: string;
   number: string;
   datetime: string;
+  game_report?: string;
 }
 
 export interface GameState {

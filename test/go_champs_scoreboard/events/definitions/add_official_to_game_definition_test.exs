@@ -142,6 +142,43 @@ defmodule GoChampsScoreboard.Events.Definitions.AddOfficialToGameDefinitionTest 
       assert scorer.name == "John Doe"
       assert timekeeper.name == "Jane Smith"
     end
+
+    test "adds official with provided id (from tournament officials)", %{game_state: game_state} do
+      custom_id = Ecto.UUID.generate()
+
+      payload = %{
+        "id" => custom_id,
+        "name" => "Tournament Official",
+        "type" => "crew_chief",
+        "license_number" => "CC123",
+        "federation" => "FIBA"
+      }
+
+      event = Event.new("add-official-to-game", "game-123", 600, 1, payload)
+      updated_game = AddOfficialToGameDefinition.handle(game_state, event)
+      [official] = updated_game.officials
+
+      assert official.id == custom_id
+      assert official.name == "Tournament Official"
+      assert official.type == :crew_chief
+      assert official.license_number == "CC123"
+      assert official.federation == "FIBA"
+    end
+
+    test "generates new id when id not provided in payload", %{game_state: game_state} do
+      payload = %{
+        "name" => "Manual Official",
+        "type" => "scorer"
+      }
+
+      event = Event.new("add-official-to-game", "game-123", 600, 1, payload)
+      updated_game = AddOfficialToGameDefinition.handle(game_state, event)
+      [official] = updated_game.officials
+
+      assert official.id != nil
+      assert official.name == "Manual Official"
+      assert official.type == :scorer
+    end
   end
 
   describe "stream_config/0" do

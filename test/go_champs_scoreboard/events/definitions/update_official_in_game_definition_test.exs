@@ -352,6 +352,66 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
       assert updated_official.name == "John Doe"
       assert updated_official.type == :scorer
     end
+
+    test "updates official with new_id (from tournament officials)", %{game_state: game_state} do
+      # Add a manually created official
+      original_official =
+        OfficialState.new(Ecto.UUID.generate(), "Manual Official", :scorer, nil, nil)
+
+      game_with_official = Games.add_official(game_state, original_official)
+
+      # Update to tournament official with new ID
+      tournament_id = Ecto.UUID.generate()
+
+      payload = %{
+        "id" => original_official.id,
+        "new_id" => tournament_id,
+        "name" => "Tournament Official",
+        "license_number" => "SC123",
+        "federation" => "FIBA"
+      }
+
+      event = Event.new("update-official-in-game", "game-123", 600, 1, payload)
+      updated_game = UpdateOfficialInGameDefinition.handle(game_with_official, event)
+
+      # Should not find official with old ID
+      old_official = Enum.find(updated_game.officials, fn o -> o.id == original_official.id end)
+      assert old_official == nil
+
+      # Should find official with new ID
+      new_official = Enum.find(updated_game.officials, fn o -> o.id == tournament_id end)
+      assert new_official != nil
+      assert new_official.id == tournament_id
+      assert new_official.name == "Tournament Official"
+      assert new_official.type == :scorer
+      assert new_official.license_number == "SC123"
+      assert new_official.federation == "FIBA"
+    end
+
+    test "keeps existing id when new_id not provided", %{game_state: game_state} do
+      # Add an official
+      original_official =
+        OfficialState.new(Ecto.UUID.generate(), "Test Official", :scorer, "SC001", "FIBA")
+
+      game_with_official = Games.add_official(game_state, original_official)
+
+      # Update without new_id
+      payload = %{
+        "id" => original_official.id,
+        "name" => "Updated Official"
+      }
+
+      event = Event.new("update-official-in-game", "game-123", 600, 1, payload)
+      updated_game = UpdateOfficialInGameDefinition.handle(game_with_official, event)
+
+      # Should still find official with original ID
+      updated_official =
+        Enum.find(updated_game.officials, fn o -> o.id == original_official.id end)
+
+      assert updated_official != nil
+      assert updated_official.id == original_official.id
+      assert updated_official.name == "Updated Official"
+    end
   end
 
   describe "stream_config/0" do

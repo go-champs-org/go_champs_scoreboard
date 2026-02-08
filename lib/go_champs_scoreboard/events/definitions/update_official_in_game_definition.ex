@@ -39,10 +39,24 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinition d
         game_state
 
       existing_official ->
-        updated_official = update_official_properties(existing_official, payload)
+        # Check if a new ID was provided (from tournament official selection)
+        new_id = Map.get(payload, "new_id")
 
-        game_state
-        |> Games.update_official(updated_official)
+        if new_id do
+          # Remove old official and add new one with tournament ID
+          updated_official =
+            update_official_properties_with_new_id(existing_official, payload, new_id)
+
+          game_state
+          |> Games.remove_official(official_id)
+          |> Games.add_official(updated_official)
+        else
+          # Keep existing ID for manual updates
+          updated_official = update_official_properties(existing_official, payload)
+
+          game_state
+          |> Games.update_official(updated_official)
+        end
     end
   end
 
@@ -59,6 +73,19 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinition d
   defp update_official_properties(existing_official, payload) do
     %OfficialState{
       id: existing_official.id,
+      name: get_updated_value(payload, "name", existing_official.name),
+      type: get_updated_type(payload, "type", existing_official.type),
+      license_number:
+        get_updated_value(payload, "license_number", existing_official.license_number),
+      federation: get_updated_value(payload, "federation", existing_official.federation),
+      signature: get_updated_value(payload, "signature", existing_official.signature)
+    }
+  end
+
+  defp update_official_properties_with_new_id(existing_official, payload, new_id) do
+    %OfficialState{
+      # Use tournament official ID
+      id: new_id,
       name: get_updated_value(payload, "name", existing_official.name),
       type: get_updated_type(payload, "type", existing_official.type),
       license_number:

@@ -1,0 +1,49 @@
+@import '../../colors.scss';
+
+.autocomplete-input {
+  position: relative;
+
+  .new-entry-indicator {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $red-light;
+    font-weight: bold;
+    pointer-events: none;
+  }
+
+  .dropdown-menu {
+    display: block;
+    position: fixed;
+    z-index: 1000;
+    width: auto;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: $white;
+    border: 1px solid var(--bulma-border);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba($black, 0.15);
+
+    .dropdown-content {
+      padding: 0;
+
+      .dropdown-item {
+        cursor: pointer;
+        padding: 0.5rem 1rem;
+        color: $black;
+
+        &.is-active {
+          background-color: var(--bulma-link);
+          color: $white;
+        }
+
+        .item-subtitle {
+          margin-left: 8px;
+          font-size: 0.85em;
+          opacity: 0.8;
+        }
+      }
+    }
+  }
+}

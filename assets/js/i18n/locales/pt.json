@@ -508,7 +508,7 @@
         "addOfficial": "Adicionar Oficial",
         "name": "Nome",
         "type": "Tipo",
-        "licenseNumber": "Número da Licença",
+        "licenseNumber": "Lic. #",
         "federation": "Federação",
         "edit": "Editar",
         "delete": "Excluir"
@@ -528,7 +528,12 @@
         "federation": "Federação"
       },
       "alerts": {
-        "enterName": "Por favor, insira o nome do árbitro"
+        "enterName": "Por favor, insira o nome do oficial",
+        "selectOfficial": "Por favor, selecione um oficial da lista ou clique em + para criar um novo"
+      },
+      "buttons": {
+        "createNew": "Criar novo oficial",
+        "selectFromList": "Selecionar da lista"
       }
     },
     "teams": {

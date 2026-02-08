@@ -35,8 +35,16 @@ defmodule GoChampsScoreboard.Events.Definitions.AddOfficialToGameDefinition do
       }) do
     license_number = Map.get(payload, "license_number")
     federation = Map.get(payload, "federation")
+    id = Map.get(payload, "id")
 
-    official = Officials.bootstrap(name, type, license_number, federation)
+    official =
+      if id do
+        # Use provided ID (selected from dropdown)
+        Officials.bootstrap_with_id(id, name, type, license_number, federation)
+      else
+        # Generate new ID for manually entered official
+        Officials.bootstrap(name, type, license_number, federation)
+      end
 
     game_state
     |> Games.add_official(official)

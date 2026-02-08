@@ -22,3 +22,15 @@ export interface ApiUploadFile {
 export interface ApiUploadPostResponse {
   data: ApiUploadFile;
 }
+
+export interface ApiOfficial {
+  id: string;
+  name: string;
+  license_number: string | null;
+  tournament_id: string;
+  username: string | null;
+}
+
+export interface ApiOfficialListResponse {
+  data: ApiOfficial[];
+}
