@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { TeamType } from '../../../types';
+import { TeamType, PlayerState } from '../../../types';
 import { ApiPlayer } from '../../../goChampsApiTypes';
 import AutocompleteInput from '../../shared/form/AutocompleteInput';
 
@@ -10,6 +10,8 @@ interface AddPlayerRowProps {
   pushEvent: (event: string, data: any) => void;
   onConfirmAction: () => void;
   teamPlayers: ApiPlayer[];
+  currentPlayers: PlayerState[];
+  onHighlightPlayer: (playerId: string) => void;
 }
 
 function AddPlayerRow({
@@ -18,6 +20,8 @@ function AddPlayerRow({
   pushEvent,
   onConfirmAction,
   teamPlayers,
+  currentPlayers,
+  onHighlightPlayer,
 }: AddPlayerRowProps) {
   const { t } = useTranslation();
   const [number, setNumber] = React.useState('');
@@ -32,6 +36,10 @@ function AddPlayerRow({
     if (player) {
       // Auto-populate shirt number when player selected
       setNumber(player.shirt_number || '');
+      // Highlight if player already exists in team
+      if (currentPlayers.some((p) => p.id === player.id)) {
+        onHighlightPlayer(player.id);
+      }
     }
   };
 
@@ -70,6 +78,15 @@ function AddPlayerRow({
 
     if (!number.trim()) {
       alert(t('basketball.players.alerts.enterNumber'));
+      return;
+    }
+
+    // Check if player already exists in the team
+    if (
+      selectedPlayer &&
+      currentPlayers.some((p) => p.id === selectedPlayer.id)
+    ) {
+      onHighlightPlayer(selectedPlayer.id);
       return;
     }
 
@@ -180,12 +197,20 @@ function AddPlayerRow({
 
       <td>
         <button
-          className="button is-small is-success"
+          className="button is-small is-success has-tooltip"
+          data-tooltip={
+            selectedPlayer &&
+            currentPlayers.some((p) => p.id === selectedPlayer.id)
+              ? t('basketball.players.alerts.playerAlreadyExists')
+              : ''
+          }
           onClick={onConfirmClick}
           disabled={
             !number.trim() ||
             !name.trim() ||
-            (!manualEntryMode && !selectedPlayer)
+            (!manualEntryMode && !selectedPlayer) ||
+            (selectedPlayer &&
+              currentPlayers.some((p) => p.id === selectedPlayer.id))
           }
         >
           &#10003;

@@ -109,6 +109,7 @@ interface EditPlayerRowProps {
   player: PlayerState;
   teamType: TeamType;
   pushEvent: (event: string, data: any) => void;
+  highlighted?: boolean;
 }
 
 export function BasicEditPlayerRow({
@@ -116,6 +117,7 @@ export function BasicEditPlayerRow({
   player,
   teamType,
   pushEvent,
+  highlighted = false,
 }: EditPlayerRowProps) {
   const onUpdatePlayerNumber = (value: string) => {
     pushEvent('update-player-in-team', {
@@ -130,7 +132,10 @@ export function BasicEditPlayerRow({
     });
   };
   return (
-    <tr key={player.id}>
+    <tr
+      key={player.id}
+      className={`edit-player-row${highlighted ? ' highlighted' : ''}`}
+    >
       <td>{rowNumber}</td>
       <td>
         <DoubleClickButton
@@ -234,6 +239,7 @@ function MediumEditPlayerRow({
   player,
   teamType,
   pushEvent,
+  highlighted = false,
 }: EditPlayerRowProps) {
   const onUpdatePlayerNumber = (value: string) => {
     pushEvent('update-player-in-team', {
@@ -260,7 +266,10 @@ function MediumEditPlayerRow({
     });
   };
   return (
-    <tr key={player.id}>
+    <tr
+      key={player.id}
+      className={`edit-player-row${highlighted ? ' highlighted' : ''}`}
+    >
       <td>{rowNumber}</td>
       <td>
         <DoubleClickButton

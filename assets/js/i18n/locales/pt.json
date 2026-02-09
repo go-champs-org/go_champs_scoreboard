@@ -455,7 +455,8 @@
       "alerts": {
         "selectPlayer": "Por favor, selecione um jogador da lista ou clique em + para criar um novo",
         "enterName": "Por favor, insira o nome do jogador",
-        "enterNumber": "Por favor, insira o número do jogador"
+        "enterNumber": "Por favor, insira o número do jogador",
+        "playerAlreadyExists": "Este jogador já está na equipe"
       },
       "buttons": {
         "createNew": "Criar novo jogador",
@@ -531,12 +532,12 @@
         "assistantScorer": "Representante",
         "timekeeper": "Cronometrista",
         "shotClockOperator": "Operador dos 24 segundos",
-        "crewChief": "Árbitro Principal",
+        "crewChief": "Crew Chief (Árbitro Principal)",
         "umpire1": "Fiscal 1",
         "umpire2": "Fiscal 2"
       },
       "placeholders": {
-        "officialName": "Nome do árbitro",
+        "officialName": "Nome do oficial",
         "licenseNumber": "Licença #",
         "federation": "Federação"
       },

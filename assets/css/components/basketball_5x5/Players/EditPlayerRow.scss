@@ -1,3 +1,11 @@
+.edit-player-row {
+  transition: background-color 0.3s ease;
+
+  &.highlighted {
+    background-color: var(--bulma-warning);
+  }
+}
+
 .stat-input-container {
   position: relative;
 

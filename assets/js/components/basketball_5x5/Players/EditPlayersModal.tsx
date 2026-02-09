@@ -18,6 +18,9 @@ interface PlayersTableProps {
   pushEvent: (event: string, data: any) => void;
   setShowAddPlayerRow: (show: boolean) => void;
   apiPlayers: ApiPlayer[];
+  currentPlayers: PlayerState[];
+  onHighlightPlayer: (playerId: string) => void;
+  highlightedPlayerId: string | null;
 }
 
 function BasicPlayersTable({
@@ -27,6 +30,9 @@ function BasicPlayersTable({
   pushEvent,
   setShowAddPlayerRow,
   apiPlayers,
+  currentPlayers,
+  onHighlightPlayer,
+  highlightedPlayerId,
 }: PlayersTableProps) {
   const { t } = useTranslation();
 
@@ -123,6 +129,8 @@ function BasicPlayersTable({
                 pushEvent={pushEvent}
                 onConfirmAction={() => setShowAddPlayerRow(false)}
                 teamPlayers={apiPlayers}
+                currentPlayers={currentPlayers}
+                onHighlightPlayer={onHighlightPlayer}
               />
             )}
             {team.players.map((player, index) => (
@@ -132,6 +140,7 @@ function BasicPlayersTable({
                 player={player}
                 teamType={teamType}
                 pushEvent={pushEvent}
+                highlighted={player.id === highlightedPlayerId}
               />
             ))}
           </tbody>
@@ -145,6 +154,9 @@ function MediumPlayersTable({
   team,
   teamType,
   showAddPlayerRow,
+  currentPlayers,
+  onHighlightPlayer,
+  highlightedPlayerId,
   pushEvent,
   setShowAddPlayerRow,
   apiPlayers,
@@ -223,6 +235,8 @@ function MediumPlayersTable({
               pushEvent={pushEvent}
               onConfirmAction={() => setShowAddPlayerRow(false)}
               teamPlayers={apiPlayers}
+              currentPlayers={currentPlayers}
+              onHighlightPlayer={onHighlightPlayer}
             />
           )}
           {team.players.map((player, index) => (
@@ -232,6 +246,7 @@ function MediumPlayersTable({
               player={player}
               teamType={teamType}
               pushEvent={pushEvent}
+              highlighted={player.id === highlightedPlayerId}
             />
           ))}
         </tbody>
@@ -258,6 +273,9 @@ function EditPlayersModal({
   const goChampsApi = config.getApiHost();
   const [activeTab, setActiveTab] = React.useState('home' as TeamType);
   const [showAddPlayerRow, setShowAddPlayerRow] = React.useState(false);
+  const [highlightedPlayerId, setHighlightedPlayerId] = React.useState<
+    string | null
+  >(null);
   const [homeTeamPlayers, setHomeTeamPlayers] = React.useState<ApiPlayer[]>([]);
   const [awayTeamPlayers, setAwayTeamPlayers] = React.useState<ApiPlayer[]>([]);
   const [loading, setLoading] = React.useState(false);
@@ -268,6 +286,14 @@ function EditPlayersModal({
     activeTab === 'away' ? awayTeamPlayers : homeTeamPlayers;
   const homeTeamId = game_state.home_team.id;
   const awayTeamId = game_state.away_team.id;
+
+  const handleHighlightPlayer = (playerId: string) => {
+    setHighlightedPlayerId(playerId);
+    // Clear highlight after 3 seconds
+    setTimeout(() => {
+      setHighlightedPlayerId(null);
+    }, 3000);
+  };
 
   // Fetch team players from API
   React.useEffect(() => {
@@ -350,6 +376,9 @@ function EditPlayersModal({
                   pushEvent={pushEvent}
                   setShowAddPlayerRow={setShowAddPlayerRow}
                   apiPlayers={selectedApiPlayers}
+                  currentPlayers={selectedTeam.players}
+                  onHighlightPlayer={handleHighlightPlayer}
+                  highlightedPlayerId={highlightedPlayerId}
                 />
               ) : (
                 <MediumPlayersTable
@@ -359,6 +388,9 @@ function EditPlayersModal({
                   pushEvent={pushEvent}
                   setShowAddPlayerRow={setShowAddPlayerRow}
                   apiPlayers={selectedApiPlayers}
+                  currentPlayers={selectedTeam.players}
+                  onHighlightPlayer={handleHighlightPlayer}
+                  highlightedPlayerId={highlightedPlayerId}
                 />
               )}
             </div>

@@ -455,7 +455,8 @@
       "alerts": {
         "selectPlayer": "Please select a player from the list or click + to create a new one",
         "enterName": "Please enter a player name",
-        "enterNumber": "Please enter a player number"
+        "enterNumber": "Please enter a player number",
+        "playerAlreadyExists": "This player is already in the team"
       },
       "buttons": {
         "createNew": "Create new player",
