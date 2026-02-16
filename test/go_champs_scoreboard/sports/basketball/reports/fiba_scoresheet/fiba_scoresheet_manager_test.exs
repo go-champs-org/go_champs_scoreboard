@@ -37,6 +37,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
         info: %FibaScoresheet.Info{
           number: "ABC123",
           location: "Game Location",
+          city: "Game City",
           datetime: datetime,
           tournament_name: "Tournament Name",
           tournament_slug: "",

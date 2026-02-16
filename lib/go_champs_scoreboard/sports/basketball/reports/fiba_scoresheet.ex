@@ -203,6 +203,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
     @type t :: %__MODULE__{
             number: String.t(),
             location: String.t(),
+            city: String.t(),
             datetime: DateTime.t(),
             tournament_name: String.t(),
             tournament_slug: String.t(),
@@ -219,6 +220,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
     defstruct [
       :number,
       :location,
+      :city,
       :datetime,
       :tournament_name,
       :tournament_slug,

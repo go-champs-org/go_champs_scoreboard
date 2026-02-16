@@ -29,7 +29,8 @@ const styles = StyleSheet.create({
           overflow: 'hidden',
           content: {
             width: '100%',
-            maxLines: 2,
+            maxLines: 1,
+            textOverflow: 'ellipsis',
           },
         },
       },
@@ -41,6 +42,7 @@ interface HeaderBoxProps {
   location: string;
   datetime: string;
   number: string;
+  city: string;
   crewChiefName: string;
   umpire1Name: string;
   umpire2Name: string;
@@ -52,6 +54,7 @@ function HeaderBox({
   umpire1Name,
   umpire2Name,
   location,
+  city,
   datetime,
 }: HeaderBoxProps) {
   const { t } = useTranslation();
@@ -66,10 +69,11 @@ function HeaderBox({
   });
   return (
     <View style={styles.headerBox}>
+      {/* Row 1: Location | Date | Game Number */}
       <View style={styles.headerBox.row}>
         <View style={styles.headerBox.row.column}>
           <View style={styles.headerBox.row.column.label}>
-            <Text>{t('basketball.reports.fibaScoresheet.location')}</Text>
+            <Text>{t('basketball.reports.fibaScoresheet.location')}:</Text>
           </View>
           <View style={styles.headerBox.row.column.value}>
             <Text style={styles.headerBox.row.column.value.content}>
@@ -79,10 +83,10 @@ function HeaderBox({
         </View>
         <View style={styles.headerBox.row.column}>
           <View style={styles.headerBox.row.column.label}>
-            <Text>{t('basketball.reports.fibaScoresheet.dateTime')}</Text>
+            <Text>{t('basketball.reports.fibaScoresheet.date')}:</Text>
           </View>
           <View style={styles.headerBox.row.column.value}>
-            <Text>{`${date} - ${time}`}</Text>
+            <Text>{date}</Text>
           </View>
         </View>
         <View
@@ -93,18 +97,49 @@ function HeaderBox({
           }}
         >
           <View style={styles.headerBox.row.column.label}>
-            <Text>{t('basketball.reports.fibaScoresheet.gameNumber')}</Text>
+            <Text>{t('basketball.reports.fibaScoresheet.gameNumber')}:</Text>
           </View>
           <View style={styles.headerBox.row.column.value}>
             <Text>{number}</Text>
           </View>
         </View>
       </View>
+
+      {/* Row 2: City | Time | (empty) */}
+      <View style={styles.headerBox.row}>
+        <View style={styles.headerBox.row.column}>
+          <View style={styles.headerBox.row.column.label}>
+            <Text>{t('basketball.reports.fibaScoresheet.city')}:</Text>
+          </View>
+          <View style={styles.headerBox.row.column.value}>
+            <Text style={styles.headerBox.row.column.value.content}>
+              {city || ''}
+            </Text>
+          </View>
+        </View>
+        <View style={styles.headerBox.row.column}>
+          <View style={styles.headerBox.row.column.label}>
+            <Text>{t('basketball.reports.fibaScoresheet.time')}:</Text>
+          </View>
+          <View style={styles.headerBox.row.column.value}>
+            <Text>{time}</Text>
+          </View>
+        </View>
+        <View
+          style={{
+            ...styles.headerBox.row.column,
+            flex: '1 0 auto',
+            width: '50px',
+          }}
+        ></View>
+      </View>
+
+      {/* Row 3: Officials */}
       <View style={styles.headerBox.row}>
         <View style={styles.headerBox.row.column}>
           <View style={styles.headerBox.row.column.label}>
             <Text>
-              {t('basketball.reports.fibaScoresheet.officials.crewChief')}
+              {t('basketball.reports.fibaScoresheet.officials.crewChief')}:
             </Text>
           </View>
           <View style={styles.headerBox.row.column.value}>
@@ -116,7 +151,7 @@ function HeaderBox({
         <View style={styles.headerBox.row.column}>
           <View style={styles.headerBox.row.column.label}>
             <Text>
-              {t('basketball.reports.fibaScoresheet.officials.umpire1')}
+              {t('basketball.reports.fibaScoresheet.officials.umpire1')}:
             </Text>
           </View>
           <View style={styles.headerBox.row.column.value}>
@@ -134,7 +169,7 @@ function HeaderBox({
         >
           <View style={styles.headerBox.row.column.label}>
             <Text>
-              {t('basketball.reports.fibaScoresheet.officials.umpire2')}
+              {t('basketball.reports.fibaScoresheet.officials.umpire2')}:
             </Text>
           </View>
           <View style={styles.headerBox.row.column.value}>

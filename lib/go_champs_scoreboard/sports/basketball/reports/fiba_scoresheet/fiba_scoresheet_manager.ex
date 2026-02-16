@@ -38,6 +38,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
     %FibaScoresheet.Info{
       number: game_state.info.number,
       location: game_state.info.location,
+      city: game_state.info.city,
       datetime: game_state.info.datetime,
       tournament_name: game_state.info.tournament_name,
       tournament_slug: game_state.info.tournament_slug,

@@ -25,6 +25,12 @@ function GameInfoTab({ game_state, pushEvent }: GameInfoTabProps) {
     }
   };
 
+  const handleCityUpdate = (city: string) => {
+    if (city !== (game_state.info.city || '')) {
+      pushEvent('update-game-info', { city });
+    }
+  };
+
   const handleNumberUpdate = (number: string) => {
     if (number !== (game_state.info.number || '')) {
       pushEvent('update-game-info', { number });
@@ -57,6 +63,25 @@ function GameInfoTab({ game_state, pushEvent }: GameInfoTabProps) {
                 type="text"
                 value={value}
                 placeholder={t('basketball.game.modal.locationPlaceholder')}
+                onChange={onChange}
+              />
+            )}
+          />
+        </div>
+      </div>
+
+      <div className="field">
+        <label className="label">{t('basketball.game.modal.city')}</label>
+        <div className="control">
+          <FormField
+            initialValue={game_state.info.city}
+            onChange={handleCityUpdate}
+            render={(value, onChange) => (
+              <input
+                className="input"
+                type="text"
+                value={value}
+                placeholder={t('basketball.game.modal.cityPlaceholder')}
                 onChange={onChange}
               />
             )}

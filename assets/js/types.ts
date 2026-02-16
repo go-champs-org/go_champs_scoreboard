@@ -136,6 +136,7 @@ export interface ProtestState {
 
 export interface InfoState {
   location: string;
+  city: string;
   tournament_id: string;
   tournament_name: string;
   number: string;

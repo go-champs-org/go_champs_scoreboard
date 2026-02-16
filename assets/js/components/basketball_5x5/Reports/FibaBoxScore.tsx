@@ -23,7 +23,7 @@ export interface Team {
 
 export interface FibaBoxScoreData {
   number: string;
-  localtion: string;
+  location: string;
   datetime: string;
   actual_start_datetime?: string;
   actual_end_datetime?: string;
@@ -62,7 +62,7 @@ function BoxScorePage({ scoreBoxData }: FibaBoxScoreProps) {
         date={scoreBoxData.datetime.split('T')[0]}
         startTime={scoreBoxData.actual_start_datetime || ''}
         endTime={scoreBoxData.actual_end_datetime || ''}
-        venue={scoreBoxData.localtion}
+        venue={scoreBoxData.location}
       />
       <TeamBoxScore teamType="home" team={scoreBoxData.home_team} />
       <TeamBoxScore teamType="away" team={scoreBoxData.away_team} />

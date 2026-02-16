@@ -23,6 +23,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinitionTest do
     test "returns :ok with all fields" do
       payload = %{
         "location" => "Stadium A",
+        "city" => "New York",
         "number" => "GAME123",
         "game_report" => "Great game today"
       }
@@ -46,6 +47,14 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinitionTest do
       assert {:ok} = UpdateGameInfoDefinition.validate(%GameState{}, payload)
     end
 
+    test "returns :ok with only city" do
+      payload = %{
+        "city" => "Boston"
+      }
+
+      assert {:ok} = UpdateGameInfoDefinition.validate(%GameState{}, payload)
+    end
+
     test "returns :ok with only game_report" do
       payload = %{
         "game_report" => "Excellent match"
@@ -57,14 +66,14 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinitionTest do
     test "returns error with empty payload" do
       payload = %{}
 
-      assert {:error, "Must provide at least one field: location, number, or game_report"} =
+      assert {:error, "Must provide at least one field: location, city, number, or game_report"} =
                UpdateGameInfoDefinition.validate(%GameState{}, payload)
     end
 
     test "returns error with invalid payload type" do
       payload = "invalid"
 
-      assert {:error, "Must provide at least one field: location, number, or game_report"} =
+      assert {:error, "Must provide at least one field: location, city, number, or game_report"} =
                UpdateGameInfoDefinition.validate(%GameState{}, payload)
     end
 
@@ -75,6 +84,16 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinitionTest do
       }
 
       assert {:error, "Invalid location. Must be a string"} =
+               UpdateGameInfoDefinition.validate(%GameState{}, payload)
+    end
+
+    test "returns error with invalid city type" do
+      payload = %{
+        "location" => "Stadium A",
+        "city" => 999
+      }
+
+      assert {:error, "Invalid city. Must be a string"} =
                UpdateGameInfoDefinition.validate(%GameState{}, payload)
     end
 
@@ -117,7 +136,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinitionTest do
   end
 
   describe "handle/2" do
-    test "updates game info with new location and number" do
+    test "updates game info with new location, city, and number" do
       original_datetime = DateTime.utc_now()
 
       game_state = %GameState{
@@ -127,12 +146,14 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinitionTest do
           tournament_id: "tournament-1",
           tournament_name: "Tournament Name",
           location: "Old Stadium",
+          city: "Old City",
           number: "OLD123"
         }
       }
 
       event_payload = %{
         "location" => "New Stadium",
+        "city" => "New York",
         "number" => "NEW456",
         "game_report" => "Amazing game with great plays"
       }
@@ -142,6 +163,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinitionTest do
 
       # Check that info was updated
       assert updated_game_state.info.location == "New Stadium"
+      assert updated_game_state.info.city == "New York"
       assert updated_game_state.info.number == "NEW456"
       assert updated_game_state.info.game_report == "Amazing game with great plays"
 
@@ -154,13 +176,14 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinitionTest do
       assert updated_game_state.id == "game-id"
     end
 
-    test "handles empty strings for location and number" do
+    test "handles empty strings for location, city, and number" do
       game_state = %GameState{
         info: %InfoState{
           datetime: DateTime.utc_now(),
           tournament_id: "tournament-1",
           tournament_name: "Tournament Name",
           location: "Old Stadium",
+          city: "Old City",
           number: "OLD123",
           game_report: "Old report"
         }
@@ -168,6 +191,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinitionTest do
 
       event_payload = %{
         "location" => "",
+        "city" => "",
         "number" => "",
         "game_report" => ""
       }
@@ -176,6 +200,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinitionTest do
       updated_game_state = UpdateGameInfoDefinition.handle(game_state, event)
 
       assert updated_game_state.info.location == ""
+      assert updated_game_state.info.city == ""
       assert updated_game_state.info.number == ""
       assert updated_game_state.info.game_report == ""
     end
@@ -190,6 +215,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinitionTest do
           tournament_id: "tournament-1",
           tournament_name: "Tournament Name",
           location: "Old Stadium",
+          city: "Old City",
           number: "OLD123",
           game_report: "Old report"
         }
@@ -204,7 +230,8 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinitionTest do
 
       # Check that location was updated
       assert updated_game_state.info.location == "New Stadium"
-      # Check that number was preserved
+      # Check that city and number were preserved
+      assert updated_game_state.info.city == "Old City"
       assert updated_game_state.info.number == "OLD123"
 
       # Check that other info fields are preserved
@@ -223,6 +250,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinitionTest do
           tournament_id: "tournament-1",
           tournament_name: "Tournament Name",
           location: "Old Stadium",
+          city: "Old City",
           number: "OLD123",
           game_report: "Old report"
         }
@@ -237,8 +265,44 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateGameInfoDefinitionTest do
 
       # Check that number was updated
       assert updated_game_state.info.number == "NEW456"
-      # Check that location was preserved
+      # Check that location and city were preserved
       assert updated_game_state.info.location == "Old Stadium"
+      assert updated_game_state.info.city == "Old City"
+
+      # Check that other info fields are preserved
+      assert updated_game_state.info.datetime == original_datetime
+      assert updated_game_state.info.tournament_id == "tournament-1"
+      assert updated_game_state.info.tournament_name == "Tournament Name"
+    end
+
+    test "updates only city when location and number are not provided" do
+      original_datetime = DateTime.utc_now()
+
+      game_state = %GameState{
+        id: "game-id",
+        info: %InfoState{
+          datetime: original_datetime,
+          tournament_id: "tournament-1",
+          tournament_name: "Tournament Name",
+          location: "Old Stadium",
+          city: "Old City",
+          number: "OLD123",
+          game_report: "Old report"
+        }
+      }
+
+      event_payload = %{
+        "city" => "New York"
+      }
+
+      event = UpdateGameInfoDefinition.create("game-id", 600, 1, event_payload)
+      updated_game_state = UpdateGameInfoDefinition.handle(game_state, event)
+
+      # Check that city was updated
+      assert updated_game_state.info.city == "New York"
+      # Check that location and number were preserved
+      assert updated_game_state.info.location == "Old Stadium"
+      assert updated_game_state.info.number == "OLD123"
 
       # Check that other info fields are preserved
       assert updated_game_state.info.datetime == original_datetime

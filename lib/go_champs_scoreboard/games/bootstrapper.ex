@@ -257,6 +257,7 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
       end
 
     location = Map.get(game_response, "location", "")
+    city = Map.get(game_response, "city", "")
     game_id = Map.get(game_response, "id", "")
     web_url = Map.get(game_response, "web_url", "")
     tournament_info = get_in(game_response, ["phase", "tournament"]) || %{}
@@ -278,6 +279,7 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
       organization_slug: organization_slug,
       organization_logo_url: organization_logo_url,
       location: location,
+      city: city,
       number: game_id,
       web_url: web_url
     )

@@ -336,6 +336,7 @@ defmodule GoChampsScoreboard.GameStateFixtures do
       info_state: %InfoState{
         number: "ABC123",
         location: "Game Location",
+        city: "Game City",
         datetime: datetime,
         tournament_name: "Tournament Name",
         tournament_id: "tournament-id",

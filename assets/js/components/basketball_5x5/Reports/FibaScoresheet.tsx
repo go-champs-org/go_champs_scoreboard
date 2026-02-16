@@ -90,6 +90,7 @@ export interface Team {
 export interface Info {
   number: string;
   location: string;
+  city: string;
   datetime: string;
   tournament_name: string;
   tournament_slug: string;
@@ -447,6 +448,7 @@ function ScoresheetPage({ scoresheetData }: FibaScoresheetProps) {
             umpire2Name={scoresheetData.umpire_2.name}
             datetime={scoresheetData.info.actual_start_datetime}
             location={scoresheetData.info.location}
+            city={scoresheetData.info.city}
           />
         </View>
         <View style={styles.main.teamsAndRunningScoreContainer}>
