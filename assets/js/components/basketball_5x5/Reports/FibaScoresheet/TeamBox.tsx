@@ -11,6 +11,11 @@ const EMPTY_FOUL = {
   is_last_of_half: false,
 };
 
+// Constants for diagonal line calculation
+const ROW_HEIGHT = 15; // Height of each player row
+const FOUL_COLUMN_WIDTH = 14; // Width of each foul column
+const TOTAL_FOUL_COLUMNS = 6; // F1 through F6
+
 const styles = StyleSheet.create({
   teamContainer: {
     borderBottom: '1px solid #000',
@@ -161,6 +166,7 @@ const styles = StyleSheet.create({
           flexDirection: 'row',
           justifyContent: 'center',
           alignItems: 'center',
+          position: 'relative',
           fouls: {
             display: 'flex',
             flexDirection: 'column',
@@ -253,6 +259,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: BLUE,
       },
+    },
+    diagonalLine: {
+      position: 'absolute',
+      backgroundColor: BLUE,
+      transformOrigin: 'top left',
     },
     square: {
       width: '13px',
@@ -492,14 +503,48 @@ function ConditionalCell({
   return <>{children}</>;
 }
 
+function DiagonalLineOverlay({
+  startRowIndex,
+  endRowIndex,
+}: {
+  startRowIndex: number;
+  endRowIndex: number;
+}) {
+  const yOffset = 2; // Adjust this value to position the line better within the cell
+  // Calculate the diagonal line properties
+  const startY = startRowIndex * ROW_HEIGHT + ROW_HEIGHT / 2 - yOffset;
+  const endY = (endRowIndex + 1) * ROW_HEIGHT;
+  const lineHeight = endY - startY;
+  const lineWidth = TOTAL_FOUL_COLUMNS * FOUL_COLUMN_WIDTH + yOffset;
+
+  // Calculate diagonal length and rotation angle
+  const diagonalLength = Math.sqrt(lineWidth ** 2 + lineHeight ** 2);
+  const rotationAngle = Math.atan2(lineHeight, lineWidth) * (180 / Math.PI);
+
+  return (
+    <View
+      style={{
+        ...styles.teamContainer.diagonalLine,
+        top: startY,
+        left: 0,
+        width: diagonalLength,
+        height: 2, // Line thickness
+        transform: `rotate(${rotationAngle}deg)`,
+      }}
+    />
+  );
+}
+
 function PlayerRow({
   player,
   isGameEnded = false,
   isFirstEmpty = false,
+  hasMultipleEmptyPlayers = false,
 }: {
   player: any;
   isGameEnded?: boolean;
   isFirstEmpty?: boolean;
+  hasMultipleEmptyPlayers?: boolean;
 }) {
   const { t } = useTranslation();
   const isFirstEmptyPlayerAndGameEnded = isFirstEmpty && isGameEnded;
@@ -572,7 +617,11 @@ function PlayerRow({
               ...defineFoulBorders(foul, index, false),
             }}
           >
-            <ConditionalCell isUnsed={isFirstEmptyPlayerAndGameEnded}>
+            <ConditionalCell
+              isUnsed={
+                isFirstEmptyPlayerAndGameEnded && !hasMultipleEmptyPlayers
+              }
+            >
               {foul !== EMPTY_FOUL ? (
                 <>
                   <Text
@@ -768,6 +817,12 @@ export default function TeamBox({
     (player) => player.name === '' || player.name.trim() === '',
   );
 
+  // Calculate diagonal line indices for empty players
+  const hasEmptyPlayers = firstEmptyPlayerIndex !== -1;
+  const emptyPlayersCount = hasEmptyPlayers ? 12 - firstEmptyPlayerIndex : 0;
+  const hasMultipleEmptyPlayers = emptyPlayersCount > 1;
+  const lastEmptyPlayerIndex = hasEmptyPlayers ? 11 : -1; // Last index is always 11 (12 total slots)
+
   const renderCoach = createRenderCoach(team.coach);
   const renderAssistantCoach = createRenderCoach(team.assistant_coach);
 
@@ -843,14 +898,34 @@ export default function TeamBox({
           </>
         ) : (
           <>
-            {sortedRenderPlayers.map((player, index) => (
-              <PlayerRow
-                key={index}
-                player={player}
-                isGameEnded={isGameEnded}
-                isFirstEmpty={index === firstEmptyPlayerIndex}
-              />
-            ))}
+            <View style={{ position: 'relative' }}>
+              {sortedRenderPlayers.map((player, index) => (
+                <PlayerRow
+                  key={index}
+                  player={player}
+                  isGameEnded={isGameEnded}
+                  isFirstEmpty={index === firstEmptyPlayerIndex}
+                  hasMultipleEmptyPlayers={hasMultipleEmptyPlayers}
+                />
+              ))}
+              {/* Render diagonal line overlay for empty player foul columns */}
+              {isGameEnded && hasMultipleEmptyPlayers && (
+                <View
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    width: '84px', // Match columnFouls width
+                    height: '100%',
+                  }}
+                >
+                  <DiagonalLineOverlay
+                    startRowIndex={firstEmptyPlayerIndex}
+                    endRowIndex={lastEmptyPlayerIndex}
+                  />
+                </View>
+              )}
+            </View>
             <CoachRow
               coach={renderCoach}
               type="head"
