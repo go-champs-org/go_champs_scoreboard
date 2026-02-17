@@ -569,5 +569,314 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
       assert existing_player.fouls == []
       assert result_scoresheet.team_a.all_fouls == []
     end
+
+    test "automatically adds GD foul when player receives second T foul" do
+      game_state = basketball_game_state_fixture()
+
+      event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          game_state.clock_state.time,
+          game_state.clock_state.period,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => "123",
+            "stat-id" => "fouls_technical"
+          }
+        )
+
+      updated_game_state = GoChampsScoreboard.Events.Handler.handle(game_state, event)
+
+      {:ok, event_log} = EventLogs.persist(event, updated_game_state)
+
+      # Player already has one T foul
+      existing_t_foul = %FibaScoresheet.Foul{
+        type: "T",
+        period: 1,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      team_a_players = [
+        %FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: [existing_t_foul]}
+      ]
+
+      fiba_scoresheet =
+        fiba_scoresheet_fixture(game_id: event_log.game_id, team_a_players: team_a_players)
+
+      result_scoresheet =
+        UpdatePlayerStatProcessor.process(event_log, fiba_scoresheet)
+
+      [player] = result_scoresheet.team_a.players
+
+      # Should have 3 fouls: original T + new T + automatic GD
+      assert length(player.fouls) == 3
+
+      # Check that we have 2 T fouls and 1 GD foul
+      t_fouls = Enum.filter(player.fouls, fn foul -> foul.type == "T" end)
+      gd_fouls = Enum.filter(player.fouls, fn foul -> foul.type == "GD" end)
+
+      assert length(t_fouls) == 2
+      assert length(gd_fouls) == 1
+
+      # GD foul should be in the same period as the triggering T foul
+      gd_foul = List.first(gd_fouls)
+      assert gd_foul.period == game_state.clock_state.period
+    end
+
+    test "automatically adds GD foul when player receives second U foul" do
+      game_state = basketball_game_state_fixture()
+
+      event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          game_state.clock_state.time,
+          game_state.clock_state.period,
+          %{
+            "operation" => "increment",
+            "team-type" => "away",
+            "player-id" => "456",
+            "stat-id" => "fouls_unsportsmanlike"
+          }
+        )
+
+      updated_game_state = GoChampsScoreboard.Events.Handler.handle(game_state, event)
+
+      {:ok, event_log} = EventLogs.persist(event, updated_game_state)
+
+      # Player already has one U foul
+      existing_u_foul = %FibaScoresheet.Foul{
+        type: "U",
+        period: 2,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      team_b_players = [
+        %FibaScoresheet.Player{id: "456", name: "Player 2", number: 23, fouls: [existing_u_foul]}
+      ]
+
+      fiba_scoresheet =
+        fiba_scoresheet_fixture(game_id: event_log.game_id, team_b_players: team_b_players)
+
+      result_scoresheet =
+        UpdatePlayerStatProcessor.process(event_log, fiba_scoresheet)
+
+      [player] = result_scoresheet.team_b.players
+
+      # Should have 3 fouls: original U + new U + automatic GD
+      assert length(player.fouls) == 3
+
+      # Check that we have 2 U fouls and 1 GD foul
+      u_fouls = Enum.filter(player.fouls, fn foul -> foul.type == "U" end)
+      gd_fouls = Enum.filter(player.fouls, fn foul -> foul.type == "GD" end)
+
+      assert length(u_fouls) == 2
+      assert length(gd_fouls) == 1
+
+      # GD foul should be in the same period as the triggering U foul
+      gd_foul = List.first(gd_fouls)
+      assert gd_foul.period == game_state.clock_state.period
+    end
+
+    test "automatically adds GD foul when player receives U foul after already having T foul" do
+      game_state = basketball_game_state_fixture()
+
+      event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          game_state.clock_state.time,
+          game_state.clock_state.period,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => "123",
+            "stat-id" => "fouls_unsportsmanlike"
+          }
+        )
+
+      updated_game_state = GoChampsScoreboard.Events.Handler.handle(game_state, event)
+
+      {:ok, event_log} = EventLogs.persist(event, updated_game_state)
+
+      # Player already has one T foul
+      existing_t_foul = %FibaScoresheet.Foul{
+        type: "T",
+        period: 1,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      team_a_players = [
+        %FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: [existing_t_foul]}
+      ]
+
+      fiba_scoresheet =
+        fiba_scoresheet_fixture(game_id: event_log.game_id, team_a_players: team_a_players)
+
+      result_scoresheet =
+        UpdatePlayerStatProcessor.process(event_log, fiba_scoresheet)
+
+      [player] = result_scoresheet.team_a.players
+
+      # Should have 3 fouls: original T + new U + automatic GD
+      assert length(player.fouls) == 3
+
+      # Check that we have 1 T, 1 U, and 1 GD foul
+      t_fouls = Enum.filter(player.fouls, fn foul -> foul.type == "T" end)
+      u_fouls = Enum.filter(player.fouls, fn foul -> foul.type == "U" end)
+      gd_fouls = Enum.filter(player.fouls, fn foul -> foul.type == "GD" end)
+
+      assert length(t_fouls) == 1
+      assert length(u_fouls) == 1
+      assert length(gd_fouls) == 1
+
+      # GD foul should be in the same period as the triggering U foul
+      gd_foul = List.first(gd_fouls)
+      assert gd_foul.period == game_state.clock_state.period
+    end
+
+    test "automatically adds GD foul when player receives T foul after already having U foul" do
+      game_state = basketball_game_state_fixture()
+
+      event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          game_state.clock_state.time,
+          game_state.clock_state.period,
+          %{
+            "operation" => "increment",
+            "team-type" => "away",
+            "player-id" => "456",
+            "stat-id" => "fouls_technical"
+          }
+        )
+
+      updated_game_state = GoChampsScoreboard.Events.Handler.handle(game_state, event)
+
+      {:ok, event_log} = EventLogs.persist(event, updated_game_state)
+
+      # Player already has one U foul
+      existing_u_foul = %FibaScoresheet.Foul{
+        type: "U",
+        period: 2,
+        extra_action: nil,
+        is_last_of_half: false
+      }
+
+      team_b_players = [
+        %FibaScoresheet.Player{id: "456", name: "Player 2", number: 23, fouls: [existing_u_foul]}
+      ]
+
+      fiba_scoresheet =
+        fiba_scoresheet_fixture(game_id: event_log.game_id, team_b_players: team_b_players)
+
+      result_scoresheet =
+        UpdatePlayerStatProcessor.process(event_log, fiba_scoresheet)
+
+      [player] = result_scoresheet.team_b.players
+
+      # Should have 3 fouls: original U + new T + automatic GD
+      assert length(player.fouls) == 3
+
+      # Check that we have 1 T, 1 U, and 1 GD foul
+      t_fouls = Enum.filter(player.fouls, fn foul -> foul.type == "T" end)
+      u_fouls = Enum.filter(player.fouls, fn foul -> foul.type == "U" end)
+      gd_fouls = Enum.filter(player.fouls, fn foul -> foul.type == "GD" end)
+
+      assert length(t_fouls) == 1
+      assert length(u_fouls) == 1
+      assert length(gd_fouls) == 1
+
+      # GD foul should be in the same period as the triggering T foul
+      gd_foul = List.first(gd_fouls)
+      assert gd_foul.period == game_state.clock_state.period
+    end
+
+    test "does not add GD foul when player has only one T foul" do
+      game_state = basketball_game_state_fixture()
+
+      event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          game_state.clock_state.time,
+          game_state.clock_state.period,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => "123",
+            "stat-id" => "fouls_technical"
+          }
+        )
+
+      updated_game_state = GoChampsScoreboard.Events.Handler.handle(game_state, event)
+
+      {:ok, event_log} = EventLogs.persist(event, updated_game_state)
+
+      team_a_players = [
+        %FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: []}
+      ]
+
+      fiba_scoresheet =
+        fiba_scoresheet_fixture(game_id: event_log.game_id, team_a_players: team_a_players)
+
+      result_scoresheet =
+        UpdatePlayerStatProcessor.process(event_log, fiba_scoresheet)
+
+      [player] = result_scoresheet.team_a.players
+
+      # Should have only 1 foul (the T foul), no automatic GD
+      assert length(player.fouls) == 1
+      assert List.first(player.fouls).type == "T"
+    end
+
+    test "does not add GD foul when adding P foul regardless of existing T/U fouls" do
+      game_state = basketball_game_state_fixture()
+
+      event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          game_state.clock_state.time,
+          game_state.clock_state.period,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => "123",
+            "stat-id" => "fouls_personal"
+          }
+        )
+
+      updated_game_state = GoChampsScoreboard.Events.Handler.handle(game_state, event)
+
+      {:ok, event_log} = EventLogs.persist(event, updated_game_state)
+
+      # Player already has T and U fouls, but adding P shouldn't trigger GD
+      existing_fouls = [
+        %FibaScoresheet.Foul{type: "T", period: 1, extra_action: nil, is_last_of_half: false},
+        %FibaScoresheet.Foul{type: "U", period: 2, extra_action: nil, is_last_of_half: false}
+      ]
+
+      team_a_players = [
+        %FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: existing_fouls}
+      ]
+
+      fiba_scoresheet =
+        fiba_scoresheet_fixture(game_id: event_log.game_id, team_a_players: team_a_players)
+
+      result_scoresheet =
+        UpdatePlayerStatProcessor.process(event_log, fiba_scoresheet)
+
+      [player] = result_scoresheet.team_a.players
+
+      # Should have 3 fouls: T + U + new P (no automatic GD because P foul was added)
+      assert length(player.fouls) == 3
+
+      foul_types = Enum.map(player.fouls, fn foul -> foul.type end)
+      assert "T" in foul_types
+      assert "U" in foul_types
+      assert "P" in foul_types
+      refute "GD" in foul_types
+    end
   end
 end

@@ -29,7 +29,12 @@ defmodule GoChampsScoreboard.Sports.Basketball.Basketball do
     Stat.new("fouls_personal", :manual, [:increment, :decrement]),
     Stat.new("fouls_technical", :manual, [:increment, :decrement]),
     Stat.new("fouls_unsportsmanlike", :manual, [:increment, :decrement]),
-    Stat.new("fouls_game_disqualifying", :manual, [:increment, :decrement]),
+    Stat.new(
+      "fouls_game_disqualifying",
+      :calculated,
+      [],
+      &Statistics.calc_player_game_disqualifying_fouls/1
+    ),
     Stat.new(
       "free_throw_percentage",
       :calculated,

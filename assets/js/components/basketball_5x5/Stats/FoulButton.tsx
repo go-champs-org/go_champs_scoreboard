@@ -61,10 +61,6 @@ function FoulButton({
         ]
       : [
           {
-            label: t('basketball.stats.controls.technicalFoulNoFreeThrow'),
-            onClick: () => handleFreeThrowOption(),
-          },
-          {
             label: t('basketball.stats.controls.technicalFoulOneFreeThrow'),
             onClick: () => handleFreeThrowOption('1'),
           },

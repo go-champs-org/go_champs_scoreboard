@@ -659,4 +659,103 @@ defmodule GoChampsScoreboard.Sports.Basketball.StatisticsTest do
       assert result == 4
     end
   end
+
+  describe "calc_player_game_disqualifying_fouls" do
+    test "returns 1 when player has 2 technical fouls" do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        stats_values: %{
+          "fouls_technical" => 2,
+          "fouls_unsportsmanlike" => 0
+        }
+      }
+
+      assert Statistics.calc_player_game_disqualifying_fouls(player_state) == 1
+    end
+
+    test "returns 1 when player has 2 unsportsmanlike fouls" do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        stats_values: %{
+          "fouls_technical" => 0,
+          "fouls_unsportsmanlike" => 2
+        }
+      }
+
+      assert Statistics.calc_player_game_disqualifying_fouls(player_state) == 1
+    end
+
+    test "returns 1 when player has 1 technical and 1 unsportsmanlike foul" do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        stats_values: %{
+          "fouls_technical" => 1,
+          "fouls_unsportsmanlike" => 1
+        }
+      }
+
+      assert Statistics.calc_player_game_disqualifying_fouls(player_state) == 1
+    end
+
+    test "returns 0 when player has only 1 technical foul" do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        stats_values: %{
+          "fouls_technical" => 1,
+          "fouls_unsportsmanlike" => 0
+        }
+      }
+
+      assert Statistics.calc_player_game_disqualifying_fouls(player_state) == 0
+    end
+
+    test "returns 0 when player has only 1 unsportsmanlike foul" do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        stats_values: %{
+          "fouls_technical" => 0,
+          "fouls_unsportsmanlike" => 1
+        }
+      }
+
+      assert Statistics.calc_player_game_disqualifying_fouls(player_state) == 0
+    end
+
+    test "returns 0 when player has no technical or unsportsmanlike fouls" do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        stats_values: %{
+          "fouls_personal" => 3,
+          "fouls_disqualifying" => 1
+        }
+      }
+
+      assert Statistics.calc_player_game_disqualifying_fouls(player_state) == 0
+    end
+
+    test "returns 0 when player has empty stats" do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        stats_values: %{}
+      }
+
+      assert Statistics.calc_player_game_disqualifying_fouls(player_state) == 0
+    end
+
+    test "returns 1 when player has more than 2 technical fouls" do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        stats_values: %{
+          "fouls_technical" => 3,
+          "fouls_unsportsmanlike" => 0
+        }
+      }
+
+      assert Statistics.calc_player_game_disqualifying_fouls(player_state) == 1
+    end
+
+    test "returns 1 when player has combination exceeding limits" do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        stats_values: %{
+          "fouls_technical" => 2,
+          "fouls_unsportsmanlike" => 2,
+          "fouls_personal" => 4
+        }
+      }
+
+      assert Statistics.calc_player_game_disqualifying_fouls(player_state) == 1
+    end
+  end
 end

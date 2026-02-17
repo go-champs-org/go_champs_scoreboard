@@ -66,14 +66,6 @@ function PlayerFoulsPanel({
         <button
           className="button is-fullwidth is-small is-danger"
           onClick={() =>
-            onFoulWithoutFreeThrows('fouls_disqualifying', panelRef.close)
-          }
-        >
-          D
-        </button>
-        <button
-          className="button is-fullwidth is-small is-danger"
-          onClick={() =>
             onFoulWithFreeThrows('fouls_disqualifying', '1', panelRef.close)
           }
         >

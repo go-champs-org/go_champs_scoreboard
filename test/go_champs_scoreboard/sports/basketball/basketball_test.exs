@@ -82,7 +82,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
       calculated_stats = Basketball.find_calculated_player_stats()
 
       # Should return 10 player-level calculated stats (excluding game-level like plus_minus)
-      assert length(calculated_stats) == 10
+      assert length(calculated_stats) == 11
 
       # All should be calculated type and player level
       assert Enum.all?(calculated_stats, fn stat ->
@@ -98,6 +98,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
           "field_goal_percentage",
           "field_goals_attempted",
           "fouls",
+          "fouls_game_disqualifying",
           "free_throw_percentage",
           "free_throws_attempted",
           "points",
@@ -115,7 +116,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
       # Test with calculated stats (includes both player-level and game-level)
       calculated_stats = Basketball.find_player_stat_by_type([:calculated])
       # 10 player-level + 1 game-level (plus_minus)
-      assert length(calculated_stats) == 11
+      assert length(calculated_stats) == 12
       assert Enum.all?(calculated_stats, fn stat -> stat.type == :calculated end)
 
       # Test with manual stats
