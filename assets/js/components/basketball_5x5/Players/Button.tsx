@@ -24,10 +24,6 @@ function Button({
   const [isAnimating, setIsAnimating] = React.useState(false);
   const previousFouls = React.useRef(fouls);
 
-  // Player info states (derived from player data)
-  const isDisqualified = player.state === 'disqualified';
-  const isButtonDisabled = disabled || isDisqualified;
-
   // Trigger animation when fouls value changes
   React.useEffect(() => {
     if (fouls !== previousFouls.current && fouls > 0) {
@@ -50,7 +46,7 @@ function Button({
       )}
       data-tooltip={getPlayerTooltipText(player, t)}
       onClick={onClick}
-      disabled={isButtonDisabled}
+      disabled={disabled}
     >
       <div className="content">
         {player.number !== null ? (

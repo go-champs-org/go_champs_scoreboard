@@ -445,6 +445,30 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
           extra_action: nil,
           period: 2,
           is_last_of_half: false
+        },
+        %FibaScoresheet.Foul{
+          type: "F",
+          extra_action: nil,
+          period: 2,
+          is_last_of_half: false
+        },
+        %FibaScoresheet.Foul{
+          type: "F",
+          extra_action: nil,
+          period: 2,
+          is_last_of_half: false
+        },
+        %FibaScoresheet.Foul{
+          type: "F",
+          extra_action: nil,
+          period: 2,
+          is_last_of_half: false
+        },
+        %FibaScoresheet.Foul{
+          type: "F",
+          extra_action: nil,
+          period: 2,
+          is_last_of_half: false
         }
       ]
 
@@ -877,6 +901,150 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
       assert "U" in foul_types
       assert "P" in foul_types
       refute "GD" in foul_types
+    end
+
+    test "adds additional F fouls until player reaches 5 total when receiving F foul with less than 5 fouls" do
+      game_state = basketball_game_state_fixture()
+
+      event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          game_state.clock_state.time,
+          game_state.clock_state.period,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => "123",
+            "stat-id" => "fouls_disqualifying_fighting"
+          }
+        )
+
+      updated_game_state = GoChampsScoreboard.Events.Handler.handle(game_state, event)
+
+      {:ok, event_log} = EventLogs.persist(event, updated_game_state)
+
+      # Player already has 2 fouls
+      existing_fouls = [
+        %FibaScoresheet.Foul{type: "P", period: 1, extra_action: nil, is_last_of_half: false},
+        %FibaScoresheet.Foul{type: "P", period: 2, extra_action: nil, is_last_of_half: false}
+      ]
+
+      team_a_players = [
+        %FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: existing_fouls}
+      ]
+
+      fiba_scoresheet =
+        fiba_scoresheet_fixture(game_id: event_log.game_id, team_a_players: team_a_players)
+
+      result_scoresheet =
+        UpdatePlayerStatProcessor.process(event_log, fiba_scoresheet)
+
+      [player] = result_scoresheet.team_a.players
+
+      # Should have 5 fouls total: 2 existing P + 1 F + 2 additional F
+      assert length(player.fouls) == 5
+
+      # Count F fouls - should have 3 F fouls total
+      f_fouls = Enum.filter(player.fouls, fn foul -> foul.type == "F" end)
+      assert length(f_fouls) == 3
+
+      # All F fouls should be in the same period
+      f_periods = Enum.map(f_fouls, fn foul -> foul.period end)
+      assert Enum.all?(f_periods, fn period -> period == game_state.clock_state.period end)
+    end
+
+    test "does not add additional F fouls when player already has 5+ fouls" do
+      game_state = basketball_game_state_fixture()
+
+      event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          game_state.clock_state.time,
+          game_state.clock_state.period,
+          %{
+            "operation" => "increment",
+            "team-type" => "away",
+            "player-id" => "456",
+            "stat-id" => "fouls_disqualifying_fighting"
+          }
+        )
+
+      updated_game_state = GoChampsScoreboard.Events.Handler.handle(game_state, event)
+
+      {:ok, event_log} = EventLogs.persist(event, updated_game_state)
+
+      # Player already has 5 fouls
+      existing_fouls = [
+        %FibaScoresheet.Foul{type: "P", period: 1, extra_action: nil, is_last_of_half: false},
+        %FibaScoresheet.Foul{type: "P", period: 2, extra_action: nil, is_last_of_half: false},
+        %FibaScoresheet.Foul{type: "P", period: 3, extra_action: nil, is_last_of_half: false},
+        %FibaScoresheet.Foul{type: "P", period: 4, extra_action: nil, is_last_of_half: false},
+        %FibaScoresheet.Foul{type: "T", period: 4, extra_action: nil, is_last_of_half: false}
+      ]
+
+      team_b_players = [
+        %FibaScoresheet.Player{id: "456", name: "Player 2", number: 23, fouls: existing_fouls}
+      ]
+
+      fiba_scoresheet =
+        fiba_scoresheet_fixture(game_id: event_log.game_id, team_b_players: team_b_players)
+
+      result_scoresheet =
+        UpdatePlayerStatProcessor.process(event_log, fiba_scoresheet)
+
+      [player] = result_scoresheet.team_b.players
+
+      # Should have 6 fouls total: 5 existing + 1 F (no additional F fouls)
+      assert length(player.fouls) == 6
+
+      # Should have only 1 F foul
+      f_fouls = Enum.filter(player.fouls, fn foul -> foul.type == "F" end)
+      assert length(f_fouls) == 1
+    end
+
+    test "adds F fouls to reach exactly 5 when player has 1 existing foul" do
+      game_state = basketball_game_state_fixture()
+
+      event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_state.id,
+          game_state.clock_state.time,
+          game_state.clock_state.period,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => "123",
+            "stat-id" => "fouls_disqualifying_fighting"
+          }
+        )
+
+      updated_game_state = GoChampsScoreboard.Events.Handler.handle(game_state, event)
+
+      {:ok, event_log} = EventLogs.persist(event, updated_game_state)
+
+      # Player has only 1 existing foul
+      existing_fouls = [
+        %FibaScoresheet.Foul{type: "P", period: 1, extra_action: nil, is_last_of_half: false}
+      ]
+
+      team_a_players = [
+        %FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: existing_fouls}
+      ]
+
+      fiba_scoresheet =
+        fiba_scoresheet_fixture(game_id: event_log.game_id, team_a_players: team_a_players)
+
+      result_scoresheet =
+        UpdatePlayerStatProcessor.process(event_log, fiba_scoresheet)
+
+      [player] = result_scoresheet.team_a.players
+
+      # Should have 5 fouls total: 1 existing P + 1 F + 3 additional F
+      assert length(player.fouls) == 5
+
+      # Should have 4 F fouls total
+      f_fouls = Enum.filter(player.fouls, fn foul -> foul.type == "F" end)
+      assert length(f_fouls) == 4
     end
   end
 end

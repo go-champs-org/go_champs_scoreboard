@@ -128,7 +128,13 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
 
       # Get updated player and check if we need to automatically add a GD foul
       updated_player = PlayerManager.find_player(team_with_foul, player_id)
-      check_and_add_gd_foul(team_with_foul, updated_player, foul_type, event_log)
+
+      # Handle special F foul logic
+      team_after_gd = check_and_add_gd_foul(team_with_foul, updated_player, foul_type, event_log)
+
+      # Handle F foul special processing
+      updated_player_after_gd = PlayerManager.find_player(team_after_gd, player_id)
+      handle_fighting_foul_logic(team_after_gd, updated_player_after_gd, foul_type, event_log)
     end
   end
 
@@ -168,6 +174,47 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
       extra_action: nil,
       is_last_of_half: false
     }
+  end
+
+  defp create_f_foul(period) do
+    %FibaScoresheet.Foul{
+      type: "F",
+      period: period,
+      extra_action: nil,
+      is_last_of_half: false
+    }
+  end
+
+  @doc """
+  Handles special logic for F (fouls_disqualifying_fighting) fouls.
+  Adds additional F fouls until player reaches exactly 5 total fouls.
+  """
+  @spec handle_fighting_foul_logic(
+          FibaScoresheet.Team.t(),
+          FibaScoresheet.Player.t() | nil,
+          String.t(),
+          EventLog.t()
+        ) ::
+          FibaScoresheet.Team.t()
+  def handle_fighting_foul_logic(team, player, foul_type, event_log) do
+    if foul_type == "F" and not is_nil(player) do
+      total_fouls = length(player.fouls)
+
+      if total_fouls < 5 do
+        # Add additional F fouls to reach exactly 5
+        additional_f_fouls_needed = 5 - total_fouls
+
+        Enum.reduce(1..additional_f_fouls_needed, team, fn _, acc_team ->
+          f_foul = create_f_foul(event_log.game_clock_period)
+          TeamManager.add_player_foul(acc_team, player.id, f_foul)
+        end)
+      else
+        # Player already has 5+ fouls, no additional F fouls needed
+        team
+      end
+    else
+      team
+    end
   end
 
   @doc """

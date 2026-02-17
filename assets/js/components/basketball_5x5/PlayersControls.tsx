@@ -188,6 +188,33 @@ function PlayersControls({
     setSelectedPlayers([]);
     selectEntity(null);
   };
+
+  // Helper functions for button disabled logic
+  const hasNoSelectedPlayers = () => selectedPlayers.length === 0;
+  const hasDisqualifiedSelectedPlayer = () =>
+    selectedPlayers.some((player) => player.state === 'disqualified');
+  const isFirstSelectedPlayerPlaying = () =>
+    selectedPlayers.length > 0 && selectedPlayers[0].state === 'playing';
+  const isFirstSelectedPlayerOnBench = () =>
+    selectedPlayers.length > 0 && selectedPlayers[0].state === 'bench';
+  const wouldExceedCourtLimit = () =>
+    playingPlayers.length + selectedPlayers.length > maxNumberOfPlayerInCourt;
+  const hasNoPlayingPlayers = () => playingPlayers.length === 0;
+
+  const isSubInDisabled = () =>
+    hasNoSelectedPlayers() ||
+    isFirstSelectedPlayerPlaying() ||
+    hasDisqualifiedSelectedPlayer() ||
+    wouldExceedCourtLimit();
+
+  const isSubOutDisabled = () =>
+    hasNoSelectedPlayers() ||
+    hasDisqualifiedSelectedPlayer() ||
+    isFirstSelectedPlayerOnBench();
+
+  const isClearPlayingPlayersDisabled = () =>
+    hasNoPlayingPlayers() || hasDisqualifiedSelectedPlayer();
+
   const reverseClass =
     teamType === 'away' ? 'is-flex-direction-row-reverse' : '';
   return (
@@ -262,29 +289,21 @@ function PlayersControls({
             <button
               className="button is-warning"
               onClick={onSubIn}
-              disabled={
-                selectedPlayers.length === 0 ||
-                selectedPlayers[0].state === 'playing' ||
-                playingPlayers.length + selectedPlayers.length >
-                  maxNumberOfPlayerInCourt
-              }
+              disabled={isSubInDisabled()}
             >
               ↑
             </button>
             <button
               className="button is-warning"
               onClick={onSubOut}
-              disabled={
-                selectedPlayers.length === 0 ||
-                selectedPlayers[0].state === 'bench'
-              }
+              disabled={isSubOutDisabled()}
             >
               ↓
             </button>
             <button
               className="button is-warning"
               onClick={onClearPlayeringPlayers}
-              disabled={playingPlayers.length === 0}
+              disabled={isClearPlayingPlayersDisabled()}
             >
               ↓↓
             </button>

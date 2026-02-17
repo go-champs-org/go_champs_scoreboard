@@ -38,7 +38,7 @@ export const DEFAULT_PLAYER_STATE: PlayerState = {
   license_number: '',
   stats_values: {},
   is_captain: false,
-  signature: null,
+  signature: undefined,
 };
 
 export interface PlayerState {
