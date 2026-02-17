@@ -283,8 +283,9 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
       stat = Basketball.find_coach_stat("fouls_game_disqualifying")
 
       assert stat.key == "fouls_game_disqualifying"
-      assert stat.type == :manual
-      assert stat.operations == [:increment, :decrement]
+      assert stat.type == :calculated
+      assert stat.operations == []
+      assert is_function(stat.calculation_function, 1)
     end
 
     test "returns nil if the coach stat with the given key is not found" do

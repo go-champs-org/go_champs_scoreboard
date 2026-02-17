@@ -82,7 +82,12 @@ defmodule GoChampsScoreboard.Sports.Basketball.Basketball do
     Stat.new("fouls_disqualifying_fighting", :manual, [:increment, :decrement]),
     Stat.new("fouls_technical_bench", :manual, [:increment, :decrement]),
     Stat.new("fouls_technical_bench_disqualifying", :manual, [:increment, :decrement]),
-    Stat.new("fouls_game_disqualifying", :manual, [:increment, :decrement])
+    Stat.new(
+      "fouls_game_disqualifying",
+      :calculated,
+      [],
+      &Statistics.calc_coach_game_disqualifying_fouls/1
+    )
   ]
 
   @team_stats [

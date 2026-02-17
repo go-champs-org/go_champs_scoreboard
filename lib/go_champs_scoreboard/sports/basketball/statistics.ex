@@ -160,6 +160,19 @@ defmodule GoChampsScoreboard.Sports.Basketball.Statistics do
     end
   end
 
+  @spec calc_coach_game_disqualifying_fouls(CoachState.t()) :: float()
+  def calc_coach_game_disqualifying_fouls(coach_state) do
+    technical_fouls = Map.get(coach_state.stats_values, "fouls_technical", 0)
+    technical_bench_fouls = Map.get(coach_state.stats_values, "fouls_technical_bench", 0)
+
+    cond do
+      technical_fouls >= 2 -> 1
+      technical_bench_fouls >= 3 -> 1
+      technical_bench_fouls >= 2 and technical_fouls >= 1 -> 1
+      true -> 0
+    end
+  end
+
   defp calc_percentage(made, missed) do
     case made do
       0 -> 0

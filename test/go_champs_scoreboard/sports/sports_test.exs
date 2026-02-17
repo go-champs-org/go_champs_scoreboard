@@ -57,7 +57,7 @@ defmodule GoChampsScoreboard.Sports.SportsTest do
 
       game_disq_stat = Sports.find_coach_stat("basketball", "fouls_game_disqualifying")
       assert game_disq_stat.key == "fouls_game_disqualifying"
-      assert game_disq_stat.type == :manual
+      assert game_disq_stat.type == :calculated
     end
 
     test "returns nil for non-existent coach stat" do

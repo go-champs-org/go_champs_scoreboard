@@ -351,18 +351,39 @@ defmodule GoChampsScoreboard.Sports.Basketball.StatisticsTest do
   end
 
   describe "calc_coach_fouls" do
-    test "returns the number of technical fouls for the coach" do
+    test "returns the sum of included coach foul types" do
       coach_state = %GoChampsScoreboard.Games.Models.CoachState{
         stats_values: %{
           "fouls_technical" => 2,
           "fouls_disqualifying" => 1,
           "fouls_technical_bench" => 1,
-          "fouls_technical_bench_disqualifying" => 1,
           "fouls_game_disqualifying" => 2
         }
       }
 
+      # 2 + 1 + 1 + 2 = 6 (includes only the types in original calc_coach_fouls)
       assert Statistics.calc_coach_fouls(coach_state) == 6
+    end
+
+    test "returns 0 when no fouls are recorded" do
+      coach_state = %GoChampsScoreboard.Games.Models.CoachState{
+        stats_values: %{}
+      }
+
+      assert Statistics.calc_coach_fouls(coach_state) == 0
+    end
+
+    test "handles missing foul fields gracefully" do
+      coach_state = %GoChampsScoreboard.Games.Models.CoachState{
+        stats_values: %{
+          "fouls_technical" => 2,
+          "fouls_disqualifying" => 1
+          # other foul types missing
+        }
+      }
+
+      # 2 + 1 + 0 + 0 = 3
+      assert Statistics.calc_coach_fouls(coach_state) == 3
     end
   end
 
@@ -756,6 +777,85 @@ defmodule GoChampsScoreboard.Sports.Basketball.StatisticsTest do
       }
 
       assert Statistics.calc_player_game_disqualifying_fouls(player_state) == 1
+    end
+  end
+
+  describe "calc_coach_game_disqualifying_fouls" do
+    test "returns 1 when coach has 2 technical fouls" do
+      coach_state = %GoChampsScoreboard.Games.Models.CoachState{
+        stats_values: %{
+          "fouls_technical" => 2,
+          "fouls_technical_bench" => 0
+        }
+      }
+
+      assert Statistics.calc_coach_game_disqualifying_fouls(coach_state) == 1
+    end
+
+    test "returns 1 when coach has 3 technical bench fouls" do
+      coach_state = %GoChampsScoreboard.Games.Models.CoachState{
+        stats_values: %{
+          "fouls_technical" => 0,
+          "fouls_technical_bench" => 3
+        }
+      }
+
+      assert Statistics.calc_coach_game_disqualifying_fouls(coach_state) == 1
+    end
+
+    test "returns 1 when coach has 1 technical foul and 2 technical bench fouls" do
+      coach_state = %GoChampsScoreboard.Games.Models.CoachState{
+        stats_values: %{
+          "fouls_technical" => 1,
+          "fouls_technical_bench" => 2
+        }
+      }
+
+      assert Statistics.calc_coach_game_disqualifying_fouls(coach_state) == 1
+    end
+
+    test "returns 0 when coach has only 1 technical foul" do
+      coach_state = %GoChampsScoreboard.Games.Models.CoachState{
+        stats_values: %{
+          "fouls_technical" => 1,
+          "fouls_technical_bench" => 0
+        }
+      }
+
+      assert Statistics.calc_coach_game_disqualifying_fouls(coach_state) == 0
+    end
+
+    test "returns 0 when coach has only 2 technical bench fouls" do
+      coach_state = %GoChampsScoreboard.Games.Models.CoachState{
+        stats_values: %{
+          "fouls_technical" => 0,
+          "fouls_technical_bench" => 2
+        }
+      }
+
+      assert Statistics.calc_coach_game_disqualifying_fouls(coach_state) == 0
+    end
+
+    test "returns 0 when coach has no technical or technical bench fouls" do
+      coach_state = %GoChampsScoreboard.Games.Models.CoachState{
+        stats_values: %{
+          "fouls_disqualifying" => 2
+        }
+      }
+
+      assert Statistics.calc_coach_game_disqualifying_fouls(coach_state) == 0
+    end
+
+    test "returns 1 when coach has more than minimum required fouls" do
+      coach_state = %GoChampsScoreboard.Games.Models.CoachState{
+        stats_values: %{
+          "fouls_technical" => 3,
+          "fouls_technical_bench" => 4,
+          "fouls_disqualifying" => 1
+        }
+      }
+
+      assert Statistics.calc_coach_game_disqualifying_fouls(coach_state) == 1
     end
   end
 end
