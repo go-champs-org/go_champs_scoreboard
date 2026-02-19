@@ -84,6 +84,7 @@
       "start": "Start",
       "endQuarter": "End Quarter",
       "endGame": "End Game",
+      "headCoachChallenge": "HCC",
       "tooltips": {
         "minusOneMinute": "- 1 Min",
         "minusOneSecond": "- 1 Sec",
@@ -578,6 +579,7 @@
       "extraTimeouts": "Extra Timeouts",
       "quarterFouls": "Quarter F.",
       "quarterPoints": "Quarter P.",
+      "totalHeadCoachChallenges": "HCC Total",
       "used": "Used",
       "remaining": "Rem"
     },

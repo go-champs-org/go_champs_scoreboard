@@ -26,7 +26,7 @@ interface InGameClockControlsProps {
     endQuarter: () => void;
   };
   pushEvent: (event: string, payload: any) => void;
-  buttonPauseStart: React.RefObject<HTMLButtonElement>;
+  buttonPauseStart: React.RefObject<HTMLButtonElement | null>;
 }
 
 interface EndGameClockControlsProps {
@@ -88,6 +88,34 @@ const TimeoutButton = ({
       disabled={disabled}
     >
       {t('basketball.clock.timeout')}
+    </button>
+  );
+};
+
+const HeadCoachChallengeButton = ({
+  teamType,
+  disabled,
+  pushEvent,
+}: {
+  teamType: string;
+  disabled: boolean;
+  pushEvent: (event: string, payload: any) => void;
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <button
+      className="button is-info is-fullwidth"
+      onClick={() =>
+        pushEvent('update-team-stat', {
+          'stat-id': 'head_coach_challenge',
+          'team-type': teamType,
+          operation: 'increment',
+        })
+      }
+      disabled={disabled}
+    >
+      {t('basketball.clock.headCoachChallenge')}
     </button>
   );
 };
@@ -265,7 +293,15 @@ function InGameClockControls({
         />
       </div>
 
-      <div className="column is-12">
+      <div className="column is-2">
+        <HeadCoachChallengeButton
+          teamType="home"
+          disabled={clockButtonsDisabled}
+          pushEvent={pushEvent}
+        />
+      </div>
+
+      <div className="column is-8">
         {isTimeZero ? (
           <button
             className="button is-warning is-fullwidth"
@@ -287,6 +323,14 @@ function InGameClockControls({
               : t('basketball.clock.start')}
           </button>
         )}
+      </div>
+
+      <div className="column is-2">
+        <HeadCoachChallengeButton
+          teamType="away"
+          disabled={clockButtonsDisabled}
+          pushEvent={pushEvent}
+        />
       </div>
     </div>
   );
@@ -321,7 +365,7 @@ function ClockControls({
   live_state,
   pushEvent,
 }: ClockControlsProps) {
-  const buttonPauseStart = React.useRef<HTMLButtonElement>(null);
+  const buttonPauseStart = React.useRef<HTMLButtonElement | null>(null);
 
   const clockButtonsDisabled = live_state?.state !== 'in_progress';
   const isGameTied =

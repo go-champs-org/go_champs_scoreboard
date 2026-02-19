@@ -54,8 +54,12 @@
 
     p {
       text-wrap-mode: nowrap;
+      text-wrap: nowrap;
       overflow: hidden;
-      margin: 0 0.5rem;
+    }
+
+    p:not(:first-child) {
+      margin-left: 0.5rem;
     }
   }
 
@@ -64,94 +68,120 @@
     margin-bottom: 0.3rem;
   }
 
-  .team-stats {
-    transition: background-color 0.5s linear, transform 0.3s ease-in-out;
-    border-radius: 5px;
-    cursor: pointer;
-    overflow: hidden;
+  .team-stats-container {
+    padding: 0.5rem 1rem;
 
-    &:hover {
-      background-color: gray;
-    }
+    .team-stats {
+      transition: background-color 0.5s linear, transform 0.3s ease-in-out;
+      border-radius: 5px;
+      cursor: pointer;
+      overflow: hidden;
 
-    &.is-sliding {
-      transform: scale(0.95);
-      opacity: 0.7;
-    }
-
-    .quarter-stats-container {
-      .timeout-section {
-        .timeout-badge {
-          display: inline-block;
-          padding: 0.25rem 0.5rem;
-          margin-right: 0.25rem;
-          border-radius: 3px;
-          font-size: 0.65rem;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-
-          &.consumed {
-            background-color: $tertiary70;
-            color: black;
-          }
-
-          &.remaining {
-            background-color: $green-light;
-            color: black;
-          }
-        }
+      &:hover {
+        background-color: gray;
       }
 
-      .quarter-stats-section {
-        border-left: 2px solid rgba(255, 255, 255, 0.1);
-        padding-left: 1rem;
+      &.is-sliding {
+        transform: scale(0.95);
+        opacity: 0.7;
+      }
 
-        .quarter-stat {
-          margin: 0.5rem 0;
-          align-items: center;
+      .quarter-stats-container {
+        .timeout-section {
+          .timeout-item {
+            .team-stat {
+              margin: 0.4rem 0;
+            }
 
-          .stat-label {
-            min-width: 30px;
+            .stat-label {
+              font-size: 0.8rem;
+              font-weight: 600;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+
+            .stat-timeouts {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+
+            .timeout-badge {
+              display: inline-block;
+              padding: 0.25rem 0.5rem;
+              margin-right: 0.25rem;
+              border-radius: 3px;
+              font-size: 0.6rem;
+              font-weight: 600;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+
+              &.consumed {
+                background-color: $tertiary70;
+                color: black;
+              }
+
+              &.remaining {
+                background-color: $green-light;
+                color: black;
+              }
+            }
           }
+        }
 
-          .quarter-stat-value {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
+        .quarter-stats-section {
+          border-left: 2px solid rgba(255, 255, 255, 0.1);
+          padding-left: 1rem;
+
+          .quarter-stat {
+            margin: 0.5rem 0;
             align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.75rem;
 
-            &.high-fouls {
-              background-color: $red;
-              color: white;
+            .stat-label {
+              min-width: 30px;
+              font-size: 0.75rem;
+              font-weight: 600;
+            }
+
+            .quarter-stat-value {
+              background-color: rgba(255, 255, 255, 0.1);
+              border-radius: 50%;
+              width: 25px;
+              height: 25px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-weight: 700;
+              font-size: 0.75rem;
+
+              &.high-fouls {
+                background-color: $red;
+                color: white;
+              }
             }
           }
         }
       }
     }
-  }
 
-  .team-stat {
-    color: $white-dark;
-    display: flex;
-    margin: 0.5rem 0;
-    justify-content: space-between;
+    .team-stat {
+      color: $white-dark;
+      display: flex;
+      margin: 0.5rem 0;
+      justify-content: space-between;
 
-    .stat-timeouts {
-      span {
-        padding: 0.25rem 0.5rem;
+      .stat-timeouts {
+        span {
+          padding: 0.25rem 0.5rem;
 
-        &.consumed {
-          background-color: $red;
-        }
+          &.consumed {
+            background-color: $red;
+          }
 
-        &.remaining {
-          background-color: $green;
+          &.remaining {
+            background-color: $green;
+          }
         }
       }
     }

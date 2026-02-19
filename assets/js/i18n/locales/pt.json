@@ -84,6 +84,7 @@
       "start": "Iniciar",
       "endQuarter": "Finalizar Quarto",
       "endGame": "Finalizar Jogo",
+      "headCoachChallenge": "DES T",
       "tooltips": {
         "minusOneMinute": "- 1 Min",
         "minusOneSecond": "- 1 Seg",
@@ -578,6 +579,7 @@
       "extraTimeouts": "T. Téc Extra",
       "quarterFouls": "FLT Q.",
       "quarterPoints": "PTS Q.",
+      "totalHeadCoachChallenges": "D. Téc. Total",
       "used": "Usado",
       "remaining": "Rest"
     },

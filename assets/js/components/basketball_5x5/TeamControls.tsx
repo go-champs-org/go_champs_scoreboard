@@ -138,6 +138,19 @@ function QuarterStats({
                 </div>
               </div>
             </div>
+            <div className="timeout-item">
+              <div className="team-stat">
+                <p className="stat-label">
+                  {t('basketball.quarterStats.totalHeadCoachChallenges')}:
+                </p>
+                <div className="stat-timeouts">
+                  <span className="timeout-badge consumed">
+                    {t('basketball.quarterStats.used')}:{' '}
+                    {team.stats_values['head_coach_challenge'] || 0}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -333,7 +346,7 @@ export function BasicTeamControls({ team, teamType }: TeamControlsProps) {
             {team.stats_values['points'] || 0}
           </p>
         </div>
-        <div className="column is-12">
+        <div className="column is-12 team-stats-container">
           <div className="columns">
             <div className="column is-3">
               <div className="team-stat">
@@ -422,7 +435,7 @@ function TeamControls({ team, clock_state, teamType }: TeamControlsProps) {
             {team.stats_values['points'] || 0}
           </p>
         </div>
-        <div className="column is-12">
+        <div className="column is-12 team-stats-container">
           <TeamStats team={team} clock_state={clock_state} />
         </div>
       </div>

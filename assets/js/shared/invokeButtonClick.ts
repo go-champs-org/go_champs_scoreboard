@@ -1,6 +1,8 @@
 import React from 'react';
 
-export function invokeButtonClickRef(ref: React.RefObject<HTMLButtonElement>) {
+export function invokeButtonClickRef(
+  ref: React.RefObject<HTMLButtonElement | null>,
+) {
   if (ref.current?.disabled) {
     return;
   }
