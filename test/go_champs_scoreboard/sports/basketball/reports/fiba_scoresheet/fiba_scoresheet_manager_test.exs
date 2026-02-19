@@ -81,6 +81,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
           all_fouls: [],
           timeouts: [],
           running_score: %{},
+          head_coach_challenges: [],
           score: 0,
           has_walkover: false
         },
@@ -104,6 +105,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
           all_fouls: [],
           timeouts: [],
           running_score: %{},
+          head_coach_challenges: [],
           score: 0,
           has_walkover: false
         },

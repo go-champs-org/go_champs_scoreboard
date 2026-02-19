@@ -167,6 +167,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
       expected = %{
         "timeouts" => 0,
         "lost_timeouts" => 0,
+        "head_coach_challenge" => 0,
         "fouls_technical" => 0,
         "points" => 0,
         "fouls" => 0,
@@ -214,7 +215,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
     test "returns all team stats matching the given types" do
       # Test with manual stats
       manual_stats = Basketball.find_team_stat_by_type([:manual])
-      assert length(manual_stats) == 5
+      assert length(manual_stats) == 6
       assert Enum.all?(manual_stats, fn stat -> stat.type == :manual end)
 
       # Test with calculated stats

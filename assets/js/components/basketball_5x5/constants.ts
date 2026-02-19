@@ -68,6 +68,7 @@ export const TEAM_STAT_KEYS = {
   TIMEOUTS: 'timeouts',
   LOST_TIMEOUTS: 'lost_timeouts',
   FOULS_TECHNICAL: 'fouls_technical',
+  HEAD_COACH_CHALLENGE: 'head_coach_challenge',
 
   // Calculated team stats
   POINTS: 'points',
@@ -569,6 +570,13 @@ export const TEAM_STATS = [
     abbreviationTranslationKey:
       'basketball.teamStats.abbreviations.totalTechnicalFouls',
     labelTranslationKey: 'basketball.teamStats.labels.totalTechnicalFouls',
+  },
+  {
+    key: TEAM_STAT_KEYS.HEAD_COACH_CHALLENGE,
+    type: STAT_TYPES.MANUAL,
+    abbreviationTranslationKey:
+      'basketball.teamStats.abbreviations.headCoachChallenge',
+    labelTranslationKey: 'basketball.teamStats.labels.headCoachChallenge',
   },
 ] as const;
 

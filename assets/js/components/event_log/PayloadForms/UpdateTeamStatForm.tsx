@@ -28,7 +28,9 @@ const UpdateTeamStatForm: React.FC<UpdateTeamStatFormProps> = ({
   }, [initialPayload, onChange]);
 
   const manualTeamStats = TEAM_STATS.filter(
-    (stat) => stat.key === TEAM_STAT_KEYS.TIMEOUTS,
+    (stat) =>
+      stat.key === TEAM_STAT_KEYS.TIMEOUTS ||
+      stat.key === TEAM_STAT_KEYS.HEAD_COACH_CHALLENGE,
   );
 
   const handleInputChange = (field: string, value: any) => {

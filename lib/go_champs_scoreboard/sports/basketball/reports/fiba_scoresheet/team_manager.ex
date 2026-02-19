@@ -32,6 +32,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       all_fouls: [],
       timeouts: [],
       running_score: %{},
+      head_coach_challenges: [],
       score: 0,
       has_walkover: false
     }
@@ -180,6 +181,16 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
   def add_timeout(team, timeout) do
     updated_timeouts = team.timeouts ++ [timeout]
     %FibaScoresheet.Team{team | timeouts: updated_timeouts}
+  end
+
+  @doc """
+  Adds a head coach challenge to the team.
+  """
+  @spec add_head_coach_challenge(FibaScoresheet.Team.t(), FibaScoresheet.HeadCoachChallenge.t()) ::
+          FibaScoresheet.Team.t()
+  def add_head_coach_challenge(team, head_coach_challenge) do
+    updated_challenges = team.head_coach_challenges ++ [head_coach_challenge]
+    %FibaScoresheet.Team{team | head_coach_challenges: updated_challenges}
   end
 
   @doc """

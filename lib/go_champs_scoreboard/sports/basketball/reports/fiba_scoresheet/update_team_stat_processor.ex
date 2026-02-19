@@ -34,6 +34,10 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateTeam
     process_lost_timeout_stat(team, event_log)
   end
 
+  def process_stat_by_category(team, "head_coach_challenge", event_log) do
+    process_head_coach_challenge_stat(team, event_log)
+  end
+
   def process_stat_by_category(team, _stat_id, _event_log), do: team
 
   def process_timeout_stat(team, event_log) do
@@ -74,6 +78,25 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateTeam
 
     team
     |> TeamManager.add_timeout(timeout)
+  end
+
+  def process_head_coach_challenge_stat(team, event_log) do
+    period = event_log.game_clock_period
+
+    one_minute_in_seconds = 60
+
+    period_initial_minutes = get_period_minutes(period)
+
+    elapsed_minute =
+      period_initial_minutes - div(event_log.game_clock_time, one_minute_in_seconds)
+
+    head_coach_challenge = %FibaScoresheet.HeadCoachChallenge{
+      period: period,
+      minute: elapsed_minute
+    }
+
+    team
+    |> TeamManager.add_head_coach_challenge(head_coach_challenge)
   end
 
   @doc """

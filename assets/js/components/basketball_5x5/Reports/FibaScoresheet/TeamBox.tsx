@@ -1,7 +1,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, View, StyleSheet, Image } from '@react-pdf/renderer';
-import { Coach, CoachFoul, Team, Timeout } from '../FibaScoresheet';
+import {
+  Coach,
+  CoachFoul,
+  Team,
+  Timeout,
+  HeadCoachChallenge as HeadCoachChallengeType,
+} from '../FibaScoresheet';
 import { textColorForPeriod, RED, BLUE, colorForPeriod } from './styles';
 
 const EMPTY_FOUL = {
@@ -82,6 +88,22 @@ const styles = StyleSheet.create({
             borderBottom: `2px solid ${BLUE}`,
           },
         },
+      },
+    },
+    headCoachChallenges: {
+      display: 'flex',
+      flexDirection: 'row',
+      marginTop: '2px',
+      labelContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginRight: '19px',
+      },
+      challengeBoxes: {
+        display: 'flex',
+        flexDirection: 'row',
+        marginLeft: '5px',
       },
     },
     table: {
@@ -369,6 +391,60 @@ function PeriodFouls({
             period={period}
             isGameEnded={isGameEnded}
           />
+        ))}
+      </View>
+    </View>
+  );
+}
+
+function HeadCoachChallenge({
+  team,
+  isGameEnded = false,
+}: {
+  team: Team;
+  isGameEnded?: boolean;
+}) {
+  // Always render 2 pairs of squares (first pair: Q{period}/minute, second pair: Q{period}/minute)
+  const challenges = team.head_coach_challenges || [];
+  const maxChallenges = 2;
+
+  const renderChallenges = Array.from({ length: maxChallenges }).map(
+    (_, index) => challenges[index] || null,
+  );
+
+  return (
+    <View style={styles.teamContainer.headCoachChallenges}>
+      <View style={styles.teamContainer.headCoachChallenges.labelContainer}>
+        <Text>{'HCC'}</Text>
+      </View>
+      <View style={styles.teamContainer.headCoachChallenges.challengeBoxes}>
+        {renderChallenges.map((challenge, index) => (
+          <React.Fragment key={index}>
+            {/* First square: Q{period} */}
+            <View style={styles.teamContainer.square}>
+              {challenge ? (
+                <Text style={textColorForPeriod(challenge.period)}>
+                  {`Q${challenge.period}`}
+                </Text>
+              ) : (
+                isGameEnded && (
+                  <View style={styles.teamContainer.square.unused} />
+                )
+              )}
+            </View>
+            {/* Second square: elapsed minutes */}
+            <View style={styles.teamContainer.square}>
+              {challenge ? (
+                <Text style={textColorForPeriod(challenge.period)}>
+                  {challenge.minute}
+                </Text>
+              ) : (
+                isGameEnded && (
+                  <View style={styles.teamContainer.square.unused} />
+                )
+              )}
+            </View>
+          </React.Fragment>
         ))}
       </View>
     </View>
@@ -843,6 +919,7 @@ export default function TeamBox({
           <View style={styles.teamContainer.header.row.column}>
             <Text>{t('basketball.reports.fibaScoresheet.teamFouls')} </Text>
             <TeamFouls team={team} isGameEnded={isGameEnded} />
+            <HeadCoachChallenge team={team} isGameEnded={isGameEnded} />
           </View>
         </View>
       </View>

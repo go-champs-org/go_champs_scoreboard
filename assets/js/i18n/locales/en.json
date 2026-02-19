@@ -402,7 +402,8 @@
         "technicalFouls": "T. FLT",
         "points": "PT",
         "fouls": "F",
-        "totalTechnicalFouls": "TTF"
+        "totalTechnicalFouls": "TTF",
+        "headCoachChallenge": "HCC"
       },
       "labels": {
         "timeouts": "Timeouts",
@@ -410,7 +411,8 @@
         "technicalFouls": "Technical Fouls",
         "points": "Points",
         "fouls": "Total Fouls",
-        "totalTechnicalFouls": "Total Technical Fouls"
+        "totalTechnicalFouls": "Total Technical Fouls",
+        "headCoachChallenge": "Head Coach Challenge"
       }
     },
     "coachStats": {

@@ -363,5 +363,77 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateTeam
       assert lost_timeout.minute == 5
       assert lost_timeout.lost == true
     end
+
+    test "returns a fiba scoresheet with home team head coach challenge when event log payload with team-type is home and stat-id is head_coach_challenge" do
+      game_state = basketball_game_state_fixture()
+
+      event =
+        GoChampsScoreboard.Events.Definitions.UpdateTeamStatDefinition.create(
+          game_state.id,
+          # 7 minutes remaining (3 minutes elapsed in 10-minute period)
+          420,
+          game_state.clock_state.period,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "stat-id" => "head_coach_challenge"
+          }
+        )
+
+      updated_game_state = GoChampsScoreboard.Events.Handler.handle(game_state, event)
+
+      {:ok, event_log} = EventLogs.persist(event, updated_game_state)
+
+      fiba_scoresheet =
+        fiba_scoresheet_fixture(game_id: event_log.game_id)
+
+      result_scoresheet =
+        UpdateTeamStatProcessor.process(event_log, fiba_scoresheet)
+
+      expected_challenge = %FibaScoresheet.HeadCoachChallenge{
+        period: game_state.clock_state.period,
+        # 10 - 420/60 = 3 minutes elapsed
+        minute: 3
+      }
+
+      assert result_scoresheet.team_a.head_coach_challenges == [expected_challenge]
+    end
+
+    test "returns a fiba scoresheet with away team head coach challenge when event log payload with team-type is away and stat-id is head_coach_challenge" do
+      game_state = basketball_game_state_fixture()
+
+      # Simulate overtime period (period 5) with 4 minutes remaining (1 minute elapsed in 5-minute overtime)
+      event =
+        GoChampsScoreboard.Events.Definitions.UpdateTeamStatDefinition.create(
+          game_state.id,
+          # 4 minutes remaining
+          240,
+          # overtime period
+          5,
+          %{
+            "operation" => "increment",
+            "team-type" => "away",
+            "stat-id" => "head_coach_challenge"
+          }
+        )
+
+      updated_game_state = GoChampsScoreboard.Events.Handler.handle(game_state, event)
+
+      {:ok, event_log} = EventLogs.persist(event, updated_game_state)
+
+      fiba_scoresheet =
+        fiba_scoresheet_fixture(game_id: event_log.game_id)
+
+      result_scoresheet =
+        UpdateTeamStatProcessor.process(event_log, fiba_scoresheet)
+
+      expected_challenge = %FibaScoresheet.HeadCoachChallenge{
+        period: 5,
+        # 5 - 240/60 = 1 minute elapsed
+        minute: 1
+      }
+
+      assert result_scoresheet.team_b.head_coach_challenges == [expected_challenge]
+    end
   end
 end

@@ -75,10 +75,16 @@ export interface Protest {
   signature?: string;
 }
 
+export interface HeadCoachChallenge {
+  period: number;
+  minute: number;
+}
+
 export interface Team {
   name: string;
   players: Player[];
   timeouts: Timeout[];
+  head_coach_challenges: HeadCoachChallenge[];
   running_score: RunningScore;
   coach: Coach;
   assistant_coach: Coach;

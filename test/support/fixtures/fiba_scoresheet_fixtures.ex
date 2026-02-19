@@ -71,6 +71,7 @@ defmodule GoChampsScoreboard.FibaScoresheetFixtures do
         assistant_coach: team_a_assistant_coach,
         all_fouls: [],
         timeouts: [],
+        head_coach_challenges: [],
         has_walkover: false
       },
       team_b: %FibaScoresheet.Team{
@@ -82,6 +83,7 @@ defmodule GoChampsScoreboard.FibaScoresheetFixtures do
         assistant_coach: team_b_assistant_coach,
         all_fouls: [],
         timeouts: [],
+        head_coach_challenges: [],
         has_walkover: false
       }
     }

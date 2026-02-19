@@ -165,6 +165,22 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
     ]
   end
 
+  defmodule HeadCoachChallenge do
+    @moduledoc """
+    HeadCoachChallenge struct for FIBA scoresheet.
+    """
+
+    @type t :: %__MODULE__{
+            period: Integer.t(),
+            minute: Integer.t()
+          }
+
+    defstruct [
+      :period,
+      :minute
+    ]
+  end
+
   defmodule Team do
     @moduledoc """
     Team struct for FIBA scoresheet.
@@ -178,6 +194,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
             all_fouls: list(Foul.t()),
             timeouts: list(Timeout.t()),
             running_score: %{Integer.t() => PointScore.t()},
+            head_coach_challenges: list(HeadCoachChallenge.t()),
             score: integer(),
             has_walkover: boolean()
           }
@@ -190,6 +207,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
       :all_fouls,
       :timeouts,
       :running_score,
+      :head_coach_challenges,
       :score,
       :has_walkover
     ]

@@ -402,7 +402,8 @@
         "technicalFouls": "F. TÉC (T)",
         "points": "PT",
         "fouls": "F",
-        "totalTechnicalFouls": "TOTAL F TÉC"
+        "totalTechnicalFouls": "TOTAL F TÉC",
+        "headCoachChallenge": "DES T"
       },
       "labels": {
         "timeouts": "Tempos Técnicos",
@@ -410,7 +411,8 @@
         "technicalFouls": "Faltas Técnicas",
         "points": "Pontos",
         "fouls": "Total de Faltas",
-        "totalTechnicalFouls": "Total de Faltas Técnicas"
+        "totalTechnicalFouls": "Total de Faltas Técnicas",
+        "headCoachChallenge": "Desafio do Técnico"
       }
     },
     "coachStats": {
