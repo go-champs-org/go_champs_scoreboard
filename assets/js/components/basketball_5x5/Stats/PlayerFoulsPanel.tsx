@@ -21,15 +21,6 @@ function PlayerFoulsPanel({
     <div className="additional-foul-button-pop-up-panel columns">
       <div className="column">
         <button
-          ref={firstButtonRef}
-          className="button is-fullwidth is-small is-warning"
-          onClick={() =>
-            onFoulWithoutFreeThrows('fouls_unsportsmanlike', panelRef.close)
-          }
-        >
-          U
-        </button>
-        <button
           className="button is-fullwidth is-small is-warning"
           onClick={() =>
             onFoulWithFreeThrows('fouls_unsportsmanlike', '1', panelRef.close)
@@ -63,6 +54,14 @@ function PlayerFoulsPanel({
         </button>
       </div>
       <div className="column">
+        <button
+          className="button is-fullwidth is-small is-danger"
+          onClick={() =>
+            onFoulWithoutFreeThrows('fouls_disqualifying', panelRef.close)
+          }
+        >
+          D
+        </button>
         <button
           className="button is-fullwidth is-small is-danger"
           onClick={() =>
