@@ -18,11 +18,9 @@ interface PopUpButtonProps {
     | ((panelRef: PopUpButtonPanelRef) => React.ReactNode);
   popUpButtons?: PopUpButtonOption[];
   popUpDirection?: 'top' | 'bottom' | 'left' | 'right';
-  onQuickClick: () => void;
   children: React.ReactNode;
   disabled?: boolean;
   className?: string;
-  holdDuration?: number; // in milliseconds, default 1000ms (1 seconds)
   keyboardKey?: string;
 }
 
@@ -31,75 +29,27 @@ function PopUpButton(props: PopUpButtonProps) {
     popUpPanel,
     popUpButtons = [],
     popUpDirection = 'top',
-    onQuickClick,
     children,
     className,
-    holdDuration = 1000,
     disabled = false,
     keyboardKey,
   } = props;
 
   const [isOpen, setIsOpen] = React.useState(false);
-  const [isHolding, setIsHolding] = React.useState(false);
   const popupRef = React.useRef<HTMLDivElement>(null);
   const firstButtonRef = React.useRef<HTMLButtonElement>(null);
-  const holdTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
-  const holdCompletedRef = React.useRef<boolean>(false);
-  const isHoldingRef = React.useRef<boolean>(false);
 
-  // Shared logic for starting hold action
-  const startHold = () => {
-    if (disabled || isHoldingRef.current) return;
-
-    setIsHolding(true);
-    isHoldingRef.current = true;
-    holdCompletedRef.current = false;
-
-    // Start the hold timer
-    holdTimeoutRef.current = setTimeout(() => {
-      holdCompletedRef.current = true;
-      setIsOpen(true);
-      setIsHolding(false);
-      isHoldingRef.current = false;
-
-      // Focus the first button in the popup when it opens
-      setTimeout(() => {
-        if (firstButtonRef.current) {
-          firstButtonRef.current.focus();
-        }
-      }, 100); // Small delay to ensure popup is rendered
-    }, holdDuration);
-  };
-
-  // Shared logic for stopping hold action
-  const stopHold = () => {
+  const handleClick = () => {
     if (disabled) return;
 
-    if (holdTimeoutRef.current) {
-      clearTimeout(holdTimeoutRef.current);
-      holdTimeoutRef.current = null;
-    }
+    setIsOpen(true);
 
-    if (isHoldingRef.current && !holdCompletedRef.current) {
-      onQuickClick();
-    }
-
-    setIsHolding(false);
-    isHoldingRef.current = false;
-    holdCompletedRef.current = false;
-  };
-
-  const onMouseDown = () => {
-    startHold();
-  };
-
-  const onMouseUp = () => {
-    stopHold();
-  };
-
-  const onMouseLeave = () => {
-    // Treat mouse leave as mouse up
-    stopHold();
+    // Focus the first button in the popup when it opens
+    setTimeout(() => {
+      if (firstButtonRef.current) {
+        firstButtonRef.current.focus();
+      }
+    }, 100); // Small delay to ensure popup is rendered
   };
 
   React.useEffect(() => {
@@ -147,37 +97,16 @@ function PopUpButton(props: PopUpButtonProps) {
 
       if (event.key === keyboardKey && !event.repeat) {
         event.preventDefault();
-        startHold();
-      }
-    };
-
-    const handleKeyUp = (event: KeyboardEvent) => {
-      const isModalOpen = document.querySelector('.modal.is-active') !== null;
-      if (isModalOpen) return;
-
-      if (event.key === keyboardKey) {
-        event.preventDefault();
-        stopHold();
+        handleClick();
       }
     };
 
     document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('keyup', handleKeyUp);
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('keyup', handleKeyUp);
     };
-  }, [keyboardKey, disabled, holdDuration]);
-
-  // Cleanup on unmount
-  React.useEffect(() => {
-    return () => {
-      if (holdTimeoutRef.current) {
-        clearTimeout(holdTimeoutRef.current);
-      }
-    };
-  }, []);
+  }, [keyboardKey, disabled]);
 
   const getPopupClasses = () => {
     const baseClasses = 'pop-up-panel';
@@ -189,9 +118,8 @@ function PopUpButton(props: PopUpButtonProps) {
   const getButtonClasses = () => {
     const baseClasses = 'pop-up-button';
     const customClass = className || '';
-    const holdingClass = isHolding ? 'pop-up-button--holding' : '';
     const directionClass = `pop-up-button--${popUpDirection}`;
-    return `${baseClasses} ${customClass} ${holdingClass} ${directionClass}`.trim();
+    return `${baseClasses} ${customClass} ${directionClass}`.trim();
   };
 
   const renderPopupContent = () => {
@@ -237,15 +165,8 @@ function PopUpButton(props: PopUpButtonProps) {
     <div className="pop-up-container" ref={popupRef}>
       <button
         className={getButtonClasses()}
-        onMouseDown={onMouseDown}
-        onMouseUp={onMouseUp}
-        onMouseLeave={onMouseLeave}
+        onClick={handleClick}
         disabled={disabled}
-        style={
-          {
-            '--hold-duration': `${holdDuration}ms`,
-          } as React.CSSProperties & { [key: string]: any }
-        }
       >
         {children}
       </button>
