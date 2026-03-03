@@ -122,6 +122,8 @@ export interface LiveState {
 export type BasketballViews =
   | 'basketball-medium'
   | 'basketball-medium-plus'
+  | 'basketball-medium-plus-scoresheet'
+  | 'basketball-medium-plus-stats'
   | 'basketball-basic';
 
 export interface ViewSettingsState {

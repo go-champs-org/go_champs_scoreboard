@@ -23,6 +23,8 @@ function EndLiveModal(props: EndLiveModalProps) {
     case BASKETBALL_VIEWS.MEDIUM:
       return <MediumEndLiveModal {...props} />;
     case BASKETBALL_VIEWS.MEDIUM_PLUS:
+    case BASKETBALL_VIEWS.MEDIUM_PLUS_SCORESHEET:
+    case BASKETBALL_VIEWS.MEDIUM_PLUS_STATS:
       return <MediumPlusEndLiveModal {...props} />;
     default:
       // Fallback to basic for unknown view types

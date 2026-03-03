@@ -73,6 +73,10 @@
       "editGame": "Edit Game",
       "eventLogs": "Event Logs",
       "reports": "Reports",
+      "screens": "Screens",
+      "screensAndStats": "Scoresheet and Stats",
+      "scoresheetOnly": "Scoresheet Only",
+      "statsOnly": "Stats Only",
       "streamViews": "Stream Views (OBS)",
       "startLive": "Start Live",
       "endLive": "End Live"

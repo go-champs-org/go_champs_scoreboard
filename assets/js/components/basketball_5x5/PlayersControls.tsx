@@ -24,6 +24,7 @@ interface PlayersControlsProps {
   selection: Selection | null;
   liveState: LiveState;
   maxNumberOfPlayerInCourt: number;
+  statsOnly?: boolean;
 }
 
 function PlayersControls({
@@ -35,6 +36,7 @@ function PlayersControls({
   selection,
   liveState,
   maxNumberOfPlayerInCourt,
+  statsOnly = false,
 }: PlayersControlsProps) {
   const playersControlsRef = React.useRef<HTMLDivElement>(null);
   const [selectedPlayers, setSelectedPlayers] = React.useState<PlayerState[]>(
@@ -80,7 +82,7 @@ function PlayersControls({
   const handlePlayerClick = (player: PlayerState) => {
     if (selection === null && selectedPlayers.length === 0) {
       setSelectedPlayers([player]);
-      if (player.state === 'playing') {
+      if (statsOnly || player.state === 'playing') {
         selectEntity({
           kind: 'player',
           id: player.id,
@@ -114,7 +116,7 @@ function PlayersControls({
           }
         } else {
           setSelectedPlayers([player]);
-          if (player.state === 'playing') {
+          if (statsOnly || player.state === 'playing') {
             selectEntity({
               kind: 'player',
               id: player.id,
@@ -229,7 +231,7 @@ function PlayersControls({
           </span>
 
           <div className="columns is-multiline is-centered">
-            {shouldDisplayerWOButton && (
+            {!statsOnly && shouldDisplayerWOButton && (
               <div className="column is-12 has-text-centered">
                 <button
                   className="button is-warning has-text-weight-bold"
@@ -261,53 +263,57 @@ function PlayersControls({
         </div>
 
         <div className={`coach-controls column is-12 ${reverseClass}`}>
-          <div>
-            <CoachButton
-              coach={team.coaches.find((c) => c.type === 'head_coach')}
-              coachType="head_coach"
-              onClick={() => handleCoachClick('head_coach')}
-              isSelected={
-                selection?.kind === 'coach' &&
-                team.coaches.find((c) => c.type === 'head_coach')?.id ===
-                  selection?.id
-              }
-              liveState={liveState}
-            />
-            <CoachButton
-              coach={team.coaches.find((c) => c.type === 'assistant_coach')}
-              coachType="assistant_coach"
-              onClick={() => handleCoachClick('assistant_coach')}
-              isSelected={
-                selection?.kind === 'coach' &&
-                team.coaches.find((c) => c.type === 'assistant_coach')?.id ===
-                  selection?.id
-              }
-              liveState={liveState}
-            />
-          </div>
-          <div className="substitution-controls">
-            <button
-              className="button is-warning"
-              onClick={onSubIn}
-              disabled={isSubInDisabled()}
-            >
-              ↑
-            </button>
-            <button
-              className="button is-warning"
-              onClick={onSubOut}
-              disabled={isSubOutDisabled()}
-            >
-              ↓
-            </button>
-            <button
-              className="button is-warning"
-              onClick={onClearPlayeringPlayers}
-              disabled={isClearPlayingPlayersDisabled()}
-            >
-              ↓↓
-            </button>
-          </div>
+          {!statsOnly && (
+            <div>
+              <CoachButton
+                coach={team.coaches.find((c) => c.type === 'head_coach')}
+                coachType="head_coach"
+                onClick={() => handleCoachClick('head_coach')}
+                isSelected={
+                  selection?.kind === 'coach' &&
+                  team.coaches.find((c) => c.type === 'head_coach')?.id ===
+                    selection?.id
+                }
+                liveState={liveState}
+              />
+              <CoachButton
+                coach={team.coaches.find((c) => c.type === 'assistant_coach')}
+                coachType="assistant_coach"
+                onClick={() => handleCoachClick('assistant_coach')}
+                isSelected={
+                  selection?.kind === 'coach' &&
+                  team.coaches.find((c) => c.type === 'assistant_coach')?.id ===
+                    selection?.id
+                }
+                liveState={liveState}
+              />
+            </div>
+          )}
+          {!statsOnly && (
+            <div className="substitution-controls">
+              <button
+                className="button is-warning"
+                onClick={onSubIn}
+                disabled={isSubInDisabled()}
+              >
+                ↑
+              </button>
+              <button
+                className="button is-warning"
+                onClick={onSubOut}
+                disabled={isSubOutDisabled()}
+              >
+                ↓
+              </button>
+              <button
+                className="button is-warning"
+                onClick={onClearPlayeringPlayers}
+                disabled={isClearPlayingPlayersDisabled()}
+              >
+                ↓↓
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="on-bench column is-12 has-text-centered">

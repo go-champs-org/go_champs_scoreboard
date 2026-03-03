@@ -13,6 +13,10 @@ declare module 'react-i18next' {
             editTeams: string;
             editOfficials: string;
             eventLogs: string;
+            screens: string;
+            screensAndStats: string;
+            scoresheetOnly: string;
+            statsOnly: string;
             streamViews: string;
             startLive: string;
             endLive: string;

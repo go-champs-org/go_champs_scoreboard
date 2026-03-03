@@ -73,6 +73,10 @@
       "editTeams": "Editar Equipes",
       "eventLogs": "Eventos",
       "reports": "Relatórios",
+      "screens": "Telas",
+      "screensAndStats": "Súmula e Estatísticas",
+      "scoresheetOnly": "Apenas Súmula",
+      "statsOnly": "Apenas Estatísticas",
       "streamViews": "Telas para Stream (OBS)",
       "startLive": "Iniciar Ao Vivo",
       "endLive": "Finalizar Ao Vivo"

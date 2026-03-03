@@ -19,9 +19,15 @@ interface ReportsProps {
   game_state: GameState;
   t: (key: string) => string;
   pushEvent: (event: string, payload: any) => void;
+  showSignatures?: boolean;
 }
 
-function MediumPlusReports({ game_state, t, pushEvent }: ReportsProps) {
+function MediumPlusReports({
+  game_state,
+  t,
+  pushEvent,
+  showSignatures = true,
+}: ReportsProps) {
   const [showFibaDropdown, setShowFibaDropdown] = React.useState(false);
   const [showSignatureModal, setShowSignatureModal] = React.useState(false);
 
@@ -89,19 +95,23 @@ function MediumPlusReports({ game_state, t, pushEvent }: ReportsProps) {
             >
               {t('basketball.reports.fibaBoxScore.title')}
             </a>
-            <a className="dropdown-item" onClick={handleSignatureClick}>
-              {t('basketball.reports.collectSignatures')}
-            </a>
+            {showSignatures && (
+              <a className="dropdown-item" onClick={handleSignatureClick}>
+                {t('basketball.reports.collectSignatures')}
+              </a>
+            )}
           </div>
         </div>
       </div>
 
-      <SignatureModal
-        game_state={game_state}
-        showModal={showSignatureModal}
-        onCloseModal={() => setShowSignatureModal(false)}
-        pushEvent={pushEvent}
-      />
+      {showSignatures && (
+        <SignatureModal
+          game_state={game_state}
+          showModal={showSignatureModal}
+          onCloseModal={() => setShowSignatureModal(false)}
+          pushEvent={pushEvent}
+        />
+      )}
     </>
   );
 }
@@ -158,6 +168,80 @@ function MediumReports({ game_state, t, pushEvent }: ReportsProps) {
         </div>
       </div>
     </>
+  );
+}
+
+interface ScreensDropdownProps {
+  game_state: GameState;
+  t: (key: string) => string;
+}
+
+function ScreensDropdown({ game_state, t }: ScreensDropdownProps) {
+  const [showScreensDropdown, setShowScreensDropdown] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const dropdown = (event.target as Element)?.closest('.dropdown');
+      if (!dropdown) {
+        setShowScreensDropdown(false);
+      }
+    };
+    if (showScreensDropdown) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [showScreensDropdown]);
+
+  const baseUrl = window.location.pathname;
+
+  return (
+    <div
+      className={`dropdown is-right ${showScreensDropdown ? 'is-active' : ''}`}
+    >
+      <div className="dropdown-trigger">
+        <button
+          className="button is-info is-small"
+          aria-haspopup="true"
+          aria-controls="screens-dropdown-menu"
+          onClick={() => setShowScreensDropdown(!showScreensDropdown)}
+        >
+          <span>{t('basketball.navigation.screens')}</span>
+        </button>
+      </div>
+      <div className="dropdown-menu" id="screens-dropdown-menu" role="menu">
+        <div className="dropdown-content">
+          <a
+            className="dropdown-item"
+            href={baseUrl}
+            onClick={() => setShowScreensDropdown(false)}
+          >
+            {t('basketball.navigation.screensAndStats')}
+          </a>
+          <a
+            className="dropdown-item"
+            href={`${baseUrl}?view=basketball-medium-plus-scoresheet`}
+            onClick={() => setShowScreensDropdown(false)}
+          >
+            {t('basketball.navigation.scoresheetOnly')}
+          </a>
+          <a
+            className="dropdown-item"
+            href={`${baseUrl}?view=basketball-medium-plus-stats`}
+            onClick={() => setShowScreensDropdown(false)}
+          >
+            {t('basketball.navigation.statsOnly')}
+          </a>
+          <a
+            className="dropdown-item"
+            href={`/scoreboard/stream_views/${game_state.id}`}
+            target="_blank"
+            onClick={() => setShowScreensDropdown(false)}
+          >
+            {t('basketball.navigation.streamViews')}
+          </a>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -512,13 +596,7 @@ function MediumPlusTopLevel({ game_state, pushEvent }: TopLevelProps) {
           {liveSocket === 'connected' ? <OnlineIcon /> : <OfflineIcon />}
         </p>
         <p className="level-item">
-          <a
-            className="button is-info is-small"
-            href={`/scoreboard/stream_views/${game_state.id}`}
-            target="_blank"
-          >
-            {t('basketball.navigation.streamViews')}
-          </a>
+          <ScreensDropdown game_state={game_state} t={t} />
         </p>
         <p className="level-item">
           {game_state.live_state.state === 'in_progress' ? (
@@ -542,5 +620,79 @@ function MediumPlusTopLevel({ game_state, pushEvent }: TopLevelProps) {
   );
 }
 
-export { BasicTopLevel, MediumTopLevel, MediumPlusTopLevel };
+function MediumPlusStatsTopLevel({ game_state, pushEvent }: TopLevelProps) {
+  const { t } = useTranslation();
+  const [showBoxScoreModal, setShowBoxScoreModal] = React.useState(false);
+  const [showEventLogModal, setShowEventLogModal] = React.useState(false);
+  const liveSocket = useConnectionState();
+
+  return (
+    <nav className="level nav-level top-level">
+      <div className="level-left">
+        <img
+          src="/images/go-champs-logo.png"
+          alt="Go Champs"
+          width={32}
+          height={32}
+        />
+        <p className="level-item">
+          <button
+            className="button is-info is-small"
+            onClick={() => setShowBoxScoreModal(true)}
+          >
+            {t('basketball.navigation.boxScore')}
+          </button>
+        </p>
+        <p className="level-item">
+          <button
+            className="button is-info is-small"
+            onClick={() => setShowEventLogModal(true)}
+          >
+            {t('basketball.navigation.eventLogs')}
+          </button>
+        </p>
+        <div className="level-item">
+          <MediumPlusReports
+            game_state={game_state}
+            t={t}
+            pushEvent={pushEvent}
+            showSignatures={false}
+          />
+        </div>
+        <Modal
+          title={t('basketball.navigation.boxScore')}
+          onClose={() => setShowBoxScoreModal(false)}
+          showModal={showBoxScoreModal}
+          modalCardStyle={{ width: '1024px' }}
+        >
+          <BoxScore game_state={game_state} />
+        </Modal>
+        <EventLogModal
+          game_state={game_state}
+          onCloseModal={() => setShowEventLogModal(false)}
+          showModal={showEventLogModal}
+        />
+      </div>
+
+      <div className="level-right">
+        <div className="level-item">
+          <LanguageSwitcher />
+        </div>
+        <p className="level-item">
+          {liveSocket === 'connected' ? <OnlineIcon /> : <OfflineIcon />}
+        </p>
+        <p className="level-item">
+          <ScreensDropdown game_state={game_state} t={t} />
+        </p>
+      </div>
+    </nav>
+  );
+}
+
+export {
+  BasicTopLevel,
+  MediumTopLevel,
+  MediumPlusTopLevel,
+  MediumPlusStatsTopLevel,
+};
 export default MediumTopLevel;

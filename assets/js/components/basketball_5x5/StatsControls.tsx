@@ -410,4 +410,224 @@ export function BasicStatsControls({
   );
 }
 
+export function ScoresheetStatsControls({
+  pushEvent,
+  selection,
+  selectEntity,
+  liveState,
+}: StatsControlsProps) {
+  const { t } = useTranslation();
+  const buttonRefs = {
+    '1': React.useRef<HTMLButtonElement>(null),
+    '2': React.useRef<HTMLButtonElement>(null),
+    '3': React.useRef<HTMLButtonElement>(null),
+    b: React.useRef<HTMLButtonElement>(null),
+  };
+
+  const onStatUpdate = useStatUpdate(pushEvent, selection, selectEntity);
+  useKeyboardShortcuts(buttonRefs, selectEntity);
+  const statButtonsDisabled = useStatButtonsDisabled(liveState, selection);
+  const additionalFoulButtonDisabled = useAdditionalFoulButtonDisabled(
+    liveState,
+    selection,
+  );
+
+  return (
+    <div className="controls">
+      <div className="columns is-multiline">
+        <div className="column is-4 has-text-centered">
+          <button
+            ref={buttonRefs['1']}
+            className="button is-stat is-success"
+            onClick={() => onStatUpdate('free_throws_made')}
+            disabled={statButtonsDisabled}
+          >
+            <span className="shortcut">1</span>
+            {t('basketball.stats.controls.onePt')}
+          </button>
+        </div>
+        <div className="column is-4 has-text-centered">
+          <button
+            ref={buttonRefs['2']}
+            className="button is-stat is-success"
+            onClick={() => onStatUpdate('field_goals_made')}
+            disabled={statButtonsDisabled}
+          >
+            <span className="shortcut">2</span>
+            {t('basketball.stats.controls.twoPts')}
+          </button>
+        </div>
+        <div className="column is-4 has-text-centered">
+          <button
+            ref={buttonRefs['3']}
+            className="button is-stat is-success"
+            onClick={() => onStatUpdate('three_point_field_goals_made')}
+            disabled={statButtonsDisabled}
+          >
+            <span className="shortcut">3</span>
+            {t('basketball.stats.controls.threePts')}
+          </button>
+        </div>
+        <div className="column is-4 has-text-centered">
+          <FoulButton
+            statId="fouls_personal"
+            disabled={statButtonsDisabled}
+            label={t('basketball.stats.controls.personalFoul')}
+            shortcut="T"
+            onStatUpdate={onStatUpdate}
+          />
+        </div>
+        <div className="column is-4 has-text-centered">
+          <FoulButton
+            statId="fouls_technical"
+            disabled={statButtonsDisabled}
+            label={t('basketball.stats.controls.technicalFoul')}
+            shortcut="G"
+            onStatUpdate={onStatUpdate}
+          />
+        </div>
+        <div className="column is-4 has-text-centered">
+          <AdditionalFoulButton
+            label={t('basketball.stats.controls.moreFouls')}
+            shortcut="B"
+            type={selection?.kind === 'coach' ? 'coach' : 'player'}
+            disabled={additionalFoulButtonDisabled}
+            onStatUpdate={onStatUpdate}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function StatsOnlyControls({
+  pushEvent,
+  selection,
+  selectEntity,
+  liveState,
+}: StatsControlsProps) {
+  const { t } = useTranslation();
+  const buttonRefs = {
+    q: React.useRef<HTMLButtonElement>(null),
+    w: React.useRef<HTMLButtonElement>(null),
+    e: React.useRef<HTMLButtonElement>(null),
+    a: React.useRef<HTMLButtonElement>(null),
+    s: React.useRef<HTMLButtonElement>(null),
+    d: React.useRef<HTMLButtonElement>(null),
+    z: React.useRef<HTMLButtonElement>(null),
+    x: React.useRef<HTMLButtonElement>(null),
+    c: React.useRef<HTMLButtonElement>(null),
+  };
+
+  const onStatUpdate = useStatUpdate(pushEvent, selection, selectEntity);
+  useKeyboardShortcuts(buttonRefs, selectEntity);
+  const statButtonsDisabled = useStatButtonsDisabled(liveState, selection);
+
+  return (
+    <div className="controls">
+      <div className="columns is-multiline">
+        <div className="column is-4 has-text-centered">
+          <button
+            ref={buttonRefs.q}
+            className="button is-stat is-danger"
+            onClick={() => onStatUpdate('free_throws_missed')}
+            disabled={statButtonsDisabled}
+          >
+            <span className="shortcut">Q</span>
+            {t('basketball.stats.controls.missOnePt')}
+          </button>
+        </div>
+        <div className="column is-4 has-text-centered">
+          <button
+            ref={buttonRefs.w}
+            className="button is-stat is-danger"
+            onClick={() => onStatUpdate('field_goals_missed')}
+            disabled={statButtonsDisabled}
+          >
+            <span className="shortcut">W</span>
+            {t('basketball.stats.controls.missTwoPts')}
+          </button>
+        </div>
+        <div className="column is-4 has-text-centered">
+          <button
+            ref={buttonRefs.e}
+            className="button is-stat is-danger"
+            onClick={() => onStatUpdate('three_point_field_goals_missed')}
+            disabled={statButtonsDisabled}
+          >
+            <span className="shortcut">E</span>
+            {t('basketball.stats.controls.missThreePts')}
+          </button>
+        </div>
+        <div className="column is-4 has-text-centered">
+          <button
+            ref={buttonRefs.a}
+            className="button is-stat is-info"
+            onClick={() => onStatUpdate('rebounds_offensive')}
+            disabled={statButtonsDisabled}
+          >
+            <span className="shortcut">A</span>
+            {t('basketball.stats.controls.oneRebOff')}
+          </button>
+        </div>
+        <div className="column is-4 has-text-centered">
+          <button
+            ref={buttonRefs.s}
+            className="button is-stat is-info"
+            onClick={() => onStatUpdate('steals')}
+            disabled={statButtonsDisabled}
+          >
+            <span className="shortcut">S</span>
+            {t('basketball.stats.controls.oneStl')}
+          </button>
+        </div>
+        <div className="column is-4 has-text-centered">
+          <button
+            ref={buttonRefs.d}
+            className="button is-stat is-info"
+            onClick={() => onStatUpdate('rebounds_defensive')}
+            disabled={statButtonsDisabled}
+          >
+            <span className="shortcut">D</span>
+            {t('basketball.stats.controls.oneRebDef')}
+          </button>
+        </div>
+        <div className="column is-4 has-text-centered">
+          <button
+            ref={buttonRefs.z}
+            className="button is-stat is-info"
+            onClick={() => onStatUpdate('assists')}
+            disabled={statButtonsDisabled}
+          >
+            <span className="shortcut">Z</span>
+            {t('basketball.stats.controls.oneAss')}
+          </button>
+        </div>
+        <div className="column is-4 has-text-centered">
+          <button
+            ref={buttonRefs.x}
+            className="button is-stat is-info"
+            onClick={() => onStatUpdate('blocks')}
+            disabled={statButtonsDisabled}
+          >
+            <span className="shortcut">X</span>
+            {t('basketball.stats.controls.oneBlk')}
+          </button>
+        </div>
+        <div className="column is-4 has-text-centered">
+          <button
+            ref={buttonRefs.c}
+            className="button is-stat is-danger"
+            onClick={() => onStatUpdate('turnovers')}
+            disabled={statButtonsDisabled}
+          >
+            <span className="shortcut">C</span>
+            {t('basketball.stats.controls.oneTo')}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default MediumStatsControls;

@@ -5,6 +5,8 @@ import { BASKETBALL_VIEWS } from './constants';
 import { useSelectedView } from '../../shared/ViewSettingsContext';
 import MediumView from './Views/MediumView';
 import MediumPlusView from './Views/MediumPlusView';
+import MediumPlusScoresheetView from './Views/MediumPlusScoresheetView';
+import MediumPlusStatsView from './Views/MediumPlusStatsView';
 import BasicView from './Views/BasicView';
 
 export interface LiveReactBase {
@@ -37,6 +39,26 @@ function Main({ game_state, recent_events, pushEvent }: MainProps) {
 
       {selectedView === BASKETBALL_VIEWS.MEDIUM_PLUS && (
         <MediumPlusView
+          game_state={game_state}
+          recent_events={recent_events}
+          pushEvent={pushEvent}
+          selection={selection}
+          setSelection={setSelection}
+        />
+      )}
+
+      {selectedView === BASKETBALL_VIEWS.MEDIUM_PLUS_SCORESHEET && (
+        <MediumPlusScoresheetView
+          game_state={game_state}
+          recent_events={recent_events}
+          pushEvent={pushEvent}
+          selection={selection}
+          setSelection={setSelection}
+        />
+      )}
+
+      {selectedView === BASKETBALL_VIEWS.MEDIUM_PLUS_STATS && (
+        <MediumPlusStatsView
           game_state={game_state}
           recent_events={recent_events}
           pushEvent={pushEvent}
