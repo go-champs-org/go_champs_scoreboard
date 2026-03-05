@@ -179,5 +179,23 @@ defmodule GoChampsScoreboard.Sports.Basketball.CoachStateTest do
       assert result.stats_values["fouls_disqualifying_fighting"] == 0
       assert result.state == :active
     end
+
+    test "disqualifies coach with 1 disqualifying foul" do
+      coach = %GoChampsScoreboard.Games.Models.CoachState{
+        id: "disqualifying-foul-coach",
+        state: :active,
+        stats_values: %{
+          "fouls" => 2,
+          "fouls_disqualifying" => 1
+        }
+      }
+
+      result = CoachState.update_coach_state(coach)
+
+      # Coach should be disqualified with 1 disqualifying foul
+      assert result.stats_values["fouls"] == 2
+      assert result.stats_values["fouls_disqualifying"] == 1
+      assert result.state == :disqualified
+    end
   end
 end

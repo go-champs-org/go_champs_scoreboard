@@ -19,8 +19,13 @@ function CoachButton({
 }: CoachButtonProps) {
   const fouls = coach?.stats_values['fouls'] || 0;
   const isDisqualified = coach?.state === 'disqualified';
+  const cannotPerformAction =
+    (coach?.stats_values['fouls_disqualifying_fighting'] ?? 0) >= 1 ||
+    (coach?.stats_values['fouls_game_disqualifying'] ?? 0) >= 1;
   const isDisabled =
-    liveState.state === LiveStateStates.NOT_STARTED || !coach || isDisqualified; // Disable if no coach exists or is disqualified
+    liveState.state === LiveStateStates.NOT_STARTED ||
+    !coach ||
+    cannotPerformAction; // Disable if no coach exists or is disqualified
   const [isAnimating, setIsAnimating] = React.useState(false);
   const previousFouls = React.useRef(fouls);
 

@@ -26,7 +26,7 @@ export interface CoachState {
   name: string;
   type: 'head_coach' | 'assistant_coach';
   stats_values: { [key: string]: number };
-  state: 'available' | 'not_available';
+  state: 'available' | 'not_available' | 'disqualified';
   signature?: string;
 }
 
