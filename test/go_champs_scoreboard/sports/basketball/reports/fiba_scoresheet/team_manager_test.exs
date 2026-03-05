@@ -61,7 +61,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
         running_score: %{},
         head_coach_challenges: [],
         score: 0,
-        has_walkover: false
+        has_walkover: false,
+        points_by_period: %{}
       }
 
       assert expected == TeamManager.bootstrap(team_state)
@@ -110,7 +111,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
         running_score: %{},
         head_coach_challenges: [],
         score: 0,
-        has_walkover: false
+        has_walkover: false,
+        points_by_period: %{}
       }
 
       assert expected == TeamManager.bootstrap(team_state)
@@ -154,7 +156,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
         running_score: %{},
         head_coach_challenges: [],
         score: 0,
-        has_walkover: false
+        has_walkover: false,
+        points_by_period: %{}
       }
 
       assert expected == TeamManager.bootstrap(team_state)
@@ -185,7 +188,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
         running_score: %{},
         head_coach_challenges: [],
         score: 0,
-        has_walkover: false
+        has_walkover: false,
+        points_by_period: %{}
       }
 
       assert expected == TeamManager.bootstrap(team_state)

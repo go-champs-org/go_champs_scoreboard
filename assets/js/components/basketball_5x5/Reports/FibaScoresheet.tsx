@@ -91,6 +91,7 @@ export interface Team {
   score: number;
   all_fouls: PlayerFoul[];
   has_walkover: boolean;
+  points_by_period: { [period: string]: number };
 }
 
 export interface Info {
@@ -251,30 +252,31 @@ function Period({
   );
 }
 
-function generateTeamPeriodsScores(team: Team) {
-  const lastPointScorePerPeriod = Object.entries(team.running_score).reduce(
-    (acc, [keyAsScore, value]) => {
-      if (value.period <= 4 && value.is_last_of_period) {
-        acc[value.period] = keyAsScore;
+function sumExtraTimeTotalScore(team: Team) {
+  return Object.entries(team.points_by_period).reduce(
+    (total, [period, points]) => {
+      const periodNumber = parseInt(period, 10);
+      if (periodNumber > 4) {
+        return total + points;
       }
-      return acc;
+      return total;
     },
-    {},
+    0,
   );
-
-  return {
-    1: lastPointScorePerPeriod[1] || 0,
-    2: (lastPointScorePerPeriod[2] || 0) - (lastPointScorePerPeriod[1] || 0),
-    3: (lastPointScorePerPeriod[3] || 0) - (lastPointScorePerPeriod[2] || 0),
-    4: (lastPointScorePerPeriod[4] || 0) - (lastPointScorePerPeriod[3] || 0),
-    5: (team.score || 0) - (lastPointScorePerPeriod[4] || 0),
-  };
 }
 
-function Periods({ teamA, teamB }: { teamA: Team; teamB: Team }) {
+function Periods({
+  teamA,
+  teamB,
+  isGameEnded,
+}: {
+  teamA: Team;
+  teamB: Team;
+  isGameEnded: boolean;
+}) {
   const { t } = useTranslation();
-  const teamAPeriodsScores = generateTeamPeriodsScores(teamA);
-  const teamBPeriodsScores = generateTeamPeriodsScores(teamB);
+  const teamAExtraTimeScore = sumExtraTimeTotalScore(teamA);
+  const teamBExtraTimeScore = sumExtraTimeTotalScore(teamB);
   const hasWalkoverTeam = teamA.has_walkover || teamB.has_walkover;
   return (
     <View style={styles.periods}>
@@ -285,8 +287,9 @@ function Periods({ teamA, teamB }: { teamA: Team; teamB: Team }) {
             periodLabel={`${t(
               'basketball.reports.fibaScoresheet.periods.quarter',
             )} 1`}
-            teamAScore={teamAPeriodsScores[1]}
-            teamBScore={teamBPeriodsScores[1]}
+            teamAScore={teamA.points_by_period['1']}
+            teamBScore={teamB.points_by_period['1']}
+            shouldDisplayZero={isGameEnded}
           />
         </View>
         <View style={styles.periods.row.column}>
@@ -294,8 +297,9 @@ function Periods({ teamA, teamB }: { teamA: Team; teamB: Team }) {
             period={2}
             periodLabel="2"
             isQuarterCentered
-            teamAScore={teamAPeriodsScores[2]}
-            teamBScore={teamBPeriodsScores[2]}
+            teamAScore={teamA.points_by_period['2']}
+            teamBScore={teamB.points_by_period['2']}
+            shouldDisplayZero={isGameEnded}
           />
         </View>
       </View>
@@ -306,8 +310,9 @@ function Periods({ teamA, teamB }: { teamA: Team; teamB: Team }) {
             periodLabel={`${t(
               'basketball.reports.fibaScoresheet.periods.quarter',
             )} 3`}
-            teamAScore={teamAPeriodsScores[3]}
-            teamBScore={teamBPeriodsScores[3]}
+            teamAScore={teamA.points_by_period['3']}
+            teamBScore={teamB.points_by_period['3']}
+            shouldDisplayZero={isGameEnded}
           />
         </View>
         <View style={styles.periods.row.column}>
@@ -315,8 +320,9 @@ function Periods({ teamA, teamB }: { teamA: Team; teamB: Team }) {
             period={4}
             periodLabel="4"
             isQuarterCentered
-            teamAScore={teamAPeriodsScores[4]}
-            teamBScore={teamBPeriodsScores[4]}
+            teamAScore={teamA.points_by_period['4']}
+            teamBScore={teamB.points_by_period['4']}
+            shouldDisplayZero={isGameEnded}
           />
         </View>
       </View>
@@ -327,8 +333,8 @@ function Periods({ teamA, teamB }: { teamA: Team; teamB: Team }) {
             periodLabel={t(
               'basketball.reports.fibaScoresheet.periods.extraTime',
             )}
-            teamAScore={hasWalkoverTeam ? 0 : teamAPeriodsScores[5]}
-            teamBScore={hasWalkoverTeam ? 0 : teamBPeriodsScores[5]}
+            teamAScore={hasWalkoverTeam ? 0 : teamAExtraTimeScore}
+            teamBScore={hasWalkoverTeam ? 0 : teamBExtraTimeScore}
           />
         </View>
         <View style={styles.periods.row.column}></View>
@@ -518,6 +524,7 @@ function ScoresheetPage({ scoresheetData }: FibaScoresheetProps) {
             <Periods
               teamA={scoresheetData.team_a}
               teamB={scoresheetData.team_b}
+              isGameEnded={!!scoresheetData.info.actual_end_datetime}
             />
             <EndResults
               teamA={scoresheetData.team_a}

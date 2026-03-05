@@ -5,6 +5,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
 
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.PlayerManager
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.CoachManager
+  alias GoChampsScoreboard.Sports.Basketball.Reports.TeamStatsHelper
   alias GoChampsScoreboard.Games.Models.TeamState
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet
 
@@ -34,7 +35,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       running_score: %{},
       head_coach_challenges: [],
       score: 0,
-      has_walkover: false
+      has_walkover: false,
+      points_by_period: TeamStatsHelper.map_points_by_period(team_state)
     }
   end
 

@@ -5,6 +5,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.FibaBoxScore
 
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.{Team, Player}
+  alias GoChampsScoreboard.Sports.Basketball.Reports.TeamStatsHelper
   alias GoChampsScoreboard.Sports.Basketball.Reports.UrlHelper
   alias GoChampsScoreboard.Events.EventLog
   alias GoChampsScoreboard.Games.Models.TeamState
@@ -38,7 +39,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.FibaBoxScore
 
     %Team{
       name: team_state.name,
-      points_by_period: map_points_by_period(team_state.period_stats),
+      points_by_period: TeamStatsHelper.map_points_by_period(team_state),
       total_points: team_state.total_player_stats["points"] || 0,
       total_player_stats: team_state.total_player_stats,
       players: players
@@ -53,11 +54,5 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.FibaBoxScore
       number: player_state.number,
       stats_values: player_state.stats_values
     }
-  end
-
-  defp map_points_by_period(period_stats) do
-    period_stats
-    |> Enum.map(fn {period, stats} -> {period, Map.get(stats, "points", 0)} end)
-    |> Enum.into(%{})
   end
 end

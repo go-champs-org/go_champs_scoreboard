@@ -196,7 +196,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
             running_score: %{Integer.t() => PointScore.t()},
             head_coach_challenges: list(HeadCoachChallenge.t()),
             score: integer(),
-            has_walkover: boolean()
+            has_walkover: boolean(),
+            points_by_period: %{integer() => integer()}
           }
 
     defstruct [
@@ -209,7 +210,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
       :running_score,
       :head_coach_challenges,
       :score,
-      :has_walkover
+      :has_walkover,
+      :points_by_period
     ]
   end
 
