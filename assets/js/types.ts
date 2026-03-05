@@ -168,12 +168,10 @@ export interface EventLogUpdatePlayerStatPayload {
 
 export type TeamType = 'home' | 'away';
 
-// Unified selection interface for players and coaches
-export interface Selection {
-  kind: 'player' | 'coach';
-  id: string;
-  teamType: TeamType;
-}
+// Unified selection type for players and coaches (discriminated union)
+export type Selection =
+  | { kind: 'player'; teamType: TeamType; player: PlayerState }
+  | { kind: 'coach'; teamType: TeamType; coach: CoachState };
 
 export const DEFAULT_GAME_STATE = {
   id: '',

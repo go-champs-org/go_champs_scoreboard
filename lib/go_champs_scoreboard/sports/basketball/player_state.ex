@@ -6,9 +6,11 @@ defmodule GoChampsScoreboard.Sports.Basketball.PlayerState do
   def update_player_state(player) do
     fouls = Map.get(player.stats_values, "fouls", 0)
     game_disqualifying_fouls = Map.get(player.stats_values, "fouls_game_disqualifying", 0)
+    disqualifying_fouls = Map.get(player.stats_values, "fouls_disqualifying", 0)
     disqualifying_fighting_fouls = Map.get(player.stats_values, "fouls_disqualifying_fighting", 0)
 
-    if (fouls >= 5 or game_disqualifying_fouls >= 1 or disqualifying_fighting_fouls >= 1) and
+    if (fouls >= 5 or game_disqualifying_fouls >= 1 or disqualifying_fouls >= 1 or
+          disqualifying_fighting_fouls >= 1) and
          player.state != :disqualified do
       Players.update_state(player, :disqualified)
     else

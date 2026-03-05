@@ -82,11 +82,15 @@ function PlayersControls({
   const handlePlayerClick = (player: PlayerState) => {
     if (selection === null && selectedPlayers.length === 0) {
       setSelectedPlayers([player]);
-      if (statsOnly || player.state === 'playing') {
+      if (
+        statsOnly ||
+        player.state === 'playing' ||
+        player.state === 'disqualified'
+      ) {
         selectEntity({
           kind: 'player',
-          id: player.id,
           teamType: teamType,
+          player: player,
         });
       }
     } else {
@@ -116,11 +120,15 @@ function PlayersControls({
           }
         } else {
           setSelectedPlayers([player]);
-          if (statsOnly || player.state === 'playing') {
+          if (
+            statsOnly ||
+            player.state === 'playing' ||
+            player.state === 'disqualified'
+          ) {
             selectEntity({
               kind: 'player',
-              id: player.id,
               teamType: teamType,
+              player: player,
             });
           }
         }
@@ -143,8 +151,8 @@ function PlayersControls({
 
     selectEntity({
       kind: 'coach',
-      id: coach.id,
       teamType: teamType,
+      coach: coach,
     });
   };
 
@@ -251,9 +259,9 @@ function PlayersControls({
                   onClick={() => handlePlayerClick(player)}
                   disabled={liveState.state === LiveStateStates.NOT_STARTED}
                   isSelected={
-                    (player.id === selection?.id &&
-                      selection?.teamType === teamType &&
-                      selection?.kind === 'player') ||
+                    (selection?.kind === 'player' &&
+                      player.id === selection.player.id &&
+                      selection.teamType === teamType) ||
                     selectedPlayers.some((p) => p.id === player.id)
                   }
                 />
@@ -272,7 +280,7 @@ function PlayersControls({
                 isSelected={
                   selection?.kind === 'coach' &&
                   team.coaches.find((c) => c.type === 'head_coach')?.id ===
-                    selection?.id
+                    selection.coach.id
                 }
                 liveState={liveState}
               />
@@ -283,7 +291,7 @@ function PlayersControls({
                 isSelected={
                   selection?.kind === 'coach' &&
                   team.coaches.find((c) => c.type === 'assistant_coach')?.id ===
-                    selection?.id
+                    selection.coach.id
                 }
                 liveState={liveState}
               />
@@ -331,9 +339,9 @@ function PlayersControls({
                   onClick={() => handlePlayerClick(player)}
                   disabled={liveState.state === LiveStateStates.NOT_STARTED}
                   isSelected={
-                    (player.id === selection?.id &&
-                      selection?.teamType === teamType &&
-                      selection?.kind === 'player') ||
+                    (selection?.kind === 'player' &&
+                      player.id === selection.player.id &&
+                      selection.teamType === teamType) ||
                     selectedPlayers.some((p) => p.id === player.id)
                   }
                 />

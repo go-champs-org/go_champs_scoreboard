@@ -1,11 +1,16 @@
 import React from 'react';
-import { Selection } from '../../types';
+import { Selection, LiveState } from '../../types';
 import debounce from '../../debounce';
 import { invokeButtonClickRef } from '../../shared/invokeButtonClick';
-import { LiveState } from '../../types';
 import { useTranslation } from '../../hooks/useTranslation';
 import FoulButton from './Stats/FoulButton';
 import AdditionalFoulButton from './Stats/AdditionalFoulButton';
+import {
+  getSelectedPlayer,
+  useButtonsDisabled,
+  useAdditionalFoulButtonDisabled,
+  useStatButtonsDisabled,
+} from './Stats/statsControlsHelpers';
 
 interface StatsControlsProps {
   pushEvent: (event: string, payload: any) => void;
@@ -29,7 +34,7 @@ function useStatUpdate(
           pushEvent('update-coach-stat', {
             ['stat-id']: stat,
             operation: 'increment',
-            ['coach-id']: selection.id,
+            ['coach-id']: selection.coach.id,
             ['team-type']: selection.teamType,
             ...(metadata && { metadata }),
           });
@@ -37,7 +42,7 @@ function useStatUpdate(
           pushEvent('update-player-stat', {
             ['stat-id']: stat,
             operation: 'increment',
-            ['player-id']: selection.id,
+            ['player-id']: selection.player.id,
             ['team-type']: selection.teamType,
             ...(metadata && { metadata }),
           });
@@ -72,40 +77,6 @@ function useKeyboardShortcuts(
     document.addEventListener('keydown', listener);
     return () => document.removeEventListener('keydown', listener);
   }, [buttonRefs, selectEntity]);
-} // Custom hook for base buttons disabled state
-function useBaseButtonsDisabled(
-  liveState: LiveState,
-  selection: Selection | null,
-) {
-  return React.useMemo(
-    () => liveState.state !== 'in_progress' || selection === null,
-    [liveState.state, selection],
-  );
-}
-
-// Custom hook for buttons disabled state
-function useButtonsDisabled(liveState: LiveState, selection: Selection | null) {
-  return useBaseButtonsDisabled(liveState, selection);
-}
-
-// Custom hook for additional foul button disabled state
-function useAdditionalFoulButtonDisabled(
-  liveState: LiveState,
-  selection: Selection | null,
-) {
-  return useBaseButtonsDisabled(liveState, selection);
-}
-
-// Custom hook for regular stat buttons disabled state (considers coach selection)
-function useStatButtonsDisabled(
-  liveState: LiveState,
-  selection: Selection | null,
-) {
-  const baseDisabled = useBaseButtonsDisabled(liveState, selection);
-  return React.useMemo(
-    () => baseDisabled || selection?.kind === 'coach',
-    [baseDisabled, selection?.kind],
-  );
 }
 
 export function MediumStatsControls({
@@ -138,6 +109,7 @@ export function MediumStatsControls({
     liveState,
     selection,
   );
+  const selectedPlayer = getSelectedPlayer(selection);
   return (
     <div className="controls">
       <div className="columns is-multiline">
@@ -297,6 +269,7 @@ export function MediumStatsControls({
             shortcut="B"
             type={selection?.kind === 'coach' ? 'coach' : 'player'}
             disabled={additionalFoulButtonDisabled}
+            isPlayerDisqualified={selectedPlayer?.state === 'disqualified'}
             onStatUpdate={onStatUpdate}
           />
         </div>
@@ -431,6 +404,7 @@ export function ScoresheetStatsControls({
     liveState,
     selection,
   );
+  const selectedPlayer = getSelectedPlayer(selection);
 
   return (
     <div className="controls">
@@ -492,6 +466,7 @@ export function ScoresheetStatsControls({
             shortcut="B"
             type={selection?.kind === 'coach' ? 'coach' : 'player'}
             disabled={additionalFoulButtonDisabled}
+            isPlayerDisqualified={selectedPlayer?.state === 'disqualified'}
             onStatUpdate={onStatUpdate}
           />
         </div>

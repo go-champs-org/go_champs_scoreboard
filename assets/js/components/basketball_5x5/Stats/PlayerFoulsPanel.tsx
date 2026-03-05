@@ -9,6 +9,7 @@ interface PlayerFoulsPanelProps {
     closePanel: () => void,
   ) => void;
   firstButtonRef: React.RefObject<HTMLButtonElement | null>;
+  isPlayerDisqualified?: boolean;
 }
 
 function PlayerFoulsPanel({
@@ -16,12 +17,14 @@ function PlayerFoulsPanel({
   onFoulWithoutFreeThrows,
   onFoulWithFreeThrows,
   firstButtonRef,
+  isPlayerDisqualified = false,
 }: PlayerFoulsPanelProps) {
   return (
     <div className="additional-foul-button-pop-up-panel columns">
       <div className="column">
         <button
           className="button is-fullwidth is-small is-warning"
+          disabled={isPlayerDisqualified}
           onClick={() =>
             onFoulWithFreeThrows('fouls_unsportsmanlike', '1', panelRef.close)
           }
@@ -30,6 +33,7 @@ function PlayerFoulsPanel({
         </button>
         <button
           className="button is-fullwidth is-small is-warning"
+          disabled={isPlayerDisqualified}
           onClick={() =>
             onFoulWithFreeThrows('fouls_unsportsmanlike', '2', panelRef.close)
           }
@@ -38,6 +42,7 @@ function PlayerFoulsPanel({
         </button>
         <button
           className="button is-fullwidth is-small is-warning"
+          disabled={isPlayerDisqualified}
           onClick={() =>
             onFoulWithFreeThrows('fouls_unsportsmanlike', '3', panelRef.close)
           }
@@ -46,6 +51,7 @@ function PlayerFoulsPanel({
         </button>
         <button
           className="button is-fullwidth is-small is-warning"
+          disabled={isPlayerDisqualified}
           onClick={() =>
             onFoulWithFreeThrows('fouls_unsportsmanlike', 'C', panelRef.close)
           }
@@ -56,6 +62,7 @@ function PlayerFoulsPanel({
       <div className="column">
         <button
           className="button is-fullwidth is-small is-danger"
+          disabled={isPlayerDisqualified}
           onClick={() =>
             onFoulWithoutFreeThrows('fouls_disqualifying', panelRef.close)
           }
@@ -64,6 +71,7 @@ function PlayerFoulsPanel({
         </button>
         <button
           className="button is-fullwidth is-small is-danger"
+          disabled={isPlayerDisqualified}
           onClick={() =>
             onFoulWithFreeThrows('fouls_disqualifying', '1', panelRef.close)
           }
@@ -72,6 +80,7 @@ function PlayerFoulsPanel({
         </button>
         <button
           className="button is-fullwidth is-small is-danger"
+          disabled={isPlayerDisqualified}
           onClick={() =>
             onFoulWithFreeThrows('fouls_disqualifying', '2', panelRef.close)
           }
@@ -80,6 +89,7 @@ function PlayerFoulsPanel({
         </button>
         <button
           className="button is-fullwidth is-small is-danger"
+          disabled={isPlayerDisqualified}
           onClick={() =>
             onFoulWithFreeThrows('fouls_disqualifying', '3', panelRef.close)
           }
@@ -88,6 +98,7 @@ function PlayerFoulsPanel({
         </button>
         <button
           className="button is-fullwidth is-small is-danger"
+          disabled={isPlayerDisqualified}
           onClick={() =>
             onFoulWithFreeThrows('fouls_disqualifying', 'C', panelRef.close)
           }

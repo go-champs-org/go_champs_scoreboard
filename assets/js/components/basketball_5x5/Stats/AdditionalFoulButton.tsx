@@ -9,6 +9,7 @@ interface AdditionalFoulButtonProps {
   disabled: boolean;
   label: string;
   shortcut: string;
+  isPlayerDisqualified?: boolean;
   onStatUpdate: (stat: string, metadata?: any) => void;
 }
 
@@ -17,6 +18,7 @@ function AdditionalFoulButton({
   disabled,
   label,
   shortcut,
+  isPlayerDisqualified = false,
   onStatUpdate,
 }: AdditionalFoulButtonProps) {
   const { t } = useTranslation();
@@ -60,6 +62,7 @@ function AdditionalFoulButton({
           onFoulWithoutFreeThrows={handleFoulWithoutFreeThrows}
           onFoulWithFreeThrows={handleFoulWithFreeThrows}
           firstButtonRef={firstButtonRef}
+          isPlayerDisqualified={isPlayerDisqualified}
         />
       );
     } else {

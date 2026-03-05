@@ -146,21 +146,21 @@ defmodule GoChampsScoreboard.Sports.Basketball.PlayerStateTest do
       assert result.state == :disqualified
     end
 
-    test "disqualifies player with 1 disqualifying fighting foul" do
+    test "disqualifies player with 1 disqualifying foul" do
       player = %GoChampsScoreboard.Games.Models.PlayerState{
-        id: "fighting-foul-player",
+        id: "disqualifying-foul-player",
         state: :playing,
         stats_values: %{
           "fouls" => 2,
-          "fouls_disqualifying_fighting" => 1
+          "fouls_disqualifying" => 1
         }
       }
 
       result = PlayerState.update_player_state(player)
 
-      # Player should be disqualified with 1 disqualifying fighting foul
+      # Player should be disqualified with 1 disqualifying foul
       assert result.stats_values["fouls"] == 2
-      assert result.stats_values["fouls_disqualifying_fighting"] == 1
+      assert result.stats_values["fouls_disqualifying"] == 1
       assert result.state == :disqualified
     end
 
