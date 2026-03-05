@@ -49,6 +49,13 @@ const styles = StyleSheet.create({
             width: '100%',
             height: '2px',
           },
+          endGameSecondLine: {
+            position: 'absolute',
+            bottom: '-5px',
+            left: '0',
+            width: '100%',
+            height: '2px',
+          },
           playerContainer: {
             flex: '1 1 50%',
             display: 'flex',
@@ -122,12 +129,14 @@ function ScoreMarkDisplay({
   runningScore,
   isReversed = false,
   isNotUsed = false,
+  isLastOfGame = false,
 }: {
   key: number;
   number: number;
   runningScore: RenderRunningScore;
   isReversed: boolean;
   isNotUsed: boolean;
+  isLastOfGame: boolean;
 }) {
   const score = runningScore[number];
   return (
@@ -221,6 +230,15 @@ function ScoreMarkDisplay({
           }}
         ></View>
       )}
+      {score && isLastOfGame && (
+        <View
+          style={{
+            ...styles.runningScore.columnsContainer.column.scoreMark
+              .endGameSecondLine,
+            ...backgroundColorForPeriod(score.period),
+          }}
+        ></View>
+      )}
     </View>
   );
 }
@@ -256,7 +274,12 @@ function ScoreList({
           number={number}
           runningScore={runningScore}
           isReversed={isReversed}
-          isNotUsed={isGameEnded && number > lastTeamScore}
+          isNotUsed={
+            isGameEnded &&
+            number > lastTeamScore &&
+            lastTeamScore >= firstNumber
+          }
+          isLastOfGame={isGameEnded && number === lastTeamScore}
         />
       ))}
     </>
