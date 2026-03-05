@@ -330,7 +330,7 @@ export function BasicTeamControls({ team, teamType }: TeamControlsProps) {
               style={{ backgroundColor: team.primary_color }}
             ></span>
           )}
-          <p className="title is-4">{team.name}</p>
+          <p className="title is-4">{team.tri_code || team.name}</p>
         </div>
         <div className="column is-2 logo-container">
           {team.logo_url && (
@@ -419,7 +419,7 @@ function TeamControls({ team, clock_state, teamType }: TeamControlsProps) {
               style={{ backgroundColor: team.primary_color }}
             ></span>
           )}
-          <p className="title is-4">{team.name}</p>
+          <p className="title is-4">{team.tri_code || team.name}</p>
         </div>
         <div className="column is-2 logo-container">
           {team.logo_url && (
