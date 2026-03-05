@@ -169,6 +169,19 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         flex: '1 1',
       },
+      winningTeamLabel: {
+        display: 'flex',
+        width: '83px',
+      },
+      winningTeamName: {
+        display: 'flex',
+        flex: '1 1',
+        overflow: 'hidden',
+        content: {
+          maxLines: 1,
+          textOverflow: 'ellipsis',
+        },
+      },
     },
   },
   protest: {
@@ -344,11 +357,13 @@ function EndResults({ teamA, teamB }: { teamA: Team; teamB: Team }) {
       <View style={styles.periods.row}>
         <View style={styles.periods.row.column}>
           <View style={styles.periods.period}>
-            <View style={styles.periods.period.quarter}>
+            <View style={styles.periods.period.winningTeamLabel}>
               <Text>{t('basketball.reports.fibaScoresheet.winningTeam')}</Text>
             </View>
-            <View style={styles.periods.period.cell}>
-              <Text>{winnerTeam.name}</Text>
+            <View style={styles.periods.period.winningTeamName}>
+              <Text style={styles.periods.period.winningTeamName.content}>
+                {winnerTeam.name}
+              </Text>
             </View>
           </View>
         </View>
