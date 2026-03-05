@@ -82,17 +82,11 @@ function PlayersControls({
   const handlePlayerClick = (player: PlayerState) => {
     if (selection === null && selectedPlayers.length === 0) {
       setSelectedPlayers([player]);
-      if (
-        statsOnly ||
-        player.state === 'playing' ||
-        player.state === 'disqualified'
-      ) {
-        selectEntity({
-          kind: 'player',
-          teamType: teamType,
-          player: player,
-        });
-      }
+      selectEntity({
+        kind: 'player',
+        teamType: teamType,
+        player: player,
+      });
     } else {
       selectEntity(null);
 
@@ -120,17 +114,11 @@ function PlayersControls({
           }
         } else {
           setSelectedPlayers([player]);
-          if (
-            statsOnly ||
-            player.state === 'playing' ||
-            player.state === 'disqualified'
-          ) {
-            selectEntity({
-              kind: 'player',
-              teamType: teamType,
-              player: player,
-            });
-          }
+          selectEntity({
+            kind: 'player',
+            teamType: teamType,
+            player: player,
+          });
         }
       }
     }

@@ -7,9 +7,13 @@ import FoulButton from './Stats/FoulButton';
 import AdditionalFoulButton from './Stats/AdditionalFoulButton';
 import {
   getSelectedPlayer,
+  getSelectedCoach,
   useButtonsDisabled,
   useAdditionalFoulButtonDisabled,
   useStatButtonsDisabled,
+  isPlayerUFoulsDisabled,
+  isPlayerDFoulsDisabled,
+  isCoachDFoulsDisabled,
 } from './Stats/statsControlsHelpers';
 
 interface StatsControlsProps {
@@ -110,6 +114,7 @@ export function MediumStatsControls({
     selection,
   );
   const selectedPlayer = getSelectedPlayer(selection);
+  const selectedCoach = getSelectedCoach(selection);
   return (
     <div className="controls">
       <div className="columns is-multiline">
@@ -269,7 +274,17 @@ export function MediumStatsControls({
             shortcut="B"
             type={selection?.kind === 'coach' ? 'coach' : 'player'}
             disabled={additionalFoulButtonDisabled}
-            isPlayerDisqualified={selectedPlayer?.state === 'disqualified'}
+            disablePlayerUnsportsmanlike={
+              selectedPlayer !== null &&
+              (isPlayerUFoulsDisabled(selectedPlayer) ||
+                isPlayerDFoulsDisabled(selectedPlayer))
+            }
+            disablePlayerDisqualifying={
+              selectedPlayer !== null && isPlayerDFoulsDisabled(selectedPlayer)
+            }
+            disableCoachDisqualifying={
+              selectedCoach !== null && isCoachDFoulsDisabled(selectedCoach)
+            }
             onStatUpdate={onStatUpdate}
           />
         </div>
@@ -405,6 +420,7 @@ export function ScoresheetStatsControls({
     selection,
   );
   const selectedPlayer = getSelectedPlayer(selection);
+  const selectedCoach = getSelectedCoach(selection);
 
   return (
     <div className="controls">
@@ -466,7 +482,17 @@ export function ScoresheetStatsControls({
             shortcut="B"
             type={selection?.kind === 'coach' ? 'coach' : 'player'}
             disabled={additionalFoulButtonDisabled}
-            isPlayerDisqualified={selectedPlayer?.state === 'disqualified'}
+            disablePlayerUnsportsmanlike={
+              selectedPlayer !== null &&
+              (isPlayerUFoulsDisabled(selectedPlayer) ||
+                isPlayerDFoulsDisabled(selectedPlayer))
+            }
+            disablePlayerDisqualifying={
+              selectedPlayer !== null && isPlayerDFoulsDisabled(selectedPlayer)
+            }
+            disableCoachDisqualifying={
+              selectedCoach !== null && isCoachDFoulsDisabled(selectedCoach)
+            }
             onStatUpdate={onStatUpdate}
           />
         </div>

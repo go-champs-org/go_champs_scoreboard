@@ -9,6 +9,8 @@ interface CoachFoulsPanelProps {
     closePanel: () => void,
   ) => void;
   firstButtonRef: React.RefObject<HTMLButtonElement | null>;
+  /** Disable all non-F buttons (coach already has a disqualifying foul) */
+  disableDisqualifying?: boolean;
 }
 
 function CoachFoulsPanel({
@@ -16,6 +18,7 @@ function CoachFoulsPanel({
   onFoulWithoutFreeThrows,
   onFoulWithFreeThrows,
   firstButtonRef,
+  disableDisqualifying = false,
 }: CoachFoulsPanelProps) {
   return (
     <div className="additional-foul-button-pop-up-panel columns">
@@ -23,6 +26,7 @@ function CoachFoulsPanel({
         <button
           className="button is-fullwidth is-small is-warning"
           ref={firstButtonRef}
+          disabled={disableDisqualifying}
           onClick={() =>
             onFoulWithFreeThrows('fouls_technical', '1', panelRef.close)
           }
@@ -31,6 +35,7 @@ function CoachFoulsPanel({
         </button>
         <button
           className="button is-fullwidth is-small is-warning"
+          disabled={disableDisqualifying}
           onClick={() =>
             onFoulWithFreeThrows('fouls_technical', 'C', panelRef.close)
           }
@@ -41,6 +46,7 @@ function CoachFoulsPanel({
       <div className="column">
         <button
           className="button is-fullwidth is-small is-info"
+          disabled={disableDisqualifying}
           onClick={() =>
             onFoulWithoutFreeThrows('fouls_technical_bench', panelRef.close)
           }
@@ -49,6 +55,7 @@ function CoachFoulsPanel({
         </button>
         <button
           className="button is-fullwidth is-small is-info"
+          disabled={disableDisqualifying}
           onClick={() =>
             onFoulWithFreeThrows('fouls_technical_bench', '1', panelRef.close)
           }
@@ -57,6 +64,7 @@ function CoachFoulsPanel({
         </button>
         <button
           className="button is-fullwidth is-small is-info"
+          disabled={disableDisqualifying}
           onClick={() =>
             onFoulWithFreeThrows('fouls_technical_bench', '2', panelRef.close)
           }
@@ -65,6 +73,7 @@ function CoachFoulsPanel({
         </button>
         <button
           className="button is-fullwidth is-small is-info"
+          disabled={disableDisqualifying}
           onClick={() =>
             onFoulWithFreeThrows('fouls_technical_bench', 'C', panelRef.close)
           }
@@ -75,6 +84,7 @@ function CoachFoulsPanel({
       <div className="column">
         <button
           className="button is-fullwidth is-small is-primary"
+          disabled={disableDisqualifying}
           onClick={() =>
             onFoulWithoutFreeThrows(
               'fouls_technical_bench_disqualifying',
@@ -95,6 +105,7 @@ function CoachFoulsPanel({
         </button>
         <button
           className="button is-fullwidth is-small is-primary"
+          disabled={disableDisqualifying}
           onClick={() =>
             onFoulWithFreeThrows(
               'fouls_technical_bench_disqualifying',
@@ -118,6 +129,7 @@ function CoachFoulsPanel({
       <div className="column">
         <button
           className="button is-fullwidth is-small is-danger"
+          disabled={disableDisqualifying}
           onClick={() =>
             onFoulWithoutFreeThrows('fouls_disqualifying', panelRef.close)
           }
@@ -126,6 +138,7 @@ function CoachFoulsPanel({
         </button>
         <button
           className="button is-fullwidth is-small is-danger"
+          disabled={disableDisqualifying}
           onClick={() =>
             onFoulWithFreeThrows('fouls_disqualifying', '1', panelRef.close)
           }
@@ -134,6 +147,7 @@ function CoachFoulsPanel({
         </button>
         <button
           className="button is-fullwidth is-small is-danger"
+          disabled={disableDisqualifying}
           onClick={() =>
             onFoulWithFreeThrows('fouls_disqualifying', '2', panelRef.close)
           }
@@ -142,6 +156,7 @@ function CoachFoulsPanel({
         </button>
         <button
           className="button is-fullwidth is-small is-danger"
+          disabled={disableDisqualifying}
           onClick={() =>
             onFoulWithFreeThrows('fouls_disqualifying', 'C', panelRef.close)
           }

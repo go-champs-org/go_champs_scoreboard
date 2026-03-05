@@ -9,7 +9,12 @@ interface AdditionalFoulButtonProps {
   disabled: boolean;
   label: string;
   shortcut: string;
-  isPlayerDisqualified?: boolean;
+  /** Disable U fouls in the panel (player is not playing) */
+  disablePlayerUnsportsmanlike?: boolean;
+  /** Disable D fouls in the panel (player already has a disqualifying foul) */
+  disablePlayerDisqualifying?: boolean;
+  /** Disable all non-F coach fouls in the panel (coach already has a disqualifying foul) */
+  disableCoachDisqualifying?: boolean;
   onStatUpdate: (stat: string, metadata?: any) => void;
 }
 
@@ -18,7 +23,9 @@ function AdditionalFoulButton({
   disabled,
   label,
   shortcut,
-  isPlayerDisqualified = false,
+  disablePlayerUnsportsmanlike = false,
+  disablePlayerDisqualifying = false,
+  disableCoachDisqualifying = false,
   onStatUpdate,
 }: AdditionalFoulButtonProps) {
   const { t } = useTranslation();
@@ -62,7 +69,8 @@ function AdditionalFoulButton({
           onFoulWithoutFreeThrows={handleFoulWithoutFreeThrows}
           onFoulWithFreeThrows={handleFoulWithFreeThrows}
           firstButtonRef={firstButtonRef}
-          isPlayerDisqualified={isPlayerDisqualified}
+          disableUnsportsmanlike={disablePlayerUnsportsmanlike}
+          disableDisqualifying={disablePlayerDisqualifying}
         />
       );
     } else {
@@ -72,6 +80,7 @@ function AdditionalFoulButton({
           onFoulWithoutFreeThrows={handleFoulWithoutFreeThrows}
           onFoulWithFreeThrows={handleFoulWithFreeThrows}
           firstButtonRef={firstButtonRef}
+          disableDisqualifying={disableCoachDisqualifying}
         />
       );
     }

@@ -10,6 +10,9 @@ import {
   getSelectedCoach,
   isPlayerAdditionalFoulDisabled,
   isCoachAdditionalFoulDisabled,
+  isPlayerUFoulsDisabled,
+  isPlayerDFoulsDisabled,
+  isCoachDFoulsDisabled,
   useBaseButtonsDisabled,
   useButtonsDisabled,
   useAdditionalFoulButtonDisabled,
@@ -156,7 +159,7 @@ describe('isCoachAdditionalFoulDisabled', () => {
       {},
       {
         fouls_disqualifying_fighting: 0,
-        fouls_technical_bench_disqualifying: 0,
+        fouls_game_disqualifying: 0,
       },
     );
     expect(isCoachAdditionalFoulDisabled(coach)).toBe(false);
@@ -167,8 +170,8 @@ describe('isCoachAdditionalFoulDisabled', () => {
     expect(isCoachAdditionalFoulDisabled(coach)).toBe(true);
   });
 
-  it('returns true when coach has fouls_technical_bench_disqualifying >= 1', () => {
-    const coach = makeCoach({}, { fouls_technical_bench_disqualifying: 1 });
+  it('returns true when coach has fouls_game_disqualifying >= 1', () => {
+    const coach = makeCoach({}, { fouls_game_disqualifying: 1 });
     expect(isCoachAdditionalFoulDisabled(coach)).toBe(true);
   });
 
@@ -177,10 +180,74 @@ describe('isCoachAdditionalFoulDisabled', () => {
       {},
       {
         fouls_disqualifying_fighting: 1,
-        fouls_technical_bench_disqualifying: 1,
+        fouls_game_disqualifying: 1,
       },
     );
     expect(isCoachAdditionalFoulDisabled(coach)).toBe(true);
+  });
+});
+
+// --- isPlayerUFoulsDisabled ---
+
+describe('isPlayerUFoulsDisabled', () => {
+  it('returns false when player is playing', () => {
+    expect(isPlayerUFoulsDisabled(makePlayer({ state: 'playing' }))).toBe(
+      false,
+    );
+  });
+
+  it('returns true when player is on bench', () => {
+    expect(isPlayerUFoulsDisabled(makePlayer({ state: 'bench' }))).toBe(true);
+  });
+
+  it('returns true when player is disqualified', () => {
+    expect(isPlayerUFoulsDisabled(makePlayer({ state: 'disqualified' }))).toBe(
+      true,
+    );
+  });
+
+  it('returns true when player is injured', () => {
+    expect(isPlayerUFoulsDisabled(makePlayer({ state: 'injured' }))).toBe(true);
+  });
+});
+
+// --- isPlayerDFoulsDisabled ---
+
+describe('isPlayerDFoulsDisabled', () => {
+  it('returns false when player has no fouls_disqualifying', () => {
+    expect(isPlayerDFoulsDisabled(makePlayer())).toBe(false);
+  });
+
+  it('returns false when fouls_disqualifying is 0', () => {
+    expect(
+      isPlayerDFoulsDisabled(makePlayer({}, { fouls_disqualifying: 0 })),
+    ).toBe(false);
+  });
+
+  it('returns true when player has fouls_disqualifying >= 1', () => {
+    expect(
+      isPlayerDFoulsDisabled(makePlayer({}, { fouls_disqualifying: 1 })),
+    ).toBe(true);
+  });
+});
+
+// --- isCoachDFoulsDisabled ---
+
+describe('isCoachDFoulsDisabled', () => {
+  it('returns false when coach has no fouls_disqualifying', () => {
+    expect(isCoachDFoulsDisabled(makeCoach())).toBe(false);
+  });
+
+  it('returns false when fouls_disqualifying is 0', () => {
+    expect(
+      isCoachDFoulsDisabled(makeCoach({}, { fouls_disqualifying: 0 })),
+    ).toBe(false);
+  });
+
+  it('returns true when coach has fouls_disqualifying >= 1', () => {
+    expect(
+      isCoachDFoulsDisabled(makeCoach({}, { fouls_disqualifying: 1 })),
+    ).toBe(true);
   });
 });
 
@@ -257,6 +324,16 @@ describe('useButtonsDisabled', () => {
     );
     expect(result.current).toBe(true);
   });
+
+  it('returns true for a bench player even when game is in progress', () => {
+    const { result } = renderHook(() =>
+      useButtonsDisabled(
+        makeLiveState('in_progress'),
+        makePlayerSelection(makePlayer({ state: 'bench' })),
+      ),
+    );
+    expect(result.current).toBe(true);
+  });
 });
 
 // --- useStatButtonsDisabled ---
@@ -287,6 +364,16 @@ describe('useStatButtonsDisabled', () => {
       useStatButtonsDisabled(
         makeLiveState('in_progress'),
         makePlayerSelection(makePlayer({ state: 'disqualified' })),
+      ),
+    );
+    expect(result.current).toBe(true);
+  });
+
+  it('returns true for a bench player', () => {
+    const { result } = renderHook(() =>
+      useStatButtonsDisabled(
+        makeLiveState('in_progress'),
+        makePlayerSelection(makePlayer({ state: 'bench' })),
       ),
     );
     expect(result.current).toBe(true);
@@ -326,11 +413,21 @@ describe('useAdditionalFoulButtonDisabled', () => {
   });
 
   describe('player selection', () => {
-    it('returns false for a playing (non-disqualified) player', () => {
+    it('returns false for a playing player', () => {
       const { result } = renderHook(() =>
         useAdditionalFoulButtonDisabled(
           makeLiveState('in_progress'),
           makePlayerSelection(makePlayer({ state: 'playing' })),
+        ),
+      );
+      expect(result.current).toBe(false);
+    });
+
+    it('returns false for a bench player with no blocking fouls', () => {
+      const { result } = renderHook(() =>
+        useAdditionalFoulButtonDisabled(
+          makeLiveState('in_progress'),
+          makePlayerSelection(makePlayer({ state: 'bench' })),
         ),
       );
       expect(result.current).toBe(false);
