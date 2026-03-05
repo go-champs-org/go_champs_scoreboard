@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import { Official } from '../FibaScoresheet';
+import { BLUE } from './styles';
 
 const styles = StyleSheet.create({
   fiscalsBox: {
@@ -28,9 +29,18 @@ const styles = StyleSheet.create({
         padding: '0 5px',
         width: '80px',
         overflow: 'hidden',
+        position: 'relative',
+        minHeight: '18px',
         content: {
           width: '100%',
           maxLines: 2,
+        },
+        unused: {
+          position: 'absolute',
+          top: '8px',
+          width: '100%',
+          height: '2px',
+          borderTop: `2px solid ${BLUE}`,
         },
       },
       signatureBox: {
@@ -46,9 +56,15 @@ interface FiscalsBoxProps {
   crewChief: Official;
   umpire1: Official;
   umpire2: Official;
+  isGameEnded: boolean;
 }
 
-function FiscalsBox({ crewChief, umpire1, umpire2 }: FiscalsBoxProps) {
+function FiscalsBox({
+  crewChief,
+  umpire1,
+  umpire2,
+  isGameEnded,
+}: FiscalsBoxProps) {
   const { t } = useTranslation();
   return (
     <View style={styles.fiscalsBox}>
@@ -59,9 +75,13 @@ function FiscalsBox({ crewChief, umpire1, umpire2 }: FiscalsBoxProps) {
           </Text>
         </View>
         <View style={styles.fiscalsBox.row.name}>
-          <Text style={styles.fiscalsBox.row.name.content}>
-            {crewChief.name}
-          </Text>
+          {crewChief.name ? (
+            <Text style={styles.fiscalsBox.row.name.content}>
+              {crewChief.name}
+            </Text>
+          ) : isGameEnded ? (
+            <View style={styles.fiscalsBox.row.name.unused} />
+          ) : null}
         </View>
         <View style={styles.fiscalsBox.row.signatureBox}>
           {crewChief.signature && (
@@ -79,7 +99,13 @@ function FiscalsBox({ crewChief, umpire1, umpire2 }: FiscalsBoxProps) {
           </Text>
         </View>
         <View style={styles.fiscalsBox.row.name}>
-          <Text style={styles.fiscalsBox.row.name.content}>{umpire1.name}</Text>
+          {umpire1.name ? (
+            <Text style={styles.fiscalsBox.row.name.content}>
+              {umpire1.name}
+            </Text>
+          ) : isGameEnded ? (
+            <View style={styles.fiscalsBox.row.name.unused} />
+          ) : null}
         </View>
         <View style={styles.fiscalsBox.row.signatureBox}>
           {umpire1.signature && (
@@ -97,7 +123,13 @@ function FiscalsBox({ crewChief, umpire1, umpire2 }: FiscalsBoxProps) {
           </Text>
         </View>
         <View style={styles.fiscalsBox.row.name}>
-          <Text style={styles.fiscalsBox.row.name.content}>{umpire2.name}</Text>
+          {umpire2.name ? (
+            <Text style={styles.fiscalsBox.row.name.content}>
+              {umpire2.name}
+            </Text>
+          ) : isGameEnded ? (
+            <View style={styles.fiscalsBox.row.name.unused} />
+          ) : null}
         </View>
         <View style={styles.fiscalsBox.row.signatureBox}>
           {umpire2.signature && (

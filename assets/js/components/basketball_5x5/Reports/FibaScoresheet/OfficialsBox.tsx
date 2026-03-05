@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import { Official } from '../FibaScoresheet';
+import { BLUE } from './styles';
 
 const styles = StyleSheet.create({
   officialsBox: {
@@ -28,9 +29,18 @@ const styles = StyleSheet.create({
         padding: '0 5px',
         width: '80px',
         overflow: 'hidden',
+        position: 'relative',
+        minHeight: '18px',
         content: {
           width: '100%',
           maxLines: 2,
+        },
+        unused: {
+          position: 'absolute',
+          top: '8px',
+          width: '100%',
+          height: '2px',
+          borderTop: `2px solid ${BLUE}`,
         },
       },
       signatureBox: {
@@ -47,6 +57,7 @@ interface OfficialsBoxProps {
   assistantScorer: Official;
   timekeeper: Official;
   shotClockOperator: Official;
+  isGameEnded: boolean;
 }
 
 function OfficialsBox({
@@ -54,6 +65,7 @@ function OfficialsBox({
   assistantScorer,
   timekeeper,
   shotClockOperator,
+  isGameEnded,
 }: OfficialsBoxProps) {
   const { t } = useTranslation();
   return (
@@ -63,9 +75,13 @@ function OfficialsBox({
           <Text>{t('basketball.reports.fibaScoresheet.officials.scorer')}</Text>
         </View>
         <View style={styles.officialsBox.row.name}>
-          <Text style={styles.officialsBox.row.name.content}>
-            {scorer.name}
-          </Text>
+          {scorer.name ? (
+            <Text style={styles.officialsBox.row.name.content}>
+              {scorer.name}
+            </Text>
+          ) : isGameEnded ? (
+            <View style={styles.officialsBox.row.name.unused} />
+          ) : null}
         </View>
         <View style={styles.officialsBox.row.signatureBox}>
           {scorer.signature && (
@@ -83,9 +99,13 @@ function OfficialsBox({
           </Text>
         </View>
         <View style={styles.officialsBox.row.name}>
-          <Text style={styles.officialsBox.row.name.content}>
-            {timekeeper.name}
-          </Text>
+          {timekeeper.name ? (
+            <Text style={styles.officialsBox.row.name.content}>
+              {timekeeper.name}
+            </Text>
+          ) : isGameEnded ? (
+            <View style={styles.officialsBox.row.name.unused} />
+          ) : null}
         </View>
         <View style={styles.officialsBox.row.signatureBox}>
           {timekeeper.signature && (
@@ -103,9 +123,13 @@ function OfficialsBox({
           </Text>
         </View>
         <View style={styles.officialsBox.row.name}>
-          <Text style={styles.officialsBox.row.name.content}>
-            {shotClockOperator.name}
-          </Text>
+          {shotClockOperator.name ? (
+            <Text style={styles.officialsBox.row.name.content}>
+              {shotClockOperator.name}
+            </Text>
+          ) : isGameEnded ? (
+            <View style={styles.officialsBox.row.name.unused} />
+          ) : null}
         </View>
         <View style={styles.officialsBox.row.signatureBox}>
           {shotClockOperator.signature && (
@@ -123,9 +147,13 @@ function OfficialsBox({
           </Text>
         </View>
         <View style={styles.officialsBox.row.name}>
-          <Text style={styles.officialsBox.row.name.content}>
-            {assistantScorer.name}
-          </Text>
+          {assistantScorer.name ? (
+            <Text style={styles.officialsBox.row.name.content}>
+              {assistantScorer.name}
+            </Text>
+          ) : isGameEnded ? (
+            <View style={styles.officialsBox.row.name.unused} />
+          ) : null}
         </View>
         <View style={styles.officialsBox.row.signatureBox}>
           {assistantScorer.signature && (

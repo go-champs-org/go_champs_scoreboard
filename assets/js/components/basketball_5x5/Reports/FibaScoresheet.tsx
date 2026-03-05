@@ -455,6 +455,9 @@ function ScoresheetPage({ scoresheetData }: FibaScoresheetProps) {
             datetime={scoresheetData.info.actual_start_datetime}
             location={scoresheetData.info.location}
             city={scoresheetData.info.city}
+            teamAName={scoresheetData.team_a.name}
+            teamBName={scoresheetData.team_b.name}
+            isGameEnded={!!scoresheetData.info.actual_end_datetime}
           />
         </View>
         <View style={styles.main.teamsAndRunningScoreContainer}>
@@ -474,11 +477,13 @@ function ScoresheetPage({ scoresheetData }: FibaScoresheetProps) {
               assistantScorer={scoresheetData.assistant_scorer}
               timekeeper={scoresheetData.timekeeper}
               shotClockOperator={scoresheetData.shot_clock_operator}
+              isGameEnded={!!scoresheetData.info.actual_end_datetime}
             />
             <FiscalsBox
               crewChief={scoresheetData.crew_chief}
               umpire1={scoresheetData.umpire_1}
               umpire2={scoresheetData.umpire_2}
+              isGameEnded={!!scoresheetData.info.actual_end_datetime}
             />
           </View>
           <View

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, View, StyleSheet } from '@react-pdf/renderer';
+import { BLUE } from './styles';
 
 const styles = StyleSheet.create({
   headerBox: {
@@ -27,10 +28,19 @@ const styles = StyleSheet.create({
           justifyContent: 'start',
           padding: '0 5px',
           overflow: 'hidden',
+          position: 'relative',
+          minHeight: '10px',
           content: {
             width: '100%',
             maxLines: 1,
             textOverflow: 'ellipsis',
+          },
+          unused: {
+            position: 'absolute',
+            top: '4px',
+            width: '100%',
+            height: '2px',
+            borderTop: `2px solid ${BLUE}`,
           },
         },
       },
@@ -46,6 +56,9 @@ interface HeaderBoxProps {
   crewChiefName: string;
   umpire1Name: string;
   umpire2Name: string;
+  teamAName: string;
+  teamBName: string;
+  isGameEnded: boolean;
 }
 
 function HeaderBox({
@@ -56,6 +69,9 @@ function HeaderBox({
   location,
   city,
   datetime,
+  teamAName,
+  teamBName,
+  isGameEnded = false,
 }: HeaderBoxProps) {
   const { t } = useTranslation();
   const date = new Date(datetime).toLocaleDateString('pt-BR', {
@@ -71,7 +87,7 @@ function HeaderBox({
     <View style={styles.headerBox}>
       {/* Row 1: Location | Date | Game Number */}
       <View style={styles.headerBox.row}>
-        <View style={styles.headerBox.row.column}>
+        <View style={{ ...styles.headerBox.row.column, maxWidth: '170px' }}>
           <View style={styles.headerBox.row.column.label}>
             <Text>{t('basketball.reports.fibaScoresheet.location')}:</Text>
           </View>
@@ -81,7 +97,7 @@ function HeaderBox({
             </Text>
           </View>
         </View>
-        <View style={styles.headerBox.row.column}>
+        <View style={{ ...styles.headerBox.row.column, flex: '0.6' }}>
           <View style={styles.headerBox.row.column.label}>
             <Text>{t('basketball.reports.fibaScoresheet.date')}:</Text>
           </View>
@@ -92,8 +108,53 @@ function HeaderBox({
         <View
           style={{
             ...styles.headerBox.row.column,
-            flex: '1 0 auto',
-            width: '50px',
+            flex: '1.4',
+          }}
+        >
+          <View style={styles.headerBox.row.column.label}>
+            <Text>{t('basketball.reports.fibaScoresheet.team')} A:</Text>
+          </View>
+          <View style={styles.headerBox.row.column.value}>
+            <Text style={styles.headerBox.row.column.value.content}>
+              {teamAName}
+            </Text>
+          </View>
+          <View style={styles.headerBox.row.column.label}>
+            <Text>{t('basketball.reports.fibaScoresheet.team')} B:</Text>
+          </View>
+          <View style={styles.headerBox.row.column.value}>
+            <Text style={styles.headerBox.row.column.value.content}>
+              {teamBName}
+            </Text>
+          </View>
+        </View>
+      </View>
+
+      {/* Row 2: City | Time | Game Nro. */}
+      <View style={styles.headerBox.row}>
+        <View style={{ ...styles.headerBox.row.column, maxWidth: '170px' }}>
+          <View style={styles.headerBox.row.column.label}>
+            <Text>{t('basketball.reports.fibaScoresheet.city')}:</Text>
+          </View>
+          <View style={styles.headerBox.row.column.value}>
+            <Text style={styles.headerBox.row.column.value.content}>
+              {city || ''}
+            </Text>
+          </View>
+        </View>
+        <View style={{ ...styles.headerBox.row.column, flex: '0.6' }}>
+          <View style={styles.headerBox.row.column.label}>
+            <Text>{t('basketball.reports.fibaScoresheet.time')}:</Text>
+          </View>
+          <View style={styles.headerBox.row.column.value}>
+            <Text>{time}</Text>
+          </View>
+        </View>
+        <View
+          style={{
+            ...styles.headerBox.row.column,
+            flex: '1.4',
+            width: '100px',
           }}
         >
           <View style={styles.headerBox.row.column.label}>
@@ -105,35 +166,6 @@ function HeaderBox({
         </View>
       </View>
 
-      {/* Row 2: City | Time | (empty) */}
-      <View style={styles.headerBox.row}>
-        <View style={styles.headerBox.row.column}>
-          <View style={styles.headerBox.row.column.label}>
-            <Text>{t('basketball.reports.fibaScoresheet.city')}:</Text>
-          </View>
-          <View style={styles.headerBox.row.column.value}>
-            <Text style={styles.headerBox.row.column.value.content}>
-              {city || ''}
-            </Text>
-          </View>
-        </View>
-        <View style={styles.headerBox.row.column}>
-          <View style={styles.headerBox.row.column.label}>
-            <Text>{t('basketball.reports.fibaScoresheet.time')}:</Text>
-          </View>
-          <View style={styles.headerBox.row.column.value}>
-            <Text>{time}</Text>
-          </View>
-        </View>
-        <View
-          style={{
-            ...styles.headerBox.row.column,
-            flex: '1 0 auto',
-            width: '50px',
-          }}
-        ></View>
-      </View>
-
       {/* Row 3: Officials */}
       <View style={styles.headerBox.row}>
         <View style={styles.headerBox.row.column}>
@@ -143,9 +175,13 @@ function HeaderBox({
             </Text>
           </View>
           <View style={styles.headerBox.row.column.value}>
-            <Text style={styles.headerBox.row.column.value.content}>
-              {crewChiefName}
-            </Text>
+            {crewChiefName ? (
+              <Text style={styles.headerBox.row.column.value.content}>
+                {crewChiefName}
+              </Text>
+            ) : isGameEnded ? (
+              <View style={styles.headerBox.row.column.value.unused} />
+            ) : null}
           </View>
         </View>
         <View style={styles.headerBox.row.column}>
@@ -154,10 +190,15 @@ function HeaderBox({
               {t('basketball.reports.fibaScoresheet.officials.umpire1')}:
             </Text>
           </View>
+
           <View style={styles.headerBox.row.column.value}>
-            <Text style={styles.headerBox.row.column.value.content}>
-              {umpire1Name}
-            </Text>
+            {umpire1Name ? (
+              <Text style={styles.headerBox.row.column.value.content}>
+                {umpire1Name}
+              </Text>
+            ) : isGameEnded ? (
+              <View style={styles.headerBox.row.column.value.unused} />
+            ) : null}
           </View>
         </View>
         <View
@@ -173,9 +214,13 @@ function HeaderBox({
             </Text>
           </View>
           <View style={styles.headerBox.row.column.value}>
-            <Text style={styles.headerBox.row.column.value.content}>
-              {umpire2Name}
-            </Text>
+            {umpire2Name ? (
+              <Text style={styles.headerBox.row.column.value.content}>
+                {umpire2Name}
+              </Text>
+            ) : isGameEnded ? (
+              <View style={styles.headerBox.row.column.value.unused} />
+            ) : null}
           </View>
         </View>
       </View>
