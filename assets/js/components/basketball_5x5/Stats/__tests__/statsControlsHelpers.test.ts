@@ -497,13 +497,11 @@ describe('useAdditionalFoulButtonDisabled', () => {
       expect(result.current).toBe(true);
     });
 
-    it('returns true when coach has fouls_technical_bench_disqualifying', () => {
+    it('returns true when coach has fouls_game_disqualifying', () => {
       const { result } = renderHook(() =>
         useAdditionalFoulButtonDisabled(
           makeLiveState('in_progress'),
-          makeCoachSelection(
-            makeCoach({}, { fouls_technical_bench_disqualifying: 1 }),
-          ),
+          makeCoachSelection(makeCoach({}, { fouls_game_disqualifying: 1 })),
         ),
       );
       expect(result.current).toBe(true);

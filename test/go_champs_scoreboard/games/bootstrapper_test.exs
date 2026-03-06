@@ -293,6 +293,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
               "id" => "official-uuid-1",
               "name" => "John Chief",
               "license_number" => "REF001",
+              "federation" => "FIBA",
               "username" => "johnchief",
               "tournament_id" => "tournament-uuid"
             }
