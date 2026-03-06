@@ -535,7 +535,7 @@
         "name": "Nome",
         "type": "Tipo",
         "licenseNumber": "Lic. #",
-        "federation": "Federação",
+        "federation": "Categoria",
         "edit": "Editar",
         "delete": "Excluir"
       },
@@ -551,7 +551,7 @@
       "placeholders": {
         "officialName": "Nome do oficial",
         "licenseNumber": "Licença #",
-        "federation": "Federação"
+        "federation": "FIBA, CBB, etc."
       },
       "alerts": {
         "enterName": "Por favor, insira o nome do oficial",

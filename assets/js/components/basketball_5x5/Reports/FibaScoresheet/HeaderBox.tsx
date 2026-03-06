@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, View, StyleSheet } from '@react-pdf/renderer';
 import { BLUE } from './styles';
+import { Official } from '../FibaScoresheet';
 
 const styles = StyleSheet.create({
   headerBox: {
@@ -53,9 +54,9 @@ interface HeaderBoxProps {
   datetime: string;
   number: string;
   city: string;
-  crewChiefName: string;
-  umpire1Name: string;
-  umpire2Name: string;
+  crewChief?: Official;
+  umpire1?: Official;
+  umpire2?: Official;
   teamAName: string;
   teamBName: string;
   isGameEnded: boolean;
@@ -63,9 +64,9 @@ interface HeaderBoxProps {
 
 function HeaderBox({
   number,
-  crewChiefName,
-  umpire1Name,
-  umpire2Name,
+  crewChief,
+  umpire1,
+  umpire2,
   location,
   city,
   datetime,
@@ -175,9 +176,10 @@ function HeaderBox({
             </Text>
           </View>
           <View style={styles.headerBox.row.column.value}>
-            {crewChiefName ? (
+            {crewChief?.name ? (
               <Text style={styles.headerBox.row.column.value.content}>
-                {crewChiefName}
+                {crewChief.name}
+                {crewChief.federation ? ` - ${crewChief.federation}` : ''}
               </Text>
             ) : isGameEnded ? (
               <View style={styles.headerBox.row.column.value.unused} />
@@ -192,9 +194,10 @@ function HeaderBox({
           </View>
 
           <View style={styles.headerBox.row.column.value}>
-            {umpire1Name ? (
+            {umpire1?.name ? (
               <Text style={styles.headerBox.row.column.value.content}>
-                {umpire1Name}
+                {umpire1.name}
+                {umpire1.federation ? ` - ${umpire1.federation}` : ''}
               </Text>
             ) : isGameEnded ? (
               <View style={styles.headerBox.row.column.value.unused} />
@@ -214,9 +217,10 @@ function HeaderBox({
             </Text>
           </View>
           <View style={styles.headerBox.row.column.value}>
-            {umpire2Name ? (
+            {umpire2?.name ? (
               <Text style={styles.headerBox.row.column.value.content}>
-                {umpire2Name}
+                {umpire2.name}
+                {umpire2.federation ? ` - ${umpire2.federation}` : ''}
               </Text>
             ) : isGameEnded ? (
               <View style={styles.headerBox.row.column.value.unused} />

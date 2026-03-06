@@ -15,7 +15,9 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.OfficialMa
 
       assert result == %FibaScoresheet.Official{
                id: "",
-               name: ""
+               name: "",
+               signature: nil,
+               federation: nil
              }
     end
 
@@ -26,17 +28,19 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.OfficialMa
             id: "1",
             name: "John Doe",
             signature: "some-official-signature",
-            type: :scorer
+            type: :scorer,
+            federation: "FIBA"
           }
         ]
       }
 
-      %FibaScoresheet.Official{id: id, name: name, signature: signature} =
+      %FibaScoresheet.Official{id: id, name: name, signature: signature, federation: federation} =
         OfficialManager.bootstrap(game_state, :scorer)
 
       assert id == "1"
       assert name == "John Doe"
       assert signature == "some-official-signature"
+      assert federation == "FIBA"
     end
   end
 end

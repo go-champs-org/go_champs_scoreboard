@@ -113,31 +113,38 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
         },
         scorer: %FibaScoresheet.Official{
           id: "scorer-official-id",
-          name: "John Scorer"
+          name: "John Scorer",
+          federation: "FIBA"
         },
         assistant_scorer: %FibaScoresheet.Official{
           id: "assistant-scorer-official-id",
-          name: "Jane Assistant Scorer"
+          name: "Jane Assistant Scorer",
+          federation: "FIBA"
         },
         timekeeper: %FibaScoresheet.Official{
           id: "timekeeper-official-id",
-          name: "Mike Timekeeper"
+          name: "Mike Timekeeper",
+          federation: "NBA"
         },
         shot_clock_operator: %FibaScoresheet.Official{
           id: "shot-clock-operator-official-id",
-          name: "Sarah Shot Clock"
+          name: "Sarah Shot Clock",
+          federation: "NCAA"
         },
         crew_chief: %FibaScoresheet.Official{
           id: "crew-chief-official-id",
-          name: "Robert Crew Chief"
+          name: "Robert Crew Chief",
+          federation: "NBA"
         },
         umpire_1: %FibaScoresheet.Official{
           id: "umpire-1-official-id",
-          name: "David Umpire One"
+          name: "David Umpire One",
+          federation: "FIBA"
         },
         umpire_2: %FibaScoresheet.Official{
           id: "umpire-2-official-id",
-          name: "Lisa Umpire Two"
+          name: "Lisa Umpire Two",
+          federation: "FIBA"
         },
         protest: %FibaScoresheet.Protest{
           state: :protest_filed,

@@ -100,13 +100,15 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
     @type t :: %__MODULE__{
             id: String.t(),
             name: String.t(),
-            signature: String.t() | nil
+            signature: String.t() | nil,
+            federation: String.t() | nil
           }
 
     defstruct [
       :id,
       :name,
-      :signature
+      :signature,
+      :federation
     ]
   end
 
