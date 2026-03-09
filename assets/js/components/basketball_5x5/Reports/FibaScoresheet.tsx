@@ -95,6 +95,11 @@ export interface Team {
   points_by_period: { [period: string]: number };
 }
 
+export interface Sponsor {
+  name: string;
+  logo_url: string;
+}
+
 export interface Info {
   number: string;
   location: string;
@@ -102,11 +107,13 @@ export interface Info {
   datetime: string;
   tournament_name: string;
   tournament_slug: string;
+  tournament_logo_url: string;
   organization_name: string;
   organization_slug: string;
   organization_logo_url: string;
   actual_start_datetime: string;
   actual_end_datetime: string;
+  sponsors: Sponsor[];
   game_report: string;
   web_url: string;
 }
@@ -464,7 +471,9 @@ function ScoresheetPage({ scoresheetData }: FibaScoresheetProps) {
       <PageHeader
         organizationName={scoresheetData.info.organization_name}
         tournamentName={scoresheetData.info.tournament_name}
+        tournamentLogoUrl={scoresheetData.info.tournament_logo_url}
         organizationLogoUrl={scoresheetData.info.organization_logo_url}
+        sponsors={scoresheetData.info.sponsors}
         qrCodeUrl={scoresheetData.info.web_url}
       />
       <View style={styles.main}>
@@ -547,7 +556,9 @@ function GameReportPage({ scoresheetData }: FibaScoresheetProps) {
       <PageHeader
         organizationName={scoresheetData.info.organization_name}
         tournamentName={scoresheetData.info.tournament_name}
+        tournamentLogoUrl={scoresheetData.info.tournament_logo_url}
         organizationLogoUrl={scoresheetData.info.organization_logo_url}
+        sponsors={scoresheetData.info.sponsors}
         qrCodeUrl={scoresheetData.info.web_url}
       />
       <View style={styles.main}>

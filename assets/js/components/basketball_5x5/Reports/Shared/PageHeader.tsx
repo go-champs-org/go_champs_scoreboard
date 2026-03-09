@@ -15,6 +15,21 @@ const styles = {
       fontWeight: 'bold',
       width: '100%',
     },
+    logosContainer: {
+      position: 'absolute',
+      display: 'flex',
+      left: 0,
+      top: 0,
+      height: 24,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      logo: {
+        height: 24,
+        width: 24,
+        marginRight: 2,
+      },
+    },
     organizationLogo: {
       height: 24,
       width: 24,
@@ -32,14 +47,23 @@ const styles = {
   },
 };
 
+interface Sponsor {
+  name: string;
+  logo_url: string;
+}
+
 interface PageHeaderProps {
   organizationLogoUrl?: string;
+  tournamentLogoUrl?: string;
+  sponsors?: Sponsor[];
   organizationName: string;
   tournamentName: string;
   qrCodeUrl?: string;
 }
 
 function PageHeader({
+  tournamentLogoUrl,
+  sponsors = [],
   organizationLogoUrl,
   organizationName,
   tournamentName,
@@ -66,14 +90,35 @@ function PageHeader({
 
   return (
     <View style={styles.pageHeader}>
-      {organizationLogoUrl && (
-        <View style={styles.pageHeader.organizationLogo}>
-          <Image
-            src={organizationLogoUrl}
-            style={{ height: '100%', width: '100%' }}
-          />
-        </View>
-      )}
+      <View style={styles.pageHeader.logosContainer}>
+        {organizationLogoUrl && (
+          <View style={styles.pageHeader.logosContainer.logo}>
+            <Image
+              src={organizationLogoUrl}
+              style={{ height: '100%', width: '100%' }}
+            />
+          </View>
+        )}
+        {tournamentLogoUrl && (
+          <View style={styles.pageHeader.logosContainer.logo}>
+            <Image
+              src={tournamentLogoUrl}
+              style={{ height: '100%', width: '100%' }}
+            />
+          </View>
+        )}
+        {sponsors.map((sponsor) => (
+          <View
+            key={sponsor.name}
+            style={styles.pageHeader.logosContainer.logo}
+          >
+            <Image
+              src={sponsor.logo_url}
+              style={{ height: '100%', width: '100%' }}
+            />
+          </View>
+        ))}
+      </View>
       <View style={styles.pageHeader.nameContainer}>
         <Text>{organizationName.toUpperCase()}</Text>
         <Text>{`${t(

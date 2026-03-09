@@ -42,7 +42,9 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.FibaBoxScore
         name: Map.get(sponsor, :name) || Map.get(sponsor, "name", ""),
         link: Map.get(sponsor, :link) || Map.get(sponsor, "link", ""),
         logo_url:
-          UrlHelper.extract_path_from_url(Map.get(sponsor, :logo) || Map.get(sponsor, "logo", ""))
+          UrlHelper.extract_path_from_url(
+            Map.get(sponsor, :logo_url) || Map.get(sponsor, "logo_url", "")
+          )
       }
     end)
   end

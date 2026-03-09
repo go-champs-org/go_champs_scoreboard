@@ -352,12 +352,12 @@ defmodule GoChampsScoreboard.GameStateFixtures do
           %{
             name: "Sponsor A",
             link: "http://sponsora.com",
-            logo: "http://example.com/sponsor_a.png"
+            logo_url: "http://example.com/sponsor_a.png"
           },
           %{
             name: "Sponsor B",
             link: "http://sponsorb.com",
-            logo: "http://example.com/sponsor_b.png"
+            logo_url: "http://example.com/sponsor_b.png"
           }
         ]
       },

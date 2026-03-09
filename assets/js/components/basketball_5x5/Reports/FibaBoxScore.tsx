@@ -21,6 +21,11 @@ export interface Team {
   players: Player[];
 }
 
+export interface Sponsor {
+  name: string;
+  logo_url: string;
+}
+
 export interface FibaBoxScoreData {
   number: string;
   location: string;
@@ -30,6 +35,8 @@ export interface FibaBoxScoreData {
   tournament_name: string;
   organization_name: string;
   organization_logo_url: string;
+  tournament_logo_url?: string;
+  sponsors?: Sponsor[];
   web_url?: string;
   home_team: Team;
   away_team: Team;
@@ -55,6 +62,8 @@ function BoxScorePage({ scoreBoxData }: FibaBoxScoreProps) {
         organizationName={scoreBoxData.organization_name}
         tournamentName={scoreBoxData.tournament_name}
         organizationLogoUrl={scoreBoxData.organization_logo_url}
+        tournamentLogoUrl={scoreBoxData.tournament_logo_url}
+        sponsors={scoreBoxData.sponsors}
         qrCodeUrl={scoreBoxData.web_url}
       />
       <GameInfo
