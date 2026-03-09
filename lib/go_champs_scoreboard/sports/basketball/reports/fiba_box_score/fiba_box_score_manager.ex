@@ -25,13 +25,29 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.FibaBoxScore
       actual_start_datetime: state.clock_state.started_at,
       actual_end_datetime: state.clock_state.finished_at,
       tournament_name: state.info.tournament_name,
+      tournament_logo_url: UrlHelper.extract_path_from_url(state.info.tournament_logo_url),
       organization_name: state.info.organization_name,
       organization_logo_url: UrlHelper.extract_path_from_url(state.info.organization_logo_url),
       web_url: state.info.web_url,
+      sponsors: map_sponsors(state.info.sponsors),
       home_team: bootstrap_team(state.home_team),
       away_team: bootstrap_team(state.away_team)
     }
   end
+
+  @spec map_sponsors(list()) :: list()
+  defp map_sponsors(sponsors) when is_list(sponsors) do
+    Enum.map(sponsors, fn sponsor ->
+      %{
+        name: Map.get(sponsor, :name) || Map.get(sponsor, "name", ""),
+        link: Map.get(sponsor, :link) || Map.get(sponsor, "link", ""),
+        logo_url:
+          UrlHelper.extract_path_from_url(Map.get(sponsor, :logo) || Map.get(sponsor, "logo", ""))
+      }
+    end)
+  end
+
+  defp map_sponsors(_), do: []
 
   @spec bootstrap_team(TeamState.t()) :: FibaBoxScore.Team.t()
   def bootstrap_team(team_state) do

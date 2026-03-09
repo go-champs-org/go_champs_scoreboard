@@ -41,6 +41,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
           datetime: datetime,
           tournament_name: "Tournament Name",
           tournament_slug: "",
+          tournament_logo_url: "/media/tournament_logo.png",
           organization_name: "Organization Name",
           organization_slug: "",
           organization_logo_url: "/media/logo.png",
@@ -48,7 +49,19 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
           actual_end_datetime: actual_end_datetime,
           initial_period_time: game_state.clock_state.initial_period_time,
           game_report: "This is a game report.",
-          web_url: "http://example.com/game_report"
+          web_url: "http://example.com/game_report",
+          sponsors: [
+            %{
+              name: "Sponsor A",
+              link: "http://sponsora.com",
+              logo_url: "/sponsor_a.png"
+            },
+            %{
+              name: "Sponsor B",
+              link: "http://sponsorb.com",
+              logo_url: "/sponsor_b.png"
+            }
+          ]
         },
         team_a: %FibaScoresheet.Team{
           name: "Some home team",

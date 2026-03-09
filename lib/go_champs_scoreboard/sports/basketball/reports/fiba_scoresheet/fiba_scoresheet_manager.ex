@@ -42,6 +42,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
       datetime: game_state.info.datetime,
       tournament_name: game_state.info.tournament_name,
       tournament_slug: game_state.info.tournament_slug,
+      tournament_logo_url: UrlHelper.extract_path_from_url(game_state.info.tournament_logo_url),
       organization_name: game_state.info.organization_name,
       organization_slug: game_state.info.organization_slug,
       organization_logo_url:
@@ -50,9 +51,24 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
       actual_start_datetime: game_state.clock_state.started_at,
       actual_end_datetime: game_state.clock_state.finished_at,
       initial_period_time: game_state.clock_state.initial_period_time,
-      web_url: game_state.info.web_url
+      web_url: game_state.info.web_url,
+      sponsors: map_sponsors(game_state.info.sponsors)
     }
   end
+
+  @spec map_sponsors(list()) :: list()
+  defp map_sponsors(sponsors) when is_list(sponsors) do
+    Enum.map(sponsors, fn sponsor ->
+      %{
+        name: Map.get(sponsor, :name) || Map.get(sponsor, "name", ""),
+        link: Map.get(sponsor, :link) || Map.get(sponsor, "link", ""),
+        logo_url:
+          UrlHelper.extract_path_from_url(Map.get(sponsor, :logo) || Map.get(sponsor, "logo", ""))
+      }
+    end)
+  end
+
+  defp map_sponsors(_), do: []
 
   @doc """
   Finds a team by its type (home or away).

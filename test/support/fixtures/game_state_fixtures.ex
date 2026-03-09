@@ -342,11 +342,24 @@ defmodule GoChampsScoreboard.GameStateFixtures do
         datetime: datetime,
         tournament_name: "Tournament Name",
         tournament_id: "tournament-id",
+        tournament_logo_url: "https://go-champs.com/media/tournament_logo.png",
         organization_name: "Organization Name",
         organization_logo_url: "https://go-champs.com/media/logo.png",
         game_report: "This is a game report.",
         web_url: "http://example.com/game_report",
-        result_type: :automatic
+        result_type: :automatic,
+        sponsors: [
+          %{
+            name: "Sponsor A",
+            link: "http://sponsora.com",
+            logo: "http://example.com/sponsor_a.png"
+          },
+          %{
+            name: "Sponsor B",
+            link: "http://sponsorb.com",
+            logo: "http://example.com/sponsor_b.png"
+          }
+        ]
       },
       protest_state: %ProtestState{
         team_type: :home,

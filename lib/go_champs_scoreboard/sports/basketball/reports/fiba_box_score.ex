@@ -41,6 +41,12 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore do
     ]
   end
 
+  @type sponsor :: %{
+          name: String.t(),
+          link: String.t(),
+          logo_url: String.t()
+        }
+
   @type t :: %__MODULE__{
           number: String.t(),
           location: String.t(),
@@ -48,9 +54,11 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore do
           actual_start_datetime: DateTime.t() | nil,
           actual_end_datetime: DateTime.t() | nil,
           tournament_name: String.t(),
+          tournament_logo_url: String.t(),
           organization_name: String.t(),
           organization_logo_url: String.t(),
           web_url: String.t() | nil,
+          sponsors: [sponsor()],
           home_team: Team.t(),
           away_team: Team.t()
         }
@@ -62,9 +70,11 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore do
     :actual_start_datetime,
     :actual_end_datetime,
     :tournament_name,
+    :tournament_logo_url,
     :organization_name,
     :organization_logo_url,
     :web_url,
+    :sponsors,
     :home_team,
     :away_team
   ]

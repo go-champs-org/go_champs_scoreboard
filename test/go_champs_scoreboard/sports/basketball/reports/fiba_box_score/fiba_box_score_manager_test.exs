@@ -127,9 +127,18 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.FibaBoxScore
       assert result.number == "ABC123"
       assert result.location == "Game Location"
       assert result.tournament_name == "Tournament Name"
+      assert result.tournament_logo_url == "/media/tournament_logo.png"
       assert result.organization_name == "Organization Name"
       assert result.organization_logo_url == "/media/logo.png"
       assert result.web_url == "http://example.com/game_report"
+      assert length(result.sponsors) == 2
+      assert [sponsor_a, sponsor_b] = result.sponsors
+      assert sponsor_a.name == "Sponsor A"
+      assert sponsor_a.link == "http://sponsora.com"
+      assert sponsor_a.logo_url == "/sponsor_a.png"
+      assert sponsor_b.name == "Sponsor B"
+      assert sponsor_b.link == "http://sponsorb.com"
+      assert sponsor_b.logo_url == "/sponsor_b.png"
 
       # Assert home_team fields
       home_team = result.home_team

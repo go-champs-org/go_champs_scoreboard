@@ -222,6 +222,12 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
     Info struct for FIBA scoresheet.
     """
 
+    @type sponsor :: %{
+            name: String.t(),
+            link: String.t(),
+            logo_url: String.t()
+          }
+
     @type t :: %__MODULE__{
             number: String.t(),
             location: String.t(),
@@ -229,6 +235,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
             datetime: DateTime.t(),
             tournament_name: String.t(),
             tournament_slug: String.t(),
+            tournament_logo_url: String.t(),
             organization_name: String.t(),
             organization_slug: String.t(),
             organization_logo_url: String.t(),
@@ -236,7 +243,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
             actual_end_datetime: DateTime.t() | nil,
             initial_period_time: integer() | nil,
             game_report: String.t() | nil,
-            web_url: String.t() | nil
+            web_url: String.t() | nil,
+            sponsors: [sponsor()]
           }
 
     defstruct [
@@ -246,6 +254,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
       :datetime,
       :tournament_name,
       :tournament_slug,
+      :tournament_logo_url,
       :organization_name,
       :organization_slug,
       :organization_logo_url,
@@ -253,7 +262,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
       :actual_end_datetime,
       :initial_period_time,
       :game_report,
-      :web_url
+      :web_url,
+      :sponsors
     ]
   end
 

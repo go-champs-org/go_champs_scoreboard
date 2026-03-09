@@ -11,11 +11,18 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
           url: String.t()
         }
 
+  @type sponsor :: %{
+          name: String.t(),
+          link: String.t(),
+          logo_url: String.t()
+        }
+
   @type t :: %__MODULE__{
           datetime: DateTime.t(),
           tournament_id: String.t(),
           tournament_name: String.t(),
           tournament_slug: String.t(),
+          tournament_logo_url: String.t(),
           organization_name: String.t(),
           organization_slug: String.t(),
           organization_logo_url: String.t(),
@@ -25,7 +32,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
           game_report: String.t(),
           web_url: String.t(),
           result_type: result_type(),
-          assets: [asset()]
+          assets: [asset()],
+          sponsors: [sponsor()]
         }
 
   defstruct [
@@ -33,6 +41,7 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
     :tournament_id,
     :tournament_name,
     :tournament_slug,
+    :tournament_logo_url,
     :organization_name,
     :organization_slug,
     :organization_logo_url,
@@ -42,7 +51,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
     :game_report,
     :web_url,
     :result_type,
-    :assets
+    :assets,
+    :sponsors
   ]
 
   @doc """
@@ -55,6 +65,7 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
       tournament_id: Keyword.get(opts, :tournament_id, ""),
       tournament_name: Keyword.get(opts, :tournament_name, ""),
       tournament_slug: Keyword.get(opts, :tournament_slug, ""),
+      tournament_logo_url: Keyword.get(opts, :tournament_logo_url, ""),
       organization_name: Keyword.get(opts, :organization_name, ""),
       organization_slug: Keyword.get(opts, :organization_slug, ""),
       organization_logo_url: Keyword.get(opts, :organization_logo_url, ""),
@@ -64,7 +75,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
       game_report: Keyword.get(opts, :game_report, ""),
       web_url: Keyword.get(opts, :web_url, ""),
       result_type: Keyword.get(opts, :result_type, :automatic),
-      assets: Keyword.get(opts, :assets, [])
+      assets: Keyword.get(opts, :assets, []),
+      sponsors: Keyword.get(opts, :sponsors, [])
     }
   end
 
@@ -96,6 +108,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
           Map.get(values, :tournament_name) || Map.get(values, "tournament_name") || "",
         tournament_slug:
           Map.get(values, :tournament_slug) || Map.get(values, "tournament_slug") || "",
+        tournament_logo_url:
+          Map.get(values, :tournament_logo_url) || Map.get(values, "tournament_logo_url") || "",
         organization_name:
           Map.get(values, :organization_name) || Map.get(values, "organization_name") || "",
         organization_slug:
@@ -109,7 +123,8 @@ defmodule GoChampsScoreboard.Games.Models.InfoState do
         game_report: Map.get(values, :game_report) || Map.get(values, "game_report") || "",
         web_url: Map.get(values, :web_url) || Map.get(values, "web_url") || "",
         result_type: result_type,
-        assets: Map.get(values, :assets) || Map.get(values, "assets") || []
+        assets: Map.get(values, :assets) || Map.get(values, "assets") || [],
+        sponsors: Map.get(values, :sponsors) || Map.get(values, "sponsors") || []
       }
     end
   end

@@ -141,9 +141,15 @@ export interface InfoState {
   city: string;
   tournament_id: string;
   tournament_name: string;
+  tournament_logo_url?: string;
   number: string;
   datetime: string;
   game_report?: string;
+  sponsors?: Array<{
+    name: string;
+    link: string;
+    logo_url: string;
+  }>;
 }
 
 export interface GameState {

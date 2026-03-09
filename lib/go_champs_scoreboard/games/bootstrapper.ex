@@ -264,24 +264,41 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
     tournament_id = Map.get(tournament_info, "id", "")
     tournament_name = Map.get(tournament_info, "name", "")
     tournament_slug = Map.get(tournament_info, "slug", "")
+    tournament_logo_url = Map.get(tournament_info, "logo_url", "")
 
     organization_info = Map.get(tournament_info, "organization", %{})
     organization_name = Map.get(organization_info, "name", "")
     organization_slug = Map.get(organization_info, "slug", "")
     organization_logo_url = Map.get(organization_info, "logo_url", "")
 
+    sponsors = map_sponsors(Map.get(tournament_info, "sponsors", []))
+
     InfoState.new(
       datetime,
       tournament_id: tournament_id,
       tournament_name: tournament_name,
       tournament_slug: tournament_slug,
+      tournament_logo_url: tournament_logo_url,
       organization_name: organization_name,
       organization_slug: organization_slug,
       organization_logo_url: organization_logo_url,
       location: location,
       city: city,
       number: game_id,
-      web_url: web_url
+      web_url: web_url,
+      sponsors: sponsors
     )
   end
+
+  defp map_sponsors(sponsors) when is_list(sponsors) do
+    Enum.map(sponsors, fn sponsor ->
+      %{
+        name: Map.get(sponsor, "name", ""),
+        link: Map.get(sponsor, "link", ""),
+        logo_url: Map.get(sponsor, "logo_url", "")
+      }
+    end)
+  end
+
+  defp map_sponsors(_), do: []
 end

@@ -393,6 +393,41 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
       "data" => %{}
     }
 
+    @response_body_with_tournament_logo_and_sponsors %{
+      "data" => %{
+        "id" => "game-id",
+        "away_team" => %{
+          "name" => "Team A",
+          "players" => []
+        },
+        "home_team" => %{
+          "name" => "Team B",
+          "players" => []
+        },
+        "phase" => %{
+          "tournament" => %{
+            "id" => "tournament-id",
+            "name" => "Tournament Name",
+            "slug" => "tournament-slug",
+            "logo_url" => "http://example.com/tournament_logo.png",
+            "sponsors" => [
+              %{
+                "name" => "Sponsor A",
+                "link" => "http://sponsora.com",
+                "logo_url" => "http://example.com/sponsor_a.png"
+              },
+              %{
+                "name" => "Sponsor B",
+                "link" => "http://sponsorb.com",
+                "logo_url" => "http://example.com/sponsor_b.png"
+              }
+            ]
+          }
+        },
+        "live_state" => "not_started"
+      }
+    }
+
     test "maps game id" do
       expect(@http_client, :get, fn url, headers ->
         assert url =~ "game-id"
@@ -888,6 +923,69 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
 
       # Verify warning was logged
       assert log =~ "Invalid official role received from API: invalid_role"
+    end
+
+    test "maps tournament logo and sponsors" do
+      expect(@http_client, :get, fn url, headers ->
+        assert url =~ "game-id"
+        assert headers == [{"Authorization", "Bearer token"}]
+
+        {:ok,
+         %HTTPoison.Response{
+           body: @response_body_with_tournament_logo_and_sponsors |> Poison.encode!(),
+           status_code: 200
+         }}
+      end)
+
+      expect(@http_client, :get, fn url ->
+        assert url =~ "game-id/scoreboard-setting"
+
+        {:ok, %HTTPoison.Response{body: %{"data" => nil} |> Poison.encode!(), status_code: 200}}
+      end)
+
+      game =
+        Bootstrapper.bootstrap_from_go_champs(
+          GoChampsScoreboard.Games.Bootstrapper.bootstrap(),
+          "game-id",
+          "token"
+        )
+
+      assert game.info.tournament_logo_url == "http://example.com/tournament_logo.png"
+      assert length(game.info.sponsors) == 2
+
+      [sponsor_a, sponsor_b] = game.info.sponsors
+      assert sponsor_a.name == "Sponsor A"
+      assert sponsor_a.link == "http://sponsora.com"
+      assert sponsor_a.logo_url == "http://example.com/sponsor_a.png"
+
+      assert sponsor_b.name == "Sponsor B"
+      assert sponsor_b.link == "http://sponsorb.com"
+      assert sponsor_b.logo_url == "http://example.com/sponsor_b.png"
+    end
+
+    test "defaults tournament logo and sponsors when not provided" do
+      expect(@http_client, :get, fn url, headers ->
+        assert url =~ "game-id"
+        assert headers == [{"Authorization", "Bearer token"}]
+
+        {:ok, %HTTPoison.Response{body: @response_body |> Poison.encode!(), status_code: 200}}
+      end)
+
+      expect(@http_client, :get, fn url ->
+        assert url =~ "game-id/scoreboard-setting"
+
+        {:ok, %HTTPoison.Response{body: %{"data" => nil} |> Poison.encode!(), status_code: 200}}
+      end)
+
+      game =
+        Bootstrapper.bootstrap_from_go_champs(
+          GoChampsScoreboard.Games.Bootstrapper.bootstrap(),
+          "game-id",
+          "token"
+        )
+
+      assert game.info.tournament_logo_url == ""
+      assert game.info.sponsors == []
     end
   end
 end
