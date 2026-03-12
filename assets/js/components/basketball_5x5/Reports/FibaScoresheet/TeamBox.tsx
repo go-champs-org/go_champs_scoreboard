@@ -631,7 +631,13 @@ function PlayerRow({
     <View style={styles.teamContainer.table.row}>
       <View style={styles.teamContainer.table.row.columnLic}>
         <ConditionalCell isUnsed={isLicenseNumberUnsed}>
-          <Text style={{ ...styles.teamContainer.table.content, margin: 0 }}>
+          <Text
+            style={{
+              ...styles.teamContainer.table.content,
+              margin: 0,
+              fontSize: player.license_number?.length > 5 ? 7 : 8, // Adjust font size for longer license numbers
+            }}
+          >
             {player.license_number}
           </Text>
         </ConditionalCell>
