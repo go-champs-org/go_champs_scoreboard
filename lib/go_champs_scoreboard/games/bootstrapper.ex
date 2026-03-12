@@ -259,6 +259,7 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
     location = Map.get(game_response, "location", "")
     city = Map.get(game_response, "city", "")
     game_id = Map.get(game_response, "id", "")
+    number = Map.get(game_response, "number")
     web_url = Map.get(game_response, "web_url", "")
     tournament_info = get_in(game_response, ["phase", "tournament"]) || %{}
     tournament_id = Map.get(tournament_info, "id", "")
@@ -273,6 +274,14 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
 
     sponsors = map_sponsors(Map.get(tournament_info, "sponsors", []))
 
+    # Use number field if present and not empty/nil, otherwise fall back to game_id
+    game_number =
+      case number do
+        nil -> game_id
+        "" -> game_id
+        valid_number -> valid_number
+      end
+
     InfoState.new(
       datetime,
       tournament_id: tournament_id,
@@ -284,7 +293,7 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
       organization_logo_url: organization_logo_url,
       location: location,
       city: city,
-      number: game_id,
+      number: game_number,
       web_url: web_url,
       sponsors: sponsors
     )
