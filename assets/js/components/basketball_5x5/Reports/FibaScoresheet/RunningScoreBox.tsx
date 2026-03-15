@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, View, StyleSheet } from '@react-pdf/renderer';
+import { Text, View, StyleSheet, Svg, Line } from '@react-pdf/renderer';
 import { RunningScore, ScoreMark } from '../FibaScoresheet';
 import { backgroundColorForPeriod, BLUE, textColorForPeriod } from './styles';
 
@@ -71,13 +71,6 @@ const styles = StyleSheet.create({
               borderRadius: '15px',
               borderWidth: '1px',
             },
-            middleLine: {
-              position: 'absolute',
-              top: '0',
-              left: '49%',
-              width: '2px',
-              height: '100%',
-            },
           },
           numberContainer: {
             flex: '1 1 50%',
@@ -110,13 +103,6 @@ const styles = StyleSheet.create({
               borderRadius: '50px',
               borderWidth: '1px',
             },
-            middleLine: {
-              position: 'absolute',
-              top: '0',
-              left: '49%',
-              width: '2px',
-              height: '100%',
-            },
           },
         },
       },
@@ -128,14 +114,12 @@ function ScoreMarkDisplay({
   number,
   runningScore,
   isReversed = false,
-  isNotUsed = false,
   isLastOfGame = false,
 }: {
   key: number;
   number: number;
   runningScore: RenderRunningScore;
   isReversed: boolean;
-  isNotUsed: boolean;
   isLastOfGame: boolean;
 }) {
   const score = runningScore[number];
@@ -165,15 +149,6 @@ function ScoreMarkDisplay({
               ...styles.runningScore.columnsContainer.column.scoreMark
                 .playerContainer.circle,
               borderColor: textColorForPeriod(score.period).color,
-            }}
-          />
-        )}
-        {isNotUsed && (
-          <View
-            style={{
-              ...styles.runningScore.columnsContainer.column.scoreMark
-                .playerContainer.middleLine,
-              backgroundColor: BLUE,
             }}
           />
         )}
@@ -208,15 +183,6 @@ function ScoreMarkDisplay({
               ...styles.runningScore.columnsContainer.column.scoreMark
                 .numberContainer.circle,
               borderColor: textColorForPeriod(score.period).color,
-            }}
-          />
-        )}
-        {isNotUsed && (
-          <View
-            style={{
-              ...styles.runningScore.columnsContainer.column.scoreMark
-                .numberContainer.middleLine,
-              backgroundColor: BLUE,
             }}
           />
         )}
@@ -266,22 +232,59 @@ function ScoreList({
     { length: lastNumber - firstNumber + 1 },
     (_, i) => i + firstNumber,
   );
+
+  const hasUnusedRange = isGameEnded && lastTeamScore >= firstNumber;
+  const usedNumbers = hasUnusedRange
+    ? scoreList.filter((n) => n <= lastTeamScore)
+    : scoreList;
+  const unusedNumbers = hasUnusedRange
+    ? scoreList.filter((n) => n > lastTeamScore)
+    : [];
+
   return (
     <>
-      {scoreList.map((number) => (
+      {usedNumbers.map((number) => (
         <ScoreMarkDisplay
           key={number}
           number={number}
           runningScore={runningScore}
           isReversed={isReversed}
-          isNotUsed={
-            isGameEnded &&
-            number > lastTeamScore &&
-            lastTeamScore >= firstNumber
-          }
           isLastOfGame={isGameEnded && number === lastTeamScore}
         />
       ))}
+      {unusedNumbers.length > 0 && (
+        <View style={{ position: 'relative' }}>
+          {unusedNumbers.map((number) => (
+            <ScoreMarkDisplay
+              key={number}
+              number={number}
+              runningScore={runningScore}
+              isReversed={isReversed}
+              isLastOfGame={false}
+            />
+          ))}
+          <Svg
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+            }}
+          >
+            <Line
+              x1="0"
+              y1="0"
+              x2="100"
+              y2="100"
+              stroke={BLUE}
+              strokeWidth="4"
+            />
+          </Svg>
+        </View>
+      )}
     </>
   );
 }
