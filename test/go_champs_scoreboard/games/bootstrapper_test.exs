@@ -477,14 +477,14 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
     }
 
     test "maps game id" do
-      expect(@http_client, :get, fn url, headers ->
+      expect(@http_client, :get, fn url, headers, _opts ->
         assert url =~ "game-id"
         assert headers == [{"Authorization", "Bearer token"}]
 
         {:ok, %HTTPoison.Response{body: @response_body |> Poison.encode!(), status_code: 200}}
       end)
 
-      expect(@http_client, :get, fn url ->
+      expect(@http_client, :get, fn url, _headers, _opts ->
         assert url =~ "game-id/scoreboard-setting"
 
         {:ok, %HTTPoison.Response{body: %{"data" => nil} |> Poison.encode!(), status_code: 200}}
@@ -566,14 +566,14 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
     end
 
     test "maps game and view settings" do
-      expect(@http_client, :get, fn url, headers ->
+      expect(@http_client, :get, fn url, headers, _opts ->
         assert url =~ "game-id"
         assert headers == [{"Authorization", "Bearer token"}]
 
         {:ok, %HTTPoison.Response{body: @response_body |> Poison.encode!(), status_code: 200}}
       end)
 
-      expect(@http_client, :get, fn url ->
+      expect(@http_client, :get, fn url, _headers, _opts ->
         assert url =~ "game-id/scoreboard-setting"
 
         {:ok,
@@ -597,14 +597,14 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
     end
 
     test "maps default values when view settings are empty" do
-      expect(@http_client, :get, fn url, headers ->
+      expect(@http_client, :get, fn url, headers, _opts ->
         assert url =~ "game-id"
         assert headers == [{"Authorization", "Bearer token"}]
 
         {:ok, %HTTPoison.Response{body: @response_body |> Poison.encode!(), status_code: 200}}
       end)
 
-      expect(@http_client, :get, fn url ->
+      expect(@http_client, :get, fn url, _headers, _opts ->
         assert url =~ "game-id/scoreboard-setting"
 
         {:ok,
@@ -628,7 +628,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
     end
 
     test "maps game and team coaches" do
-      expect(@http_client, :get, fn url, headers ->
+      expect(@http_client, :get, fn url, headers, _opts ->
         assert url =~ "game-id"
         assert headers == [{"Authorization", "Bearer token"}]
 
@@ -639,7 +639,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
          }}
       end)
 
-      expect(@http_client, :get, fn url ->
+      expect(@http_client, :get, fn url, _headers, _opts ->
         assert url =~ "game-id/scoreboard-setting"
 
         {:ok, %HTTPoison.Response{body: %{"data" => nil} |> Poison.encode!(), status_code: 200}}
@@ -674,7 +674,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
     end
 
     test "maps game and info" do
-      expect(@http_client, :get, fn url, headers ->
+      expect(@http_client, :get, fn url, headers, _opts ->
         assert url =~ "game-id"
         assert headers == [{"Authorization", "Bearer token"}]
 
@@ -685,7 +685,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
          }}
       end)
 
-      expect(@http_client, :get, fn url ->
+      expect(@http_client, :get, fn url, _headers, _opts ->
         assert url =~ "game-id/scoreboard-setting"
 
         {:ok,
@@ -715,7 +715,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
     end
 
     test "maps game and organization info" do
-      expect(@http_client, :get, fn url, headers ->
+      expect(@http_client, :get, fn url, headers, _opts ->
         assert url =~ "game-id"
         assert headers == [{"Authorization", "Bearer token"}]
 
@@ -726,7 +726,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
          }}
       end)
 
-      expect(@http_client, :get, fn url ->
+      expect(@http_client, :get, fn url, _headers, _opts ->
         assert url =~ "game-id/scoreboard-setting"
 
         {:ok,
@@ -758,14 +758,14 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
     end
 
     test "maps default sport officials when none from API" do
-      expect(@http_client, :get, fn url, headers ->
+      expect(@http_client, :get, fn url, headers, _opts ->
         assert url =~ "game-id"
         assert headers == [{"Authorization", "Bearer token"}]
 
         {:ok, %HTTPoison.Response{body: @response_body |> Poison.encode!(), status_code: 200}}
       end)
 
-      expect(@http_client, :get, fn url ->
+      expect(@http_client, :get, fn url, _headers, _opts ->
         assert url =~ "game-id/scoreboard-setting"
 
         {:ok, %HTTPoison.Response{body: %{"data" => nil} |> Poison.encode!(), status_code: 200}}
@@ -791,7 +791,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
     end
 
     test "maps team primary colors when provided by API" do
-      expect(@http_client, :get, fn url, headers ->
+      expect(@http_client, :get, fn url, headers, _opts ->
         assert url =~ "game-id"
         assert headers == [{"Authorization", "Bearer token"}]
 
@@ -802,7 +802,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
          }}
       end)
 
-      expect(@http_client, :get, fn url ->
+      expect(@http_client, :get, fn url, _headers, _opts ->
         assert url =~ "game-id/scoreboard-setting"
 
         {:ok, %HTTPoison.Response{body: %{"data" => nil} |> Poison.encode!(), status_code: 200}}
@@ -820,14 +820,14 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
     end
 
     test "defaults primary color to nil when not provided by API" do
-      expect(@http_client, :get, fn url, headers ->
+      expect(@http_client, :get, fn url, headers, _opts ->
         assert url =~ "game-id"
         assert headers == [{"Authorization", "Bearer token"}]
 
         {:ok, %HTTPoison.Response{body: @response_body |> Poison.encode!(), status_code: 200}}
       end)
 
-      expect(@http_client, :get, fn url ->
+      expect(@http_client, :get, fn url, _headers, _opts ->
         assert url =~ "game-id/scoreboard-setting"
 
         {:ok, %HTTPoison.Response{body: %{"data" => nil} |> Poison.encode!(), status_code: 200}}
@@ -845,7 +845,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
     end
 
     test "maps API officials when provided" do
-      expect(@http_client, :get, fn url, headers ->
+      expect(@http_client, :get, fn url, headers, _opts ->
         assert url =~ "game-id"
         assert headers == [{"Authorization", "Bearer token"}]
 
@@ -856,7 +856,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
          }}
       end)
 
-      expect(@http_client, :get, fn url ->
+      expect(@http_client, :get, fn url, _headers, _opts ->
         assert url =~ "game-id/scoreboard-setting"
 
         {:ok, %HTTPoison.Response{body: %{"data" => nil} |> Poison.encode!(), status_code: 200}}
@@ -895,7 +895,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
     end
 
     test "maps referee role to crew_chief type" do
-      expect(@http_client, :get, fn url, headers ->
+      expect(@http_client, :get, fn url, headers, _opts ->
         assert url =~ "game-id"
         assert headers == [{"Authorization", "Bearer token"}]
 
@@ -906,7 +906,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
          }}
       end)
 
-      expect(@http_client, :get, fn url ->
+      expect(@http_client, :get, fn url, _headers, _opts ->
         assert url =~ "game-id/scoreboard-setting"
 
         {:ok, %HTTPoison.Response{body: %{"data" => nil} |> Poison.encode!(), status_code: 200}}
@@ -926,7 +926,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
     end
 
     test "handles invalid official roles gracefully" do
-      expect(@http_client, :get, fn url, headers ->
+      expect(@http_client, :get, fn url, headers, _opts ->
         assert url =~ "game-id"
         assert headers == [{"Authorization", "Bearer token"}]
 
@@ -937,7 +937,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
          }}
       end)
 
-      expect(@http_client, :get, fn url ->
+      expect(@http_client, :get, fn url, _headers, _opts ->
         assert url =~ "game-id/scoreboard-setting"
 
         {:ok, %HTTPoison.Response{body: %{"data" => nil} |> Poison.encode!(), status_code: 200}}
@@ -974,7 +974,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
     end
 
     test "maps tournament logo and sponsors" do
-      expect(@http_client, :get, fn url, headers ->
+      expect(@http_client, :get, fn url, headers, _opts ->
         assert url =~ "game-id"
         assert headers == [{"Authorization", "Bearer token"}]
 
@@ -985,7 +985,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
          }}
       end)
 
-      expect(@http_client, :get, fn url ->
+      expect(@http_client, :get, fn url, _headers, _opts ->
         assert url =~ "game-id/scoreboard-setting"
 
         {:ok, %HTTPoison.Response{body: %{"data" => nil} |> Poison.encode!(), status_code: 200}}
@@ -1012,14 +1012,14 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
     end
 
     test "defaults tournament logo and sponsors when not provided" do
-      expect(@http_client, :get, fn url, headers ->
+      expect(@http_client, :get, fn url, headers, _opts ->
         assert url =~ "game-id"
         assert headers == [{"Authorization", "Bearer token"}]
 
         {:ok, %HTTPoison.Response{body: @response_body |> Poison.encode!(), status_code: 200}}
       end)
 
-      expect(@http_client, :get, fn url ->
+      expect(@http_client, :get, fn url, _headers, _opts ->
         assert url =~ "game-id/scoreboard-setting"
 
         {:ok, %HTTPoison.Response{body: %{"data" => nil} |> Poison.encode!(), status_code: 200}}
@@ -1037,7 +1037,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
     end
 
     test "uses number field when provided" do
-      expect(@http_client, :get, fn url, headers ->
+      expect(@http_client, :get, fn url, headers, _opts ->
         assert url =~ "game-id"
         assert headers == [{"Authorization", "Bearer token"}]
 
@@ -1048,7 +1048,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
          }}
       end)
 
-      expect(@http_client, :get, fn url ->
+      expect(@http_client, :get, fn url, _headers, _opts ->
         assert url =~ "game-id/scoreboard-setting"
 
         {:ok, %HTTPoison.Response{body: %{"data" => nil} |> Poison.encode!(), status_code: 200}}
@@ -1065,7 +1065,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
     end
 
     test "falls back to game_id when number is empty" do
-      expect(@http_client, :get, fn url, headers ->
+      expect(@http_client, :get, fn url, headers, _opts ->
         assert url =~ "game-id"
         assert headers == [{"Authorization", "Bearer token"}]
 
@@ -1076,7 +1076,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
          }}
       end)
 
-      expect(@http_client, :get, fn url ->
+      expect(@http_client, :get, fn url, _headers, _opts ->
         assert url =~ "game-id/scoreboard-setting"
 
         {:ok, %HTTPoison.Response{body: %{"data" => nil} |> Poison.encode!(), status_code: 200}}
@@ -1093,7 +1093,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
     end
 
     test "falls back to game_id when number is null" do
-      expect(@http_client, :get, fn url, headers ->
+      expect(@http_client, :get, fn url, headers, _opts ->
         assert url =~ "game-id"
         assert headers == [{"Authorization", "Bearer token"}]
 
@@ -1104,7 +1104,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
          }}
       end)
 
-      expect(@http_client, :get, fn url ->
+      expect(@http_client, :get, fn url, _headers, _opts ->
         assert url =~ "game-id/scoreboard-setting"
 
         {:ok, %HTTPoison.Response{body: %{"data" => nil} |> Poison.encode!(), status_code: 200}}

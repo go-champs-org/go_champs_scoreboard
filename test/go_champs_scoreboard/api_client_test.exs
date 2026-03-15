@@ -21,7 +21,7 @@ defmodule GoChampsScoreboard.ApiClientTest do
         }
       }
 
-      expect(@http_client, :get, fn url, headers ->
+      expect(@http_client, :get, fn url, headers, _opts ->
         assert url =~ "game-id"
         assert headers == [{"Authorization", "Bearer token"}]
 
@@ -48,7 +48,7 @@ defmodule GoChampsScoreboard.ApiClientTest do
         "view" => "basketbal-basic"
       }
 
-      expect(@http_client, :get, fn url ->
+      expect(@http_client, :get, fn url, _headers, _opts ->
         assert url =~ "game-id/scoreboard-setting"
 
         {:ok, %HTTPoison.Response{body: response_body |> Poison.encode!(), status_code: 200}}

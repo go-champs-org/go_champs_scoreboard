@@ -1,6 +1,12 @@
-{live_react_component(
-  "Components.ReportViewer",
-  [report_data: Poison.encode!(@report_data), report_slug: @report_slug],
-  id: "report-viewer-scoreboard",
-  container: [style: "height: 100%; width: 100%; position: absolute; top: 0; left: 0;"]
-)}
+<%= if @report_data.loading do %>
+  <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
+    <p>Loading report...</p>
+  </div>
+<% else %>
+  {live_react_component(
+    "Components.ReportViewer",
+    [report_data: Poison.encode!(@report_data.result || %{}), report_slug: @report_slug],
+    id: "report-viewer-scoreboard",
+    container: [style: "height: 100%; width: 100%; position: absolute; top: 0; left: 0;"]
+  )}
+<% end %>

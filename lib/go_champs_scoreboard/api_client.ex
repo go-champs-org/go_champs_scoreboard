@@ -14,7 +14,7 @@ defmodule GoChampsScoreboard.ApiClient do
     headers = [{"Authorization", "Bearer #{token}"}]
 
     url
-    |> http_client.get(headers)
+    |> http_client.get(headers, timeout: 10_000, recv_timeout: 10_000)
     |> log()
     |> handle_response()
   end
@@ -26,7 +26,7 @@ defmodule GoChampsScoreboard.ApiClient do
     Logger.info("[Get Game Scoreboard Setting]: From Go Champs Api", url: url)
 
     url
-    |> http_client.get()
+    |> http_client.get([], timeout: 10_000, recv_timeout: 10_000)
     |> log()
     |> handle_response()
   end

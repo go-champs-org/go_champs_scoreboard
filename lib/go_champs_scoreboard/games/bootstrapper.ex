@@ -29,12 +29,16 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
   end
 
   def bootstrap_from_go_champs(game, game_id, token) do
-    {:ok, game_response} = ApiClient.get_game(game_id, token)
+    with {:ok, game_response} <- ApiClient.get_game(game_id, token),
+         {:ok, view_settings_response} <- ApiClient.get_scoreboard_setting(game_id) do
+      game
+      |> map_game_response_to_game(game_response, view_settings_response)
+    else
+      {:error, reason} ->
+        Logger.error("Failed to bootstrap game #{game_id} from Go Champs API: #{inspect(reason)}")
 
-    {:ok, view_settings_response} = ApiClient.get_scoreboard_setting(game_id)
-
-    game
-    |> map_game_response_to_game(game_response, view_settings_response)
+        game
+    end
   end
 
   defp map_game_response_to_game(game_state, game_data, view_settings_data) do
