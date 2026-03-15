@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
               left: '-2px',
               height: '2px',
               width: '21px',
-              transform: 'rotate(37deg)',
+              transform: 'rotate(142deg)',
             },
             circle: {
               position: 'absolute',

@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
       challengeBoxes: {
         display: 'flex',
         flexDirection: 'row',
-        marginLeft: '5px',
+        marginLeft: '7px',
       },
     },
     table: {
@@ -353,7 +353,13 @@ function FoulBox({
       ) : (
         isGameEnded &&
         !usedFouls && (
-          <View style={styles.teamContainer.teamFoulBoxes.fouls.box.unused} />
+          <View
+            style={{
+              ...styles.teamContainer.teamFoulBoxes.fouls.box.unused,
+              borderTopColor: colorForPeriod(period),
+              borderBottomColor: colorForPeriod(period),
+            }}
+          />
         )
       )}
     </View>
@@ -404,9 +410,10 @@ function HeadCoachChallenge({
   team: Team;
   isGameEnded?: boolean;
 }) {
+  const { t } = useTranslation();
   // Always render 2 pairs of squares (first pair: Q{period}/minute, second pair: Q{period}/minute)
   const challenges = team.head_coach_challenges || [];
-  const maxChallenges = 2;
+  const maxChallenges = 1;
 
   const renderChallenges = Array.from({ length: maxChallenges }).map(
     (_, index) => challenges[index] || null,
@@ -415,7 +422,7 @@ function HeadCoachChallenge({
   return (
     <View style={styles.teamContainer.headCoachChallenges}>
       <View style={styles.teamContainer.headCoachChallenges.labelContainer}>
-        <Text>{'HCC'}</Text>
+        <Text>{t('basketball.reports.fibaScoresheet.headCoachChallenge')}</Text>
       </View>
       <View style={styles.teamContainer.headCoachChallenges.challengeBoxes}>
         {renderChallenges.map((challenge, index) => (

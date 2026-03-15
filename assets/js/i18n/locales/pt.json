@@ -13,6 +13,7 @@
         "gameReport": "Relatório do Jogo",
         "gameNumber": "Nro Jogo",
         "location": "Local",
+        "headCoachChallenge": "DTP",
         "city": "Cidade",
         "date": "Data",
         "time": "Hora",
@@ -39,7 +40,7 @@
           "timekeeper": "Cronometrista",
           "shotClockOperator": "Operador 24s",
           "assistantScorer": "Representante",
-          "crewChief": "Crew Chief",
+          "crewChief": "Árbitro",
           "umpire1": "Fiscal 1",
           "umpire2": "Fiscal 2"
         }
@@ -544,7 +545,7 @@
         "assistantScorer": "Representante",
         "timekeeper": "Cronometrista",
         "shotClockOperator": "Operador dos 24 segundos",
-        "crewChief": "Crew Chief (Árbitro Principal)",
+        "crewChief": "Árbitro",
         "umpire1": "Fiscal 1",
         "umpire2": "Fiscal 2"
       },
