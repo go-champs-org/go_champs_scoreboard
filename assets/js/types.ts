@@ -128,6 +128,7 @@ export type BasketballViews =
 
 export interface ViewSettingsState {
   view: BasketballViews;
+  available_views: BasketballViews[];
 }
 
 export interface ProtestState {
@@ -213,6 +214,7 @@ export const DEFAULT_GAME_STATE = {
   },
   view_settings_state: {
     view: 'basketball-medium',
+    available_views: [],
   },
   officials: [],
   protest: {
