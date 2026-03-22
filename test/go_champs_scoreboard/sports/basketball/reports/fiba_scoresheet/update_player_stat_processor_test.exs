@@ -51,6 +51,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
 
       assert result_scoresheet.team_a.running_score == expected_running_score
       assert result_scoresheet.team_a.score == 1
+      assert result_scoresheet.team_a.points_by_period == %{game_state.clock_state.period => 1}
     end
 
     test "returns a fiba scoresheet data running score when event log payload with field_goals_made operation is increment and team-type is away" do
@@ -94,6 +95,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
 
       assert result_scoresheet.team_b.running_score == expected_running_score
       assert result_scoresheet.team_b.score == 2
+      assert result_scoresheet.team_b.points_by_period == %{game_state.clock_state.period => 2}
     end
 
     test "returns a fiba scoresheet data running score when event log payload with three_point_field_goals_made operation is increment and team-type is away" do
@@ -137,6 +139,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
 
       assert result_scoresheet.team_b.running_score == expected_running_score
       assert result_scoresheet.team_b.score == 3
+      assert result_scoresheet.team_b.points_by_period == %{game_state.clock_state.period => 3}
     end
 
     test "returns a fiba scoresheet data player fouls when event log payload with fouls_personal operation is increment and team-type is away" do

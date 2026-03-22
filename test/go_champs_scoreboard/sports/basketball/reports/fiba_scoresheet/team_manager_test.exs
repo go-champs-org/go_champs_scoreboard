@@ -1378,4 +1378,69 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       assert updated_player3.has_started == true
     end
   end
+
+  describe "add_points_to_period/3" do
+    test "adds points to an empty points_by_period map" do
+      team = %FibaScoresheet.Team{
+        name: "Test",
+        players: [],
+        coach: %FibaScoresheet.Coach{id: "", name: "", fouls: []},
+        assistant_coach: %FibaScoresheet.Coach{id: "", name: "", fouls: []},
+        all_fouls: [],
+        timeouts: [],
+        running_score: %{},
+        head_coach_challenges: [],
+        score: 0,
+        has_walkover: false,
+        points_by_period: %{}
+      }
+
+      updated_team = TeamManager.add_points_to_period(team, 1, 2)
+
+      assert updated_team.points_by_period == %{1 => 2}
+    end
+
+    test "accumulates points for the same period" do
+      team = %FibaScoresheet.Team{
+        name: "Test",
+        players: [],
+        coach: %FibaScoresheet.Coach{id: "", name: "", fouls: []},
+        assistant_coach: %FibaScoresheet.Coach{id: "", name: "", fouls: []},
+        all_fouls: [],
+        timeouts: [],
+        running_score: %{},
+        head_coach_challenges: [],
+        score: 0,
+        has_walkover: false,
+        points_by_period: %{1 => 10}
+      }
+
+      updated_team = TeamManager.add_points_to_period(team, 1, 3)
+
+      assert updated_team.points_by_period == %{1 => 13}
+    end
+
+    test "accumulates points across different periods" do
+      team = %FibaScoresheet.Team{
+        name: "Test",
+        players: [],
+        coach: %FibaScoresheet.Coach{id: "", name: "", fouls: []},
+        assistant_coach: %FibaScoresheet.Coach{id: "", name: "", fouls: []},
+        all_fouls: [],
+        timeouts: [],
+        running_score: %{},
+        head_coach_challenges: [],
+        score: 0,
+        has_walkover: false,
+        points_by_period: %{1 => 8}
+      }
+
+      updated_team =
+        team
+        |> TeamManager.add_points_to_period(2, 2)
+        |> TeamManager.add_points_to_period(2, 1)
+
+      assert updated_team.points_by_period == %{1 => 8, 2 => 3}
+    end
+  end
 end
