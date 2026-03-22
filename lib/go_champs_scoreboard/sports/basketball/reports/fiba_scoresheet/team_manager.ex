@@ -5,7 +5,6 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
 
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.PlayerManager
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.CoachManager
-  alias GoChampsScoreboard.Sports.Basketball.Reports.TeamStatsHelper
   alias GoChampsScoreboard.Games.Models.TeamState
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet
 
@@ -36,7 +35,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       head_coach_challenges: [],
       score: 0,
       has_walkover: false,
-      points_by_period: TeamStatsHelper.map_points_by_period(team_state)
+      points_by_period: %{}
     }
   end
 
@@ -72,22 +71,39 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
   end
 
   @doc """
+  Adds points to the team's points_by_period map for the given period.
+  """
+  @spec add_points_to_period(FibaScoresheet.Team.t(), integer(), integer()) ::
+          FibaScoresheet.Team.t()
+  def add_points_to_period(team, period, points) do
+    current = Map.get(team.points_by_period, period, 0)
+
+    %FibaScoresheet.Team{
+      team
+      | points_by_period: Map.put(team.points_by_period, period, current + points)
+    }
+  end
+
+  @doc """
+  Returns the point value for a given score type.
+  """
+  @spec points_for_score_type(String.t()) :: integer()
+  def points_for_score_type("FT"), do: 1
+  def points_for_score_type("2PT"), do: 2
+  def points_for_score_type("3PT"), do: 3
+  def points_for_score_type(_), do: 0
+
+  @doc """
   Updates the running score for a team.
   """
   @spec add_score(FibaScoresheet.Team.t(), FibaScoresheet.PointScore.t()) ::
           FibaScoresheet.Team.t()
   def add_score(team, point_score) do
-    score =
-      case point_score.type do
-        "2PT" -> team.score + 2
-        "3PT" -> team.score + 3
-        "FT" -> team.score + 1
-        _ -> team.score
-      end
+    score = team.score + points_for_score_type(point_score.type)
 
     running_score = Map.put(team.running_score, score, point_score)
 
-    %{team | running_score: running_score, score: score}
+    %FibaScoresheet.Team{team | running_score: running_score, score: score}
   end
 
   @doc """

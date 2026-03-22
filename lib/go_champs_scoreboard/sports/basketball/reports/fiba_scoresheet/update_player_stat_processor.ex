@@ -87,6 +87,10 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
 
       team
       |> TeamManager.add_score(point_score)
+      |> TeamManager.add_points_to_period(
+        event_log.game_clock_period,
+        TeamManager.points_for_score_type(point_score_type)
+      )
     end
   end
 
