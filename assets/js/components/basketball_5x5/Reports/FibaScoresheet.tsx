@@ -549,6 +549,91 @@ function ScoresheetPage({ scoresheetData }: FibaScoresheetProps) {
   );
 }
 
+function ExtendedScoresheetPage({ scoresheetData }: FibaScoresheetProps) {
+  return (
+    <Page size="A4" style={styles.page}>
+      <PageHeader
+        organizationName={scoresheetData.info.organization_name}
+        tournamentName={scoresheetData.info.tournament_name}
+        tournamentLogoUrl={scoresheetData.info.tournament_logo_url}
+        organizationLogoUrl={scoresheetData.info.organization_logo_url}
+        sponsors={scoresheetData.info.sponsors}
+        qrCodeUrl={scoresheetData.info.web_url}
+      />
+      <View style={styles.main}>
+        <View style={styles.main.header}>
+          <HeaderBox
+            number={scoresheetData.info.number}
+            crewChief={scoresheetData.crew_chief}
+            umpire1={scoresheetData.umpire_1}
+            umpire2={scoresheetData.umpire_2}
+            datetime={scoresheetData.info.actual_start_datetime}
+            location={scoresheetData.info.location}
+            city={scoresheetData.info.city}
+            teamAName={scoresheetData.team_a.name}
+            teamBName={scoresheetData.team_b.name}
+            isGameEnded={!!scoresheetData.info.actual_end_datetime}
+          />
+        </View>
+        <View style={styles.main.teamsAndRunningScoreContainer}>
+          <View style={styles.main.teamsAndRunningScoreContainer.containerLeft}>
+            <TeamBox
+              type="A"
+              team={scoresheetData.team_a}
+              isGameEnded={!!scoresheetData.info.actual_end_datetime}
+            />
+            <TeamBox
+              type="B"
+              team={scoresheetData.team_b}
+              isGameEnded={!!scoresheetData.info.actual_end_datetime}
+            />
+            <OfficialsBox
+              scorer={scoresheetData.scorer}
+              assistantScorer={scoresheetData.assistant_scorer}
+              timekeeper={scoresheetData.timekeeper}
+              shotClockOperator={scoresheetData.shot_clock_operator}
+              isGameEnded={!!scoresheetData.info.actual_end_datetime}
+            />
+            <FiscalsBox
+              crewChief={scoresheetData.crew_chief}
+              umpire1={scoresheetData.umpire_1}
+              umpire2={scoresheetData.umpire_2}
+              isGameEnded={!!scoresheetData.info.actual_end_datetime}
+            />
+          </View>
+          <View
+            style={styles.main.teamsAndRunningScoreContainer.containerRight}
+          >
+            <RunningScoreBox
+              aTeamRunningScore={scoresheetData.team_a.running_score}
+              aTeamLastScore={scoresheetData.team_a.score}
+              bTeamRunningScore={scoresheetData.team_b.running_score}
+              bTeamLastScore={scoresheetData.team_b.score}
+              isGameEnded={!!scoresheetData.info.actual_end_datetime}
+              hasWalkoverTeam={
+                scoresheetData.team_a.has_walkover ||
+                scoresheetData.team_b.has_walkover
+              }
+              startScore={161}
+            />
+            <Periods
+              teamA={scoresheetData.team_a}
+              teamB={scoresheetData.team_b}
+              isGameEnded={!!scoresheetData.info.actual_end_datetime}
+            />
+            <EndResults
+              teamA={scoresheetData.team_a}
+              teamB={scoresheetData.team_b}
+            />
+            <Protest protest={scoresheetData.protest} />
+            <EndGame endDatetime={scoresheetData.info.actual_end_datetime} />
+          </View>
+        </View>
+      </View>
+    </Page>
+  );
+}
+
 function GameReportPage({ scoresheetData }: FibaScoresheetProps) {
   const { t } = useTranslation();
   return (
@@ -614,9 +699,15 @@ function FibaScoresheet({ scoresheetData }: FibaScoresheetProps) {
     scoresheetData.info.game_report &&
     scoresheetData.info.game_report.trim() !== '';
 
+  const needsExtendedPage =
+    scoresheetData.team_a.score > 160 || scoresheetData.team_b.score > 160;
+
   return (
     <Document title={`FIBA Scoresheet - Game ${scoresheetData.game_id}`}>
       <ScoresheetPage scoresheetData={scoresheetData} />
+      {needsExtendedPage && (
+        <ExtendedScoresheetPage scoresheetData={scoresheetData} />
+      )}
       {hasGameReport && <GameReportPage scoresheetData={scoresheetData} />}
     </Document>
   );

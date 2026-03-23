@@ -291,10 +291,12 @@ function ScoreList({
 
 function generateRunningScoreData(
   teamRunnigScore: RunningScore,
+  startScore: number,
+  endScore: number,
 ): RenderRunningScore {
   const allRunningScore = {};
 
-  for (let i = 1; i <= 160; i++) {
+  for (let i = startScore; i <= endScore; i++) {
     allRunningScore[i] = teamRunnigScore[i] || null;
   }
 
@@ -308,6 +310,7 @@ export default function RunningScoreBox({
   bTeamLastScore = 0,
   isGameEnded = false,
   hasWalkoverTeam = false,
+  startScore = 1,
 }: {
   aTeamRunningScore: RunningScore;
   aTeamLastScore: number;
@@ -315,12 +318,23 @@ export default function RunningScoreBox({
   bTeamLastScore: number;
   isGameEnded?: boolean;
   hasWalkoverTeam?: boolean;
+  startScore?: number;
 }) {
   const { t } = useTranslation();
-  const aTeamFullRunningScore = generateRunningScoreData(aTeamRunningScore);
-  const bTeamFullRunningScore = generateRunningScoreData(bTeamRunningScore);
+  const endScore = startScore + 159;
+  const aTeamFullRunningScore = generateRunningScoreData(
+    aTeamRunningScore,
+    startScore,
+    endScore,
+  );
+  const bTeamFullRunningScore = generateRunningScoreData(
+    bTeamRunningScore,
+    startScore,
+    endScore,
+  );
   const aTeamLastScoreAdjusted = hasWalkoverTeam ? 0 : aTeamLastScore;
   const bTeamLastScoreAdjusted = hasWalkoverTeam ? 0 : bTeamLastScore;
+  const s = startScore;
   return (
     <View style={styles.runningScore}>
       <View style={styles.runningScore.header}>
@@ -333,8 +347,8 @@ export default function RunningScoreBox({
           </View>
           <ScoreList
             runningScore={aTeamFullRunningScore}
-            firstNumber={1}
-            lastNumber={40}
+            firstNumber={s}
+            lastNumber={s + 39}
             lastTeamScore={aTeamLastScoreAdjusted}
             isGameEnded={isGameEnded}
           />
@@ -345,8 +359,8 @@ export default function RunningScoreBox({
           </View>
           <ScoreList
             runningScore={bTeamFullRunningScore}
-            firstNumber={1}
-            lastNumber={40}
+            firstNumber={s}
+            lastNumber={s + 39}
             isReversed
             lastTeamScore={bTeamLastScoreAdjusted}
             isGameEnded={isGameEnded}
@@ -358,8 +372,8 @@ export default function RunningScoreBox({
           </View>
           <ScoreList
             runningScore={aTeamFullRunningScore}
-            firstNumber={41}
-            lastNumber={80}
+            firstNumber={s + 40}
+            lastNumber={s + 79}
             lastTeamScore={aTeamLastScoreAdjusted}
             isGameEnded={isGameEnded}
           />
@@ -370,8 +384,8 @@ export default function RunningScoreBox({
           </View>
           <ScoreList
             runningScore={bTeamFullRunningScore}
-            firstNumber={41}
-            lastNumber={80}
+            firstNumber={s + 40}
+            lastNumber={s + 79}
             isReversed
             lastTeamScore={bTeamLastScoreAdjusted}
             isGameEnded={isGameEnded}
@@ -383,8 +397,8 @@ export default function RunningScoreBox({
           </View>
           <ScoreList
             runningScore={aTeamFullRunningScore}
-            firstNumber={81}
-            lastNumber={120}
+            firstNumber={s + 80}
+            lastNumber={s + 119}
             lastTeamScore={aTeamLastScoreAdjusted}
             isGameEnded={isGameEnded}
           />
@@ -395,8 +409,8 @@ export default function RunningScoreBox({
           </View>
           <ScoreList
             runningScore={bTeamFullRunningScore}
-            firstNumber={81}
-            lastNumber={120}
+            firstNumber={s + 80}
+            lastNumber={s + 119}
             isReversed
             lastTeamScore={bTeamLastScoreAdjusted}
             isGameEnded={isGameEnded}
@@ -408,8 +422,8 @@ export default function RunningScoreBox({
           </View>
           <ScoreList
             runningScore={aTeamFullRunningScore}
-            firstNumber={121}
-            lastNumber={160}
+            firstNumber={s + 120}
+            lastNumber={s + 159}
             lastTeamScore={aTeamLastScoreAdjusted}
             isGameEnded={isGameEnded}
           />
@@ -420,8 +434,8 @@ export default function RunningScoreBox({
           </View>
           <ScoreList
             runningScore={bTeamFullRunningScore}
-            firstNumber={121}
-            lastNumber={160}
+            firstNumber={s + 120}
+            lastNumber={s + 159}
             isReversed
             lastTeamScore={bTeamLastScoreAdjusted}
             isGameEnded={isGameEnded}
