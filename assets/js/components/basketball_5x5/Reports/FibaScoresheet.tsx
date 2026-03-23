@@ -351,7 +351,15 @@ function Periods({
   );
 }
 
-function EndResults({ teamA, teamB }: { teamA: Team; teamB: Team }) {
+function EndResults({
+  teamA,
+  teamB,
+  isGameEnded,
+}: {
+  teamA: Team;
+  teamB: Team;
+  isGameEnded: boolean;
+}) {
   const { t } = useTranslation();
   const winnerTeam = teamA.score > teamB.score ? teamA : teamB;
   return (
@@ -363,7 +371,9 @@ function EndResults({ teamA, teamB }: { teamA: Team; teamB: Team }) {
             period={5}
             teamAScore={teamA.score}
             teamBScore={teamB.score}
-            shouldDisplayZero={teamA.has_walkover || teamB.has_walkover}
+            shouldDisplayZero={
+              teamA.has_walkover || teamB.has_walkover || !isGameEnded
+            }
           />
         </View>
         <View style={styles.periods.row.column}></View>
@@ -376,7 +386,7 @@ function EndResults({ teamA, teamB }: { teamA: Team; teamB: Team }) {
             </View>
             <View style={styles.periods.period.winningTeamName}>
               <Text style={styles.periods.period.winningTeamName.content}>
-                {winnerTeam.name}
+                {isGameEnded ? winnerTeam.name : ''}
               </Text>
             </View>
           </View>
@@ -538,6 +548,7 @@ function ScoresheetPage({ scoresheetData }: FibaScoresheetProps) {
             <EndResults
               teamA={scoresheetData.team_a}
               teamB={scoresheetData.team_b}
+              isGameEnded={!!scoresheetData.info.actual_end_datetime}
             />
             <Protest protest={scoresheetData.protest} />
             <EndGame endDatetime={scoresheetData.info.actual_end_datetime} />
@@ -623,6 +634,7 @@ function ExtendedScoresheetPage({ scoresheetData }: FibaScoresheetProps) {
             <EndResults
               teamA={scoresheetData.team_a}
               teamB={scoresheetData.team_b}
+              isGameEnded={!!scoresheetData.info.actual_end_datetime}
             />
             <Protest protest={scoresheetData.protest} />
             <EndGame endDatetime={scoresheetData.info.actual_end_datetime} />
