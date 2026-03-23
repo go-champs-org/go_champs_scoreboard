@@ -26,7 +26,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore do
 
     @type t :: %__MODULE__{
             name: String.t(),
-            points_by_period: %{String.t() => integer()},
+            points_by_period: %{integer() => integer()},
             total_points: integer(),
             total_player_stats: %{String.t() => number()},
             players: list(Player.t())

@@ -3,12 +3,13 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.FibaBoxScore
   use GoChampsScoreboard.DataCase
 
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.FibaBoxScoreManager
+  alias GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.EventProcessor
   alias GoChampsScoreboard.Games.EventLogs
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore
   import GoChampsScoreboard.GameStateFixtures
 
-  describe "bootstrap/1" do
-    test "returns a FibaBoxScore struct with initial values" do
+  describe "bootstrap/1 with full event pipeline" do
+    test "returns a FibaBoxScore struct with stats accumulated from events" do
       game_state = basketball_game_state_fixture()
 
       event_first_quarter =
@@ -25,7 +26,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.FibaBoxScore
         )
 
       # First quarter away team is home 0 - away 2
-      updated_game_stats_first_quarter =
+      updated_game_state_1 =
         GoChampsScoreboard.Events.Handler.handle(game_state, event_first_quarter)
 
       event_second_quarter =
@@ -42,9 +43,9 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.FibaBoxScore
         )
 
       # Second quarter home team is home 2 - away 2
-      updated_game_stats_second_quarter =
+      updated_game_state_2 =
         GoChampsScoreboard.Events.Handler.handle(
-          updated_game_stats_first_quarter,
+          updated_game_state_1,
           event_second_quarter
         )
 
@@ -62,9 +63,9 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.FibaBoxScore
           }
         )
 
-      updated_game_stats_third_quarter =
+      updated_game_state_3 =
         GoChampsScoreboard.Events.Handler.handle(
-          updated_game_stats_second_quarter,
+          updated_game_state_2,
           event_third_quarter
         )
 
@@ -82,9 +83,9 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.FibaBoxScore
           }
         )
 
-      updated_game_state =
+      updated_game_state_4 =
         GoChampsScoreboard.Events.Handler.handle(
-          updated_game_stats_third_quarter,
+          updated_game_state_3,
           event_fourth_quarter
         )
 
@@ -103,11 +104,26 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.FibaBoxScore
         )
 
       final_game_state =
-        GoChampsScoreboard.Events.Handler.handle(updated_game_state, event_overtime)
+        GoChampsScoreboard.Events.Handler.handle(updated_game_state_4, event_overtime)
 
-      {:ok, event_log} = EventLogs.persist(event_overtime, final_game_state)
+      # Persist all events with their corresponding post-event game states
+      {:ok, _} = EventLogs.persist(event_first_quarter, updated_game_state_1)
+      {:ok, _} = EventLogs.persist(event_second_quarter, updated_game_state_2)
+      {:ok, _} = EventLogs.persist(event_third_quarter, updated_game_state_3)
+      {:ok, _} = EventLogs.persist(event_fourth_quarter, updated_game_state_4)
+      {:ok, last_event_log} = EventLogs.persist(event_overtime, final_game_state)
 
-      result = FibaBoxScoreManager.bootstrap(event_log)
+      # Bootstrap from the last event log
+      initial_data = FibaBoxScoreManager.bootstrap(last_event_log)
+
+      # Run full event pipeline
+      all_events = EventLogs.get_all_by_game_id(game_state.id, with_snapshot: true)
+
+      result =
+        Enum.reduce(all_events, initial_data, fn event, acc ->
+          EventProcessor.process(event, acc)
+        end)
+        |> FibaBoxScoreManager.finalize()
 
       {:ok, expected_datetime, _} = DateTime.from_iso8601("2023-10-01T12:00:00Z")
       {:ok, expected_actual_start_datetime, _} = DateTime.from_iso8601("2023-10-01T13:00:00Z")
@@ -143,7 +159,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.FibaBoxScore
       # Assert home_team fields
       home_team = result.home_team
       assert home_team.name == "Some home team"
-      assert home_team.points_by_period == %{"2" => 2, "3" => 2, "5" => 2}
+      assert home_team.points_by_period == %{2 => 2, 3 => 2, 5 => 2}
       assert home_team.total_points == 6
       assert home_team.total_player_stats["field_goals_made"] == 3
 
@@ -163,11 +179,13 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.FibaBoxScore
              ] = home_team.players
 
       assert player_stats["field_goals_made"] == 3
+      assert player_stats["points"] == 6
+      assert player_stats["field_goals_attempted"] == 3
 
       # Assert away_team fields
       away_team = result.away_team
       assert away_team.name == "Some away team"
-      assert away_team.points_by_period == %{"1" => 2, "4" => 2}
+      assert away_team.points_by_period == %{1 => 2, 4 => 2}
       assert away_team.total_points == 4
       assert away_team.total_player_stats["field_goals_made"] == 2
 
@@ -181,6 +199,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.FibaBoxScore
              ] = away_team.players
 
       assert away_player_stats["field_goals_made"] == 2
+      assert away_player_stats["points"] == 4
     end
   end
 end

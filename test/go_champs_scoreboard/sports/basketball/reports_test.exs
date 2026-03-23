@@ -22,9 +22,9 @@ defmodule GoChampsScoreboard.Sports.Basketball.ReportsTest do
       # Assert home_team fields
       home_team = result.home_team
       assert home_team.name == "Some home team"
-      assert home_team.points_by_period == %{"4" => 0}
-      assert home_team.total_points == 0
-      assert home_team.total_player_stats["field_goals_made"] == 0
+      assert home_team.points_by_period == %{1 => 6, 2 => 6, 3 => 6, 4 => 6}
+      assert home_team.total_points == 24
+      assert home_team.total_player_stats["field_goals_made"] == 4
 
       assert [
                %FibaBoxScore.Player{
@@ -35,9 +35,10 @@ defmodule GoChampsScoreboard.Sports.Basketball.ReportsTest do
                }
              ] = home_team.players
 
-      assert player_stats["field_goals_made"] == 0
-      assert player_stats["free_throws_made"] == 1
-      assert player_stats["three_point_field_goals_made"] == 0
+      assert player_stats["field_goals_made"] == 4
+      assert player_stats["free_throws_made"] == 4
+      assert player_stats["three_point_field_goals_made"] == 4
+      assert player_stats["points"] == 24
       # Assert away_team fields
       away_team = result.away_team
       assert away_team.name == "Some away team"
