@@ -421,13 +421,12 @@ function Protest({ protest }: { protest: Protest }) {
 
 function EndGame({ endDatetime }: { endDatetime: string }) {
   const { t } = useTranslation();
-  const formattedEndDatetime = new Date(endDatetime).toLocaleTimeString(
-    'pt-BR',
-    {
-      hour: '2-digit',
-      minute: '2-digit',
-    },
-  );
+  const formattedEndDatetime = endDatetime
+    ? new Date(endDatetime).toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    : '';
   return (
     <View style={styles.periods}>
       <View style={styles.periods.row}>

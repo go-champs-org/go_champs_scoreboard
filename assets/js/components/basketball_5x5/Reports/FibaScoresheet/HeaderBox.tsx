@@ -75,15 +75,19 @@ function HeaderBox({
   isGameEnded = false,
 }: HeaderBoxProps) {
   const { t } = useTranslation();
-  const date = new Date(datetime).toLocaleDateString('pt-BR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  });
-  const time = new Date(datetime).toLocaleTimeString('pt-BR', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  const date = datetime
+    ? new Date(datetime).toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      })
+    : '';
+  const time = datetime
+    ? new Date(datetime).toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    : '';
   return (
     <View style={styles.headerBox}>
       {/* Row 1: Location | Date | Game Number */}
