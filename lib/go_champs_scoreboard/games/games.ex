@@ -6,6 +6,7 @@ defmodule GoChampsScoreboard.Games.Games do
   alias GoChampsScoreboard.Events.Handler
   alias GoChampsScoreboard.Games.Bootstrapper
   alias GoChampsScoreboard.Games.ResourceManager
+  alias GoChampsScoreboard.Games.GameProcess
   alias GoChampsScoreboard.Games.GameStateCache
   alias GoChampsScoreboard.Games.Models.TeamState
   alias GoChampsScoreboard.Games.Messages.PubSub
@@ -87,17 +88,23 @@ defmodule GoChampsScoreboard.Games.Games do
 
   @spec react_to_event(Event.t(), GameState.t()) :: GameState.t()
   def react_to_event(event, game_id) do
-    case GameStateCache.get(game_id) do
-      {:ok, nil} ->
-        raise RuntimeError, message: "Game not found"
+    case Registry.lookup(GoChampsScoreboard.Games.GameProcessRegistry, game_id) do
+      [{_pid, _}] ->
+        GameProcess.react_to_event(game_id, event)
 
-      {:ok, current_game_state} ->
-        new_game_state = Handler.handle(current_game_state, event)
-        GameStateCache.update(new_game_state)
+      [] ->
+        case GameStateCache.get(game_id) do
+          {:ok, nil} ->
+            raise RuntimeError, message: "Game not found"
 
-        PubSub.broadcast_game_reacted_to_event(event, new_game_state)
+          {:ok, current_game_state} ->
+            new_game_state = Handler.handle(current_game_state, event)
+            GameStateCache.update(new_game_state)
 
-        new_game_state
+            PubSub.broadcast_game_reacted_to_event(event, new_game_state)
+
+            new_game_state
+        end
     end
   end
 

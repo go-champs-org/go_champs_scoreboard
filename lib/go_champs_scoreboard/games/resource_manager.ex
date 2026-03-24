@@ -4,6 +4,7 @@ defmodule GoChampsScoreboard.Games.ResourceManager do
   """
   @behaviour GoChampsScoreboard.Games.ResourceManagerBehavior
 
+  alias GoChampsScoreboard.Games.GameProcessSupervisor
   alias GoChampsScoreboard.Infrastructure.GameEventsListenerSupervisor
   alias GoChampsScoreboard.Infrastructure.GameEventLogsListenerSupervisor
   alias GoChampsScoreboard.Infrastructure.GameTickerSupervisor
@@ -14,8 +15,17 @@ defmodule GoChampsScoreboard.Games.ResourceManager do
         game_id,
         game_events_listener_supervisor \\ GameEventsListenerSupervisor,
         game_event_logs_listener_supervisor \\ GameEventLogsListenerSupervisor,
-        game_ticker_supervisor \\ GameTickerSupervisor
+        game_ticker_supervisor \\ GameTickerSupervisor,
+        game_process_supervisor \\ GameProcessSupervisor
       ) do
+    case game_process_supervisor.check_game_process(game_id) do
+      {:error, :not_found} ->
+        game_process_supervisor.start_game_process(game_id)
+
+      _ ->
+        :ok
+    end
+
     case game_events_listener_supervisor.check_game_events_listener(game_id) do
       {:error, :not_found} ->
         game_events_listener_supervisor.start_game_events_listener(game_id)
@@ -47,8 +57,10 @@ defmodule GoChampsScoreboard.Games.ResourceManager do
         game_id,
         game_events_listener_supervisor \\ GameEventsListenerSupervisor,
         game_event_logs_listener_supervisor \\ GameEventLogsListenerSupervisor,
-        game_ticker_supervisor \\ GameTickerSupervisor
+        game_ticker_supervisor \\ GameTickerSupervisor,
+        game_process_supervisor \\ GameProcessSupervisor
       ) do
+    game_process_supervisor.start_game_process(game_id)
     game_events_listener_supervisor.start_game_events_listener(game_id)
     game_event_logs_listener_supervisor.start_game_event_logs_listener(game_id)
     game_ticker_supervisor.start_game_ticker(game_id)
@@ -62,11 +74,13 @@ defmodule GoChampsScoreboard.Games.ResourceManager do
         game_id,
         game_events_listener_supervisor \\ GameEventsListenerSupervisor,
         game_event_logs_listener_supervisor \\ GameEventLogsListenerSupervisor,
-        game_ticker_supervisor \\ GameTickerSupervisor
+        game_ticker_supervisor \\ GameTickerSupervisor,
+        game_process_supervisor \\ GameProcessSupervisor
       ) do
+    game_ticker_supervisor.stop_game_ticker(game_id)
     game_events_listener_supervisor.stop_game_events_listener(game_id)
     game_event_logs_listener_supervisor.stop_game_event_logs_listener(game_id)
-    game_ticker_supervisor.stop_game_ticker(game_id)
+    game_process_supervisor.stop_game_process(game_id)
 
     :ok
   end

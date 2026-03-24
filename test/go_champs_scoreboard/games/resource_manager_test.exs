@@ -3,6 +3,7 @@ defmodule GoChampsScoreboard.Games.ResourceManagerTest do
   alias GoChampsScoreboard.Games.ResourceManager
   import Mox
 
+  alias GoChampsScoreboard.Games.GameProcessSupervisorMock
   alias GoChampsScoreboard.Infrastructure.GameEventsListenerSupervisorMock
   alias GoChampsScoreboard.Infrastructure.GameEventLogsListenerSupervisorMock
   alias GoChampsScoreboard.Infrastructure.GameTickerSupervisorMock
@@ -10,6 +11,8 @@ defmodule GoChampsScoreboard.Games.ResourceManagerTest do
   describe "check_and_restart/1" do
     test "starts GameTicker for game-id if not running" do
       game_id = "some-game-id"
+
+      expect(GameProcessSupervisorMock, :check_game_process, fn _game_id -> :ok end)
 
       expect(GameTickerSupervisorMock, :check_game_ticker, fn _game_id -> {:error, :not_found} end)
 
@@ -26,7 +29,8 @@ defmodule GoChampsScoreboard.Games.ResourceManagerTest do
           game_id,
           GameEventsListenerSupervisorMock,
           GameEventLogsListenerSupervisorMock,
-          GameTickerSupervisorMock
+          GameTickerSupervisorMock,
+          GameProcessSupervisorMock
         )
 
       verify!()
@@ -35,6 +39,7 @@ defmodule GoChampsScoreboard.Games.ResourceManagerTest do
     test "does not start GameTicker for game-id if already running" do
       game_id = "some-game-id"
 
+      expect(GameProcessSupervisorMock, :check_game_process, fn _game_id -> :ok end)
       expect(GameTickerSupervisorMock, :check_game_ticker, fn _game_id -> :ok end)
 
       expect(GameEventsListenerSupervisorMock, :check_game_events_listener, fn _game_id -> :ok end)
@@ -48,7 +53,8 @@ defmodule GoChampsScoreboard.Games.ResourceManagerTest do
           game_id,
           GameEventsListenerSupervisorMock,
           GameEventLogsListenerSupervisorMock,
-          GameTickerSupervisorMock
+          GameTickerSupervisorMock,
+          GameProcessSupervisorMock
         )
 
       verify!()
@@ -56,6 +62,8 @@ defmodule GoChampsScoreboard.Games.ResourceManagerTest do
 
     test "starts EventListener for game-id if not running" do
       game_id = "some-game-id"
+
+      expect(GameProcessSupervisorMock, :check_game_process, fn _game_id -> :ok end)
 
       expect(GameEventsListenerSupervisorMock, :check_game_events_listener, fn _game_id ->
         {:error, :not_found}
@@ -74,7 +82,8 @@ defmodule GoChampsScoreboard.Games.ResourceManagerTest do
           game_id,
           GameEventsListenerSupervisorMock,
           GameEventLogsListenerSupervisorMock,
-          GameTickerSupervisorMock
+          GameTickerSupervisorMock,
+          GameProcessSupervisorMock
         )
 
       verify!()
@@ -82,6 +91,8 @@ defmodule GoChampsScoreboard.Games.ResourceManagerTest do
 
     test "does not start EventListener for game-id if already running" do
       game_id = "some-game-id"
+
+      expect(GameProcessSupervisorMock, :check_game_process, fn _game_id -> :ok end)
 
       expect(GameEventsListenerSupervisorMock, :check_game_events_listener, fn _game_id -> :ok end)
 
@@ -96,7 +107,37 @@ defmodule GoChampsScoreboard.Games.ResourceManagerTest do
           game_id,
           GameEventsListenerSupervisorMock,
           GameEventLogsListenerSupervisorMock,
-          GameTickerSupervisorMock
+          GameTickerSupervisorMock,
+          GameProcessSupervisorMock
+        )
+
+      verify!()
+    end
+
+    test "starts GameProcess for game-id if not running" do
+      game_id = "some-game-id"
+
+      expect(GameProcessSupervisorMock, :check_game_process, fn _game_id ->
+        {:error, :not_found}
+      end)
+
+      expect(GameProcessSupervisorMock, :start_game_process, fn _game_id -> {:ok, self()} end)
+
+      expect(GameEventsListenerSupervisorMock, :check_game_events_listener, fn _game_id -> :ok end)
+
+      expect(GameEventLogsListenerSupervisorMock, :check_game_event_logs_listener, fn _game_id ->
+        :ok
+      end)
+
+      expect(GameTickerSupervisorMock, :check_game_ticker, fn _game_id -> :ok end)
+
+      :ok =
+        ResourceManager.check_and_restart(
+          game_id,
+          GameEventsListenerSupervisorMock,
+          GameEventLogsListenerSupervisorMock,
+          GameTickerSupervisorMock,
+          GameProcessSupervisorMock
         )
 
       verify!()
@@ -104,6 +145,8 @@ defmodule GoChampsScoreboard.Games.ResourceManagerTest do
 
     test "starts EventLogsListener for game-id if not running" do
       game_id = "some-game-id"
+
+      expect(GameProcessSupervisorMock, :check_game_process, fn _game_id -> :ok end)
 
       expect(GameEventsListenerSupervisorMock, :check_game_events_listener, fn _game_id -> :ok end)
 
@@ -122,7 +165,8 @@ defmodule GoChampsScoreboard.Games.ResourceManagerTest do
           game_id,
           GameEventsListenerSupervisorMock,
           GameEventLogsListenerSupervisorMock,
-          GameTickerSupervisorMock
+          GameTickerSupervisorMock,
+          GameProcessSupervisorMock
         )
 
       verify!()
@@ -130,6 +174,8 @@ defmodule GoChampsScoreboard.Games.ResourceManagerTest do
 
     test "does not start EventLogsListener for game-id if already running" do
       game_id = "some-game-id"
+
+      expect(GameProcessSupervisorMock, :check_game_process, fn _game_id -> :ok end)
 
       expect(GameEventsListenerSupervisorMock, :check_game_events_listener, fn _game_id -> :ok end)
 
@@ -144,7 +190,8 @@ defmodule GoChampsScoreboard.Games.ResourceManagerTest do
           game_id,
           GameEventsListenerSupervisorMock,
           GameEventLogsListenerSupervisorMock,
-          GameTickerSupervisorMock
+          GameTickerSupervisorMock,
+          GameProcessSupervisorMock
         )
 
       verify!()
@@ -152,8 +199,10 @@ defmodule GoChampsScoreboard.Games.ResourceManagerTest do
   end
 
   describe "start_up/1" do
-    test "starts EventListener, EventLogsListener and then GameTicker for game-id" do
+    test "starts GameProcess first, then listeners, then GameTicker" do
       game_id = "some-game-id"
+
+      expect(GameProcessSupervisorMock, :start_game_process, fn _game_id -> {:ok, self()} end)
 
       expect(GameEventsListenerSupervisorMock, :start_game_events_listener, fn _game_id -> :ok end)
 
@@ -168,7 +217,8 @@ defmodule GoChampsScoreboard.Games.ResourceManagerTest do
           game_id,
           GameEventsListenerSupervisorMock,
           GameEventLogsListenerSupervisorMock,
-          GameTickerSupervisorMock
+          GameTickerSupervisorMock,
+          GameProcessSupervisorMock
         )
 
       verify!()
@@ -176,23 +226,25 @@ defmodule GoChampsScoreboard.Games.ResourceManagerTest do
   end
 
   describe "shut_down/1" do
-    test "stops EventListener, EventLogsListener and then GameTicker for game-id" do
+    test "stops GameTicker first, then listeners, then GameProcess last" do
       game_id = "some-game-id"
 
+      expect(GameTickerSupervisorMock, :stop_game_ticker, fn _game_id -> :ok end)
       expect(GameEventsListenerSupervisorMock, :stop_game_events_listener, fn _game_id -> :ok end)
 
       expect(GameEventLogsListenerSupervisorMock, :stop_game_event_logs_listener, fn _game_id ->
         :ok
       end)
 
-      expect(GameTickerSupervisorMock, :stop_game_ticker, fn _game_id -> :ok end)
+      expect(GameProcessSupervisorMock, :stop_game_process, fn _game_id -> :ok end)
 
       :ok =
         ResourceManager.shut_down(
           game_id,
           GameEventsListenerSupervisorMock,
           GameEventLogsListenerSupervisorMock,
-          GameTickerSupervisorMock
+          GameTickerSupervisorMock,
+          GameProcessSupervisorMock
         )
 
       verify!()
