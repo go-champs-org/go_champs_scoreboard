@@ -2,6 +2,7 @@ defmodule GoChampsScoreboard.Games.GameProcessTest do
   use ExUnit.Case, async: false
 
   alias GoChampsScoreboard.Events.Definitions.UpdateClockStateDefinition
+  alias GoChampsScoreboard.Events.Definitions.UpdateClockTimeAndPeriodDefinition
   alias GoChampsScoreboard.Games.GameProcess
   alias GoChampsScoreboard.Games.Models.GameClockState
   alias GoChampsScoreboard.Games.Models.GameState
@@ -43,19 +44,22 @@ defmodule GoChampsScoreboard.Games.GameProcessTest do
       n = 20
 
       tasks =
-        Enum.map(1..n, fn i ->
+        Enum.map(1..n, fn _i ->
           Task.async(fn ->
             event =
-              UpdateClockStateDefinition.create(game_state.id, i, 1, %{"state" => "running"})
+              UpdateClockTimeAndPeriodDefinition.create(game_state.id, 0, 0, %{
+                "property" => "period",
+                "operation" => "increment"
+              })
 
             GameProcess.react_to_event(game_state.id, event)
           end)
         end)
 
-      results = Enum.map(tasks, &Task.await/1)
+      Enum.each(tasks, &Task.await/1)
 
-      assert length(results) == n
-      assert Enum.all?(results, fn r -> r.clock_state.state == :running end)
+      final_state = GameProcess.get_state(game_state.id)
+      assert final_state.clock_state.period == n
     end
   end
 
@@ -79,7 +83,7 @@ defmodule GoChampsScoreboard.Games.GameProcessTest do
   defp set_test_game do
     away_team = TeamState.new(Ecto.UUID.generate(), "Some away team")
     home_team = TeamState.new(Ecto.UUID.generate(), "Some home team")
-    clock_state = GameClockState.new()
+    clock_state = GameClockState.new(600, 300, 0, 0)
     live_state = LiveState.new(:not_started)
 
     game_state =

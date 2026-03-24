@@ -10,7 +10,8 @@ defmodule GoChampsScoreboard.Games.ResourceManager do
   alias GoChampsScoreboard.Infrastructure.GameTickerSupervisor
 
   @impl true
-  @spec check_and_restart(String.t(), module(), module(), module(), module()) :: :ok | {:error, any()}
+  @spec check_and_restart(String.t(), module(), module(), module(), module()) ::
+          :ok | {:error, any()}
   def check_and_restart(
         game_id,
         game_events_listener_supervisor \\ GameEventsListenerSupervisor,

@@ -88,11 +88,10 @@ defmodule GoChampsScoreboard.Games.Games do
 
   @spec react_to_event(Event.t(), String.t()) :: GameState.t()
   def react_to_event(event, game_id) do
-    case Registry.lookup(GoChampsScoreboard.Games.GameProcessRegistry, game_id) do
-      [{_pid, _}] ->
-        GameProcess.react_to_event(game_id, event)
-
-      [] ->
+    try do
+      GameProcess.react_to_event(game_id, event)
+    catch
+      :exit, {:noproc, _} ->
         case GameStateCache.get(game_id) do
           {:ok, nil} ->
             raise RuntimeError, message: "Game not found"
