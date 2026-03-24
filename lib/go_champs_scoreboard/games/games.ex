@@ -86,7 +86,7 @@ defmodule GoChampsScoreboard.Games.Games do
     end
   end
 
-  @spec react_to_event(Event.t(), GameState.t()) :: GameState.t()
+  @spec react_to_event(Event.t(), String.t()) :: GameState.t()
   def react_to_event(event, game_id) do
     case Registry.lookup(GoChampsScoreboard.Games.GameProcessRegistry, game_id) do
       [{_pid, _}] ->
