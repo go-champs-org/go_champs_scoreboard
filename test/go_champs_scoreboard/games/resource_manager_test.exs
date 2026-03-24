@@ -228,15 +228,27 @@ defmodule GoChampsScoreboard.Games.ResourceManagerTest do
   describe "shut_down/1" do
     test "stops GameTicker first, then listeners, then GameProcess last" do
       game_id = "some-game-id"
+      {:ok, call_order} = Agent.start_link(fn -> [] end)
 
-      expect(GameTickerSupervisorMock, :stop_game_ticker, fn _game_id -> :ok end)
-      expect(GameEventsListenerSupervisorMock, :stop_game_events_listener, fn _game_id -> :ok end)
-
-      expect(GameEventLogsListenerSupervisorMock, :stop_game_event_logs_listener, fn _game_id ->
+      expect(GameTickerSupervisorMock, :stop_game_ticker, fn _game_id ->
+        Agent.update(call_order, &(&1 ++ [:game_ticker]))
         :ok
       end)
 
-      expect(GameProcessSupervisorMock, :stop_game_process, fn _game_id -> :ok end)
+      expect(GameEventsListenerSupervisorMock, :stop_game_events_listener, fn _game_id ->
+        Agent.update(call_order, &(&1 ++ [:game_events_listener]))
+        :ok
+      end)
+
+      expect(GameEventLogsListenerSupervisorMock, :stop_game_event_logs_listener, fn _game_id ->
+        Agent.update(call_order, &(&1 ++ [:game_event_logs_listener]))
+        :ok
+      end)
+
+      expect(GameProcessSupervisorMock, :stop_game_process, fn _game_id ->
+        Agent.update(call_order, &(&1 ++ [:game_process]))
+        :ok
+      end)
 
       :ok =
         ResourceManager.shut_down(
@@ -247,6 +259,14 @@ defmodule GoChampsScoreboard.Games.ResourceManagerTest do
           GameProcessSupervisorMock
         )
 
+      assert Agent.get(call_order, & &1) == [
+               :game_ticker,
+               :game_events_listener,
+               :game_event_logs_listener,
+               :game_process
+             ]
+
+      Agent.stop(call_order)
       verify!()
     end
   end
