@@ -3,6 +3,7 @@ import { GameClockState, LiveState, TeamState } from '../../types';
 import { invokeButtonClickRef } from '../../shared/invokeButtonClick';
 import { formatTime } from '../../shared/contentHelpers';
 import { useTranslation } from '../../hooks/useTranslation';
+import { isClockButtonsDisabled } from './clockControlsHelpers';
 
 interface ClockControlsProps {
   away_team: TeamState;
@@ -367,7 +368,12 @@ function ClockControls({
 }: ClockControlsProps) {
   const buttonPauseStart = React.useRef<HTMLButtonElement | null>(null);
 
-  const clockButtonsDisabled = live_state?.state !== 'in_progress';
+  const clockButtonsDisabled = isClockButtonsDisabled(
+    live_state,
+    clock_state,
+    home_team,
+    away_team,
+  );
   const isGameTied =
     away_team.stats_values['points'] === home_team.stats_values['points'];
   const endQuarterButtonDisabled = clock_state.period >= 4 && !isGameTied;

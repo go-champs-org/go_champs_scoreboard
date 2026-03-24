@@ -73,6 +73,7 @@ export interface TeamState {
 
 export interface GameClockState {
   initial_period_time: number;
+  initial_extra_period_time: number;
   time: number;
   period: number;
   state: 'not_started' | 'running' | 'paused' | 'stopped' | 'finished';
@@ -203,6 +204,7 @@ export const DEFAULT_GAME_STATE = {
   sport_id: '',
   clock_state: {
     initial_period_time: 0,
+    initial_extra_period_time: 0,
     time: 0,
     period: 0,
     state: 'not_started',

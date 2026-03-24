@@ -194,7 +194,9 @@ function PlayersControls({
   const isFirstSelectedPlayerPlaying = () =>
     selectedPlayers.length > 0 && selectedPlayers[0].state === 'playing';
   const isFirstSelectedPlayerOnBench = () =>
-    selectedPlayers.length > 0 && selectedPlayers[0].state === 'bench';
+    selectedPlayers.length > 0 &&
+    (selectedPlayers[0].state === 'bench' ||
+      selectedPlayers[0].state === 'available');
   const wouldExceedCourtLimit = () =>
     playingPlayers.length + selectedPlayers.length > maxNumberOfPlayerInCourt;
   const hasNoPlayingPlayers = () => playingPlayers.length === 0;
