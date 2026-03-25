@@ -151,6 +151,20 @@ defmodule GoChampsScoreboard.Games.Games do
     %{game_state | clock_state: clock_state}
   end
 
+  @spec stamp_last_action(GameState.t(), integer(), integer()) :: GameState.t()
+  def stamp_last_action(%{clock_state: nil} = game_state, _time, _period), do: game_state
+
+  def stamp_last_action(game_state, time, period) do
+    %{
+      game_state
+      | clock_state: %{
+          game_state.clock_state
+          | last_action_time: time,
+            last_action_period: period
+        }
+    }
+  end
+
   @spec update_protest_state(GameState.t(), ProtestState.t()) :: GameState.t()
   def update_protest_state(game_state, protest_state) do
     %{game_state | protest: protest_state}

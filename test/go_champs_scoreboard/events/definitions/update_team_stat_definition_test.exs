@@ -3,6 +3,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateTeamStatDefinitionTest do
   alias GoChampsScoreboard.Events.Definitions.UpdateTeamStatDefinition
   alias GoChampsScoreboard.Events.Models.Event
   alias GoChampsScoreboard.Games.Models.GameState
+  alias GoChampsScoreboard.Games.Models.GameClockState
 
   describe "validate/2" do
     test "returns :ok" do
@@ -116,6 +117,30 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateTeamStatDefinitionTest do
       }
 
       assert UpdateTeamStatDefinition.handle(@initial_state, event) == expected_state
+    end
+
+    test "stamps last_action_time and last_action_period on clock_state" do
+      initial_state = %{
+        @initial_state
+        | clock_state: %GameClockState{
+            time: 180,
+            period: 4,
+            last_action_time: nil,
+            last_action_period: nil
+          }
+      }
+
+      event =
+        UpdateTeamStatDefinition.create("game-id", 180, 4, %{
+          "operation" => "increment",
+          "team-type" => "home",
+          "stat-id" => "fouls_technical"
+        })
+
+      result = UpdateTeamStatDefinition.handle(initial_state, event)
+
+      assert result.clock_state.last_action_time == 180
+      assert result.clock_state.last_action_period == 4
     end
   end
 end

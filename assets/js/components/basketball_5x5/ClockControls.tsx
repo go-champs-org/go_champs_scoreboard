@@ -212,6 +212,19 @@ function InGameClockControls({
 }: InGameClockControlsProps) {
   const { t } = useTranslation();
 
+  const samePeriodAsLastAction =
+    clock_state.last_action_period !== null &&
+    clock_state.last_action_time !== null &&
+    clock_state.period === clock_state.last_action_period;
+
+  const isRewindOneBlocked =
+    samePeriodAsLastAction &&
+    clock_state.time + 1 >= clock_state.last_action_time!;
+
+  const isRewindSixtyBlocked =
+    samePeriodAsLastAction &&
+    clock_state.time + 60 >= clock_state.last_action_time!;
+
   return (
     <div className="columns is-multiline">
       <div className="column is-4">
@@ -263,7 +276,7 @@ function InGameClockControls({
           label="<<"
           tooltip={t('basketball.clock.tooltips.minusOneMinute')}
           onClick={() => clockEventHandlers.updateTime('increment60')}
-          disabled={clockButtonsDisabled}
+          disabled={clockButtonsDisabled || isRewindSixtyBlocked}
         />
       </div>
       <div className="column is-2">
@@ -271,7 +284,7 @@ function InGameClockControls({
           label="<"
           tooltip={t('basketball.clock.tooltips.minusOneSecond')}
           onClick={() => clockEventHandlers.updateTime('increment')}
-          disabled={clockButtonsDisabled}
+          disabled={clockButtonsDisabled || isRewindOneBlocked}
         />
       </div>
       <div className="column is-4">

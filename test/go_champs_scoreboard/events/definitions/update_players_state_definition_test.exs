@@ -1,7 +1,7 @@
 defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinitionTest do
   use ExUnit.Case
 
-  alias GoChampsScoreboard.Games.Models.{GameState, TeamState, PlayerState}
+  alias GoChampsScoreboard.Games.Models.{GameState, TeamState, PlayerState, GameClockState}
   alias GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinition
   alias GoChampsScoreboard.Events.Models.Event
 
@@ -510,6 +510,34 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinitionTest
       assert player_2.stats_values["game_started"] == 0
       # other stats preserved
       assert player_2.stats_values["assists"] == 2
+    end
+
+    test "stamps last_action_time and last_action_period on clock_state" do
+      game_state = %GameState{
+        clock_state: %GameClockState{
+          time: 120,
+          period: 1,
+          last_action_time: nil,
+          last_action_period: nil
+        },
+        home_team: %TeamState{
+          players: [
+            %PlayerState{id: "player-1", state: :playing, stats_values: %{}}
+          ]
+        }
+      }
+
+      event =
+        UpdatePlayersStateDefinition.create(game_state.id, 120, 1, %{
+          "team-type" => "home",
+          "player-ids" => ["player-1"],
+          "state" => "bench"
+        })
+
+      result = UpdatePlayersStateDefinition.handle(game_state, event)
+
+      assert result.clock_state.last_action_time == 120
+      assert result.clock_state.last_action_period == 1
     end
   end
 
