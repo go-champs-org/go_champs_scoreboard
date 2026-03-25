@@ -94,5 +94,35 @@ defmodule GoChampsScoreboard.Events.Definitions.LoadFromLastEventLogDefinitionTe
       # Should preserve original game state since no players to update
       assert result.id == original_game_state.id
     end
+
+    test "restores last_action_time and last_action_period from snapshot" do
+      original_game_state = basketball_game_state_fixture()
+      event = %Event{key: "load-from-last-event-log", game_id: original_game_state.id}
+
+      # Build a game state that already has last_action stamped
+      game_state_with_action = %GameState{
+        original_game_state
+        | clock_state: %GameClockState{
+            original_game_state.clock_state
+            | last_action_time: 420,
+              last_action_period: 2
+          }
+      }
+
+      test_event =
+        GoChampsScoreboard.Events.Definitions.StartGameDefinition.create(
+          original_game_state.id,
+          420,
+          2,
+          %{}
+        )
+
+      {:ok, _event_log} = EventLogs.persist(test_event, game_state_with_action)
+
+      result = LoadFromLastEventLogDefinition.handle(original_game_state, event)
+
+      assert result.clock_state.last_action_time == 420
+      assert result.clock_state.last_action_period == 2
+    end
   end
 end

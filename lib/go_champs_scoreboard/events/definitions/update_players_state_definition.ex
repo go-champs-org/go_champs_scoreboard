@@ -75,6 +75,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinition do
 
     current_game
     |> Games.update_team(team_type, updated_team)
+    |> Games.stamp_last_action(clock_state_time_at, clock_state_period_at)
   end
 
   @impl true

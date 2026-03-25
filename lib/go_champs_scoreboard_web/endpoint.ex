@@ -13,8 +13,8 @@ defmodule GoChampsScoreboardWeb.Endpoint do
 
   socket "/live", Phoenix.LiveView.Socket,
     websocket: [connect_info: [session: @session_options]],
-    # window_ms set to 20s to ensure long-poll cycles refresh well within Heroku's 55s idle limit (H15)
-    longpoll: [connect_info: [session: @session_options], window_ms: 20_000]
+    # window_ms set to 45s to ensure long-poll cycles refresh well within Heroku's 55s idle limit (H15)
+    longpoll: [connect_info: [session: @session_options], window_ms: 45_000]
 
   # CORS configuration
   @cors_config Application.compile_env(:go_champs_scoreboard, __MODULE__)[:cors] || [origins: "*"]

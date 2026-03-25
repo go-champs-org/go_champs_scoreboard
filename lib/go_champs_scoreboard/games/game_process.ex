@@ -39,9 +39,9 @@ defmodule GoChampsScoreboard.Games.GameProcess do
   @impl true
   def handle_call({:react_to_event, event}, from, state) do
     new_game_state = Handler.handle(state.game_state, event)
+    PubSub.broadcast_game_reacted_to_event(event, new_game_state)
     GenServer.reply(from, new_game_state)
     GameStateCache.update(new_game_state)
-    PubSub.broadcast_game_reacted_to_event(event, new_game_state)
     {:noreply, %{state | game_state: new_game_state}}
   end
 

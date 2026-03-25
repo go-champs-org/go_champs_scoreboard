@@ -9,7 +9,9 @@ defmodule GoChampsScoreboard.Games.Models.GameClockState do
           period: integer,
           state: state,
           started_at: DateTime.t() | nil,
-          finished_at: DateTime.t() | nil
+          finished_at: DateTime.t() | nil,
+          last_action_time: integer | nil,
+          last_action_period: integer | nil
         }
 
   defstruct [
@@ -19,7 +21,9 @@ defmodule GoChampsScoreboard.Games.Models.GameClockState do
     :period,
     :state,
     :started_at,
-    :finished_at
+    :finished_at,
+    :last_action_time,
+    :last_action_period
   ]
 
   @spec new(
@@ -29,7 +33,9 @@ defmodule GoChampsScoreboard.Games.Models.GameClockState do
           integer(),
           atom(),
           DateTime.t() | nil,
-          DateTime.t() | nil
+          DateTime.t() | nil,
+          integer() | nil,
+          integer() | nil
         ) :: t()
   def new(
         initial_period_time \\ 0,
@@ -38,7 +44,9 @@ defmodule GoChampsScoreboard.Games.Models.GameClockState do
         period \\ 1,
         state \\ :not_started,
         started_at \\ nil,
-        finished_at \\ nil
+        finished_at \\ nil,
+        last_action_time \\ nil,
+        last_action_period \\ nil
       ) do
     %__MODULE__{
       initial_period_time: initial_period_time,
@@ -47,7 +55,9 @@ defmodule GoChampsScoreboard.Games.Models.GameClockState do
       period: period,
       state: state,
       started_at: started_at,
-      finished_at: finished_at
+      finished_at: finished_at,
+      last_action_time: last_action_time,
+      last_action_period: last_action_period
     }
   end
 
@@ -60,7 +70,9 @@ defmodule GoChampsScoreboard.Games.Models.GameClockState do
             period: period,
             state: state,
             started_at: started_at,
-            finished_at: finished_at
+            finished_at: finished_at,
+            last_action_time: last_action_time,
+            last_action_period: last_action_period
           },
           _options
         ) do
@@ -71,7 +83,9 @@ defmodule GoChampsScoreboard.Games.Models.GameClockState do
         period: period,
         state: String.to_atom(state),
         started_at: parse_datetime(started_at),
-        finished_at: parse_datetime(finished_at)
+        finished_at: parse_datetime(finished_at),
+        last_action_time: last_action_time,
+        last_action_period: last_action_period
       }
     end
 

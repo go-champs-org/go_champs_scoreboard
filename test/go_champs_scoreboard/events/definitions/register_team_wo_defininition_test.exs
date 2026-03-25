@@ -48,6 +48,15 @@ defmodule GoChampsScoreboard.Events.Definitions.RegisterTeamWODefinitionTest do
 
       assert result.info.result_type == :home_team_walkover
     end
+
+    test "stamps last_action_time and last_action_period on clock_state" do
+      current_game = basketball_game_state_fixture()
+      event = RegisterTeamWODefinition.create("game-id", 55, 2, %{"team-type" => "away"})
+      result = RegisterTeamWODefinition.handle(current_game, event)
+
+      assert result.clock_state.last_action_time == 55
+      assert result.clock_state.last_action_period == 2
+    end
   end
 
   describe "stream_config/0" do

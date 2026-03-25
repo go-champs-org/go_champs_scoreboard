@@ -6,6 +6,7 @@ defmodule GoChampsScoreboard.Events.Definitions.RegisterTeamWODefinition do
   @behaviour GoChampsScoreboard.Events.Definitions.DefinitionBehavior
 
   alias GoChampsScoreboard.Events.Models.Event
+  alias GoChampsScoreboard.Games.Games
   alias GoChampsScoreboard.Games.Models.GameState
   alias GoChampsScoreboard.Events.Models.StreamConfig
   alias GoChampsScoreboard.Sports.Sports
@@ -28,11 +29,16 @@ defmodule GoChampsScoreboard.Events.Definitions.RegisterTeamWODefinition do
 
   @impl true
   @spec handle(GameState.t(), Event.t()) :: GameState.t()
-  def handle(current_game, %Event{payload: payload}) do
+  def handle(current_game, %Event{
+        clock_state_time_at: time,
+        clock_state_period_at: period,
+        payload: payload
+      }) do
     team_type = Map.get(payload, "team-type")
 
     current_game.sport_id
     |> Sports.register_team_wo(current_game, team_type)
+    |> Games.stamp_last_action(time, period)
   end
 
   @impl true

@@ -3,6 +3,7 @@ defmodule GoChampsScoreboard.Events.Definitions.LoadFromLastEventLogDefinition d
 
   alias GoChampsScoreboard.Events.Models.Event
   alias GoChampsScoreboard.Events.Models.StreamConfig
+  alias GoChampsScoreboard.Games.Games
   alias GoChampsScoreboard.Games.Models.GameState
   alias GoChampsScoreboard.Games.EventLogs
   alias GoChampsScoreboard.Sports.Sports
@@ -45,7 +46,19 @@ defmodule GoChampsScoreboard.Events.Definitions.LoadFromLastEventLogDefinition d
 
           snapshot ->
             Sports.map_from_snapshot(game_state.sport_id, game_state, snapshot)
+            |> restore_last_action(snapshot)
         end
+    end
+  end
+
+  defp restore_last_action(game_state, snapshot) do
+    case snapshot.state do
+      %GameState{clock_state: %{last_action_time: time, last_action_period: period}}
+      when not is_nil(time) and not is_nil(period) ->
+        Games.stamp_last_action(game_state, time, period)
+
+      _ ->
+        game_state
     end
   end
 

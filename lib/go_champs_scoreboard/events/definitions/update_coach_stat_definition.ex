@@ -35,6 +35,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinition do
   def handle(
         current_game,
         %Event{
+          clock_state_time_at: time,
           clock_state_period_at: period,
           payload: %{
             "operation" => op,
@@ -74,6 +75,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinition do
 
     current_game
     |> Games.update_team(team_type, updated_team)
+    |> Games.stamp_last_action(time, period)
   end
 
   @impl true
