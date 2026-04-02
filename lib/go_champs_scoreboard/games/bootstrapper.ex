@@ -213,14 +213,36 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
     end
   end
 
-  defp map_view_settings_state(view_settings_data) do
+  def map_view_settings_state(view_settings_data) do
     case view_settings_data do
       nil ->
         ViewSettingsState.new()
 
       data ->
-        view = Map.get(data, "view", "basketball-medium")
         available_views = Map.get(data, "available_views", [])
+
+        # Determine view based on available_views
+        view =
+          case available_views do
+            # If only one view available, use it
+            [single_view] ->
+              single_view
+
+            # If multiple views available
+            [_ | _] = views ->
+              # Check if basketball-medium-stats-plus-scoresheet is in the array
+              if "basketball-medium-stats-plus-scoresheet" in views do
+                "basketball-medium-stats-plus-scoresheet"
+              else
+                # Otherwise use the first one
+                List.first(views)
+              end
+
+            # If no available_views, fall back to default or provided view
+            [] ->
+              Map.get(data, "view", "basketball-medium-stats")
+          end
+
         ViewSettingsState.new(view, available_views)
     end
   end

@@ -14,6 +14,7 @@ import { useTranslation } from '../../hooks/useTranslation';
 import EndLiveModal from './EndLiveModal';
 import SignatureModal from './Reports/SignatureModal';
 import { REPORT_SLUGS } from '../../shared/reportRegistry';
+import { BASKETBALL_VIEWS } from './constants';
 
 interface ReportsProps {
   game_state: GameState;
@@ -193,6 +194,21 @@ function ScreensDropdown({ game_state, t }: ScreensDropdownProps) {
   }, [showScreensDropdown]);
 
   const baseUrl = window.location.pathname;
+  const availableViews = game_state.view_settings_state.available_views || [];
+
+  // Mapping of view values to translation keys
+  const viewTranslations: Record<string, string> = {
+    [BASKETBALL_VIEWS.MEDIUM]: 'basketball.navigation.statsOnly',
+    [BASKETBALL_VIEWS.MEDIUM_PLUS_SCORESHEET_AND_STATS]:
+      'basketball.navigation.screensAndStats',
+    [BASKETBALL_VIEWS.MEDIUM_PLUS_SCORESHEET]:
+      'basketball.navigation.scoresheetOnly',
+    [BASKETBALL_VIEWS.MEDIUM_PLUS_STATS]: 'basketball.navigation.statsOnly',
+    [BASKETBALL_VIEWS.SCORESHEET]: 'basketball.navigation.scoresheetOnly',
+  };
+
+  // Only show view links if there are multiple available views
+  const showViewLinks = availableViews.length > 1;
 
   return (
     <div
@@ -210,27 +226,17 @@ function ScreensDropdown({ game_state, t }: ScreensDropdownProps) {
       </div>
       <div className="dropdown-menu" id="screens-dropdown-menu" role="menu">
         <div className="dropdown-content">
-          <a
-            className="dropdown-item"
-            href={baseUrl}
-            onClick={() => setShowScreensDropdown(false)}
-          >
-            {t('basketball.navigation.screensAndStats')}
-          </a>
-          <a
-            className="dropdown-item"
-            href={`${baseUrl}?view=basketball-medium-plus-scoresheet`}
-            onClick={() => setShowScreensDropdown(false)}
-          >
-            {t('basketball.navigation.scoresheetOnly')}
-          </a>
-          <a
-            className="dropdown-item"
-            href={`${baseUrl}?view=basketball-medium-plus-stats`}
-            onClick={() => setShowScreensDropdown(false)}
-          >
-            {t('basketball.navigation.statsOnly')}
-          </a>
+          {showViewLinks &&
+            availableViews.map((view) => (
+              <a
+                key={view}
+                className="dropdown-item"
+                href={`${baseUrl}?view=${view}`}
+                onClick={() => setShowScreensDropdown(false)}
+              >
+                {t(viewTranslations[view] || 'basketball.navigation.view')}
+              </a>
+            ))}
           <a
             className="dropdown-item"
             href={`/scoreboard/stream_views/${game_state.id}`}

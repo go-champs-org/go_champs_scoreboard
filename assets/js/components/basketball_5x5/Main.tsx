@@ -37,7 +37,7 @@ function Main({ game_state, recent_events, pushEvent }: MainProps) {
         />
       )}
 
-      {selectedView === BASKETBALL_VIEWS.MEDIUM_PLUS && (
+      {selectedView === BASKETBALL_VIEWS.MEDIUM_PLUS_SCORESHEET_AND_STATS && (
         <MediumPlusView
           game_state={game_state}
           recent_events={recent_events}
@@ -59,6 +59,16 @@ function Main({ game_state, recent_events, pushEvent }: MainProps) {
 
       {selectedView === BASKETBALL_VIEWS.MEDIUM_PLUS_STATS && (
         <MediumPlusStatsView
+          game_state={game_state}
+          recent_events={recent_events}
+          pushEvent={pushEvent}
+          selection={selection}
+          setSelection={setSelection}
+        />
+      )}
+
+      {selectedView === BASKETBALL_VIEWS.SCORESHEET && (
+        <MediumPlusScoresheetView
           game_state={game_state}
           recent_events={recent_events}
           pushEvent={pushEvent}
