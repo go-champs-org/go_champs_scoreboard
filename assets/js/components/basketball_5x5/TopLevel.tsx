@@ -193,6 +193,23 @@ function ScreensDropdown({ game_state, t }: ScreensDropdownProps) {
   }, [showScreensDropdown]);
 
   const baseUrl = window.location.pathname;
+  const availableViews = game_state.view_settings_state.available_views || [];
+
+  // Mapping of view values to translation keys
+  const viewTranslations: Record<string, string> = {
+    'basketball-medium-stats': 'basketball.navigation.statsOnly',
+    'basketball-medium-stats-plus-scoresheet':
+      'basketball.navigation.screensAndStats',
+    'basketball-medium-stats-plus-scoresheet-scoresheet-only':
+      'basketball.navigation.scoresheetOnly',
+    'basketball-medium-stats-plus-scoresheet-stats-only':
+      'basketball.navigation.statsOnly',
+    'basketball-scoresheet': 'basketball.navigation.scoresheetOnly',
+    'basketball-basic-stats': 'basketball.navigation.basic',
+  };
+
+  // Only show view links if there are multiple available views
+  const showViewLinks = availableViews.length > 1;
 
   return (
     <div
@@ -210,27 +227,17 @@ function ScreensDropdown({ game_state, t }: ScreensDropdownProps) {
       </div>
       <div className="dropdown-menu" id="screens-dropdown-menu" role="menu">
         <div className="dropdown-content">
-          <a
-            className="dropdown-item"
-            href={baseUrl}
-            onClick={() => setShowScreensDropdown(false)}
-          >
-            {t('basketball.navigation.screensAndStats')}
-          </a>
-          <a
-            className="dropdown-item"
-            href={`${baseUrl}?view=basketball-medium-stats-plus-scoresheet-scoresheet-only`}
-            onClick={() => setShowScreensDropdown(false)}
-          >
-            {t('basketball.navigation.scoresheetOnly')}
-          </a>
-          <a
-            className="dropdown-item"
-            href={`${baseUrl}?view=basketball-medium-stats-plus-scoresheet-stats-only`}
-            onClick={() => setShowScreensDropdown(false)}
-          >
-            {t('basketball.navigation.statsOnly')}
-          </a>
+          {showViewLinks &&
+            availableViews.map((view) => (
+              <a
+                key={view}
+                className="dropdown-item"
+                href={`${baseUrl}?view=${view}`}
+                onClick={() => setShowScreensDropdown(false)}
+              >
+                {t(viewTranslations[view] || 'basketball.navigation.view')}
+              </a>
+            ))}
           <a
             className="dropdown-item"
             href={`/scoreboard/stream_views/${game_state.id}`}
