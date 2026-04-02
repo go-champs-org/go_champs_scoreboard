@@ -14,6 +14,7 @@ import { useTranslation } from '../../hooks/useTranslation';
 import EndLiveModal from './EndLiveModal';
 import SignatureModal from './Reports/SignatureModal';
 import { REPORT_SLUGS } from '../../shared/reportRegistry';
+import { BASKETBALL_VIEWS } from './constants';
 
 interface ReportsProps {
   game_state: GameState;
@@ -197,15 +198,13 @@ function ScreensDropdown({ game_state, t }: ScreensDropdownProps) {
 
   // Mapping of view values to translation keys
   const viewTranslations: Record<string, string> = {
-    'basketball-medium-stats': 'basketball.navigation.statsOnly',
-    'basketball-medium-stats-plus-scoresheet':
+    [BASKETBALL_VIEWS.MEDIUM]: 'basketball.navigation.statsOnly',
+    [BASKETBALL_VIEWS.MEDIUM_PLUS_SCORESHEET_AND_STATS]:
       'basketball.navigation.screensAndStats',
-    'basketball-medium-stats-plus-scoresheet-scoresheet-only':
+    [BASKETBALL_VIEWS.MEDIUM_PLUS_SCORESHEET]:
       'basketball.navigation.scoresheetOnly',
-    'basketball-medium-stats-plus-scoresheet-stats-only':
-      'basketball.navigation.statsOnly',
-    'basketball-scoresheet': 'basketball.navigation.scoresheetOnly',
-    'basketball-basic-stats': 'basketball.navigation.basic',
+    [BASKETBALL_VIEWS.MEDIUM_PLUS_STATS]: 'basketball.navigation.statsOnly',
+    [BASKETBALL_VIEWS.SCORESHEET]: 'basketball.navigation.scoresheetOnly',
   };
 
   // Only show view links if there are multiple available views
