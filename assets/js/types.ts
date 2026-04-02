@@ -123,11 +123,12 @@ export interface LiveState {
 }
 
 export type BasketballViews =
-  | 'basketball-medium'
-  | 'basketball-medium-plus'
-  | 'basketball-medium-plus-scoresheet'
-  | 'basketball-medium-plus-stats'
-  | 'basketball-basic';
+  | 'basketball-medium-stats'
+  | 'basketball-medium-stats-plus-scoresheet'
+  | 'basketball-medium-stats-plus-scoresheet-scoresheet-only'
+  | 'basketball-medium-stats-plus-scoresheet-stats-only'
+  | 'basketball-basic-stats'
+  | 'basketball-scoresheet';
 
 export interface ViewSettingsState {
   view: BasketballViews;
@@ -217,7 +218,7 @@ export const DEFAULT_GAME_STATE = {
     ended_at: '',
   },
   view_settings_state: {
-    view: 'basketball-medium',
+    view: 'basketball-medium-stats',
     available_views: [],
   },
   officials: [],

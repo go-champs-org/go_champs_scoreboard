@@ -383,8 +383,11 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
 
     @response_setting_full_body %{
       "data" => %{
-        "view" => "basketball-basic",
-        "available_views" => ["basketball-basic", "basketball-medium-plus-scoresheet"],
+        "view" => "basketball-basic-stats",
+        "available_views" => [
+          "basketball-basic-stats",
+          "basketball-medium-stats-plus-scoresheet-scoresheet-only"
+        ],
         "initial_extra_period_time" => 200,
         "initial_period_time" => 500
       }
@@ -563,7 +566,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
 
       assert game.live_state.state == :ended
       assert game.sport_id == "basketball"
-      assert game.view_settings_state.view == "basketball-medium"
+      assert game.view_settings_state.view == "basketball-medium-stats"
     end
 
     test "maps game and view settings" do
@@ -592,11 +595,11 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
         )
 
       assert game.sport_id == "basketball"
-      assert game.view_settings_state.view == "basketball-basic"
+      assert game.view_settings_state.view == "basketball-basic-stats"
 
       assert game.view_settings_state.available_views == [
-               "basketball-basic",
-               "basketball-medium-plus-scoresheet"
+               "basketball-basic-stats",
+               "basketball-medium-stats-plus-scoresheet-scoresheet-only"
              ]
 
       assert game.clock_state.initial_period_time == 500
@@ -629,7 +632,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
         )
 
       assert game.sport_id == "basketball"
-      assert game.view_settings_state.view == "basketball-medium"
+      assert game.view_settings_state.view == "basketball-medium-stats"
       assert game.view_settings_state.available_views == []
       assert game.clock_state.initial_period_time == 600
       assert game.clock_state.initial_extra_period_time == 300

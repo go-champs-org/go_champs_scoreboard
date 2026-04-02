@@ -219,7 +219,7 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
         ViewSettingsState.new()
 
       data ->
-        view = Map.get(data, "view", "basketball-medium")
+        view = Map.get(data, "view", "basketball-medium-stats")
         available_views = Map.get(data, "available_views", [])
         ViewSettingsState.new(view, available_views)
     end

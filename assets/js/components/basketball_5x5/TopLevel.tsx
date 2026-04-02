@@ -219,14 +219,14 @@ function ScreensDropdown({ game_state, t }: ScreensDropdownProps) {
           </a>
           <a
             className="dropdown-item"
-            href={`${baseUrl}?view=basketball-medium-plus-scoresheet`}
+            href={`${baseUrl}?view=basketball-medium-stats-plus-scoresheet-scoresheet-only`}
             onClick={() => setShowScreensDropdown(false)}
           >
             {t('basketball.navigation.scoresheetOnly')}
           </a>
           <a
             className="dropdown-item"
-            href={`${baseUrl}?view=basketball-medium-plus-stats`}
+            href={`${baseUrl}?view=basketball-medium-stats-plus-scoresheet-stats-only`}
             onClick={() => setShowScreensDropdown(false)}
           >
             {t('basketball.navigation.statsOnly')}

@@ -7,7 +7,7 @@ defmodule GoChampsScoreboard.Games.Models.ViewSettingsState do
   defstruct [:view, :available_views]
 
   @spec new(String.t(), [String.t()]) :: t()
-  def new(view \\ "basketball-medium", available_views \\ []) do
+  def new(view \\ "basketball-medium-stats", available_views \\ []) do
     %__MODULE__{
       view: view,
       available_views: available_views
