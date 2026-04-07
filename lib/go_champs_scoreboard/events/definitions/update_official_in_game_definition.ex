@@ -78,7 +78,8 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinition d
       license_number:
         get_updated_value(payload, "license_number", existing_official.license_number),
       federation: get_updated_value(payload, "federation", existing_official.federation),
-      signature: get_updated_value(payload, "signature", existing_official.signature)
+      signature: get_updated_value(payload, "signature", existing_official.signature),
+      username: get_updated_value(payload, "username", existing_official.username)
     }
   end
 
@@ -91,7 +92,8 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinition d
       license_number:
         get_updated_value(payload, "license_number", existing_official.license_number),
       federation: get_updated_value(payload, "federation", existing_official.federation),
-      signature: get_updated_value(payload, "signature", existing_official.signature)
+      signature: get_updated_value(payload, "signature", existing_official.signature),
+      username: get_updated_value(payload, "username", existing_official.username)
     }
   end
 

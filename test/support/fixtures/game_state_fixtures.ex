@@ -290,49 +290,56 @@ defmodule GoChampsScoreboard.GameStateFixtures do
           name: "John Scorer",
           type: :scorer,
           license_number: "SC001",
-          federation: "FIBA"
+          federation: "FIBA",
+          username: "jscorer"
         },
         %OfficialState{
           id: "assistant-scorer-official-id",
           name: "Jane Assistant Scorer",
           type: :assistant_scorer,
           license_number: "AS001",
-          federation: "FIBA"
+          federation: "FIBA",
+          username: "jassistant"
         },
         %OfficialState{
           id: "timekeeper-official-id",
           name: "Mike Timekeeper",
           type: :timekeeper,
           license_number: "TK001",
-          federation: "NBA"
+          federation: "NBA",
+          username: "mtimekeeper"
         },
         %OfficialState{
           id: "shot-clock-operator-official-id",
           name: "Sarah Shot Clock",
           type: :shot_clock_operator,
           license_number: "SCO001",
-          federation: "NCAA"
+          federation: "NCAA",
+          username: "sshotclock"
         },
         %OfficialState{
           id: "crew-chief-official-id",
           name: "Robert Crew Chief",
           type: :crew_chief,
           license_number: "CC001",
-          federation: "NBA"
+          federation: "NBA",
+          username: "rcrewchief"
         },
         %OfficialState{
           id: "umpire-1-official-id",
           name: "David Umpire One",
           type: :umpire_1,
           license_number: "U1001",
-          federation: "FIBA"
+          federation: "FIBA",
+          username: "dumpire1"
         },
         %OfficialState{
           id: "umpire-2-official-id",
           name: "Lisa Umpire Two",
           type: :umpire_2,
           license_number: "U2001",
-          federation: "FIBA"
+          federation: "FIBA",
+          username: "lumpire2"
         }
       ],
       info_state: %InfoState{

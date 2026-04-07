@@ -64,6 +64,8 @@ function AddOfficialRow({
       federation: federation.trim() || null,
       // Include official ID if selected from dropdown
       ...(selectedOfficial && { id: selectedOfficial.id }),
+      // Include username if selected from dropdown
+      ...(selectedOfficial && { username: selectedOfficial.username }),
     };
 
     pushEvent('add-official-to-game', payload);

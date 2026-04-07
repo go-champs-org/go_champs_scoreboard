@@ -169,6 +169,7 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
     name = Map.get(official_data, "name", "")
     license_number = Map.get(official_data, "license_number")
     federation = Map.get(official_data, "federation")
+    username = Map.get(official_data, "username")
 
     case map_role_to_type(role) do
       {:ok, type} ->
@@ -179,7 +180,8 @@ defmodule GoChampsScoreboard.Games.Bootstrapper do
           license_number,
           federation,
           # signature
-          nil
+          nil,
+          username
         )
 
       {:error, _} ->

@@ -75,6 +75,8 @@ function EditOfficialRow({
       federation: federation.trim() || null,
       // Include new ID if selected from dropdown
       ...(selectedOfficial && { new_id: selectedOfficial.id }),
+      // Include username if selected from dropdown
+      ...(selectedOfficial && { username: selectedOfficial.username }),
     };
 
     pushEvent('update-official-in-game', payload);
