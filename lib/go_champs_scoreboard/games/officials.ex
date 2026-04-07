@@ -19,6 +19,13 @@ defmodule GoChampsScoreboard.Games.Officials do
           OfficialState.t()
   def bootstrap(name, type, license_number, federation)
       when is_binary(name) and is_binary(type) do
+    bootstrap(name, type, license_number, federation, nil)
+  end
+
+  @spec bootstrap(String.t(), String.t(), String.t() | nil, String.t() | nil, String.t() | nil) ::
+          OfficialState.t()
+  def bootstrap(name, type, license_number, federation, username)
+      when is_binary(name) and is_binary(type) do
     type_atom = String.to_atom(type)
 
     if not OfficialState.valid_type?(type_atom) do
@@ -26,7 +33,7 @@ defmodule GoChampsScoreboard.Games.Officials do
     end
 
     Ecto.UUID.generate()
-    |> OfficialState.new(name, type_atom, license_number, federation)
+    |> OfficialState.new(name, type_atom, license_number, federation, nil, username)
   end
 
   @doc """
@@ -37,9 +44,10 @@ defmodule GoChampsScoreboard.Games.Officials do
           String.t(),
           String.t(),
           String.t() | nil,
+          String.t() | nil,
           String.t() | nil
         ) :: OfficialState.t()
-  def bootstrap_with_id(id, name, type, license_number, federation)
+  def bootstrap_with_id(id, name, type, license_number, federation, username \\ nil)
       when is_binary(id) and is_binary(name) and is_binary(type) do
     type_atom = String.to_atom(type)
 
@@ -47,6 +55,6 @@ defmodule GoChampsScoreboard.Games.Officials do
       raise ArgumentError, "Invalid official type: #{type}"
     end
 
-    OfficialState.new(id, name, type_atom, license_number, federation)
+    OfficialState.new(id, name, type_atom, license_number, federation, nil, username)
   end
 end

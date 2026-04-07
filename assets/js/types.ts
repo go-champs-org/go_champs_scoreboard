@@ -97,6 +97,7 @@ export interface OfficialState {
   license_number?: string;
   federation?: string;
   signature?: string;
+  username?: string;
 }
 
 export const ClockStateStates = {
