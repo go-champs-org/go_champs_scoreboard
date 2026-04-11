@@ -109,11 +109,14 @@ function OfficialsTab({ officials, pushEvent }: OfficialsTabProps) {
   };
 
   const handlePinChange = (officialId: string, value: string) => {
-    setPinValues({ ...pinValues, [officialId]: value });
+    setPinValues((prev) => ({ ...prev, [officialId]: value }));
     // Clear error when user starts typing
-    if (pinErrors[officialId]) {
-      setPinErrors({ ...pinErrors, [officialId]: '' });
-    }
+    setPinErrors((prev) => {
+      if (prev[officialId]) {
+        return { ...prev, [officialId]: '' };
+      }
+      return prev;
+    });
   };
 
   const handlePinSubmit = async (official: OfficialState) => {
@@ -121,15 +124,15 @@ function OfficialsTab({ officials, pushEvent }: OfficialsTabProps) {
 
     const pin = pinValues[official.id];
     if (!pin || pin.trim() === '') {
-      setPinErrors({
-        ...pinErrors,
+      setPinErrors((prev) => ({
+        ...prev,
         [official.id]: t('basketball.modals.signatures.errors.pinRequired'),
-      });
+      }));
       return;
     }
 
-    setLoadingPin({ ...loadingPin, [official.id]: true });
-    setPinErrors({ ...pinErrors, [official.id]: '' });
+    setLoadingPin((prev) => ({ ...prev, [official.id]: true }));
+    setPinErrors((prev) => ({ ...prev, [official.id]: '' }));
 
     try {
       const response = await officialsHttpClient.signOfficialWithPin(
@@ -147,33 +150,31 @@ function OfficialsTab({ officials, pushEvent }: OfficialsTabProps) {
           signature: response.signature,
         });
         // Clear the PIN input
-        setPinValues({ ...pinValues, [official.id]: '' });
+        setPinValues((prev) => ({ ...prev, [official.id]: '' }));
       } else {
         // Unexpected response format
-        setPinErrors({
-          ...pinErrors,
+        setPinErrors((prev) => ({
+          ...prev,
           [official.id]: t('basketball.modals.signatures.errors.signFailed'),
-        });
+        }));
       }
     } catch (error: any) {
-      // Handle errors
-      const errorMessage = error?.message || '';
-      if (
-        errorMessage.includes('401') ||
-        errorMessage.includes('Unauthorized')
-      ) {
-        setPinErrors({
-          ...pinErrors,
+      // Handle errors based on HTTP status code
+      if (error.status === 401 || error.status === 403) {
+        // Unauthorized or Forbidden - invalid PIN
+        setPinErrors((prev) => ({
+          ...prev,
           [official.id]: t('basketball.modals.signatures.errors.unauthorized'),
-        });
+        }));
       } else {
-        setPinErrors({
-          ...pinErrors,
+        // Other errors
+        setPinErrors((prev) => ({
+          ...prev,
           [official.id]: t('basketball.modals.signatures.errors.signFailed'),
-        });
+        }));
       }
     } finally {
-      setLoadingPin({ ...loadingPin, [official.id]: false });
+      setLoadingPin((prev) => ({ ...prev, [official.id]: false }));
     }
   };
 
