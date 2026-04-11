@@ -234,16 +234,26 @@
         "players": "Players",
         "status": "Status",
         "actionsHeader": "Actions",
+        "signWithPin": "Sign with PIN",
         "signed": "Signed",
         "pending": "Pending",
         "noOfficials": "No officials available",
         "noCoaches": "No coaches available",
         "noPlayers": "No players available",
+        "pinPlaceholder": "Enter PIN",
+        "noPinAvailable": "No PIN available",
         "actions": {
           "clear": "Clear",
           "cancel": "Cancel",
           "save": "Save",
-          "sign": "Sign"
+          "sign": "Sign",
+          "signManual": "Sign Manually",
+          "signPin": "Sign"
+        },
+        "errors": {
+          "pinRequired": "PIN is required",
+          "unauthorized": "Invalid PIN or unauthorized",
+          "signFailed": "Failed to sign. Please try again."
         }
       }
     },
