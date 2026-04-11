@@ -35,6 +35,15 @@ export interface ApiOfficialListResponse {
   data: ApiOfficial[];
 }
 
+export interface OfficialPinSignatureRequest {
+  username: string;
+  signature_pin: string;
+}
+
+export interface OfficialPinSignatureResponse {
+  signature: string;
+}
+
 export interface ApiRegistrationResponseResponse {
   email: string | null;
   name: string | null;

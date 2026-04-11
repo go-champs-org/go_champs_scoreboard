@@ -93,6 +93,14 @@ const post = async <T, R>(url: string, data: T): Promise<R> => {
       response.status,
       response.statusText,
     );
+    // Throw error with status code for proper error handling
+    const error: any = new Error(
+      `HTTP ${response.status}: ${response.statusText}`,
+    );
+    error.status = response.status;
+    error.statusText = response.statusText;
+    error.data = jsonData;
+    throw error;
   }
 
   return jsonData;

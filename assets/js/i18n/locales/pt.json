@@ -234,16 +234,25 @@
         "players": "Atletas",
         "status": "Status",
         "actionsHeader": "Ações",
+        "signWithPin": "Assinar com PIN",
         "signed": "Assinado",
         "pending": "Pendente",
         "noOfficials": "Nenhum oficial disponível",
         "noCoaches": "Nenhum técnico disponível",
         "noPlayers": "Nenhum atleta disponível",
+        "pinPlaceholder": "Digite o PIN",
+        "noPinAvailable": "PIN não disponível",
         "actions": {
           "clear": "Limpar",
           "cancel": "Cancelar",
           "save": "Salvar",
-          "sign": "Assinar"
+          "signManual": "Assinar Manualmente",
+          "signPin": "Assinar"
+        },
+        "errors": {
+          "pinRequired": "PIN é obrigatório",
+          "unauthorized": "PIN inválido ou não autorizado",
+          "signFailed": "Falha ao assinar. Por favor, tente novamente."
         }
       }
     },
