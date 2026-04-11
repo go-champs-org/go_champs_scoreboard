@@ -281,10 +281,11 @@ describe('eventLogsHttpClient', () => {
         text: async () => JSON.stringify({ error: 'Bad Request' }),
       });
 
-      // Act
-      await eventLogsHttpClient.postEventLogs(mockEventLog);
+      // Act & Assert
+      await expect(
+        eventLogsHttpClient.postEventLogs(mockEventLog),
+      ).rejects.toThrow('HTTP 400: Bad Request');
 
-      // Assert
       expect(mockFetch).toHaveBeenCalledWith(
         expectedUrl,
         expect.objectContaining({
@@ -488,13 +489,11 @@ describe('eventLogsHttpClient', () => {
         json: async () => ({ error: 'Unprocessable Entity' }),
       });
 
-      // Act
-      await eventLogsHttpClient.putEventLog(
-        mockEventLog.id,
-        mockEventLog.payload,
-      );
+      // Act & Assert
+      await expect(
+        eventLogsHttpClient.putEventLog(mockEventLog.id, mockEventLog.payload),
+      ).rejects.toThrow('HTTP 422: Unprocessable Entity');
 
-      // Assert
       expect(mockFetch).toHaveBeenCalledWith(
         expectedUrl,
         expect.objectContaining({
