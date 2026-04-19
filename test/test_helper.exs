@@ -22,10 +22,6 @@ Mox.defmock(GoChampsScoreboard.Games.ResourceManagerMock,
   for: GoChampsScoreboard.Games.ResourceManagerBehavior
 )
 
-Mox.defmock(GoChampsScoreboard.Games.GameProcessSupervisorMock,
-  for: GoChampsScoreboard.Games.GameProcessSupervisorBehavior
-)
-
 Mox.defmock(GoChampsScoreboard.Games.EventLogCacheMock,
   for: GoChampsScoreboard.Games.EventLogCacheBehavior
 )
