@@ -103,6 +103,12 @@ function TeamBoxScore({ teamType, team }: TeamBoxScoreProps) {
       ? t('basketball.teams.teamA')
       : t('basketball.teams.teamB');
   const playerStats = boxScorePlayerStats();
+
+  const sortedRenderPlayers = team.players.sort((a, b) => {
+    if (a.number === null) return 1;
+    if (b.number === null) return -1;
+    return a.number - b.number;
+  });
   return (
     <View style={{ marginBottom: 8, marginTop: 8 }}>
       <View style={styles.name}>
@@ -134,7 +140,7 @@ function TeamBoxScore({ teamType, team }: TeamBoxScoreProps) {
             </View>
           ))}
         </View>
-        {team.players.map((player, index) => (
+        {sortedRenderPlayers.map((player, index) => (
           <View
             key={index}
             style={{
