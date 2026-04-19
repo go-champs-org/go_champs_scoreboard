@@ -17,9 +17,6 @@ defmodule GoChampsScoreboard.Application do
       # Start the Telemetry supervisor
       GoChampsScoreboardWeb.Telemetry,
       {DynamicSupervisor,
-       name: GoChampsScoreboard.Games.GameProcessSupervisor, strategy: :one_for_one},
-      {Registry, keys: :unique, name: GoChampsScoreboard.Games.GameProcessRegistry},
-      {DynamicSupervisor,
        name: GoChampsScoreboard.Infrastructure.GameTickerSupervisor, strategy: :one_for_one},
       {DynamicSupervisor,
        name: GoChampsScoreboard.Infrastructure.GameEventsListenerSupervisor,

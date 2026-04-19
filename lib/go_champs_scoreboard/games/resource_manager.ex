@@ -4,48 +4,51 @@ defmodule GoChampsScoreboard.Games.ResourceManager do
   """
   @behaviour GoChampsScoreboard.Games.ResourceManagerBehavior
 
-  alias GoChampsScoreboard.Games.GameProcessSupervisor
   alias GoChampsScoreboard.Infrastructure.GameEventsListenerSupervisor
   alias GoChampsScoreboard.Infrastructure.GameEventLogsListenerSupervisor
   alias GoChampsScoreboard.Infrastructure.GameTickerSupervisor
 
   @impl true
-  @spec check_and_restart(String.t(), module(), module(), module(), module()) ::
-          :ok | {:error, any()}
+  @spec check_and_restart(String.t(), module(), module(), module()) :: :ok | {:error, any()}
   def check_and_restart(
         game_id,
         game_events_listener_supervisor \\ GameEventsListenerSupervisor,
         game_event_logs_listener_supervisor \\ GameEventLogsListenerSupervisor,
-        game_ticker_supervisor \\ GameTickerSupervisor,
-        game_process_supervisor \\ GameProcessSupervisor
+        game_ticker_supervisor \\ GameTickerSupervisor
       ) do
-    case game_process_supervisor.check_game_process(game_id) do
-      {:error, :not_found} ->
-        game_process_supervisor.start_game_process(game_id)
-
-      _ ->
-        :ok
+    with :ok <-
+           check_and_start_if_needed(
+             game_events_listener_supervisor,
+             :check_game_events_listener,
+             :start_game_events_listener,
+             game_id
+           ),
+         :ok <-
+           check_and_start_if_needed(
+             game_event_logs_listener_supervisor,
+             :check_game_event_logs_listener,
+             :start_game_event_logs_listener,
+             game_id
+           ),
+         :ok <-
+           check_and_start_if_needed(
+             game_ticker_supervisor,
+             :check_game_ticker,
+             :start_game_ticker,
+             game_id
+           ) do
+      :ok
     end
+  end
 
-    case game_events_listener_supervisor.check_game_events_listener(game_id) do
+  # Helper function to check and start supervisor processes if needed
+  defp check_and_start_if_needed(supervisor, check_func, start_func, game_id) do
+    case apply(supervisor, check_func, [game_id]) do
       {:error, :not_found} ->
-        game_events_listener_supervisor.start_game_events_listener(game_id)
-
-      _ ->
-        :ok
-    end
-
-    case game_event_logs_listener_supervisor.check_game_event_logs_listener(game_id) do
-      {:error, :not_found} ->
-        game_event_logs_listener_supervisor.start_game_event_logs_listener(game_id)
-
-      _ ->
-        :ok
-    end
-
-    case game_ticker_supervisor.check_game_ticker(game_id) do
-      {:error, :not_found} ->
-        game_ticker_supervisor.start_game_ticker(game_id)
+        case apply(supervisor, start_func, [game_id]) do
+          {:ok, _pid} -> :ok
+          error -> error
+        end
 
       _ ->
         :ok
@@ -53,38 +56,47 @@ defmodule GoChampsScoreboard.Games.ResourceManager do
   end
 
   @impl true
-  @spec start_up(String.t(), module(), module(), module(), module()) :: :ok
+  @spec start_up(String.t(), module(), module(), module()) :: :ok | {:error, any()}
   def start_up(
         game_id,
         game_events_listener_supervisor \\ GameEventsListenerSupervisor,
         game_event_logs_listener_supervisor \\ GameEventLogsListenerSupervisor,
-        game_ticker_supervisor \\ GameTickerSupervisor,
-        game_process_supervisor \\ GameProcessSupervisor
+        game_ticker_supervisor \\ GameTickerSupervisor
       ) do
-    game_process_supervisor.start_game_process(game_id)
-    game_events_listener_supervisor.start_game_events_listener(game_id)
-    game_event_logs_listener_supervisor.start_game_event_logs_listener(game_id)
-    game_ticker_supervisor.start_game_ticker(game_id)
-
-    :ok
+    with {:ok, _} <-
+           normalize_result(game_events_listener_supervisor.start_game_events_listener(game_id)),
+         {:ok, _} <-
+           normalize_result(
+             game_event_logs_listener_supervisor.start_game_event_logs_listener(game_id)
+           ),
+         {:ok, _} <- normalize_result(game_ticker_supervisor.start_game_ticker(game_id)) do
+      :ok
+    end
   end
 
   @impl true
-  @spec shut_down(String.t(), module(), module(), module(), module()) :: :ok
+  @spec shut_down(String.t(), module(), module(), module()) :: :ok | {:error, any()}
   def shut_down(
         game_id,
         game_events_listener_supervisor \\ GameEventsListenerSupervisor,
         game_event_logs_listener_supervisor \\ GameEventLogsListenerSupervisor,
-        game_ticker_supervisor \\ GameTickerSupervisor,
-        game_process_supervisor \\ GameProcessSupervisor
+        game_ticker_supervisor \\ GameTickerSupervisor
       ) do
-    game_ticker_supervisor.stop_game_ticker(game_id)
-    game_events_listener_supervisor.stop_game_events_listener(game_id)
-    game_event_logs_listener_supervisor.stop_game_event_logs_listener(game_id)
-    game_process_supervisor.stop_game_process(game_id)
-
-    :ok
+    with {:ok, _} <-
+           normalize_result(game_events_listener_supervisor.stop_game_events_listener(game_id)),
+         {:ok, _} <-
+           normalize_result(
+             game_event_logs_listener_supervisor.stop_game_event_logs_listener(game_id)
+           ),
+         {:ok, _} <- normalize_result(game_ticker_supervisor.stop_game_ticker(game_id)) do
+      :ok
+    end
   end
+
+  # Helper function to normalize supervisor return values
+  defp normalize_result({:ok, _pid}), do: {:ok, :normalized}
+  defp normalize_result({:error, _reason} = error), do: error
+  defp normalize_result(:ok), do: {:ok, :normalized}
 end
 
 defmodule GoChampsScoreboard.Games.ResourceManagerBehavior do
