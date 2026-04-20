@@ -601,6 +601,11 @@
     "streamViewer": {
       "teamScore": {
         "fouls": "Fouls"
+      },
+      "playerNotification": {
+        "points": "PTS",
+        "rebounds": "REB",
+        "assists": "AST"
       }
     }
   },
