@@ -47,6 +47,11 @@ const styles = StyleSheet.create({
         borderBottom: '1px solid #000',
         flex: '0 1 60px',
         height: '18px',
+        image: {
+          maxHeight: '100%',
+          maxWidth: '100%',
+          objectFit: 'contain',
+        },
       },
     },
   },
@@ -87,7 +92,7 @@ function FiscalsBox({
           {crewChief.signature && (
             <Image
               src={crewChief.signature}
-              style={{ width: '100%', height: '100%' }}
+              style={styles.fiscalsBox.row.signatureBox.image}
             />
           )}
         </View>
@@ -111,7 +116,7 @@ function FiscalsBox({
           {umpire1.signature && (
             <Image
               src={umpire1.signature}
-              style={{ width: '100%', height: '100%' }}
+              style={styles.fiscalsBox.row.signatureBox.image}
             />
           )}
         </View>
@@ -135,7 +140,7 @@ function FiscalsBox({
           {umpire2.signature && (
             <Image
               src={umpire2.signature}
-              style={{ width: '100%', height: '100%' }}
+              style={styles.fiscalsBox.row.signatureBox.image}
             />
           )}
         </View>

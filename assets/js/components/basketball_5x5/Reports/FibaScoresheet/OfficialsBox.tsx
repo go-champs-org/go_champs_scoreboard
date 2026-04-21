@@ -47,6 +47,11 @@ const styles = StyleSheet.create({
         borderBottom: '1px solid #000',
         flex: '0 1 60px',
         height: '18px',
+        image: {
+          maxHeight: '100%',
+          maxWidth: '100%',
+          objectFit: 'contain',
+        },
       },
     },
   },
@@ -87,7 +92,7 @@ function OfficialsBox({
           {scorer.signature && (
             <Image
               src={scorer.signature}
-              style={{ width: '100%', height: '100%' }}
+              style={styles.officialsBox.row.signatureBox.image}
             />
           )}
         </View>
@@ -111,7 +116,7 @@ function OfficialsBox({
           {timekeeper.signature && (
             <Image
               src={timekeeper.signature}
-              style={{ width: '100%', height: '100%' }}
+              style={styles.officialsBox.row.signatureBox.image}
             />
           )}
         </View>
@@ -135,7 +140,7 @@ function OfficialsBox({
           {shotClockOperator.signature && (
             <Image
               src={shotClockOperator.signature}
-              style={{ width: '100%', height: '100%' }}
+              style={styles.officialsBox.row.signatureBox.image}
             />
           )}
         </View>
@@ -159,7 +164,7 @@ function OfficialsBox({
           {assistantScorer.signature && (
             <Image
               src={assistantScorer.signature}
-              style={{ width: '100%', height: '100%' }}
+              style={styles.officialsBox.row.signatureBox.image}
             />
           )}
         </View>
