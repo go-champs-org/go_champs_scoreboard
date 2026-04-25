@@ -34,7 +34,7 @@ const hooks = { LiveReact };
 const csfrElem = document.querySelector("meta[name='csrf-token']");
 const csrfToken = csfrElem ? csfrElem.getAttribute('content') : 'token';
 const liveSocket = new LiveSocket('/live', Socket, {
-  longPollFallbackMs: 2500,
+  longPollFallbackMs: 10_000, // Increased to 10s to prefer WebSocket
   hooks,
   params: { _csrf_token: csrfToken },
 });
@@ -46,6 +46,27 @@ window.addEventListener('phx:page-loading-stop', (_info) => topbar.hide());
 
 // connect if there are any LiveViews on the page
 liveSocket.connect();
+
+// Debug: Log transport info after initial connection
+setTimeout(() => {
+  const main = liveSocket.main;
+  if (main && main.channel) {
+    const transport = main.channel.socket.transport;
+    const transportName =
+      transport?.name || transport?.constructor?.name || 'unknown';
+    console.log(`[LiveView] Connected using transport: ${transportName}`);
+
+    // Check if using longpoll (fallback)
+    if (
+      transportName.toLowerCase().includes('longpoll') ||
+      transportName === 'LongPoll'
+    ) {
+      console.warn(
+        '[LiveView] ⚠️ Using LONGPOLL fallback - WebSocket may be blocked',
+      );
+    }
+  }
+}, 2000);
 
 // Optionally render the React components on page load as
 // well to speed up the initial time to render.

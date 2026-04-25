@@ -24,12 +24,46 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
      })
      |> assign(:feature_flags, FeatureFlags.all_flags())
      |> assign_async(:game_state, fn ->
-       {:ok, %{game_state: Games.find_or_bootstrap(game_id, api_token)}}
+       task =
+         Task.async(fn ->
+           Games.find_or_bootstrap(game_id, api_token)
+         end)
+
+       try do
+         result = Task.await(task, 25_000)
+
+         case result do
+           {:ok, game_state} ->
+             {:ok, %{game_state: game_state}}
+
+           {:error, reason} ->
+             Logger.error("Failed to load game #{game_id}: #{inspect(reason)}")
+             {:error, reason}
+
+           game_state ->
+             {:ok, %{game_state: game_state}}
+         end
+       catch
+         :exit, {:timeout, _} ->
+           Logger.error("Timeout loading game #{game_id} after 25s")
+           {:error, :timeout}
+       end
      end)
      |> assign_async(:recent_events, fn ->
-       case EventLogCache.get(game_id) do
-         {:ok, recent_events} -> {:ok, %{recent_events: recent_events}}
-         _ -> {:ok, %{recent_events: []}}
+       task =
+         Task.async(fn ->
+           EventLogCache.get(game_id)
+         end)
+
+       try do
+         case Task.await(task, 5_000) do
+           {:ok, recent_events} -> {:ok, %{recent_events: recent_events}}
+           _ -> {:ok, %{recent_events: []}}
+         end
+       catch
+         :exit, {:timeout, _} ->
+           Logger.warning("Timeout loading recent events for game #{game_id}")
+           {:ok, %{recent_events: []}}
        end
      end)}
   end
