@@ -34,6 +34,7 @@ const hooks = { LiveReact };
 const csfrElem = document.querySelector("meta[name='csrf-token']");
 const csrfToken = csfrElem ? csfrElem.getAttribute('content') : 'token';
 const liveSocket = new LiveSocket('/live', Socket, {
+  heartbeatIntervalMs: 25_000, // Send heartbeat every 25s to prevent Heroku H15 (55s idle timeout)
   longPollFallbackMs: 10_000, // Increased to 10s to prefer WebSocket
   hooks,
   params: { _csrf_token: csrfToken },
@@ -67,6 +68,30 @@ setTimeout(() => {
     }
   }
 }, 2000);
+
+// Retry WebSocket if stuck in longpoll mode
+// This attempts to upgrade back to WebSocket every 30 seconds
+setInterval(() => {
+  const main = liveSocket.main;
+  if (main && main.channel) {
+    const transport = main.channel.socket.transport;
+    const transportName =
+      transport?.name || transport?.constructor?.name || 'unknown';
+
+    // If using longpoll, try to reconnect with WebSocket
+    if (
+      transportName.toLowerCase().includes('longpoll') ||
+      transportName === 'LongPoll'
+    ) {
+      console.log(
+        '[LiveView] Attempting to upgrade from longpoll to WebSocket...',
+      );
+      // Disconnect and reconnect to trigger WebSocket attempt
+      liveSocket.disconnect();
+      setTimeout(() => liveSocket.connect(), 100);
+    }
+  }
+}, 30000); // Check every 30 seconds
 
 // Optionally render the React components on page load as
 // well to speed up the initial time to render.
