@@ -218,6 +218,196 @@ Contain business logic that:
 - `messages/` - PubSub and event messaging
 - `event_logs.ex` - Event sourcing and game history
 
+## Event Sourcing and Snapshot Architecture
+
+The `event_logs.ex` module implements an event sourcing pattern with snapshots for game state history and time travel capabilities.
+
+### Event Log Structure
+
+Each event log entry contains:
+- **Event data**: Key, payload, timestamp, game clock time/period
+- **Snapshot**: Complete GameState at that point in time
+- **Ordering**: Events are ordered chronologically by game clock (not insertion time)
+
+```elixir
+%EventLog{
+  id: "uuid",
+  game_id: "game-uuid",
+  key: "update-player-stat",
+  payload: %{"operation" => "increment", "stat-id" => "field_goals_made"},
+  game_clock_time: 570,  # Chronological ordering
+  game_clock_period: 1,
+  timestamp: ~U[2024-01-01 12:00:00Z],  # Insertion time
+  snapshot: %GameSnapshot{state: %GameState{...}}  # Full game state
+}
+```
+
+### Two-Tier Snapshot Management Strategy
+
+The system uses a two-tier architecture optimized for different use cases:
+
+#### Tier 1: Fast Real-Time Path (`persist/4`)
+
+```elixir
+# Hot path for live scoring - optimized for speed
+EventLogs.persist(event, game_state)
+```
+
+**Characteristics:**
+- **O(1) performance** - No snapshot updates
+- Used during live games for real-time scoring
+- Creates snapshots based on prior event only
+- May create **temporary stale snapshots** with out-of-order operations
+- Trade-off: Speed over complete consistency
+
+**Why Out-of-Order Persists Happen:**
+- Multiple scorekeepers working simultaneously
+- Network delays causing events to arrive out of sequence
+- Corrections being made during live play
+- Example: Event at 8:30 (510s) persisted after event at 8:00 (480s)
+
+#### Tier 2: Correctness Path (`add/3`, `delete/3`, `update_payload/4`)
+
+```elixir
+# Mutation operations - optimized for correctness
+EventLogs.add(event_log)
+EventLogs.delete(event_id)
+EventLogs.update_payload(event_id, new_payload)
+```
+
+**Characteristics:**
+- **O(n) performance** - Rebuilds ALL snapshots
+- Used for corrections and administrative changes
+- Guarantees complete consistency
+- Calls `rebuild_all_snapshots/1` internally
+- **Transaction Safety**: Each operation wraps its mutation AND snapshot rebuild in a single transaction
+  - If rebuild fails, the mutation (add/delete/update) is rolled back atomically
+  - Prevents partial updates that would corrupt game state
+  - `rebuild_all_snapshots` runs without its own transaction to avoid nesting issues
+- Trade-off: Completeness over speed (~1-3 seconds for 300 events)
+
+### The `rebuild_all_snapshots/1` Function
+
+Critical function that ensures snapshot consistency after mutations:
+
+```elixir
+@spec rebuild_all_snapshots(Ecto.UUID.t()) :: :ok | {:error, any()}
+def rebuild_all_snapshots(game_id) do
+  # 1. Get first event (immutable base)
+  first_event = get_first_created_by_game_id(game_id)
+  
+  # 2. Load all events in chronological order
+  all_events = get_all_by_game_id(game_id, with_snapshot: true)
+  
+  # 3. Rebuild each snapshot from scratch
+  Repo.transaction(fn ->
+    all_events
+    |> Enum.drop(1)  # Skip first (never changes)
+    |> Enum.reduce(first_event.snapshot.state, fn event, prior_state ->
+      # Apply event to prior state
+      updated_state = apply_to_game_state(event, prior_state)
+      
+      # Update snapshot in database
+      event.snapshot
+      |> GameSnapshot.changeset(%{state: json_encode(updated_state)})
+      |> Repo.update!()
+      
+      updated_state  # Becomes prior_state for next event
+    end)
+  end)
+end
+```
+
+**When It Runs:**
+- After `add()` - ensures new event and all existing snapshots are consistent
+- After `delete()` - recalculates all snapshots after event removal
+- After `update_payload()` - propagates changes through all subsequent events
+- **Never during `persist()`** - keeps live scoring fast
+
+### Handling Out-of-Order Events
+
+**Scenario that demonstrates the problem:**
+
+```
+Timeline:  600s    590s    570s    510s    480s    450s
+           start   e1      e2      e4      e3      e5
+           
+Operations in insertion order:
+1. persist start (600s)
+2. persist e1 (590s) - uses start snapshot ✓
+3. persist e2 (570s) - uses e1 snapshot ✓
+4. add e3 (480s) - uses e2 snapshot, rebuilds all ✓
+5. persist e4 (510s) - uses e2 snapshot (goes between e2 and e3)
+   → e3's snapshot now STALE (missing e4's contribution) ✗
+6. delete e5 (450s) - rebuilds all ✓
+
+Result: Final snapshot at e3 is correct after rebuild
+```
+
+**Solution:**
+- `persist()` accepts temporary staleness for speed
+- Any mutation (`add/delete/update_payload`) rebuilds everything
+- Final state is always consistent after corrections
+
+### Event Application with Special Behaviors
+
+Some events have special handling during snapshot rebuilds:
+
+```elixir
+def apply_to_game_state(event_log, game_state) do
+  case event.meta.logs_reduce_behavior do
+    :copy_all_stats_from_game_state ->
+      # For AddPlayerToTeam, AddCoachToTeam
+      # Preserves structure from snapshot (including generated IDs)
+      # Copies stats from prior state
+      Sports.copy_all_stats_from_game_state(
+        game_state.sport_id,
+        game_state,
+        event_log.snapshot.state  # Preserves original IDs
+      )
+    
+    :handle ->
+      # Standard event handling
+      Handler.handle(game_state, event)
+  end
+end
+```
+
+**Why This Matters:**
+- Events like `AddPlayerToTeam` generate random UUIDs
+- During rebuild, we need to preserve the original IDs
+- Can't replay the event (would generate different IDs)
+- Solution: Use snapshot's structure, copy stats from prior state
+
+### Performance Characteristics
+
+| Operation | Complexity | Typical Time | Use Case |
+|-----------|-----------|--------------|----------|
+| `persist/4` | O(1) | <10ms | Live scoring |
+| `add/3` | O(n) | 1-3s for 300 events | Add missed event |
+| `delete/3` | O(n) | 1-3s for 300 events | Remove incorrect event |
+| `update_payload/4` | O(n) | 1-3s for 300 events | Fix event data |
+
+### Design Trade-offs
+
+**Accepted Trade-offs:**
+
+1. **Temporary Inconsistency**: Between persist operations, some snapshots may be stale
+   - **Why acceptable**: Live scoring must be fast; corrections rebuild everything
+   
+2. **O(n) Rebuilds**: Mutations are more expensive than incremental updates
+   - **Why acceptable**: Corrections are rare vs. persist operations; guarantees correctness
+
+3. **Memory Usage**: Each event stores complete GameState snapshot
+   - **Why acceptable**: Enables instant time travel; storage is cheap vs. recomputation
+
+**Benefits Gained:**
+
+1. **Fast Live Scoring**: persist() stays O(1) regardless of game length
+2. **Complete Consistency**: Any correction guarantees all snapshots are correct
+3. **Simple Mental Model**: Either fast (persist) or correct (mutations), not both
+4. **Time Travel**: Jump to any point in game history instantly
+
 ## Data Flow Example
 
 ```
