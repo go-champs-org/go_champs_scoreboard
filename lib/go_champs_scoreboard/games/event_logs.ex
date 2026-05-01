@@ -22,8 +22,11 @@ defmodule GoChampsScoreboard.Games.EventLogs do
         Repo.transaction(fn ->
           with {:ok, inserted_event_log} <- insert_event_log(event_log),
                {:ok, prior_event_log} <- get_prior_event_log(inserted_event_log),
-               {:ok, _snapshot} <- create_snapshot_from_prior(inserted_event_log, prior_event_log) do
-            update_subsequent_snapshots(inserted_event_log)
+               {:ok, _snapshot} <-
+                 create_snapshot_from_prior(inserted_event_log, prior_event_log),
+               :ok <- rebuild_all_snapshots(inserted_event_log.game_id) do
+            # Rebuild all snapshots to ensure consistency
+            # This handles cases where prior snapshots might be stale from out-of-order persist operations
 
             refresh_cache_and_broadcast_event_logs(
               inserted_event_log.game_id,
@@ -98,10 +101,11 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   def delete(id, pub_sub \\ PubSub, event_log_cache \\ EventLogCache) do
     with {:ok, event_log} <- fetch_event_log(id),
          :ok <- validate_not_first_event(event_log),
-         {:ok, next_event_log} <- get_next_if_exists(event_log),
          {:ok, deleted_event_log} <- do_delete(event_log) do
-      case next_event_log do
-        nil ->
+      # Always rebuild all snapshots to ensure consistency after deletion
+      # This handles cases where prior snapshots might be stale from out-of-order persist operations
+      case rebuild_all_snapshots(event_log.game_id) do
+        :ok ->
           refresh_cache_and_broadcast_event_logs(event_log.game_id, pub_sub, event_log_cache)
 
           pub_sub.broadcast_game_last_snapshot_updated(
@@ -111,25 +115,10 @@ defmodule GoChampsScoreboard.Games.EventLogs do
 
           {:ok, deleted_event_log}
 
-        event ->
-          update_subsequent_snapshots(event)
-
-          refresh_cache_and_broadcast_event_logs(event_log.game_id, pub_sub, event_log_cache)
-
-          pub_sub.broadcast_game_last_snapshot_updated(
-            event_log.game_id,
-            GoChampsScoreboard.PubSub
-          )
-
-          {:ok, deleted_event_log}
+        {:error, reason} ->
+          {:error, reason}
       end
     end
-  end
-
-  # Get the next event log if it exists
-  defp get_next_if_exists(event_log) do
-    # We use {:ok, nil} to indicate no next event but still success
-    {:ok, get_next(event_log)}
   end
 
   # Perform the actual deletion
@@ -639,35 +628,23 @@ defmodule GoChampsScoreboard.Games.EventLogs do
     with {:ok, event_log} <- fetch_event_log(id),
          :ok <- validate_payload(new_payload),
          :ok <- validate_not_first_event(event_log),
-         {:ok, updated_event_log} <- do_update_payload(event_log, new_payload) do
-      # Call update_subsequent_snapshots but ignore its result
-      # We only care that it completes successfully
-      case update_subsequent_snapshots(updated_event_log) do
-        {results, _final_state} when is_list(results) ->
-          # Check if any update failed
-          if Enum.any?(results, fn
-               {:error, _} -> true
-               _ -> false
-             end) do
-            {:error, :snapshot_update_failed}
-          else
-            refresh_cache_and_broadcast_event_logs(
-              updated_event_log.game_id,
-              pub_sub,
-              event_log_cache
-            )
+         {:ok, updated_event_log} <- do_update_payload(event_log, new_payload),
+         :ok <- rebuild_all_snapshots(updated_event_log.game_id) do
+      # Rebuild all snapshots to ensure consistency after payload update
+      # This handles cases where prior snapshots might be stale from out-of-order persist operations
 
-            pub_sub.broadcast_game_last_snapshot_updated(
-              updated_event_log.game_id,
-              GoChampsScoreboard.PubSub
-            )
+      refresh_cache_and_broadcast_event_logs(
+        updated_event_log.game_id,
+        pub_sub,
+        event_log_cache
+      )
 
-            {:ok, updated_event_log}
-          end
+      pub_sub.broadcast_game_last_snapshot_updated(
+        updated_event_log.game_id,
+        GoChampsScoreboard.PubSub
+      )
 
-        {:error, reason} ->
-          {:error, reason}
-      end
+      {:ok, updated_event_log}
     end
   end
 
@@ -704,82 +681,76 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   end
 
   @doc """
-  Updates the game state snapshots for all subsequent event logs.
-  This function applies each subsequent event log to the prior game state snapshot
-  and updates the snapshot in the database.
+  Rebuilds all event log snapshots for a game from scratch.
+  This function recalculates every snapshot in chronological order, starting from the first event.
+  It ensures complete consistency across all snapshots, which is critical after mutations
+  that may have created stale snapshots from out-of-order persist operations.
+
+  ## Use Cases
+  - After `add()` - ensures new event and all existing events have correct snapshots
+  - After `delete()` - recalculates snapshots after event removal
+  - After `update_payload()` - propagates payload changes through all subsequent events
+
+  ## Performance
+  - O(n) where n = total number of events in the game
+  - Acceptable for correction operations (add/delete/update_payload)
+  - NOT used in persist() to keep live scoring fast
 
   ## Parameters
-  - `event_log`: The event log to be processed.
+  - `game_id`: The ID of the game whose snapshots should be rebuilt
+
   ## Returns
-  - A tuple containing:
-    - A list of tuples with the result of each update operation.
-    - The final game state after applying all the event logs.
+  - `:ok` on success
+  - `{:error, reason}` on failure
+
   ## Example
   ```
-  iex> event_log = %EventLog{
-    id: "some-uuid",
-    game_id: "game-id",
-    key: "event_key",
-    payload: %{"key" => "value"},
-    timestamp: ~N[2023-10-01 12:00:00],
-    game_clock_time: 120,
-    game_clock_period: 1
-  }
-  iex> {:ok, updated_event_logs, final_game_state} = update_subsequent_snapshots(event_log)
-  iex> updated_event_logs
-  [
-    {:ok, %EventLog{id: "updated-uuid", ...}},
-    {:ok, %EventLog{id: "updated-uuid-2", ...}}
-  ]
-  iex> final_game_state
-  %GameState{
-    players: [%{id: 1, stats: %{points: 10}}, %{id: 2, stats: %{points: 5}}]
-  }
+  iex> game_id = "7488a646-e31f-11e4-aace-600308960668"
+  iex> rebuild_all_snapshots(game_id)
+  :ok
   ```
   """
-  @spec update_subsequent_snapshots(EventLog.t()) :: {
-          [{:ok, EventLog.t()} | {:error, any()}],
-          GameState.t()
-        }
-  def update_subsequent_snapshots(event_log) do
-    case get_prior(event_log) do
-      nil ->
-        {:error, :first_event_log}
+  @spec rebuild_all_snapshots(Ecto.UUID.t()) :: :ok | {:error, any()}
+  def rebuild_all_snapshots(game_id) do
+    # Get the first event (which is immutable and serves as the base)
+    first_event = get_first_created_by_game_id(game_id)
 
-      first_prior_event_log ->
-        # Get all event logs for the game
+    if first_event do
+      # Get all events in chronological order with their snapshots
+      all_events = get_all_by_game_id(game_id, with_snapshot: true)
 
-        current_and_subsequent_event_logs =
-          get_all_by_game_id(event_log.game_id, with_snapshot: true)
-          |> subsequent_event_logs(first_prior_event_log)
+      # Rebuild each snapshot from the first event's state
+      result =
+        Repo.transaction(fn ->
+          all_events
+          # Skip the first event (its snapshot never changes)
+          |> Enum.drop(1)
+          |> Enum.reduce(first_event.snapshot.state, fn event, prior_state ->
+            # Apply this event to the prior state
+            updated_state = apply_to_game_state(event, prior_state)
 
-        Enum.map_reduce(
-          current_and_subsequent_event_logs,
-          first_prior_event_log.snapshot.state,
-          fn event_log, prior_game_state_snapshot ->
-            updated_game_state_snapshot =
-              apply_to_game_state(event_log, prior_game_state_snapshot)
+            # Update the snapshot in the database
+            json_state = updated_state |> Poison.encode!() |> Poison.decode!()
 
-            json_state =
-              updated_game_state_snapshot
-              |> Poison.encode!()
-              |> Poison.decode!()
-
-            snapshot_changeset =
-              event_log.snapshot
-              |> GoChampsScoreboard.Events.GameSnapshot.changeset(%{
-                state: json_state
-              })
-
-            case Repo.update(snapshot_changeset) do
+            case event.snapshot
+                 |> GameSnapshot.changeset(%{state: json_state})
+                 |> Repo.update() do
               {:ok, _snapshot} ->
-                {{:ok, get(event_log.id, with_snapshot: true)}, updated_game_state_snapshot}
+                # Return updated state to use as prior state for next iteration
+                updated_state
 
               {:error, reason} ->
                 Repo.rollback(reason)
             end
-          end
-        )
+          end)
+        end)
+
+      case result do
+        {:ok, _final_state} -> :ok
+        {:error, reason} -> {:error, reason}
+      end
+    else
+      {:error, :no_events_found}
     end
   end
 
@@ -814,7 +785,10 @@ defmodule GoChampsScoreboard.Games.EventLogs do
          ) do
       {:ok, event} ->
         if event.meta.logs_reduce_behavior == :copy_all_stats_from_game_state do
-          event_log.snapshot.state.sport_id
+          # For events like AddPlayerToTeam, we need to preserve the structure from the snapshot
+          # (including player/coach IDs that were generated during original execution)
+          # while copying stats from the prior state
+          game_state.sport_id
           |> Sports.copy_all_stats_from_game_state(game_state, event_log.snapshot.state)
         else
           game_state
