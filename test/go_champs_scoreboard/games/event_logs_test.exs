@@ -2888,14 +2888,10 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       :ok = EventLogs.rebuild_all_snapshots(game_state.id)
 
       # Get updated event logs
-      updated_event_log2 =
-        EventLogs.get_all_by_game_id(game_state.id, with_snapshot: true) |> Enum.at(1)
-
-      updated_event_log3 =
-        EventLogs.get_all_by_game_id(game_state.id, with_snapshot: true) |> Enum.at(2)
-
-      updated_event_log4 =
-        EventLogs.get_all_by_game_id(game_state.id, with_snapshot: true) |> Enum.at(3)
+      all_events = EventLogs.get_all_by_game_id(game_state.id, with_snapshot: true)
+      updated_event_log2 = Enum.at(all_events, 1)
+      updated_event_log3 = Enum.at(all_events, 2)
+      updated_event_log4 = Enum.at(all_events, 3)
 
       exppected_game_state_for_event2 =
         Handler.handle(game_state_for_event1, event2)

@@ -100,12 +100,24 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   @spec delete(Ecto.UUID.t(), module(), module()) :: {:ok, EventLog.t()} | {:error, any()}
   def delete(id, pub_sub \\ PubSub, event_log_cache \\ EventLogCache) do
     with {:ok, event_log} <- fetch_event_log(id),
-         :ok <- validate_not_first_event(event_log),
-         {:ok, deleted_event_log} <- do_delete(event_log) do
-      # Always rebuild all snapshots to ensure consistency after deletion
-      # This handles cases where prior snapshots might be stale from out-of-order persist operations
-      case rebuild_all_snapshots(event_log.game_id) do
-        :ok ->
+         :ok <- validate_not_first_event(event_log) do
+      # Wrap delete and rebuild in a single transaction for atomicity
+      result =
+        Repo.transaction(fn ->
+          case do_delete(event_log) do
+            {:ok, deleted_event_log} ->
+              case rebuild_all_snapshots(event_log.game_id) do
+                :ok -> deleted_event_log
+                {:error, reason} -> Repo.rollback(reason)
+              end
+
+            {:error, reason} ->
+              Repo.rollback(reason)
+          end
+        end)
+
+      case result do
+        {:ok, deleted_event_log} ->
           refresh_cache_and_broadcast_event_logs(event_log.game_id, pub_sub, event_log_cache)
 
           pub_sub.broadcast_game_last_snapshot_updated(
@@ -627,24 +639,41 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   def update_payload(id, new_payload, pub_sub \\ PubSub, event_log_cache \\ EventLogCache) do
     with {:ok, event_log} <- fetch_event_log(id),
          :ok <- validate_payload(new_payload),
-         :ok <- validate_not_first_event(event_log),
-         {:ok, updated_event_log} <- do_update_payload(event_log, new_payload),
-         :ok <- rebuild_all_snapshots(updated_event_log.game_id) do
-      # Rebuild all snapshots to ensure consistency after payload update
-      # This handles cases where prior snapshots might be stale from out-of-order persist operations
+         :ok <- validate_not_first_event(event_log) do
+      # Wrap payload update and snapshot rebuild in a single transaction
+      # If rebuild fails, the payload update will be rolled back
+      result =
+        Repo.transaction(fn ->
+          case do_update_payload(event_log, new_payload) do
+            {:ok, updated_event_log} ->
+              case rebuild_all_snapshots(updated_event_log.game_id) do
+                :ok -> updated_event_log
+                {:error, reason} -> Repo.rollback(reason)
+              end
 
-      refresh_cache_and_broadcast_event_logs(
-        updated_event_log.game_id,
-        pub_sub,
-        event_log_cache
-      )
+            {:error, reason} ->
+              Repo.rollback(reason)
+          end
+        end)
 
-      pub_sub.broadcast_game_last_snapshot_updated(
-        updated_event_log.game_id,
-        GoChampsScoreboard.PubSub
-      )
+      case result do
+        {:ok, updated_event_log} ->
+          refresh_cache_and_broadcast_event_logs(
+            updated_event_log.game_id,
+            pub_sub,
+            event_log_cache
+          )
 
-      {:ok, updated_event_log}
+          pub_sub.broadcast_game_last_snapshot_updated(
+            updated_event_log.game_id,
+            GoChampsScoreboard.PubSub
+          )
+
+          {:ok, updated_event_log}
+
+        {:error, reason} ->
+          {:error, reason}
+      end
     end
   end
 
@@ -668,16 +697,11 @@ defmodule GoChampsScoreboard.Games.EventLogs do
     end
   end
 
-  # Perform the actual payload update
+  # Perform the actual payload update (no transaction wrapper - caller handles transaction)
   defp do_update_payload(event_log, new_payload) do
-    Repo.transaction(fn ->
-      case event_log
-           |> EventLog.changeset(%{payload: new_payload})
-           |> Repo.update() do
-        {:ok, updated} -> updated
-        {:error, reason} -> Repo.rollback(reason)
-      end
-    end)
+    event_log
+    |> EventLog.changeset(%{payload: new_payload})
+    |> Repo.update()
   end
 
   @doc """
@@ -721,28 +745,27 @@ defmodule GoChampsScoreboard.Games.EventLogs do
 
       # Rebuild each snapshot from the first event's state
       result =
-        Repo.transaction(fn ->
-          all_events
-          # Skip the first event (its snapshot never changes)
-          |> Enum.drop(1)
-          |> Enum.reduce(first_event.snapshot.state, fn event, prior_state ->
-            # Apply this event to the prior state
-            updated_state = apply_to_game_state(event, prior_state)
+        all_events
+        # Skip the first event (its snapshot never changes)
+        |> Enum.drop(1)
+        |> Enum.reduce_while({:ok, first_event.snapshot.state}, fn event, {:ok, prior_state} ->
+          # Apply this event to the prior state
+          updated_state = apply_to_game_state(event, prior_state)
 
-            # Update the snapshot in the database
-            json_state = updated_state |> Poison.encode!() |> Poison.decode!()
+          # Update the snapshot in the database
+          json_state = updated_state |> Poison.encode!() |> Poison.decode!()
 
-            case event.snapshot
-                 |> GameSnapshot.changeset(%{state: json_state})
-                 |> Repo.update() do
-              {:ok, _snapshot} ->
-                # Return updated state to use as prior state for next iteration
-                updated_state
+          case event.snapshot
+               |> GameSnapshot.changeset(%{state: json_state})
+               |> Repo.update() do
+            {:ok, _snapshot} ->
+              # Continue with updated state as prior state for next iteration
+              {:cont, {:ok, updated_state}}
 
-              {:error, reason} ->
-                Repo.rollback(reason)
-            end
-          end)
+            {:error, reason} ->
+              # Stop on error
+              {:halt, {:error, reason}}
+          end
         end)
 
       case result do

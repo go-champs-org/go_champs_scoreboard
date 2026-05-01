@@ -280,6 +280,10 @@ EventLogs.update_payload(event_id, new_payload)
 - Used for corrections and administrative changes
 - Guarantees complete consistency
 - Calls `rebuild_all_snapshots/1` internally
+- **Transaction Safety**: Each operation wraps its mutation AND snapshot rebuild in a single transaction
+  - If rebuild fails, the mutation (add/delete/update) is rolled back atomically
+  - Prevents partial updates that would corrupt game state
+  - `rebuild_all_snapshots` runs without its own transaction to avoid nesting issues
 - Trade-off: Completeness over speed (~1-3 seconds for 300 events)
 
 ### The `rebuild_all_snapshots/1` Function
