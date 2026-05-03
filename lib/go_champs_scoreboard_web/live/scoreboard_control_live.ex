@@ -26,6 +26,7 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
      })
      |> assign(:feature_flags, FeatureFlags.all_flags())
      |> assign(:inactivity_timer_ref, nil)
+     |> assign(:inactivity_timer_tag, nil)
      |> assign_async(:game_state, fn ->
        task =
          Task.async(fn ->
@@ -346,7 +347,7 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
 
         {:noreply, updated_socket}
 
-      :inactivity_timeout ->
+      {:inactivity_timeout, tag} when tag == socket.assigns.inactivity_timer_tag ->
         game_id = socket.assigns.game_state.result.id
 
         if SnapshotStaleTracker.needs_rebuild?(game_id) do
@@ -361,7 +362,10 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
           end
         end
 
-        {:noreply, assign(socket, :inactivity_timer_ref, nil)}
+        {:noreply,
+         socket
+         |> assign(:inactivity_timer_ref, nil)
+         |> assign(:inactivity_timer_tag, nil)}
 
       _ ->
         # Handle other messages if necessary
@@ -393,10 +397,12 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
       Process.cancel_timer(timer_ref)
     end
 
-    timer_ref = Process.send_after(self(), :inactivity_timeout, 30_000)
+    tag = make_ref()
+    timer_ref = Process.send_after(self(), {:inactivity_timeout, tag}, 30_000)
 
     socket
     |> assign(:game_state, %{socket.assigns.game_state | result: reacted_game_state})
     |> assign(:inactivity_timer_ref, timer_ref)
+    |> assign(:inactivity_timer_tag, tag)
   end
 end

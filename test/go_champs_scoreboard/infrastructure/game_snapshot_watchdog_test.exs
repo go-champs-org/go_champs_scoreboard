@@ -43,8 +43,10 @@ defmodule GoChampsScoreboard.Infrastructure.GameSnapshotWatchdogTest do
 
       {:ok, watchdog} = GameSnapshotWatchdog.start_link(game_id)
 
-      send(watchdog, :check_staleness)
-      :sys.get_state(watchdog)
+      ExUnit.CaptureLog.capture_log(fn ->
+        send(watchdog, :check_staleness)
+        :sys.get_state(watchdog)
+      end)
 
       # Rebuild failed (no events) so flag remains set
       assert SnapshotStaleTracker.needs_rebuild?(game_id)

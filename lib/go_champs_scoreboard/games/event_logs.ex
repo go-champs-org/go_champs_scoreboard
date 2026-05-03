@@ -182,7 +182,18 @@ defmodule GoChampsScoreboard.Games.EventLogs do
 
               get_cached_events_and_broadcast(event.game_id, pub_sub, event_log_cache)
 
-              SnapshotStaleTracker.mark_persisted(event.game_id)
+              case SnapshotStaleTracker.mark_persisted(event.game_id) do
+                :ok ->
+                  :ok
+
+                {:error, reason} ->
+                  Logger.error(
+                    "[EventLogs] Failed to mark snapshot stale for game #{event.game_id}: #{inspect(reason)}. " <>
+                      "Rebuilding snapshots eagerly to avoid silent staleness."
+                  )
+
+                  rebuild_all_snapshots(event.game_id)
+              end
 
               event_log |> Repo.preload(:snapshot) |> parse_snapshot()
 
@@ -779,8 +790,18 @@ defmodule GoChampsScoreboard.Games.EventLogs do
 
       case result do
         {:ok, _final_state} ->
-          SnapshotStaleTracker.mark_rebuilt(game_id)
-          :ok
+          case SnapshotStaleTracker.mark_rebuilt(game_id) do
+            :ok ->
+              :ok
+
+            {:error, reason} ->
+              Logger.warning(
+                "[EventLogs] Snapshots rebuilt but failed to clear stale flag for game #{game_id}: #{inspect(reason)}. " <>
+                  "The watchdog will rebuild again unnecessarily on next tick."
+              )
+
+              :ok
+          end
 
         {:error, reason} ->
           {:error, reason}

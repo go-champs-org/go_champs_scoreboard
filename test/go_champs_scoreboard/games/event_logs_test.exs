@@ -763,11 +763,15 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
 
       game_state = game_state_fixture()
       {:ok, event1} = EventLogs.persist(event1, game_state)
+      :timer.sleep(10)
       {:ok, event2} = EventLogs.persist(event2, game_state)
+      :timer.sleep(10)
       {:ok, event3} = EventLogs.persist(event3, game_state)
+      :timer.sleep(10)
       # Event if event5 was persisted before event4, it should be sorted after event4
       # because event4 has created before event5
       {:ok, event5} = EventLogs.persist(event5, game_state)
+      :timer.sleep(10)
       {:ok, event4} = EventLogs.persist(event4, game_state)
 
       event_logs = EventLogs.get_all_by_game_id(game_id)

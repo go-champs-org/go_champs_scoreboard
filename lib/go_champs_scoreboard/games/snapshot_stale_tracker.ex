@@ -26,23 +26,33 @@ defmodule GoChampsScoreboard.Games.SnapshotStaleTracker do
   @two_days_in_seconds 172_800
   @key_prefix "snapshot_needs_rebuild"
 
-  @spec mark_persisted(String.t()) :: :ok
+  @spec mark_persisted(String.t()) :: :ok | {:error, any()}
   def mark_persisted(game_id) do
-    Redix.command(:games_cache, ["SET", cache_key(game_id), "true", "EX", @two_days_in_seconds])
-    :ok
+    case Redix.command(:games_cache, [
+           "SET",
+           cache_key(game_id),
+           "true",
+           "EX",
+           @two_days_in_seconds
+         ]) do
+      {:ok, _} -> :ok
+      {:error, reason} -> {:error, reason}
+    end
   end
 
-  @spec mark_rebuilt(String.t()) :: :ok
+  @spec mark_rebuilt(String.t()) :: :ok | {:error, any()}
   def mark_rebuilt(game_id) do
-    Redix.command(:games_cache, ["DEL", cache_key(game_id)])
-    :ok
+    case Redix.command(:games_cache, ["DEL", cache_key(game_id)]) do
+      {:ok, _} -> :ok
+      {:error, reason} -> {:error, reason}
+    end
   end
 
   @spec needs_rebuild?(String.t()) :: boolean()
   def needs_rebuild?(game_id) do
     case Redix.command(:games_cache, ["EXISTS", cache_key(game_id)]) do
-      {:ok, 1} -> true
-      _ -> false
+      {:ok, 0} -> false
+      _ -> true
     end
   end
 
