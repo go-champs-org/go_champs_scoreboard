@@ -116,6 +116,15 @@ declare module 'react-i18next' {
               name: string;
               delete: string;
             };
+            addPanel: {
+              searchPlaceholder: string;
+              inTeam: string;
+              numberPlaceholder: string;
+              add: string;
+              create: string;
+              newPlayerHint: string;
+              back: string;
+            };
           };
           coaches: {
             modal: {

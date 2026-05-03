@@ -486,6 +486,15 @@
       "placeholders": {
         "playerName": "Nome do jogador",
         "number": "Número"
+      },
+      "addPanel": {
+        "searchPlaceholder": "Pesquisar jogador por nome…",
+        "inTeam": "Na equipe",
+        "numberPlaceholder": "Número",
+        "add": "Adicionar",
+        "create": "Criar",
+        "newPlayerHint": "Novo jogador (não está no elenco)",
+        "back": "Voltar"
       }
     },
     "protest": {

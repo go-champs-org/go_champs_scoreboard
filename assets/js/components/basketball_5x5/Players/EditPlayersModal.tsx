@@ -1,37 +1,31 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { GameState, TeamState, TeamType, PlayerState } from '../../../types';
+import { GameState, TeamState, TeamType } from '../../../types';
 import { ApiPlayer } from '../../../goChampsApiTypes';
 import { useConfig } from '../../../shared/Config';
 import playersHttpClient from '../../../features/players/playersHttpClient';
 import Modal from '../../Modal';
-import MediumEditPlayerRow, { BasicEditPlayerRow } from './EditPlayerRow';
-import AddPlayerRow from './AddPlayerRow';
+import MediumEditPlayerRow, {
+  BasicEditPlayerRow,
+  ScoresheetEditPlayerRow,
+} from './EditPlayerRow';
+import AddPlayerPanel from './AddPlayerPanel';
 import { BASKETBALL_VIEWS } from '../constants';
 import { useSelectedView } from '../../../shared/ViewSettingsContext';
+import { sortPlayers } from './utils';
 
 interface PlayersTableProps {
   team: TeamState;
   teamType: TeamType;
-  showAddPlayerRow: boolean;
   pushEvent: (event: string, data: any) => void;
-  setShowAddPlayerRow: (show: boolean) => void;
-  apiPlayers: ApiPlayer[];
-  currentPlayers: PlayerState[];
-  onHighlightPlayer: (playerId: string) => void;
   highlightedPlayerId: string | null;
 }
 
 function BasicPlayersTable({
   team,
   teamType,
-  showAddPlayerRow,
   pushEvent,
-  setShowAddPlayerRow,
-  apiPlayers,
-  currentPlayers,
-  onHighlightPlayer,
   highlightedPlayerId,
 }: PlayersTableProps) {
   const { t } = useTranslation();
@@ -122,18 +116,7 @@ function BasicPlayersTable({
             </tr>
           </thead>
           <tbody>
-            {showAddPlayerRow && (
-              <AddPlayerRow
-                numberOfLeadingColumns={2}
-                teamType={teamType}
-                pushEvent={pushEvent}
-                onConfirmAction={() => setShowAddPlayerRow(false)}
-                teamPlayers={apiPlayers}
-                currentPlayers={currentPlayers}
-                onHighlightPlayer={onHighlightPlayer}
-              />
-            )}
-            {team.players.map((player, index) => (
+            {sortPlayers(team.players).map((player, index) => (
               <BasicEditPlayerRow
                 rowNumber={index + 1}
                 key={player.id}
@@ -153,13 +136,8 @@ function BasicPlayersTable({
 function MediumPlayersTable({
   team,
   teamType,
-  showAddPlayerRow,
-  currentPlayers,
-  onHighlightPlayer,
-  highlightedPlayerId,
   pushEvent,
-  setShowAddPlayerRow,
-  apiPlayers,
+  highlightedPlayerId,
 }: PlayersTableProps) {
   const { t } = useTranslation();
 
@@ -228,19 +206,52 @@ function MediumPlayersTable({
           </tr>
         </thead>
         <tbody>
-          {showAddPlayerRow && (
-            <AddPlayerRow
-              numberOfLeadingColumns={3}
+          {sortPlayers(team.players).map((player, index) => (
+            <MediumEditPlayerRow
+              rowNumber={index + 1}
+              key={player.id}
+              player={player}
               teamType={teamType}
               pushEvent={pushEvent}
-              onConfirmAction={() => setShowAddPlayerRow(false)}
-              teamPlayers={apiPlayers}
-              currentPlayers={currentPlayers}
-              onHighlightPlayer={onHighlightPlayer}
+              highlighted={player.id === highlightedPlayerId}
             />
-          )}
-          {team.players.map((player, index) => (
-            <MediumEditPlayerRow
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function ScoresheetPlayersTable({
+  team,
+  teamType,
+  pushEvent,
+  highlightedPlayerId,
+}: PlayersTableProps) {
+  const { t } = useTranslation();
+
+  return (
+    <div className="table-container">
+      <table className="table is-fullwidth" style={{ tableLayout: 'fixed' }}>
+        <thead>
+          <tr>
+            <th style={{ width: '40px' }}></th>
+            <th style={{ width: '85px' }}>
+              {t('basketball.players.modal.remove')}
+            </th>
+            <th style={{ width: '75px', textAlign: 'center' }}>
+              {t('basketball.players.modal.licenseNumber')}
+            </th>
+            <th style={{ width: '65px', textAlign: 'center' }}>#</th>
+            <th style={{ width: '65px', textAlign: 'center' }}>
+              {t('basketball.players.modal.captain')}
+            </th>
+            <th>{t('basketball.players.modal.name')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sortPlayers(team.players).map((player, index) => (
+            <ScoresheetEditPlayerRow
               rowNumber={index + 1}
               key={player.id}
               player={player}
@@ -286,14 +297,6 @@ function EditPlayersModal({
     activeTab === 'away' ? awayTeamPlayers : homeTeamPlayers;
   const homeTeamId = game_state.home_team.id;
   const awayTeamId = game_state.away_team.id;
-
-  const handleHighlightPlayer = (playerId: string) => {
-    setHighlightedPlayerId(playerId);
-    // Clear highlight after 3 seconds
-    setTimeout(() => {
-      setHighlightedPlayerId(null);
-    }, 3000);
-  };
 
   // Fetch team players from API
   React.useEffect(() => {
@@ -358,42 +361,57 @@ function EditPlayersModal({
           </div>
 
           <div className="columns is-multiline">
-            <div className="column is-12 has-text-right">
-              <button
-                className="button is-info is-small"
-                onClick={() => setShowAddPlayerRow(true)}
-              >
-                {t('basketball.players.modal.addPlayer')}
-              </button>
-            </div>
+            {showAddPlayerRow ? (
+              <div className="column is-12">
+                <AddPlayerPanel
+                  apiPlayers={selectedApiPlayers}
+                  currentPlayers={selectedTeam.players}
+                  teamType={activeTab}
+                  pushEvent={pushEvent}
+                  onClose={() => setShowAddPlayerRow(false)}
+                />
+              </div>
+            ) : (
+              <>
+                <div className="column is-12 has-text-right">
+                  <button
+                    className="button is-info is-small"
+                    onClick={() => setShowAddPlayerRow(true)}
+                  >
+                    {t('basketball.players.modal.addPlayer')}
+                  </button>
+                </div>
 
-            <div className="column is-12">
-              {selectedView === BASKETBALL_VIEWS.BASIC ? (
-                <BasicPlayersTable
-                  team={selectedTeam}
-                  teamType={activeTab}
-                  showAddPlayerRow={showAddPlayerRow}
-                  pushEvent={pushEvent}
-                  setShowAddPlayerRow={setShowAddPlayerRow}
-                  apiPlayers={selectedApiPlayers}
-                  currentPlayers={selectedTeam.players}
-                  onHighlightPlayer={handleHighlightPlayer}
-                  highlightedPlayerId={highlightedPlayerId}
-                />
-              ) : (
-                <MediumPlayersTable
-                  team={selectedTeam}
-                  teamType={activeTab}
-                  showAddPlayerRow={showAddPlayerRow}
-                  pushEvent={pushEvent}
-                  setShowAddPlayerRow={setShowAddPlayerRow}
-                  apiPlayers={selectedApiPlayers}
-                  currentPlayers={selectedTeam.players}
-                  onHighlightPlayer={handleHighlightPlayer}
-                  highlightedPlayerId={highlightedPlayerId}
-                />
-              )}
-            </div>
+                <div className="column is-12">
+                  {selectedView === BASKETBALL_VIEWS.BASIC ? (
+                    <BasicPlayersTable
+                      team={selectedTeam}
+                      teamType={activeTab}
+                      pushEvent={pushEvent}
+                      highlightedPlayerId={highlightedPlayerId}
+                    />
+                  ) : selectedView ===
+                      BASKETBALL_VIEWS.MEDIUM_PLUS_SCORESHEET_AND_STATS ||
+                    selectedView === BASKETBALL_VIEWS.MEDIUM_PLUS_SCORESHEET ||
+                    selectedView === BASKETBALL_VIEWS.MEDIUM_PLUS_STATS ||
+                    selectedView === BASKETBALL_VIEWS.SCORESHEET ? (
+                    <ScoresheetPlayersTable
+                      team={selectedTeam}
+                      teamType={activeTab}
+                      pushEvent={pushEvent}
+                      highlightedPlayerId={highlightedPlayerId}
+                    />
+                  ) : (
+                    <MediumPlayersTable
+                      team={selectedTeam}
+                      teamType={activeTab}
+                      pushEvent={pushEvent}
+                      highlightedPlayerId={highlightedPlayerId}
+                    />
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </>
       )}
