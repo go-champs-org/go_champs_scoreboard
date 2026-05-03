@@ -25,3 +25,7 @@ Mox.defmock(GoChampsScoreboard.Games.ResourceManagerMock,
 Mox.defmock(GoChampsScoreboard.Games.EventLogCacheMock,
   for: GoChampsScoreboard.Games.EventLogCacheBehavior
 )
+
+Mox.defmock(GoChampsScoreboard.Infrastructure.GameSnapshotWatchdogSupervisorMock,
+  for: GoChampsScoreboard.Infrastructure.GameSnapshotWatchdogSupervisorBehavior
+)
