@@ -9,7 +9,10 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   alias GoChampsScoreboard.Events.Models.Event
   alias GoChampsScoreboard.Events.Handler
   alias GoChampsScoreboard.Sports.Sports
+  alias GoChampsScoreboard.Games.SnapshotStaleTracker
   import Ecto.Query
+
+  require Logger
 
   @spec add(EventLog.t(), module(), module()) :: {:ok, EventLog.t()} | {:error, any()}
   def add(event_log, pub_sub \\ PubSub, event_log_cache \\ EventLogCache) do
@@ -178,6 +181,19 @@ defmodule GoChampsScoreboard.Games.EventLogs do
               event_log_cache.add_event_log(event.game_id, event_log)
 
               get_cached_events_and_broadcast(event.game_id, pub_sub, event_log_cache)
+
+              case SnapshotStaleTracker.mark_persisted(event.game_id) do
+                :ok ->
+                  :ok
+
+                {:error, reason} ->
+                  Logger.error(
+                    "[EventLogs] Failed to mark snapshot stale for game #{event.game_id}: #{inspect(reason)}. " <>
+                      "Rebuilding snapshots eagerly to avoid silent staleness."
+                  )
+
+                  rebuild_all_snapshots(event.game_id)
+              end
 
               event_log |> Repo.preload(:snapshot) |> parse_snapshot()
 
@@ -739,6 +755,10 @@ defmodule GoChampsScoreboard.Games.EventLogs do
     # Get the first event (which is immutable and serves as the base)
     first_event = get_first_created_by_game_id(game_id)
 
+    Logger.info(
+      "Rebuilding snapshots for game_id=#{game_id} starting from first_event_id=#{first_event && first_event.id}"
+    )
+
     if first_event do
       # Get all events in chronological order with their snapshots
       all_events = get_all_by_game_id(game_id, with_snapshot: true)
@@ -769,8 +789,22 @@ defmodule GoChampsScoreboard.Games.EventLogs do
         end)
 
       case result do
-        {:ok, _final_state} -> :ok
-        {:error, reason} -> {:error, reason}
+        {:ok, _final_state} ->
+          case SnapshotStaleTracker.mark_rebuilt(game_id) do
+            :ok ->
+              :ok
+
+            {:error, reason} ->
+              Logger.warning(
+                "[EventLogs] Snapshots rebuilt but failed to clear stale flag for game #{game_id}: #{inspect(reason)}. " <>
+                  "The watchdog will rebuild again unnecessarily on next tick."
+              )
+
+              :ok
+          end
+
+        {:error, reason} ->
+          {:error, reason}
       end
     else
       {:error, :no_events_found}

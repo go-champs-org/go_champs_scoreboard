@@ -3,7 +3,9 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
   alias GoChampsScoreboard.Infrastructure.FeatureFlags
   alias GoChampsScoreboard.Events.ValidatorCreator
   alias GoChampsScoreboard.Games.Games
+  alias GoChampsScoreboard.Games.EventLogs
   alias GoChampsScoreboard.Games.Messages.PubSub
+  alias GoChampsScoreboard.Games.SnapshotStaleTracker
   alias GoChampsScoreboard.ApiClient
   use GoChampsScoreboardWeb, :live_view
   require Logger
@@ -23,6 +25,8 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
          System.get_env("GO_CHAMPS_API_URL") || "https://go-champs-api-staging.herokuapp.com/"
      })
      |> assign(:feature_flags, FeatureFlags.all_flags())
+     |> assign(:inactivity_timer_ref, nil)
+     |> assign(:inactivity_timer_tag, nil)
      |> assign_async(:game_state, fn ->
        task =
          Task.async(fn ->
@@ -343,6 +347,26 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
 
         {:noreply, updated_socket}
 
+      {:inactivity_timeout, tag} when tag == socket.assigns.inactivity_timer_tag ->
+        game_id = socket.assigns.game_state.result.id
+
+        if SnapshotStaleTracker.needs_rebuild?(game_id) do
+          case EventLogs.rebuild_all_snapshots(game_id) do
+            :ok ->
+              PubSub.broadcast_game_last_snapshot_updated(game_id)
+
+            {:error, reason} ->
+              Logger.error(
+                "[ScoreboardControlLive] Inactivity rebuild failed for game #{game_id}: #{inspect(reason)}"
+              )
+          end
+        end
+
+        {:noreply,
+         socket
+         |> assign(:inactivity_timer_ref, nil)
+         |> assign(:inactivity_timer_tag, nil)}
+
       _ ->
         # Handle other messages if necessary
         {:noreply, socket}
@@ -369,7 +393,16 @@ defmodule GoChampsScoreboardWeb.ScoreboardControlLive do
   defp react_and_update_game_state(event, game_id, socket) do
     reacted_game_state = Games.react_to_event(event, game_id)
 
+    if timer_ref = socket.assigns.inactivity_timer_ref do
+      Process.cancel_timer(timer_ref)
+    end
+
+    tag = make_ref()
+    timer_ref = Process.send_after(self(), {:inactivity_timeout, tag}, 30_000)
+
     socket
     |> assign(:game_state, %{socket.assigns.game_state | result: reacted_game_state})
+    |> assign(:inactivity_timer_ref, timer_ref)
+    |> assign(:inactivity_timer_tag, tag)
   end
 end

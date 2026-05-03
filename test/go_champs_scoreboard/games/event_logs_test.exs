@@ -9,6 +9,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
   alias GoChampsScoreboard.Events.EventLog
   alias GoChampsScoreboard.Games.EventLogs
   alias GoChampsScoreboard.Games.EventLogCacheMock
+  alias GoChampsScoreboard.Games.SnapshotStaleTracker
   import Mox
 
   import GoChampsScoreboard.GameStateFixtures
@@ -389,6 +390,32 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       # Verify the mock was called
       verify!(EventLogCacheMock)
     end
+
+    test "marks game as needing snapshot rebuild after successful persist" do
+      game_id = Ecto.UUID.generate()
+
+      on_exit(fn ->
+        Redix.command(:games_cache, ["DEL", "snapshot_needs_rebuild:#{game_id}"])
+      end)
+
+      event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_id,
+          10,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => "123",
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      game_state = game_state_fixture(game_id: game_id)
+      {:ok, _event_log} = EventLogs.persist(event, game_state)
+
+      assert SnapshotStaleTracker.needs_rebuild?(game_id)
+    end
   end
 
   describe "delete/1" do
@@ -736,11 +763,15 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
 
       game_state = game_state_fixture()
       {:ok, event1} = EventLogs.persist(event1, game_state)
+      :timer.sleep(10)
       {:ok, event2} = EventLogs.persist(event2, game_state)
+      :timer.sleep(10)
       {:ok, event3} = EventLogs.persist(event3, game_state)
+      :timer.sleep(10)
       # Event if event5 was persisted before event4, it should be sorted after event4
       # because event4 has created before event5
       {:ok, event5} = EventLogs.persist(event5, game_state)
+      :timer.sleep(10)
       {:ok, event4} = EventLogs.persist(event4, game_state)
 
       event_logs = EventLogs.get_all_by_game_id(game_id)
@@ -2922,6 +2953,56 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       game_id = Ecto.UUID.generate()
 
       assert EventLogs.rebuild_all_snapshots(game_id) == {:error, :no_events_found}
+    end
+
+    test "clears the stale flag after a successful rebuild" do
+      game_id = Ecto.UUID.generate()
+
+      on_exit(fn ->
+        Redix.command(:games_cache, ["DEL", "snapshot_needs_rebuild:#{game_id}"])
+      end)
+
+      game_state = basketball_game_state_fixture(game_id: game_id)
+
+      event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_id,
+          10,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => "123",
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      {:ok, _event_log} = EventLogs.persist(event, game_state)
+
+      # persist/4 sets the flag
+      assert SnapshotStaleTracker.needs_rebuild?(game_id)
+
+      :ok = EventLogs.rebuild_all_snapshots(game_id)
+
+      # rebuild_all_snapshots/1 must clear the flag on success
+      refute SnapshotStaleTracker.needs_rebuild?(game_id)
+    end
+
+    test "does not clear the stale flag when rebuild fails" do
+      game_id = Ecto.UUID.generate()
+
+      on_exit(fn ->
+        Redix.command(:games_cache, ["DEL", "snapshot_needs_rebuild:#{game_id}"])
+      end)
+
+      # Manually set the flag without any events in the DB
+      SnapshotStaleTracker.mark_persisted(game_id)
+      assert SnapshotStaleTracker.needs_rebuild?(game_id)
+
+      {:error, :no_events_found} = EventLogs.rebuild_all_snapshots(game_id)
+
+      # Flag stays set because rebuild did not succeed
+      assert SnapshotStaleTracker.needs_rebuild?(game_id)
     end
 
     test "handles player addition and subsequent stats correctly after rebuild_all_snapshots" do

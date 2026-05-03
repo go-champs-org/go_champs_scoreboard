@@ -7,14 +7,17 @@ defmodule GoChampsScoreboard.Games.ResourceManager do
   alias GoChampsScoreboard.Infrastructure.GameEventsListenerSupervisor
   alias GoChampsScoreboard.Infrastructure.GameEventLogsListenerSupervisor
   alias GoChampsScoreboard.Infrastructure.GameTickerSupervisor
+  alias GoChampsScoreboard.Infrastructure.GameSnapshotWatchdogSupervisor
 
   @impl true
-  @spec check_and_restart(String.t(), module(), module(), module()) :: :ok | {:error, any()}
+  @spec check_and_restart(String.t(), module(), module(), module(), module()) ::
+          :ok | {:error, any()}
   def check_and_restart(
         game_id,
         game_events_listener_supervisor \\ GameEventsListenerSupervisor,
         game_event_logs_listener_supervisor \\ GameEventLogsListenerSupervisor,
-        game_ticker_supervisor \\ GameTickerSupervisor
+        game_ticker_supervisor \\ GameTickerSupervisor,
+        game_snapshot_watchdog_supervisor \\ GameSnapshotWatchdogSupervisor
       ) do
     with :ok <-
            check_and_start_if_needed(
@@ -36,6 +39,13 @@ defmodule GoChampsScoreboard.Games.ResourceManager do
              :check_game_ticker,
              :start_game_ticker,
              game_id
+           ),
+         :ok <-
+           check_and_start_if_needed(
+             game_snapshot_watchdog_supervisor,
+             :check_game_snapshot_watchdog,
+             :start_game_snapshot_watchdog,
+             game_id
            ) do
       :ok
     end
@@ -56,12 +66,13 @@ defmodule GoChampsScoreboard.Games.ResourceManager do
   end
 
   @impl true
-  @spec start_up(String.t(), module(), module(), module()) :: :ok | {:error, any()}
+  @spec start_up(String.t(), module(), module(), module(), module()) :: :ok | {:error, any()}
   def start_up(
         game_id,
         game_events_listener_supervisor \\ GameEventsListenerSupervisor,
         game_event_logs_listener_supervisor \\ GameEventLogsListenerSupervisor,
-        game_ticker_supervisor \\ GameTickerSupervisor
+        game_ticker_supervisor \\ GameTickerSupervisor,
+        game_snapshot_watchdog_supervisor \\ GameSnapshotWatchdogSupervisor
       ) do
     with {:ok, _} <-
            normalize_result(game_events_listener_supervisor.start_game_events_listener(game_id)),
@@ -69,18 +80,23 @@ defmodule GoChampsScoreboard.Games.ResourceManager do
            normalize_result(
              game_event_logs_listener_supervisor.start_game_event_logs_listener(game_id)
            ),
-         {:ok, _} <- normalize_result(game_ticker_supervisor.start_game_ticker(game_id)) do
+         {:ok, _} <- normalize_result(game_ticker_supervisor.start_game_ticker(game_id)),
+         {:ok, _} <-
+           normalize_result(
+             game_snapshot_watchdog_supervisor.start_game_snapshot_watchdog(game_id)
+           ) do
       :ok
     end
   end
 
   @impl true
-  @spec shut_down(String.t(), module(), module(), module()) :: :ok | {:error, any()}
+  @spec shut_down(String.t(), module(), module(), module(), module()) :: :ok | {:error, any()}
   def shut_down(
         game_id,
         game_events_listener_supervisor \\ GameEventsListenerSupervisor,
         game_event_logs_listener_supervisor \\ GameEventLogsListenerSupervisor,
-        game_ticker_supervisor \\ GameTickerSupervisor
+        game_ticker_supervisor \\ GameTickerSupervisor,
+        game_snapshot_watchdog_supervisor \\ GameSnapshotWatchdogSupervisor
       ) do
     with {:ok, _} <-
            normalize_result(game_events_listener_supervisor.stop_game_events_listener(game_id)),
@@ -88,7 +104,11 @@ defmodule GoChampsScoreboard.Games.ResourceManager do
            normalize_result(
              game_event_logs_listener_supervisor.stop_game_event_logs_listener(game_id)
            ),
-         {:ok, _} <- normalize_result(game_ticker_supervisor.stop_game_ticker(game_id)) do
+         {:ok, _} <- normalize_result(game_ticker_supervisor.stop_game_ticker(game_id)),
+         {:ok, _} <-
+           normalize_result(
+             game_snapshot_watchdog_supervisor.stop_game_snapshot_watchdog(game_id)
+           ) do
       :ok
     end
   end
