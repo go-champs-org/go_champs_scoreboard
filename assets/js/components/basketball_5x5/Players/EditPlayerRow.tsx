@@ -80,20 +80,22 @@ function StatInput({ player, statKey, pushEvent, teamType }: StatInputProps) {
   );
 }
 
-function NameCell({ player }: { player: PlayerState }) {
-  const CellContent = () => (
-    <div
-      style={{
-        maxWidth: '140px',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        textWrap: 'nowrap',
-        verticalAlign: 'middle',
-      }}
-    >
-      {player.name}
-    </div>
-  );
+function NameCell({
+  player,
+  additionalStyles = {},
+}: {
+  player: PlayerState;
+  additionalStyles?: React.CSSProperties;
+}) {
+  const cellStyle: React.CSSProperties = {
+    maxWidth: '140px',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    textWrap: 'nowrap',
+    verticalAlign: 'middle',
+    ...additionalStyles,
+  };
+  const CellContent = () => <div style={cellStyle}>{player.name}</div>;
   return player.state === 'not_available' ? (
     <div className="has-tooltip" data-tooltip="Player is not available">
       <CellContent />
@@ -550,7 +552,7 @@ export function ScoresheetEditPlayerRow({
           verticalAlign: 'middle',
         }}
       >
-        <NameCell player={player} />
+        <NameCell player={player} additionalStyles={{ maxWidth: '100%' }} />
       </td>
     </tr>
   );
