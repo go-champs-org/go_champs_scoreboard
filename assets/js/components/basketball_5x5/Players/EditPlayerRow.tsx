@@ -455,4 +455,105 @@ function MediumEditPlayerRow({
   );
 }
 
+export function ScoresheetEditPlayerRow({
+  rowNumber,
+  player,
+  teamType,
+  pushEvent,
+  highlighted = false,
+}: EditPlayerRowProps) {
+  const onUpdatePlayerNumber = (value: string) => {
+    pushEvent('update-player-in-team', {
+      ['team-type']: teamType,
+      player: { ...player, number: value },
+    });
+  };
+  const onUpdateLicenseNumber = (value: string) => {
+    pushEvent('update-player-in-team', {
+      ['team-type']: teamType,
+      player: { ...player, license_number: value },
+    });
+  };
+  const onUpdateIsCaptain = (value: boolean) => {
+    pushEvent('update-player-in-team', {
+      ['team-type']: teamType,
+      player: { ...player, is_captain: value },
+    });
+  };
+  const onRemovePlayer = () => {
+    pushEvent('remove-player-in-team', {
+      ['team-type']: teamType,
+      ['player-id']: player.id,
+    });
+  };
+  return (
+    <tr
+      key={player.id}
+      className={`edit-player-row${highlighted ? ' highlighted' : ''}`}
+    >
+      <td>{rowNumber}</td>
+      <td>
+        <DoubleClickButton
+          className="button is-warning is-small is-fullwidth"
+          onClick={onRemovePlayer}
+          disabled={player.state === 'not_available'}
+        >
+          &#10008;
+        </DoubleClickButton>
+      </td>
+      <td>
+        <FormField
+          initialValue={player.license_number}
+          onChange={onUpdateLicenseNumber}
+          render={(value, onChange) => (
+            <input
+              className="input is-small"
+              type="text"
+              value={value}
+              placeholder="AB12"
+              onChange={onChange}
+              disabled={player.state === 'not_available'}
+            />
+          )}
+        />
+      </td>
+      <td>
+        <FormField
+          initialValue={player.number}
+          onChange={onUpdatePlayerNumber}
+          render={(value, onChange) => (
+            <input
+              className="input is-small"
+              type="text"
+              value={value}
+              placeholder="00"
+              onChange={onChange}
+              disabled={player.state === 'not_available'}
+            />
+          )}
+        />
+      </td>
+      <td
+        style={{
+          verticalAlign: 'middle',
+        }}
+      >
+        <CheckboxFormField
+          initialValue={player.is_captain}
+          onChange={onUpdateIsCaptain}
+          disabled={player.state === 'not_available'}
+          className="captain-checkbox"
+        />
+      </td>
+      <td
+        style={{
+          verticalAlign: 'middle',
+        }}
+      >
+        <NameCell player={player} />
+      </td>
+    </tr>
+  );
+}
+
 export default MediumEditPlayerRow;

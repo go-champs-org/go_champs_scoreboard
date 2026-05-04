@@ -486,6 +486,15 @@
       "placeholders": {
         "playerName": "Player name",
         "number": "Number"
+      },
+      "addPanel": {
+        "searchPlaceholder": "Type player by name…",
+        "inTeam": "In team",
+        "numberPlaceholder": "Number",
+        "add": "Add",
+        "create": "Create",
+        "newPlayerHint": "New player (not in roster)",
+        "back": "Back"
       }
     },
     "protest": {
