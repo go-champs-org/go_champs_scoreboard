@@ -21,6 +21,8 @@ function AddPlayerPanel({
   const { t } = useTranslation();
   const [searchText, setSearchText] = React.useState('');
   const [number, setNumber] = React.useState('');
+  const [pendingApiPlayer, setPendingApiPlayer] =
+    React.useState<ApiPlayer | null>(null);
 
   const currentPlayerIds = new Set(currentPlayers.map((p) => p.id));
 
@@ -38,15 +40,30 @@ function AddPlayerPanel({
       : [];
 
   const showManualEntry =
-    searchText.trim().length > 0 && filteredAvailable.length === 0;
+    searchText.trim().length > 0 &&
+    filteredAvailable.length === 0 &&
+    filteredAlreadyInTeam.length === 0;
 
-  const handleAddApiPlayer = (player: ApiPlayer) => {
+  const handleSelectApiPlayer = (player: ApiPlayer) => {
+    setPendingApiPlayer(player);
+    setNumber(player.shirt_number || '');
+  };
+
+  const handleConfirmApiPlayer = () => {
+    if (!pendingApiPlayer || !number.trim()) return;
     pushEvent('add-player-to-team', {
       'team-type': teamType,
-      id: player.id,
-      name: player.name,
-      number: player.shirt_number || '',
+      id: pendingApiPlayer.id,
+      name: pendingApiPlayer.name,
+      number: number.trim(),
     });
+    setPendingApiPlayer(null);
+    setNumber('');
+  };
+
+  const handleCancelPending = () => {
+    setPendingApiPlayer(null);
+    setNumber('');
   };
 
   const handleCreateManual = () => {
@@ -92,7 +109,7 @@ function AddPlayerPanel({
                 <td style={{ width: '90px', textAlign: 'right' }}>
                   <button
                     className="button is-success is-small"
-                    onClick={() => handleAddApiPlayer(player)}
+                    onClick={() => handleSelectApiPlayer(player)}
                   >
                     {t('basketball.players.addPanel.add')}
                   </button>
@@ -129,6 +146,37 @@ function AddPlayerPanel({
             ))}
           </tbody>
         </table>
+      )}
+
+      {pendingApiPlayer && (
+        <div className="field is-grouped mt-3">
+          <div className="control">
+            <input
+              className="input"
+              type="text"
+              autoFocus
+              placeholder={t('basketball.players.addPanel.numberPlaceholder')}
+              value={number}
+              onChange={(e) => setNumber(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleConfirmApiPlayer()}
+              style={{ width: '100px' }}
+            />
+          </div>
+          <div className="control">
+            <button
+              className="button is-success"
+              disabled={!number.trim()}
+              onClick={handleConfirmApiPlayer}
+            >
+              {t('basketball.players.addPanel.add')}
+            </button>
+          </div>
+          <div className="control">
+            <button className="button is-light" onClick={handleCancelPending}>
+              {t('basketball.players.addPanel.back')}
+            </button>
+          </div>
+        </div>
       )}
 
       {showManualEntry && (
