@@ -488,7 +488,7 @@
         "number": "Number"
       },
       "addPanel": {
-        "searchPlaceholder": "Search player by name…",
+        "searchPlaceholder": "Type player by name…",
         "inTeam": "In team",
         "numberPlaceholder": "Number",
         "add": "Add",

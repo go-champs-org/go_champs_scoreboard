@@ -56,7 +56,14 @@ const calculateCurrentQuarterStats = (
 ) => {
   const currentPeriodString = currentPeriod.toString();
 
-  const currentQuarterFouls = periodStats[currentPeriodString]?.fouls || 0;
+  let currentQuarterFouls = 0;
+  if (currentPeriod >= 4) {
+    for (let period = 4; period <= currentPeriod; period++) {
+      currentQuarterFouls += periodStats[period.toString()]?.fouls || 0;
+    }
+  } else {
+    currentQuarterFouls = periodStats[currentPeriodString]?.fouls || 0;
+  }
   const currentQuarterPoints = periodStats[currentPeriodString]?.points || 0;
 
   return { fouls: currentQuarterFouls, points: currentQuarterPoints };

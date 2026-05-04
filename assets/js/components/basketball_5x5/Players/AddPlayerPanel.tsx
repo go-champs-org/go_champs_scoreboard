@@ -77,6 +77,13 @@ function AddPlayerPanel({
 
       {filteredAvailable.length > 0 && (
         <table className="table is-fullwidth is-striped is-narrow">
+          <thead>
+            <tr>
+              <th style={{ width: '80px' }}>#</th>
+              <th>{t('basketball.players.modal.name')}</th>
+              <th style={{ width: '90px' }}></th>
+            </tr>
+          </thead>
           <tbody>
             {filteredAvailable.map((player) => (
               <tr key={player.id}>
@@ -98,6 +105,13 @@ function AddPlayerPanel({
 
       {filteredAlreadyInTeam.length > 0 && (
         <table className="table is-fullwidth is-narrow">
+          <thead>
+            <tr>
+              <th style={{ width: '80px' }}>#</th>
+              <th>{t('basketball.players.modal.name')}</th>
+              <th style={{ width: '170px' }}></th>
+            </tr>
+          </thead>
           <tbody>
             {filteredAlreadyInTeam.map((player) => (
               <tr key={player.id}>

@@ -488,7 +488,7 @@
         "number": "Número"
       },
       "addPanel": {
-        "searchPlaceholder": "Pesquisar jogador por nome…",
+        "searchPlaceholder": "Digite o nome do jogador…",
         "inTeam": "Na equipe",
         "numberPlaceholder": "Número",
         "add": "Adicionar",
