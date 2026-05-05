@@ -66,14 +66,20 @@ function showWebSocketBlockedBanner() {
 liveSocket.connect();
 
 // Check WebSocket connection status after initial connection attempt
+// Only show banner if there are LiveView elements on the page that need a connection
 setTimeout(() => {
-  const socket = liveSocket.getSocket();
-  if (!socket.isConnected()) {
-    // LiveView failed to connect - likely WebSocket is blocked
-    console.error('[LiveView] Failed to establish WebSocket connection');
-    showWebSocketBlockedBanner();
-  } else {
-    console.log('[LiveView] Successfully connected via WebSocket');
+  // Check if there are any LiveView elements on the page
+  const hasLiveView = document.querySelector('[data-phx-main]') !== null;
+
+  if (hasLiveView) {
+    const socket = liveSocket.getSocket();
+    if (!socket.isConnected()) {
+      // LiveView failed to connect - likely WebSocket is blocked
+      console.error('[LiveView] Failed to establish WebSocket connection');
+      showWebSocketBlockedBanner();
+    } else {
+      console.log('[LiveView] Successfully connected via WebSocket');
+    }
   }
 }, 2000);
 
