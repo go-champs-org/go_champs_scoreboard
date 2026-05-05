@@ -646,5 +646,11 @@
   "teams": {
     "home": "Home",
     "away": "Away"
+  },
+  "system": {
+    "connection": {
+      "websocketBlockedTitle": "Connection Warning",
+      "websocketBlockedMessage": "WebSocket connection failed. The app requires WebSocket support. Please check your network, firewall, or proxy settings and refresh the page."
+    }
   }
 }

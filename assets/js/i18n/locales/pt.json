@@ -646,5 +646,11 @@
   "teams": {
     "home": "Casa",
     "away": "Visitante"
+  },
+  "system": {
+    "connection": {
+      "websocketBlockedTitle": "Aviso de Conexão",
+      "websocketBlockedMessage": "A conexão WebSocket falhou. O aplicativo requer suporte a WebSocket. Verifique suas configurações de rede, firewall ou proxy e atualize a página."
+    }
   }
 }

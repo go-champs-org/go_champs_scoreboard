@@ -27,7 +27,7 @@ import StreamViews from './components/StreamViews';
 import ReportViewer from './shared/ReportViewer';
 
 // Initialize i18n
-import './i18n';
+import i18n from './i18n';
 
 // load react components
 const hooks = { LiveReact };
@@ -35,7 +35,7 @@ const csfrElem = document.querySelector("meta[name='csrf-token']");
 const csrfToken = csfrElem ? csfrElem.getAttribute('content') : 'token';
 const liveSocket = new LiveSocket('/live', Socket, {
   heartbeatIntervalMs: 25_000, // Send heartbeat every 25s to prevent Heroku H15 (55s idle timeout)
-  longPollFallbackMs: 10_000, // Increased to 10s to prefer WebSocket
+  longPollFallbackMs: false, // Disable longpoll fallback - WebSocket only
   hooks,
   params: { _csrf_token: csrfToken },
 });
@@ -45,53 +45,37 @@ topbar.config({ barColors: { 0: '#29d' }, shadowColor: 'rgba(0, 0, 0, .3)' });
 window.addEventListener('phx:page-loading-start', (_info) => topbar.show(300));
 window.addEventListener('phx:page-loading-stop', (_info) => topbar.hide());
 
+// Function to show WebSocket blocked banner
+function showWebSocketBlockedBanner() {
+  if (document.getElementById('ws-blocked-banner')) return;
+
+  const banner = document.createElement('div');
+  banner.id = 'ws-blocked-banner';
+  banner.style.cssText =
+    'position:fixed;top:0;left:0;right:0;z-index:9999;margin:0;border-radius:0;background-color:#970c10;text-align:center;padding:0.75rem 1.5rem;';
+  banner.className = 'notification is-warning';
+  banner.innerHTML = `
+    <strong>⚠️ ${i18n.t('system.connection.websocketBlockedTitle')}</strong>
+    ${i18n.t('system.connection.websocketBlockedMessage')}
+    <button class="delete" onclick="document.getElementById('ws-blocked-banner').remove()"></button>
+  `;
+  document.body.prepend(banner);
+}
+
 // connect if there are any LiveViews on the page
 liveSocket.connect();
 
-// Debug: Log transport info after initial connection
+// Check WebSocket connection status after initial connection attempt
 setTimeout(() => {
-  const main = liveSocket.main;
-  if (main && main.channel) {
-    const transport = main.channel.socket.transport;
-    const transportName =
-      transport?.name || transport?.constructor?.name || 'unknown';
-    console.log(`[LiveView] Connected using transport: ${transportName}`);
-
-    // Check if using longpoll (fallback)
-    if (
-      transportName.toLowerCase().includes('longpoll') ||
-      transportName === 'LongPoll'
-    ) {
-      console.warn(
-        '[LiveView] ⚠️ Using LONGPOLL fallback - WebSocket may be blocked',
-      );
-    }
+  const socket = liveSocket.getSocket();
+  if (!socket.isConnected()) {
+    // LiveView failed to connect - likely WebSocket is blocked
+    console.error('[LiveView] Failed to establish WebSocket connection');
+    showWebSocketBlockedBanner();
+  } else {
+    console.log('[LiveView] Successfully connected via WebSocket');
   }
 }, 2000);
-
-// Retry WebSocket if stuck in longpoll mode
-// This attempts to upgrade back to WebSocket every 30 seconds
-setInterval(() => {
-  const main = liveSocket.main;
-  if (main && main.channel) {
-    const transport = main.channel.socket.transport;
-    const transportName =
-      transport?.name || transport?.constructor?.name || 'unknown';
-
-    // If using longpoll, try to reconnect with WebSocket
-    if (
-      transportName.toLowerCase().includes('longpoll') ||
-      transportName === 'LongPoll'
-    ) {
-      console.log(
-        '[LiveView] Attempting to upgrade from longpoll to WebSocket...',
-      );
-      // Disconnect and reconnect to trigger WebSocket attempt
-      liveSocket.disconnect();
-      setTimeout(() => liveSocket.connect(), 100);
-    }
-  }
-}, 30000); // Check every 30 seconds
 
 // Optionally render the React components on page load as
 // well to speed up the initial time to render.
