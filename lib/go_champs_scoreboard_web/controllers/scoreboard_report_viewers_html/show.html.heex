@@ -1,0 +1,14 @@
+<div
+  id="report-viewer-receiver"
+  style="display: none;"
+  data-live-react-class="Components.ReportViewer"
+  data-live-react-props={
+    Jason.encode!(%{report_data: Poison.encode!(@report_data), report_slug: @report_slug})
+  }
+>
+</div>
+<div
+  id="report-viewer-container"
+  style="height: 100%; width: 100%; position: absolute; top: 0; left: 0;"
+>
+</div>
