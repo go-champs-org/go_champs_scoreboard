@@ -5,6 +5,7 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
   alias GoChampsScoreboard.Repo
   alias GoChampsScoreboard.Events.GameSnapshot
   alias GoChampsScoreboard.Games.Models.GameState
+  alias GoChampsScoreboard.Games.Models.GameClockState
   alias GoChampsScoreboard.Events.Handler
   alias GoChampsScoreboard.Events.EventLog
   alias GoChampsScoreboard.Games.EventLogs
@@ -3239,6 +3240,109 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
 
       assert existing_coach != nil
       assert existing_coach.stats_values["fouls_technical"] == 1
+    end
+
+    test "preserves started_at and finished_at timestamps after rebuild" do
+      game_id = Ecto.UUID.generate()
+
+      on_exit(fn ->
+        Redix.command(:games_cache, ["DEL", "snapshot_needs_rebuild:#{game_id}"])
+      end)
+
+      # Create a game state with :not_started clock
+      not_started_clock_state = %GameClockState{
+        time: 600,
+        period: 1,
+        state: :not_started,
+        initial_period_time: 600,
+        initial_extra_period_time: 300,
+        started_at: nil,
+        finished_at: nil
+      }
+
+      game_state =
+        basketball_game_state_fixture(
+          game_id: game_id,
+          clock_state: not_started_clock_state
+        )
+
+      # Event 1: Start the game (this will set started_at)
+      start_game_event =
+        GoChampsScoreboard.Events.Definitions.StartGameDefinition.create(
+          game_id,
+          600,
+          1,
+          %{}
+        )
+
+      game_state_after_start = Handler.handle(game_state, start_game_event)
+      {:ok, _event_log_start} = EventLogs.persist(start_game_event, game_state_after_start)
+
+      # Capture the original started_at timestamp
+      original_started_at = game_state_after_start.clock_state.started_at
+      assert original_started_at != nil
+
+      # Wait a bit to create time separation
+      Process.sleep(100)
+
+      # Event 2: Update clock state to running (to transition from not_started to running)
+      update_clock_running_event =
+        GoChampsScoreboard.Events.Definitions.UpdateClockStateDefinition.create(
+          game_id,
+          590,
+          1,
+          %{"state" => "running"}
+        )
+
+      game_state_after_running =
+        Handler.handle(game_state_after_start, update_clock_running_event)
+
+      {:ok, _event_log_running} =
+        EventLogs.persist(update_clock_running_event, game_state_after_running)
+
+      # Wait a bit more
+      Process.sleep(100)
+
+      # Event 3: Update clock state to finished (this will set finished_at)
+      update_clock_finished_event =
+        GoChampsScoreboard.Events.Definitions.UpdateClockStateDefinition.create(
+          game_id,
+          580,
+          1,
+          %{"state" => "finished"}
+        )
+
+      game_state_after_finished =
+        Handler.handle(game_state_after_running, update_clock_finished_event)
+
+      {:ok, _event_log_finished} =
+        EventLogs.persist(update_clock_finished_event, game_state_after_finished)
+
+      # Capture the original finished_at timestamp
+      original_finished_at = game_state_after_finished.clock_state.finished_at
+      assert original_finished_at != nil
+
+      # Verify the timestamps are different and in proper order
+      assert DateTime.compare(original_finished_at, original_started_at) == :gt
+
+      # Now rebuild all snapshots
+      :ok = EventLogs.rebuild_all_snapshots(game_id)
+
+      # Get the last event log with its snapshot
+      last_event = EventLogs.get_last_by_game_id(game_id)
+      assert last_event != nil
+      assert last_event.snapshot != nil
+
+      rebuilt_clock_state = last_event.snapshot.state.clock_state
+
+      # Assert that the timestamps are preserved
+      # This test is EXPECTED TO FAIL because rebuild replays events
+      # which regenerate timestamps using DateTime.utc_now()
+      assert rebuilt_clock_state.started_at == original_started_at,
+             "started_at should be preserved after rebuild, but got #{inspect(rebuilt_clock_state.started_at)} instead of #{inspect(original_started_at)}"
+
+      assert rebuilt_clock_state.finished_at == original_finished_at,
+             "finished_at should be preserved after rebuild, but got #{inspect(rebuilt_clock_state.finished_at)} instead of #{inspect(original_finished_at)}"
     end
   end
 

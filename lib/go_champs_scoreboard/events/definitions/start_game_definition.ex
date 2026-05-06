@@ -26,7 +26,11 @@ defmodule GoChampsScoreboard.Events.Definitions.StartGameDefinition do
           payload :: any()
         ) :: Event.t()
   def create(game_id, clock_state_time_at, clock_state_period_at, _payload),
-    do: Event.new(@key, game_id, clock_state_time_at, clock_state_period_at)
+    do:
+      Event.new(@key, game_id, clock_state_time_at, clock_state_period_at, nil, %{
+        persistable: true,
+        logs_reduce_behavior: :copy_all_stats_from_game_state
+      })
 
   @impl true
   @spec handle(
