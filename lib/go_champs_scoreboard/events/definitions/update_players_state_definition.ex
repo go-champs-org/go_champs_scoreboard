@@ -56,21 +56,30 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinition do
     updated_team =
       player_ids
       |> Enum.reduce(current_team, fn player_id, acc_team ->
-        player =
-          Teams.find_player(current_game, team_type, player_id)
-          |> Players.update_state(new_state)
+        case Teams.find_player(current_game, team_type, player_id) do
+          nil ->
+            # Player doesn't exist, skip update
+            acc_team
 
-        updated_player =
-          case new_state do
-            :playing ->
-              player
-              |> update_playing_stats(current_game, clock_state_time_at, clock_state_period_at)
+          player ->
+            player_with_state = Players.update_state(player, new_state)
 
-            _ ->
-              player
-          end
+            updated_player =
+              case new_state do
+                :playing ->
+                  player_with_state
+                  |> update_playing_stats(
+                    current_game,
+                    clock_state_time_at,
+                    clock_state_period_at
+                  )
 
-        Teams.update_player_in_team(acc_team, updated_player)
+                _ ->
+                  player_with_state
+              end
+
+            Teams.update_player_in_team(acc_team, updated_player)
+        end
       end)
 
     current_game

@@ -219,5 +219,57 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinitionTest do
       assert result.clock_state.last_action_time == 240
       assert result.clock_state.last_action_period == 3
     end
+
+    test "handles non-existent coach gracefully" do
+      initial_state = %GameState{
+        home_team: %{
+          coaches: [
+            %{
+              id: "coach-123",
+              stats_values: %{
+                "fouls_technical" => 1,
+                "fouls" => 1
+              }
+            }
+          ],
+          total_coach_stats: %{
+            "fouls_technical" => 1,
+            "fouls" => 1
+          },
+          total_player_stats: %{},
+          stats_values: %{
+            "points" => 0,
+            "fouls" => 1,
+            "total_fouls_technical" => 0
+          },
+          period_stats: %{}
+        },
+        away_team: %{
+          coaches: [],
+          total_coach_stats: %{},
+          total_player_stats: %{},
+          stats_values: %{
+            "points" => 0,
+            "fouls" => 0,
+            "total_fouls_technical" => 0
+          },
+          period_stats: %{}
+        },
+        sport_id: "basketball"
+      }
+
+      payload = %{
+        "operation" => "increment",
+        "team-type" => "home",
+        "coach-id" => "non-existent-coach",
+        "stat-id" => "fouls_technical"
+      }
+
+      event = UpdateCoachStatDefinition.create("some-game-id", 10, 1, payload)
+      result = UpdateCoachStatDefinition.handle(initial_state, event)
+
+      # Game state should remain unchanged
+      assert result == initial_state
+    end
   end
 end

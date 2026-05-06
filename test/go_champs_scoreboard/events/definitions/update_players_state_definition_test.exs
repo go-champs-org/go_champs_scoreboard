@@ -539,6 +539,64 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayersStateDefinitionTest
       assert result.clock_state.last_action_time == 120
       assert result.clock_state.last_action_period == 1
     end
+
+    test "handles non-existent player gracefully" do
+      game_state = %GameState{
+        home_team: %TeamState{
+          players: [
+            %PlayerState{
+              id: "player-1",
+              state: :playing,
+              stats_values: %{"points" => 10}
+            }
+          ]
+        }
+      }
+
+      event_payload = %{
+        "team-type" => "home",
+        "player-ids" => ["player-1", "non-existent-player"],
+        "state" => "bench"
+      }
+
+      event = UpdatePlayersStateDefinition.create(game_state.id, 10, 1, event_payload)
+      new_game_state = UpdatePlayersStateDefinition.handle(game_state, event)
+
+      # Existing player should be updated
+      updated_player = Enum.find(new_game_state.home_team.players, &(&1.id == "player-1"))
+      assert updated_player.state == :bench
+
+      # Should still only have one player (non-existent player is skipped)
+      assert length(new_game_state.home_team.players) == 1
+    end
+
+    test "handles all non-existent players gracefully" do
+      game_state = %GameState{
+        home_team: %TeamState{
+          players: [
+            %PlayerState{
+              id: "player-1",
+              state: :playing,
+              stats_values: %{"points" => 10}
+            }
+          ]
+        }
+      }
+
+      event_payload = %{
+        "team-type" => "home",
+        "player-ids" => ["non-existent-1", "non-existent-2"],
+        "state" => "bench"
+      }
+
+      event = UpdatePlayersStateDefinition.create(game_state.id, 10, 1, event_payload)
+      new_game_state = UpdatePlayersStateDefinition.handle(game_state, event)
+
+      # Original player should be unchanged
+      unchanged_player = Enum.find(new_game_state.home_team.players, &(&1.id == "player-1"))
+      assert unchanged_player.state == :playing
+      assert unchanged_player.stats_values == %{"points" => 10}
+    end
   end
 
   describe "stream_config/0" do

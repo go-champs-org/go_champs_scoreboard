@@ -57,25 +57,31 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinition do
       current_game.sport_id
       |> Sports.find_calculated_team_stats()
 
-    updated_coach =
-      current_game
-      |> Teams.find_coach(team_type, coach_id)
-      |> Coaches.update_manual_stats_values(coach_stat, op)
-      |> Coaches.update_calculated_stats_values(calculated_coach_stats)
+    case Teams.find_coach(current_game, team_type, coach_id) do
+      nil ->
+        # Coach doesn't exist, skip update
+        current_game
 
-    updated_coach = Sports.update_coach_state(current_game.sport_id, updated_coach)
+      coach ->
+        updated_coach =
+          coach
+          |> Coaches.update_manual_stats_values(coach_stat, op)
+          |> Coaches.update_calculated_stats_values(calculated_coach_stats)
 
-    updated_team =
-      current_game
-      |> Teams.find_team(team_type)
-      |> Teams.update_coach_in_team(updated_coach)
-      |> Teams.calculate_team_total_coach_stats()
-      |> Teams.update_calculated_stats_values(calculated_team_stats)
-      |> Teams.calculate_period_stats(period)
+        updated_coach = Sports.update_coach_state(current_game.sport_id, updated_coach)
 
-    current_game
-    |> Games.update_team(team_type, updated_team)
-    |> Games.stamp_last_action(time, period)
+        updated_team =
+          current_game
+          |> Teams.find_team(team_type)
+          |> Teams.update_coach_in_team(updated_coach)
+          |> Teams.calculate_team_total_coach_stats()
+          |> Teams.update_calculated_stats_values(calculated_team_stats)
+          |> Teams.calculate_period_stats(period)
+
+        current_game
+        |> Games.update_team(team_type, updated_team)
+        |> Games.stamp_last_action(time, period)
+    end
   end
 
   @impl true
