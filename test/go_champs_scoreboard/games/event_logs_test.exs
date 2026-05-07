@@ -3335,9 +3335,6 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
 
       rebuilt_clock_state = last_event.snapshot.state.clock_state
 
-      # Assert that the timestamps are preserved
-      # This test is EXPECTED TO FAIL because rebuild replays events
-      # which regenerate timestamps using DateTime.utc_now()
       assert rebuilt_clock_state.started_at == original_started_at,
              "started_at should be preserved after rebuild, but got #{inspect(rebuilt_clock_state.started_at)} instead of #{inspect(original_started_at)}"
 
