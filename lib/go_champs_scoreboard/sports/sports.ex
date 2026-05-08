@@ -132,12 +132,20 @@ defmodule GoChampsScoreboard.Sports.Sports do
     query
   end
 
-  @spec copy_all_stats_from_game_state(String.t(), GameState.t(), GameState.t()) :: GameState.t()
-  def copy_all_stats_from_game_state("basketball", source_game_state, target_game_state) do
-    Basketball.GameState.copy_all_stats_from_game_state(source_game_state, target_game_state)
+  @spec copy_all_non_automatic_stats_from_game_state(String.t(), GameState.t(), GameState.t()) ::
+          GameState.t()
+  def copy_all_non_automatic_stats_from_game_state(
+        "basketball",
+        source_game_state,
+        target_game_state
+      ) do
+    Basketball.GameState.copy_all_non_automatic_stats_from_game_state(
+      source_game_state,
+      target_game_state
+    )
   end
 
-  def copy_all_stats_from_game_state(_, source_game_state, _target_game_state) do
+  def copy_all_non_automatic_stats_from_game_state(_, source_game_state, _target_game_state) do
     source_game_state
   end
 

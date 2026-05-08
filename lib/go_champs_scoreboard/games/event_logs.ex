@@ -841,12 +841,15 @@ defmodule GoChampsScoreboard.Games.EventLogs do
            event_log.payload
          ) do
       {:ok, event} ->
-        if event.meta.logs_reduce_behavior == :copy_all_stats_from_game_state do
+        if event.meta.logs_reduce_behavior == :copy_all_non_automatic_stats_from_game_state do
           # For events like AddPlayerToTeam, we need to preserve the structure from the snapshot
           # (including player/coach IDs that were generated during original execution)
-          # while copying stats from the prior state
+          # while copying non-automatic stats from the prior state
           game_state.sport_id
-          |> Sports.copy_all_stats_from_game_state(game_state, event_log.snapshot.state)
+          |> Sports.copy_all_non_automatic_stats_from_game_state(
+            game_state,
+            event_log.snapshot.state
+          )
         else
           game_state
           |> Handler.handle(event)
