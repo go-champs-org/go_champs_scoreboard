@@ -28,8 +28,8 @@ defmodule GoChampsScoreboard.Events.Definitions.AddCoachToTeamDefinition do
   def create(game_id, clock_state_time_at, clock_state_period_at, payload),
     do:
       Event.new(@key, game_id, clock_state_time_at, clock_state_period_at, payload, %{
-        persistent: true,
-        logs_reduce_behavior: :copy_all_stats_from_game_state
+        persistable: true,
+        logs_reduce_behavior: :copy_all_non_automatic_stats_from_game_state
       })
 
   @impl true

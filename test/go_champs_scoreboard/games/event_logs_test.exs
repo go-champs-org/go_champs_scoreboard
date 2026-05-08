@@ -3341,6 +3341,181 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
       assert rebuilt_clock_state.finished_at == original_finished_at,
              "finished_at should be preserved after rebuild, but got #{inspect(rebuilt_clock_state.finished_at)} instead of #{inspect(original_finished_at)}"
     end
+
+    test "preserves minutes_played accumulated by game-tick events after rebuild" do
+      game_id = Ecto.UUID.generate()
+      home_player_id = Ecto.UUID.generate()
+
+      on_exit(fn ->
+        Redix.command(:games_cache, ["DEL", "snapshot_needs_rebuild:#{game_id}"])
+      end)
+
+      not_started_clock_state = %GameClockState{
+        time: 600,
+        period: 1,
+        state: :not_started,
+        initial_period_time: 600,
+        initial_extra_period_time: 300,
+        started_at: nil,
+        finished_at: nil
+      }
+
+      game_state =
+        game_state_with_players_fixture(
+          game_id: game_id,
+          sport_id: "basketball",
+          clock_state: not_started_clock_state,
+          home_players: [
+            %GoChampsScoreboard.Games.Models.PlayerState{
+              id: home_player_id,
+              name: "Home Player",
+              number: 5,
+              state: :playing,
+              stats_values: %{
+                "minutes_played" => 0,
+                "field_goals_made" => 0,
+                "fouls_personal" => 0,
+                "points" => 0
+              }
+            }
+          ],
+          away_players: [
+            %GoChampsScoreboard.Games.Models.PlayerState{
+              id: Ecto.UUID.generate(),
+              name: "Away Player",
+              number: 7,
+              state: :playing,
+              stats_values: %{
+                "minutes_played" => 0,
+                "field_goals_made" => 0,
+                "fouls_personal" => 0,
+                "points" => 0
+              }
+            }
+          ]
+        )
+
+      # Step 1: persist StartGame
+      start_event =
+        GoChampsScoreboard.Events.Definitions.StartGameDefinition.create(game_id, 600, 1, %{})
+
+      game_state_after_start = Handler.handle(game_state, start_event)
+      {:ok, _} = EventLogs.persist(start_event, game_state_after_start)
+
+      # Step 2: persist UpdateClockState to running
+      running_event =
+        GoChampsScoreboard.Events.Definitions.UpdateClockStateDefinition.create(
+          game_id,
+          600,
+          1,
+          %{"state" => "running"}
+        )
+
+      game_state_after_running = Handler.handle(game_state_after_start, running_event)
+      {:ok, _} = EventLogs.persist(running_event, game_state_after_running)
+
+      # Step 3: GameTick (not persisted) — assert minutes_played incremented
+      game_state_after_tick_1 =
+        GoChampsScoreboard.Events.Definitions.GameTickDefinition.handle(game_state_after_running)
+
+      home_player_after_tick_1 =
+        Enum.find(game_state_after_tick_1.home_team.players, &(&1.id == home_player_id))
+
+      assert home_player_after_tick_1.stats_values["minutes_played"] == 1
+
+      # Step 4: persist UpdateClockState to paused (snapshot captures minutes_played: 1)
+      paused_event =
+        GoChampsScoreboard.Events.Definitions.UpdateClockStateDefinition.create(
+          game_id,
+          599,
+          1,
+          %{"state" => "paused"}
+        )
+
+      game_state_after_paused = Handler.handle(game_state_after_tick_1, paused_event)
+      {:ok, _} = EventLogs.persist(paused_event, game_state_after_paused)
+
+      # Step 5: persist UpdateClockState to running again (snapshot captures minutes_played: 1)
+      running_event_2 =
+        GoChampsScoreboard.Events.Definitions.UpdateClockStateDefinition.create(
+          game_id,
+          599,
+          1,
+          %{"state" => "running"}
+        )
+
+      game_state_after_running_2 = Handler.handle(game_state_after_paused, running_event_2)
+      {:ok, _} = EventLogs.persist(running_event_2, game_state_after_running_2)
+
+      # Step 6: GameTick again (not persisted) — assert minutes_played incremented to 2
+      game_state_after_tick_2 =
+        GoChampsScoreboard.Events.Definitions.GameTickDefinition.handle(
+          game_state_after_running_2
+        )
+
+      home_player_after_tick_2 =
+        Enum.find(game_state_after_tick_2.home_team.players, &(&1.id == home_player_id))
+
+      assert home_player_after_tick_2.stats_values["minutes_played"] == 2
+
+      # Step 7: persist UpdatePlayerStat (snapshot captures minutes_played: 2)
+      update_stat_event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          game_id,
+          598,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => home_player_id,
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      game_state_after_stat = Handler.handle(game_state_after_tick_2, update_stat_event)
+      {:ok, _} = EventLogs.persist(update_stat_event, game_state_after_stat)
+
+      # Step 8: persist UpdateClockState to finished (snapshot captures minutes_played: 2)
+      finished_event =
+        GoChampsScoreboard.Events.Definitions.UpdateClockStateDefinition.create(
+          game_id,
+          0,
+          1,
+          %{"state" => "finished"}
+        )
+
+      game_state_after_finished = Handler.handle(game_state_after_stat, finished_event)
+      {:ok, _} = EventLogs.persist(finished_event, game_state_after_finished)
+
+      # Step 9: store latest player minutes_played before rebuild
+      last_event_before_rebuild = EventLogs.get_last_by_game_id(game_id)
+
+      home_player_before_rebuild =
+        Enum.find(
+          last_event_before_rebuild.snapshot.state.home_team.players,
+          &(&1.id == home_player_id)
+        )
+
+      minutes_played_before_rebuild = home_player_before_rebuild.stats_values["minutes_played"]
+      assert minutes_played_before_rebuild == 2
+
+      # Step 10: rebuild all snapshots
+      :ok = EventLogs.rebuild_all_snapshots(game_id)
+
+      # Step 11: verify latest snapshot has same minutes_played
+      last_event_after_rebuild = EventLogs.get_last_by_game_id(game_id)
+
+      home_player_after_rebuild =
+        Enum.find(
+          last_event_after_rebuild.snapshot.state.home_team.players,
+          &(&1.id == home_player_id)
+        )
+
+      minutes_played_after_rebuild = home_player_after_rebuild.stats_values["minutes_played"]
+
+      assert minutes_played_after_rebuild == minutes_played_before_rebuild,
+             "Expected minutes_played to be #{minutes_played_before_rebuild} after rebuild, but got #{minutes_played_after_rebuild}"
+    end
   end
 
   describe "apply_to_game_state/2" do

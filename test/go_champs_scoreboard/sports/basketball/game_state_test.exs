@@ -716,7 +716,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameStateTest do
     end
   end
 
-  describe "copy_all_stats_from_game_state/2" do
+  describe "copy_all_non_automatic_stats_from_game_state/2" do
     test "copies player stats from source to target game state for matching players" do
       original_player = %PlayerState{
         id: "player-1",
@@ -771,7 +771,11 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameStateTest do
           }
       }
 
-      result = GameState.copy_all_stats_from_game_state(source_game_state, target_game_state)
+      result =
+        GameState.copy_all_non_automatic_stats_from_game_state(
+          source_game_state,
+          target_game_state
+        )
 
       assert length(result.home_team.players) == 2
 
@@ -848,7 +852,11 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameStateTest do
           }
       }
 
-      result = GameState.copy_all_stats_from_game_state(source_game_state, target_game_state)
+      result =
+        GameState.copy_all_non_automatic_stats_from_game_state(
+          source_game_state,
+          target_game_state
+        )
 
       assert length(result.home_team.coaches) == 2
 
@@ -915,7 +923,11 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameStateTest do
           }
       }
 
-      result = GameState.copy_all_stats_from_game_state(source_game_state, target_game_state)
+      result =
+        GameState.copy_all_non_automatic_stats_from_game_state(
+          source_game_state,
+          target_game_state
+        )
 
       # Assert that team total_player_stats are copied from source
       assert result.home_team.total_player_stats["points"] == 85
@@ -963,7 +975,11 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameStateTest do
           }
       }
 
-      result = GameState.copy_all_stats_from_game_state(source_game_state, target_game_state)
+      result =
+        GameState.copy_all_non_automatic_stats_from_game_state(
+          source_game_state,
+          target_game_state
+        )
 
       # Assert that team total_coach_stats are copied from source
       assert result.home_team.total_coach_stats["fouls_technical"] == 4
@@ -996,7 +1012,11 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameStateTest do
           }
       }
 
-      result = GameState.copy_all_stats_from_game_state(source_game_state, target_game_state)
+      result =
+        GameState.copy_all_non_automatic_stats_from_game_state(
+          source_game_state,
+          target_game_state
+        )
 
       # Period stats should be completely replaced from source
       assert result.home_team.period_stats == %{
@@ -1027,10 +1047,73 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameStateTest do
           }
       }
 
-      result = GameState.copy_all_stats_from_game_state(source_game_state, target_game_state)
+      result =
+        GameState.copy_all_non_automatic_stats_from_game_state(
+          source_game_state,
+          target_game_state
+        )
 
       # Period stats should be set to empty map when source has nil
       assert result.home_team.period_stats == %{}
+    end
+
+    test "preserves automatic stats (minutes_played) from target while copying manual stats from source" do
+      # Source player simulates the prior rebuilt state: manual stats are correct
+      # but automatic stats (minutes_played) are 0 because ticks are never replayed
+      source_player = %PlayerState{
+        id: "player-1",
+        name: "Player One",
+        state: :playing,
+        stats_values: %{
+          "field_goals_made" => 5,
+          "fouls_personal" => 2,
+          "minutes_played" => 0
+        }
+      }
+
+      source_game_state = %GameStateModel{
+        basketball_game_state_fixture()
+        | home_team: %TeamState{
+            basketball_game_state_fixture().home_team
+            | players: [source_player]
+          }
+      }
+
+      # Target player simulates the stored snapshot: manual stats may be outdated
+      # but automatic stats (minutes_played) are correct — set by persisted game state
+      target_player = %PlayerState{
+        id: "player-1",
+        name: "Player One",
+        state: :playing,
+        stats_values: %{
+          "field_goals_made" => 2,
+          "fouls_personal" => 1,
+          "minutes_played" => 3
+        }
+      }
+
+      target_game_state = %GameStateModel{
+        basketball_game_state_fixture()
+        | home_team: %TeamState{
+            basketball_game_state_fixture().home_team
+            | players: [target_player]
+          }
+      }
+
+      result =
+        GameState.copy_all_non_automatic_stats_from_game_state(
+          source_game_state,
+          target_game_state
+        )
+
+      result_player = Enum.find(result.home_team.players, &(&1.id == "player-1"))
+
+      # Manual stats come from source (correctly rebuilt)
+      assert result_player.stats_values["field_goals_made"] == 5
+      assert result_player.stats_values["fouls_personal"] == 2
+
+      # Automatic stats come from target (correctly stored in snapshot)
+      assert result_player.stats_values["minutes_played"] == 3
     end
   end
 

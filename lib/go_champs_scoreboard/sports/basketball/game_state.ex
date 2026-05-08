@@ -7,15 +7,19 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameState do
   alias GoChampsScoreboard.Games.Teams
   alias GoChampsScoreboard.Games.Games
 
-  @spec copy_all_stats_from_game_state(GameState.t(), GameState.t()) :: GameState.t()
-  def copy_all_stats_from_game_state(source_game_state, target_game_state) do
+  @spec copy_all_non_automatic_stats_from_game_state(GameState.t(), GameState.t()) ::
+          GameState.t()
+  def copy_all_non_automatic_stats_from_game_state(source_game_state, target_game_state) do
+    valid_keys = get_valid_stat_keys()
+
     ["home", "away"]
     |> Enum.reduce(target_game_state, fn team_type, acc_game_state ->
       updated_team =
         copy_team_stats_from_source(
           acc_game_state,
           source_game_state,
-          team_type
+          team_type,
+          valid_keys
         )
 
       Games.update_team(acc_game_state, team_type, updated_team)
@@ -251,17 +255,17 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameState do
     |> update_team_period_stats(restored_state, team_type)
   end
 
-  defp copy_team_stats_from_source(target_game_state, source_game_state, team_type) do
+  defp copy_team_stats_from_source(target_game_state, source_game_state, team_type, valid_keys) do
     target_team = Teams.find_team(target_game_state, team_type)
     source_team = Teams.find_team(source_game_state, team_type)
 
     target_team
-    |> copy_players_from_source(source_team)
+    |> copy_players_from_source(source_team, valid_keys.player)
     |> copy_coaches_from_source(source_team)
     |> copy_team_level_stats_from_source(source_team)
   end
 
-  defp copy_players_from_source(target_team, source_team) do
+  defp copy_players_from_source(target_team, source_team, valid_player_stat_keys) do
     target_players = target_team.players || []
     source_players = source_team.players || []
 
@@ -272,11 +276,21 @@ defmodule GoChampsScoreboard.Sports.Basketball.GameState do
           acc_team
 
         source_player ->
+          # Keep only manual and calculated stats from source (prior rebuilt state) —
+          # automatic stats (e.g. minutes_played) are left from the target (snapshot),
+          # since game-tick events are never persisted and cannot be replayed during rebuild.
+          filtered_source_stats =
+            source_player.stats_values
+            |> Enum.filter(fn {key, _} -> MapSet.member?(valid_player_stat_keys, key) end)
+            |> Map.new()
+
+          merged_stats = Map.merge(target_player.stats_values, filtered_source_stats)
+
           updated_player = %{
             target_player
             | name: source_player.name,
               state: source_player.state,
-              stats_values: source_player.stats_values
+              stats_values: merged_stats
           }
 
           Teams.update_player_in_team(acc_team, updated_player)

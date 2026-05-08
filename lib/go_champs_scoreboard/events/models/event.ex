@@ -6,10 +6,10 @@ defmodule GoChampsScoreboard.Events.Models.Event do
 
   The `logs_reduce_behavior` in meta controls how events are processed during log reduction:
   - `:handle` - Process the event normally through its specific handler
-  - `:copy_all_stats_from_game_state` - Copy all stats from source game state instead of handling
+  - `:copy_all_non_automatic_stats_from_game_state` - Copy all non-automatic stats from source game state instead of handling
   """
 
-  @type logs_reduce_behavior :: :handle | :copy_all_stats_from_game_state
+  @type logs_reduce_behavior :: :handle | :copy_all_non_automatic_stats_from_game_state
 
   @type meta :: %{
           persistable: boolean(),
