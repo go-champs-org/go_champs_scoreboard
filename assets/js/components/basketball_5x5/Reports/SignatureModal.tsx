@@ -84,7 +84,7 @@ interface OfficialsTabProps {
 function OfficialsTab({ officials, pushEvent }: OfficialsTabProps) {
   const { t } = useTranslation();
   const config = useConfig();
-  const [showSignaturePad, setShowSignaturePad] = React.useState<string | null>(
+  const [showSignaturePad, setShowSignaturePad] = React.useState<OfficialState | null>(
     null,
   );
   const [pinValues, setPinValues] = React.useState<Record<string, string>>({});
@@ -93,17 +93,19 @@ function OfficialsTab({ officials, pushEvent }: OfficialsTabProps) {
   );
   const [pinErrors, setPinErrors] = React.useState<Record<string, string>>({});
 
-  const handleSignatureSave = (officialId: string, signature: string) => {
+  const handleSignatureSave = (official: OfficialState, signature: string) => {
     pushEvent('update-official-in-game', {
-      id: officialId,
+      id: official.id,
+      type: official.type,
       signature: signature,
     });
     setShowSignaturePad(null);
   };
 
-  const handleSignatureClear = (officialId: string) => {
+  const handleSignatureClear = (official: OfficialState) => {
     pushEvent('update-official-in-game', {
-      id: officialId,
+      id: official.id,
+      type: official.type,
       signature: null,
     });
   };
@@ -147,6 +149,7 @@ function OfficialsTab({ officials, pushEvent }: OfficialsTabProps) {
         // Success - update the official's signature
         pushEvent('update-official-in-game', {
           id: official.id,
+          type: official.type,
           signature: response.signature,
         });
         // Clear the PIN input
@@ -280,14 +283,14 @@ function OfficialsTab({ officials, pushEvent }: OfficialsTabProps) {
                     {official.signature ? (
                       <button
                         className="button is-small is-danger"
-                        onClick={() => handleSignatureClear(official.id)}
+                        onClick={() => handleSignatureClear(official)}
                       >
                         {t('basketball.modals.signatures.actions.clear')}
                       </button>
                     ) : (
                       <button
                         className="button is-small is-primary"
-                        onClick={() => setShowSignaturePad(official.id)}
+                        onClick={() => setShowSignaturePad(official)}
                       >
                         {t('basketball.modals.signatures.actions.signManual')}
                       </button>
