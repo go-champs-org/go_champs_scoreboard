@@ -84,14 +84,15 @@ interface OfficialsTabProps {
 function OfficialsTab({ officials, pushEvent }: OfficialsTabProps) {
   const { t } = useTranslation();
   const config = useConfig();
-  const [showSignaturePad, setShowSignaturePad] = React.useState<OfficialState | null>(
-    null,
-  );
+  const [showSignaturePad, setShowSignaturePad] =
+    React.useState<OfficialState | null>(null);
   const [pinValues, setPinValues] = React.useState<Record<string, string>>({});
   const [loadingPin, setLoadingPin] = React.useState<Record<string, boolean>>(
     {},
   );
   const [pinErrors, setPinErrors] = React.useState<Record<string, string>>({});
+
+  const getOfficialKey = (id: string, type: string): string => `${id}-${type}`;
 
   const handleSignatureSave = (official: OfficialState, signature: string) => {
     pushEvent('update-official-in-game', {
@@ -110,12 +111,17 @@ function OfficialsTab({ officials, pushEvent }: OfficialsTabProps) {
     });
   };
 
-  const handlePinChange = (officialId: string, value: string) => {
-    setPinValues((prev) => ({ ...prev, [officialId]: value }));
+  const handlePinChange = (
+    officialId: string,
+    officialType: string,
+    value: string,
+  ) => {
+    const key = getOfficialKey(officialId, officialType);
+    setPinValues((prev) => ({ ...prev, [key]: value }));
     // Clear error when user starts typing
     setPinErrors((prev) => {
-      if (prev[officialId]) {
-        return { ...prev, [officialId]: '' };
+      if (prev[key]) {
+        return { ...prev, [key]: '' };
       }
       return prev;
     });
@@ -124,17 +130,18 @@ function OfficialsTab({ officials, pushEvent }: OfficialsTabProps) {
   const handlePinSubmit = async (official: OfficialState) => {
     if (!official.username) return;
 
-    const pin = pinValues[official.id];
+    const key = getOfficialKey(official.id, official.type);
+    const pin = pinValues[key];
     if (!pin || pin.trim() === '') {
       setPinErrors((prev) => ({
         ...prev,
-        [official.id]: t('basketball.modals.signatures.errors.pinRequired'),
+        [key]: t('basketball.modals.signatures.errors.pinRequired'),
       }));
       return;
     }
 
-    setLoadingPin((prev) => ({ ...prev, [official.id]: true }));
-    setPinErrors((prev) => ({ ...prev, [official.id]: '' }));
+    setLoadingPin((prev) => ({ ...prev, [key]: true }));
+    setPinErrors((prev) => ({ ...prev, [key]: '' }));
 
     try {
       const response = await officialsHttpClient.signOfficialWithPin(
@@ -153,12 +160,12 @@ function OfficialsTab({ officials, pushEvent }: OfficialsTabProps) {
           signature: response.signature,
         });
         // Clear the PIN input
-        setPinValues((prev) => ({ ...prev, [official.id]: '' }));
+        setPinValues((prev) => ({ ...prev, [key]: '' }));
       } else {
         // Unexpected response format
         setPinErrors((prev) => ({
           ...prev,
-          [official.id]: t('basketball.modals.signatures.errors.signFailed'),
+          [key]: t('basketball.modals.signatures.errors.signFailed'),
         }));
       }
     } catch (error: any) {
@@ -167,17 +174,17 @@ function OfficialsTab({ officials, pushEvent }: OfficialsTabProps) {
         // Unauthorized or Forbidden - invalid PIN
         setPinErrors((prev) => ({
           ...prev,
-          [official.id]: t('basketball.modals.signatures.errors.unauthorized'),
+          [key]: t('basketball.modals.signatures.errors.unauthorized'),
         }));
       } else {
         // Other errors
         setPinErrors((prev) => ({
           ...prev,
-          [official.id]: t('basketball.modals.signatures.errors.signFailed'),
+          [key]: t('basketball.modals.signatures.errors.signFailed'),
         }));
       }
     } finally {
-      setLoadingPin((prev) => ({ ...prev, [official.id]: false }));
+      setLoadingPin((prev) => ({ ...prev, [key]: false }));
     }
   };
 
@@ -227,11 +234,23 @@ function OfficialsTab({ officials, pushEvent }: OfficialsTabProps) {
                               placeholder={t(
                                 'basketball.modals.signatures.pinPlaceholder',
                               )}
-                              value={pinValues[official.id] || ''}
-                              onChange={(e) =>
-                                handlePinChange(official.id, e.target.value)
+                              value={
+                                pinValues[
+                                  getOfficialKey(official.id, official.type)
+                                ] || ''
                               }
-                              disabled={loadingPin[official.id]}
+                              onChange={(e) =>
+                                handlePinChange(
+                                  official.id,
+                                  official.type,
+                                  e.target.value,
+                                )
+                              }
+                              disabled={
+                                loadingPin[
+                                  getOfficialKey(official.id, official.type)
+                                ]
+                              }
                               onKeyUp={(e) => {
                                 if (e.key === 'Enter') {
                                   handlePinSubmit(official);
@@ -242,10 +261,18 @@ function OfficialsTab({ officials, pushEvent }: OfficialsTabProps) {
                           <div className="control">
                             <button
                               className={`button is-small is-info ${
-                                loadingPin[official.id] ? 'is-loading' : ''
+                                loadingPin[
+                                  getOfficialKey(official.id, official.type)
+                                ]
+                                  ? 'is-loading'
+                                  : ''
                               }`}
                               onClick={() => handlePinSubmit(official)}
-                              disabled={loadingPin[official.id]}
+                              disabled={
+                                loadingPin[
+                                  getOfficialKey(official.id, official.type)
+                                ]
+                              }
                             >
                               {t(
                                 'basketball.modals.signatures.actions.signPin',
@@ -253,9 +280,15 @@ function OfficialsTab({ officials, pushEvent }: OfficialsTabProps) {
                             </button>
                           </div>
                         </div>
-                        {pinErrors[official.id] && (
+                        {pinErrors[
+                          getOfficialKey(official.id, official.type)
+                        ] && (
                           <p className="help is-danger">
-                            {pinErrors[official.id]}
+                            {
+                              pinErrors[
+                                getOfficialKey(official.id, official.type)
+                              ]
+                            }
                           </p>
                         )}
                       </div>

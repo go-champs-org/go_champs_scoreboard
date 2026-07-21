@@ -94,7 +94,10 @@ function EditOfficialRow({
   };
 
   const handleRemove = () => {
-    pushEvent('remove-official-in-game', { ['id']: official.id, ['type']: official.type });
+    pushEvent('remove-official-in-game', {
+      ['id']: official.id,
+      ['type']: official.type,
+    });
   };
 
   const getOfficialTypeLabel = (typeValue: string) => {
