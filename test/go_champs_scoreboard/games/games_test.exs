@@ -233,7 +233,7 @@ defmodule GoChampsScoreboard.Games.GamesTest do
     end
   end
 
-  describe "remove_official/2" do
+  describe "remove_official_by_id_and_type/2" do
     test "removes an official from the game state" do
       official = %OfficialState{id: "some-id", type: :crew_chief, name: "John Doe"}
 
@@ -244,14 +244,15 @@ defmodule GoChampsScoreboard.Games.GamesTest do
         officials: [official]
       }
 
-      result_game_state = Games.remove_official(game_state, official.id)
+      result_game_state =
+        Games.remove_official_by_id_and_type(game_state, official.id, official.type)
 
       assert result_game_state.id == "some-game-id"
       assert length(result_game_state.officials) == 0
     end
   end
 
-  describe "update_official/2" do
+  describe "update_official_by_id_and_type/2" do
     test "updates an official in the game state" do
       official = %OfficialState{id: "some-id", type: :crew_chief, name: "John Doe"}
 
@@ -264,11 +265,11 @@ defmodule GoChampsScoreboard.Games.GamesTest do
 
       updated_official = %OfficialState{
         id: "some-id",
-        type: :shot_clock_operator,
+        type: :crew_chief,
         name: "Ben John"
       }
 
-      result_game_state = Games.update_official(game_state, updated_official)
+      result_game_state = Games.update_official_by_id_and_type(game_state, updated_official)
 
       assert result_game_state.id == "some-game-id"
       assert length(result_game_state.officials) == 1

@@ -29,9 +29,9 @@ defmodule GoChampsScoreboard.Events.Definitions.RemoveOfficialInGameDefinition d
 
   @impl true
   @spec handle(GameState.t(), Event.t()) :: GameState.t()
-  def handle(game_state, %Event{payload: %{"id" => id}}) do
+  def handle(game_state, %Event{payload: %{"id" => id, "type" => type}}) do
     game_state
-    |> Games.remove_official(id)
+    |> Games.remove_official_by_id_and_type(id, String.to_atom(type))
   end
 
   @impl true

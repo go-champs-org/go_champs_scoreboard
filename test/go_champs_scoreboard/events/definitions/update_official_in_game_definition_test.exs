@@ -47,7 +47,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
 
   describe "create/4" do
     test "creates event with correct attributes" do
-      payload = %{"id" => Ecto.UUID.generate(), "name" => "Updated Name"}
+      payload = %{"id" => Ecto.UUID.generate(), "type" => "scorer", "name" => "Updated Name"}
 
       event = UpdateOfficialInGameDefinition.create("game-123", 600, 1, payload)
 
@@ -62,8 +62,8 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
     test "creates event with all update fields" do
       payload = %{
         "id" => Ecto.UUID.generate(),
+        "type" => "scorer",
         "name" => "New Name",
-        "type" => "crew_chief",
         "license_number" => "CC001",
         "federation" => "NBA"
       }
@@ -85,9 +85,10 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
 
       game_with_official = Games.add_official(game_state, original_official)
 
-      # Update only the name
+      # Update only the name (include type for search)
       payload = %{
         "id" => original_official.id,
+        "type" => "scorer",
         "name" => "Updated Name"
       }
 
@@ -95,7 +96,9 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
       updated_game = UpdateOfficialInGameDefinition.handle(game_with_official, event)
 
       updated_official =
-        Enum.find(updated_game.officials, fn o -> o.id == original_official.id end)
+        Enum.find(updated_game.officials, fn o ->
+          o.id == original_official.id && o.type == :scorer
+        end)
 
       assert updated_official.name == "Updated Name"
       assert updated_official.type == :scorer
@@ -103,43 +106,47 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
       assert updated_official.federation == "FIBA"
     end
 
-    test "updates official type only", %{game_state: game_state} do
-      # Add an official first
+    test "type field in payload is used for searching, not updating", %{game_state: game_state} do
+      # Add an official
       original_official =
         OfficialState.new(Ecto.UUID.generate(), "John Doe", :scorer, "SC001", "FIBA")
 
       game_with_official = Games.add_official(game_state, original_official)
 
-      # Update only the type
+      # Try to change type by including it in payload - it should be ignored
       payload = %{
         "id" => original_official.id,
-        "type" => "timekeeper"
+        "type" => "scorer",
+        "name" => "Updated Name",
+        "license_number" => "SC002"
       }
 
       event = Event.new("update-official-in-game", "game-123", 600, 1, payload)
       updated_game = UpdateOfficialInGameDefinition.handle(game_with_official, event)
 
       updated_official =
-        Enum.find(updated_game.officials, fn o -> o.id == original_official.id end)
+        Enum.find(updated_game.officials, fn o ->
+          o.id == original_official.id && o.type == :scorer
+        end)
 
-      assert updated_official.name == "John Doe"
-      assert updated_official.type == :timekeeper
-      assert updated_official.license_number == "SC001"
+      assert updated_official.name == "Updated Name"
+      assert updated_official.type == :scorer
+      assert updated_official.license_number == "SC002"
       assert updated_official.federation == "FIBA"
     end
 
-    test "updates all official fields", %{game_state: game_state} do
+    test "updates all updatable fields (all except type)", %{game_state: game_state} do
       # Add an official first
       original_official =
         OfficialState.new(Ecto.UUID.generate(), "Original Name", :scorer, "SC001", "FIBA")
 
       game_with_official = Games.add_official(game_state, original_official)
 
-      # Update all fields
+      # Update all updatable fields
       payload = %{
         "id" => original_official.id,
+        "type" => "scorer",
         "name" => "New Name",
-        "type" => "crew_chief",
         "license_number" => "CC002",
         "federation" => "NBA"
       }
@@ -148,15 +155,18 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
       updated_game = UpdateOfficialInGameDefinition.handle(game_with_official, event)
 
       updated_official =
-        Enum.find(updated_game.officials, fn o -> o.id == original_official.id end)
+        Enum.find(updated_game.officials, fn o ->
+          o.id == original_official.id && o.type == :scorer
+        end)
 
       assert updated_official.name == "New Name"
-      assert updated_official.type == :crew_chief
+      # Type should NOT change
+      assert updated_official.type == :scorer
       assert updated_official.license_number == "CC002"
       assert updated_official.federation == "NBA"
     end
 
-    test "updates license_number to nil (empty string)", %{game_state: game_state} do
+    test "updates license_number to empty string", %{game_state: game_state} do
       # Add an official first
       original_official =
         OfficialState.new(Ecto.UUID.generate(), "John Doe", :scorer, "SC001", "FIBA")
@@ -166,6 +176,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
       # Update license_number to empty string
       payload = %{
         "id" => original_official.id,
+        "type" => "scorer",
         "license_number" => ""
       }
 
@@ -173,7 +184,9 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
       updated_game = UpdateOfficialInGameDefinition.handle(game_with_official, event)
 
       updated_official =
-        Enum.find(updated_game.officials, fn o -> o.id == original_official.id end)
+        Enum.find(updated_game.officials, fn o ->
+          o.id == original_official.id && o.type == :scorer
+        end)
 
       assert updated_official.name == "John Doe"
       assert updated_official.type == :scorer
@@ -181,11 +194,12 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
       assert updated_official.federation == "FIBA"
     end
 
-    test "handles non-existent official gracefully", %{game_state: game_state} do
+    test "handles non-existent official gracefully (wrong ID)", %{game_state: game_state} do
       non_existent_id = Ecto.UUID.generate()
 
       payload = %{
         "id" => non_existent_id,
+        "type" => "scorer",
         "name" => "New Name"
       }
 
@@ -195,6 +209,33 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
       # Game state should remain unchanged
       assert updated_game.officials == game_state.officials
       assert length(updated_game.officials) == 0
+    end
+
+    test "handles non-existent official gracefully (wrong type)", %{game_state: game_state} do
+      # Add an official
+      original_official =
+        OfficialState.new(Ecto.UUID.generate(), "John Doe", :scorer, "SC001", "FIBA")
+
+      game_with_official = Games.add_official(game_state, original_official)
+
+      # Try to update with wrong type
+      payload = %{
+        "id" => original_official.id,
+        "type" => "timekeeper",
+        "name" => "New Name"
+      }
+
+      event = Event.new("update-official-in-game", "game-123", 600, 1, payload)
+      updated_game = UpdateOfficialInGameDefinition.handle(game_with_official, event)
+
+      # Original official should remain unchanged
+      original =
+        Enum.find(updated_game.officials, fn o ->
+          o.id == original_official.id && o.type == :scorer
+        end)
+
+      assert original.name == "John Doe"
+      assert length(updated_game.officials) == 1
     end
 
     test "updates only the specified official when multiple exist", %{game_state: game_state} do
@@ -216,6 +257,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
       # Update only official2
       payload = %{
         "id" => official2.id,
+        "type" => "timekeeper",
         "name" => "Updated Official 2",
         "federation" => "FIBA"
       }
@@ -225,7 +267,12 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
 
       # Verify only official2 was updated
       updated_official1 = Enum.find(updated_game.officials, fn o -> o.id == official1.id end)
-      updated_official2 = Enum.find(updated_game.officials, fn o -> o.id == official2.id end)
+
+      updated_official2 =
+        Enum.find(updated_game.officials, fn o ->
+          o.id == official2.id && o.type == :timekeeper
+        end)
+
       updated_official3 = Enum.find(updated_game.officials, fn o -> o.id == official3.id end)
 
       # Official1 and Official3 should remain unchanged
@@ -251,6 +298,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
 
       payload = %{
         "id" => official.id,
+        "type" => "scorer",
         "name" => "Updated Name"
       }
 
@@ -278,6 +326,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
       # Update only federation, leave others unchanged
       payload = %{
         "id" => original_official.id,
+        "type" => "scorer",
         "federation" => "NBA"
       }
 
@@ -285,7 +334,9 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
       updated_game = UpdateOfficialInGameDefinition.handle(game_with_official, event)
 
       updated_official =
-        Enum.find(updated_game.officials, fn o -> o.id == original_official.id end)
+        Enum.find(updated_game.officials, fn o ->
+          o.id == original_official.id && o.type == :scorer
+        end)
 
       # unchanged
       assert updated_official.name == "John Doe"
@@ -307,6 +358,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
       # Update signature
       payload = %{
         "id" => original_official.id,
+        "type" => "scorer",
         "signature" => "base64_signature_data"
       }
 
@@ -314,7 +366,9 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
       updated_game = UpdateOfficialInGameDefinition.handle(game_with_official, event)
 
       updated_official =
-        Enum.find(updated_game.officials, fn o -> o.id == original_official.id end)
+        Enum.find(updated_game.officials, fn o ->
+          o.id == original_official.id && o.type == :scorer
+        end)
 
       assert updated_official.signature == "base64_signature_data"
       # Other fields unchanged
@@ -338,6 +392,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
       # Clear signature
       payload = %{
         "id" => original_official.id,
+        "type" => "scorer",
         "signature" => nil
       }
 
@@ -345,7 +400,9 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
       updated_game = UpdateOfficialInGameDefinition.handle(game_with_official, event)
 
       updated_official =
-        Enum.find(updated_game.officials, fn o -> o.id == original_official.id end)
+        Enum.find(updated_game.officials, fn o ->
+          o.id == original_official.id && o.type == :scorer
+        end)
 
       assert updated_official.signature == nil
       # Other fields unchanged
@@ -365,6 +422,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
 
       payload = %{
         "id" => original_official.id,
+        "type" => "scorer",
         "new_id" => tournament_id,
         "name" => "Tournament Official",
         "license_number" => "SC123",
@@ -375,11 +433,17 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
       updated_game = UpdateOfficialInGameDefinition.handle(game_with_official, event)
 
       # Should not find official with old ID
-      old_official = Enum.find(updated_game.officials, fn o -> o.id == original_official.id end)
+      old_official =
+        Enum.find(updated_game.officials, fn o ->
+          o.id == original_official.id && o.type == :scorer
+        end)
+
       assert old_official == nil
 
       # Should find official with new ID
-      new_official = Enum.find(updated_game.officials, fn o -> o.id == tournament_id end)
+      new_official =
+        Enum.find(updated_game.officials, fn o -> o.id == tournament_id && o.type == :scorer end)
+
       assert new_official != nil
       assert new_official.id == tournament_id
       assert new_official.name == "Tournament Official"
@@ -398,6 +462,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
       # Update without new_id
       payload = %{
         "id" => original_official.id,
+        "type" => "scorer",
         "name" => "Updated Official"
       }
 
@@ -406,11 +471,132 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinitionTe
 
       # Should still find official with original ID
       updated_official =
-        Enum.find(updated_game.officials, fn o -> o.id == original_official.id end)
+        Enum.find(updated_game.officials, fn o ->
+          o.id == original_official.id && o.type == :scorer
+        end)
 
       assert updated_official != nil
       assert updated_official.id == original_official.id
       assert updated_official.name == "Updated Official"
+    end
+
+    test "can have same official ID with different types", %{game_state: game_state} do
+      # Add officials with same ID but different types
+      shared_id = Ecto.UUID.generate()
+
+      official_scorer =
+        %OfficialState{
+          id: shared_id,
+          name: "Official Name",
+          type: :scorer,
+          license_number: "SC001",
+          federation: "FIBA"
+        }
+
+      official_timekeeper =
+        %OfficialState{
+          id: shared_id,
+          name: "Official Name",
+          type: :timekeeper,
+          license_number: "TK001",
+          federation: "FIBA"
+        }
+
+      game_with_officials =
+        game_state
+        |> Games.add_official(official_scorer)
+        |> Games.add_official(official_timekeeper)
+
+      # Verify both are in the game state
+      assert length(game_with_officials.officials) == 2
+
+      # Update only the scorer
+      payload = %{
+        "id" => shared_id,
+        "type" => "scorer",
+        "license_number" => "SC002"
+      }
+
+      event = Event.new("update-official-in-game", "game-123", 600, 1, payload)
+      updated_game = UpdateOfficialInGameDefinition.handle(game_with_officials, event)
+
+      # Should still have both officials
+      assert length(updated_game.officials) == 2
+
+      # Scorer should be updated
+      updated_scorer =
+        Enum.find(updated_game.officials, fn o ->
+          o.id == shared_id && o.type == :scorer
+        end)
+
+      assert updated_scorer.license_number == "SC002"
+
+      # Timekeeper should remain unchanged
+      updated_timekeeper =
+        Enum.find(updated_game.officials, fn o ->
+          o.id == shared_id && o.type == :timekeeper
+        end)
+
+      assert updated_timekeeper.license_number == "TK001"
+    end
+
+    test "updating timekeeper does not affect scorer with same ID", %{game_state: game_state} do
+      # Add officials with same ID but different types
+      shared_id = Ecto.UUID.generate()
+
+      official_scorer =
+        %OfficialState{
+          id: shared_id,
+          name: "John Doe",
+          type: :scorer,
+          license_number: "SC001",
+          federation: "FIBA"
+        }
+
+      official_timekeeper =
+        %OfficialState{
+          id: shared_id,
+          name: "Jane Smith",
+          type: :timekeeper,
+          license_number: "TK001",
+          federation: "NBA"
+        }
+
+      game_with_officials =
+        game_state
+        |> Games.add_official(official_scorer)
+        |> Games.add_official(official_timekeeper)
+
+      # Update timekeeper
+      payload = %{
+        "id" => shared_id,
+        "type" => "timekeeper",
+        "name" => "Jane Updated",
+        "federation" => "FIBA"
+      }
+
+      event = Event.new("update-official-in-game", "game-123", 600, 1, payload)
+      updated_game = UpdateOfficialInGameDefinition.handle(game_with_officials, event)
+
+      # Scorer should remain unchanged
+      updated_scorer =
+        Enum.find(updated_game.officials, fn o ->
+          o.id == shared_id && o.type == :scorer
+        end)
+
+      assert updated_scorer.name == "John Doe"
+      assert updated_scorer.federation == "FIBA"
+      assert updated_scorer.license_number == "SC001"
+
+      # Timekeeper should be updated
+      updated_timekeeper =
+        Enum.find(updated_game.officials, fn o ->
+          o.id == shared_id && o.type == :timekeeper
+        end)
+
+      assert updated_timekeeper.name == "Jane Updated"
+      assert updated_timekeeper.federation == "FIBA"
+      assert updated_timekeeper.license_number == "TK001"
     end
   end
 

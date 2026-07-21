@@ -178,4 +178,29 @@ defmodule GoChampsScoreboard.Games.OfficialsTest do
       end
     end
   end
+
+  describe "find_by_id_and_type/3" do
+    test "finds an official by id and type" do
+      official1 = Officials.bootstrap("Official 1", "scorer")
+      official2 = Officials.bootstrap("Official 2", "crew_chief")
+
+      officials = [official1, official2]
+
+      found_official =
+        Officials.find_by_id_and_type(officials, official1.id, official1.type)
+
+      assert found_official == official1
+    end
+
+    test "returns nil if no official matches both id and type" do
+      official1 = Officials.bootstrap("Official 1", "scorer")
+      officials = [official1]
+
+      result = Officials.find_by_id_and_type(officials, "non-existent-id", :scorer)
+      assert result == nil
+
+      result2 = Officials.find_by_id_and_type(officials, official1.id, :crew_chief)
+      assert result2 == nil
+    end
+  end
 end
