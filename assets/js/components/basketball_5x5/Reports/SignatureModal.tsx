@@ -220,7 +220,7 @@ function OfficialsTab({ officials, pushEvent }: OfficialsTabProps) {
             </thead>
             <tbody>
               {officials.map((official) => (
-                <tr key={official.id}>
+                <tr key={getOfficialKey(official.id, official.type)}>
                   <td>{official.name}</td>
                   <td>{t(selectOfficialLabelKey(official.type))}</td>
                   <td>

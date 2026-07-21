@@ -3,6 +3,7 @@ defmodule GoChampsScoreboard.Events.Definitions.RemoveOfficialInGameDefinition d
 
   alias GoChampsScoreboard.Events.Models.Event
   alias GoChampsScoreboard.Games.Models.GameState
+  alias GoChampsScoreboard.Games.Models.OfficialState
   alias GoChampsScoreboard.Games.Games
   alias GoChampsScoreboard.Events.Models.StreamConfig
 
@@ -29,10 +30,26 @@ defmodule GoChampsScoreboard.Events.Definitions.RemoveOfficialInGameDefinition d
 
   @impl true
   @spec handle(GameState.t(), Event.t()) :: GameState.t()
-  def handle(game_state, %Event{payload: %{"id" => id, "type" => type}}) do
-    game_state
-    |> Games.remove_official_by_id_and_type(id, String.to_atom(type))
+  def handle(game_state, %Event{payload: payload}) when is_map(payload) do
+    case payload do
+      %{"id" => id, "type" => type} ->
+        official_type = OfficialState.normalize_type(type)
+
+        game_state
+        |> Games.remove_official_by_id_and_type(id, official_type)
+
+      %{"id" => id} ->
+        # Legacy payload without type, default to :crew_chief
+        game_state
+        |> Games.remove_official_by_id_and_type(id, :crew_chief)
+
+      _ ->
+        # Invalid payload structure
+        game_state
+    end
   end
+
+  def handle(game_state, _event), do: game_state
 
   @impl true
   @spec stream_config() :: StreamConfig.t()

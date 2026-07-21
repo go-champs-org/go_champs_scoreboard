@@ -34,13 +34,8 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinition d
   def handle(game_state, %Event{payload: payload}) do
     official_id = Map.get(payload, "id")
 
-    # Convert type from string to atom if provided
-    official_type =
-      case Map.get(payload, "type") do
-        nil -> nil
-        type when is_binary(type) -> String.to_existing_atom(type)
-        type when is_atom(type) -> type
-      end
+    # Convert type from string/atom to a valid official type (safe from DoS)
+    official_type = OfficialState.normalize_type(Map.get(payload, "type"))
 
     case Officials.find_by_id_and_type(game_state.officials, official_id, official_type) do
       nil ->
