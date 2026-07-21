@@ -5,6 +5,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinition d
   alias GoChampsScoreboard.Games.Models.GameState
   alias GoChampsScoreboard.Games.Models.OfficialState
   alias GoChampsScoreboard.Games.Games
+  alias GoChampsScoreboard.Games.Officials
   alias GoChampsScoreboard.Events.Models.StreamConfig
 
   @key "update-official-in-game"
@@ -33,7 +34,10 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinition d
   def handle(game_state, %Event{payload: payload}) do
     official_id = Map.get(payload, "id")
 
-    case find_official_by_id(game_state, official_id) do
+    # Convert type from string/atom to a valid official type (safe from DoS)
+    official_type = OfficialState.normalize_type(Map.get(payload, "type"))
+
+    case Officials.find_by_id_and_type(game_state.officials, official_id, official_type) do
       nil ->
         # Official not found, return unchanged game state
         game_state
@@ -48,14 +52,14 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinition d
             update_official_properties_with_new_id(existing_official, payload, new_id)
 
           game_state
-          |> Games.remove_official(official_id)
+          |> Games.remove_official_by_id_and_type(official_id, official_type)
           |> Games.add_official(updated_official)
         else
-          # Keep existing ID for manual updates
+          # Keep existing ID and type for manual updates
           updated_official = update_official_properties(existing_official, payload)
 
           game_state
-          |> Games.update_official(updated_official)
+          |> Games.update_official_by_id_and_type(updated_official)
         end
     end
   end
@@ -66,15 +70,11 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinition d
 
   # Private helper functions
 
-  defp find_official_by_id(game_state, official_id) do
-    Enum.find(game_state.officials, fn official -> official.id == official_id end)
-  end
-
   defp update_official_properties(existing_official, payload) do
     %OfficialState{
       id: existing_official.id,
       name: get_updated_value(payload, "name", existing_official.name),
-      type: get_updated_type(payload, "type", existing_official.type),
+      type: existing_official.type,
       license_number:
         get_updated_value(payload, "license_number", existing_official.license_number),
       federation: get_updated_value(payload, "federation", existing_official.federation),
@@ -88,7 +88,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinition d
       # Use tournament official ID
       id: new_id,
       name: get_updated_value(payload, "name", existing_official.name),
-      type: get_updated_type(payload, "type", existing_official.type),
+      type: existing_official.type,
       license_number:
         get_updated_value(payload, "license_number", existing_official.license_number),
       federation: get_updated_value(payload, "federation", existing_official.federation),
@@ -102,14 +102,6 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdateOfficialInGameDefinition d
       Map.get(payload, key)
     else
       current_value
-    end
-  end
-
-  defp get_updated_type(payload, key, current_type) do
-    case Map.get(payload, key) do
-      nil -> current_type
-      new_type when is_binary(new_type) -> String.to_existing_atom(new_type)
-      new_type when is_atom(new_type) -> new_type
     end
   end
 end

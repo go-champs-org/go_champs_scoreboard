@@ -57,4 +57,16 @@ defmodule GoChampsScoreboard.Games.Officials do
 
     OfficialState.new(id, name, type_atom, license_number, federation, nil, username)
   end
+
+  @doc """
+  Finds an official in the game state by both ID and type.
+  Returns nil if no official matches both criteria.
+  """
+  @spec find_by_id_and_type([OfficialState.t()], String.t(), atom() | nil) ::
+          OfficialState.t() | nil
+  def find_by_id_and_type(officials, official_id, official_type) do
+    Enum.find(officials, fn official ->
+      official.id == official_id && official.type == official_type
+    end)
+  end
 end

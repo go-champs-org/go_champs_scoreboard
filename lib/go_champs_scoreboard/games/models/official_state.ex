@@ -100,6 +100,42 @@ defmodule GoChampsScoreboard.Games.Models.OfficialState do
     type in valid_types()
   end
 
+  @doc """
+  Safely converts a type value to a valid official type atom.
+
+  Handles:
+  - nil → :crew_chief (default for legacy payloads)
+  - atom → validates and returns if valid, otherwise :crew_chief
+  - string → safely converts to atom if it's a known type, otherwise :crew_chief
+
+  This prevents atom table exhaustion DoS attacks by only accepting known types.
+  """
+  @spec normalize_type(any()) :: official_type()
+  def normalize_type(nil), do: :crew_chief
+
+  def normalize_type(type) when is_atom(type) do
+    if valid_type?(type), do: type, else: :crew_chief
+  end
+
+  def normalize_type(type) when is_binary(type) do
+    case safe_string_to_atom(type) do
+      {:ok, atom_type} -> if valid_type?(atom_type), do: atom_type, else: :crew_chief
+      :error -> :crew_chief
+    end
+  end
+
+  def normalize_type(_), do: :crew_chief
+
+  @doc false
+  @spec safe_string_to_atom(String.t()) :: {:ok, atom()} | :error
+  defp safe_string_to_atom(string) do
+    try do
+      {:ok, String.to_existing_atom(string)}
+    catch
+      :error, :badarg -> :error
+    end
+  end
+
   defimpl Poison.Decoder, for: GoChampsScoreboard.Games.Models.OfficialState do
     def decode(
           %{

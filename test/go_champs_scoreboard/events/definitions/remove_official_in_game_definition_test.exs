@@ -38,7 +38,10 @@ defmodule GoChampsScoreboard.Events.Definitions.RemoveOfficialInGameDefinitionTe
     test "validates any payload (currently returns ok for any input)" do
       assert RemoveOfficialInGameDefinition.validate(nil, %{}) == {:ok}
 
-      assert RemoveOfficialInGameDefinition.validate(nil, %{"id" => Ecto.UUID.generate()}) ==
+      assert RemoveOfficialInGameDefinition.validate(nil, %{
+               "id" => Ecto.UUID.generate(),
+               "type" => "scorer"
+             }) ==
                {:ok}
 
       assert RemoveOfficialInGameDefinition.validate(nil, "invalid") == {:ok}
@@ -47,7 +50,7 @@ defmodule GoChampsScoreboard.Events.Definitions.RemoveOfficialInGameDefinitionTe
 
   describe "create/4" do
     test "creates event with correct attributes" do
-      payload = %{"id" => Ecto.UUID.generate()}
+      payload = %{"id" => Ecto.UUID.generate(), "type" => "scorer"}
 
       event = RemoveOfficialInGameDefinition.create("game-123", 600, 1, payload)
 
@@ -61,7 +64,7 @@ defmodule GoChampsScoreboard.Events.Definitions.RemoveOfficialInGameDefinitionTe
   end
 
   describe "handle/2" do
-    test "removes existing official by id", %{game_state: game_state} do
+    test "removes existing official by id and type", %{game_state: game_state} do
       # First add officials
       scorer = OfficialState.new(Ecto.UUID.generate(), "John Doe", :scorer, "SC001", "FIBA")
 
@@ -75,8 +78,8 @@ defmodule GoChampsScoreboard.Events.Definitions.RemoveOfficialInGameDefinitionTe
 
       assert length(game_with_officials.officials) == 2
 
-      # Remove the scorer by ID
-      payload = %{"id" => scorer.id}
+      # Remove the scorer by ID and type
+      payload = %{"id" => scorer.id, "type" => "scorer"}
       event = Event.new("remove-official-in-game", "game-123", 600, 1, payload)
       updated_game = RemoveOfficialInGameDefinition.handle(game_with_officials, event)
 
@@ -93,7 +96,7 @@ defmodule GoChampsScoreboard.Events.Definitions.RemoveOfficialInGameDefinitionTe
     test "handles removing non-existent official gracefully", %{game_state: game_state} do
       # Try to remove an official that doesn't exist
       non_existent_id = Ecto.UUID.generate()
-      payload = %{"id" => non_existent_id}
+      payload = %{"id" => non_existent_id, "type" => "scorer"}
       event = Event.new("remove-official-in-game", "game-123", 600, 1, payload)
       updated_game = RemoveOfficialInGameDefinition.handle(game_state, event)
 
@@ -120,8 +123,8 @@ defmodule GoChampsScoreboard.Events.Definitions.RemoveOfficialInGameDefinitionTe
 
       assert length(game_with_officials.officials) == 3
 
-      # Remove only the first scorer by ID
-      payload = %{"id" => scorer1.id}
+      # Remove only the first scorer by ID and type
+      payload = %{"id" => scorer1.id, "type" => "scorer"}
       event = Event.new("remove-official-in-game", "game-123", 600, 1, payload)
       updated_game = RemoveOfficialInGameDefinition.handle(game_with_officials, event)
 
@@ -132,7 +135,9 @@ defmodule GoChampsScoreboard.Events.Definitions.RemoveOfficialInGameDefinitionTe
       assert Enum.any?(updated_game.officials, fn o -> o.id == timekeeper.id end)
     end
 
-    test "removes all officials when removing by their individual IDs", %{game_state: game_state} do
+    test "removes all officials when removing by their individual IDs and types", %{
+      game_state: game_state
+    } do
       # Add all types of officials
       officials = [
         OfficialState.new(Ecto.UUID.generate(), "Scorer", :scorer),
@@ -147,11 +152,11 @@ defmodule GoChampsScoreboard.Events.Definitions.RemoveOfficialInGameDefinitionTe
       game_with_all_officials = %{game_state | officials: officials}
       assert length(game_with_all_officials.officials) == 7
 
-      # Remove each official by their ID
+      # Remove each official by their ID and type
       final_game =
         officials
         |> Enum.reduce(game_with_all_officials, fn official, acc_game ->
-          payload = %{"id" => official.id}
+          payload = %{"id" => official.id, "type" => Atom.to_string(official.type)}
           event = Event.new("remove-official-in-game", "game-123", 600, 1, payload)
           RemoveOfficialInGameDefinition.handle(acc_game, event)
         end)
@@ -165,7 +170,7 @@ defmodule GoChampsScoreboard.Events.Definitions.RemoveOfficialInGameDefinitionTe
       scorer = OfficialState.new(Ecto.UUID.generate(), "Test Official", :scorer)
       game_with_official = Games.add_official(game_state, scorer)
 
-      payload = %{"id" => scorer.id}
+      payload = %{"id" => scorer.id, "type" => "scorer"}
       event = Event.new("remove-official-in-game", "game-123", 600, 1, payload)
 
       updated_game = RemoveOfficialInGameDefinition.handle(game_with_official, event)
@@ -194,8 +199,8 @@ defmodule GoChampsScoreboard.Events.Definitions.RemoveOfficialInGameDefinitionTe
 
       assert length(game_with_officials.officials) == 3
 
-      # Remove crew chief by ID
-      payload = %{"id" => crew_chief.id}
+      # Remove crew chief by ID and type
+      payload = %{"id" => crew_chief.id, "type" => "crew_chief"}
       event = Event.new("remove-official-in-game", "game-123", 600, 1, payload)
       updated_game = RemoveOfficialInGameDefinition.handle(game_with_officials, event)
 

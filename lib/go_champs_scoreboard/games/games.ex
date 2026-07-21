@@ -120,17 +120,19 @@ defmodule GoChampsScoreboard.Games.Games do
     %{game_state | officials: [official | game_state.officials]}
   end
 
-  @spec remove_official(GameState.t(), String.t()) :: GameState.t()
-  def remove_official(game_state, official_id) do
-    updated_officials = Enum.reject(game_state.officials, fn o -> o.id == official_id end)
+  @spec remove_official_by_id_and_type(GameState.t(), String.t(), atom()) :: GameState.t()
+  def remove_official_by_id_and_type(game_state, official_id, official_type) do
+    updated_officials =
+      Enum.reject(game_state.officials, fn o -> o.id == official_id && o.type == official_type end)
+
     %{game_state | officials: updated_officials}
   end
 
-  @spec update_official(GameState.t(), OfficialState.t()) :: GameState.t()
-  def update_official(game_state, official) do
+  @spec update_official_by_id_and_type(GameState.t(), OfficialState.t()) :: GameState.t()
+  def update_official_by_id_and_type(game_state, official) do
     updated_officials =
       Enum.map(game_state.officials, fn o ->
-        if o.id == official.id do
+        if o.id == official.id && o.type == official.type do
           official
         else
           o
