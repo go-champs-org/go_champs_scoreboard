@@ -14,6 +14,7 @@ A real-time scoreboard application built with Phoenix LiveView for managing and 
 ## Documentation
 
 - **[React Implementation Guide](REACT_IMPLEMENTATION.md)** - Comprehensive guide for developing React components, including architecture patterns, Phoenix LiveView integration, and best practices
+- **[Mix Tasks](lib/mix/tasks/README.md)** - Custom Mix tasks for administrative, data-export, and maintenance operations (e.g. exporting a real game as an anonymized regression fixture)
 
 ## Getting Started
 

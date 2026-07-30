@@ -13,6 +13,13 @@ defmodule GoChampsScoreboard.FibaScoresheetFixtures do
   # the exact same files instead of re-deriving the path.
   @fixtures_dir Path.expand("../../fixtures/fiba_scoresheet", __DIR__)
 
+  # Real-game captures (from Mix.Tasks.FibaScoresheet.ExportGame) live in
+  # their own subdirectory, separate from the hand-built scenario goldens,
+  # since they follow a different format (`initial_state` +
+  # `event_log_sequence` to be replayed, rather than a golden FibaScoresheet
+  # contract to compare against directly).
+  @real_games_dir Path.join(@fixtures_dir, "real_games")
+
   @doc """
   Returns the absolute path to the shared golden fixture directory for FIBA
   scoresheet regression scenarios.
@@ -28,6 +35,25 @@ defmodule GoChampsScoreboard.FibaScoresheetFixtures do
   @spec golden_fixture_path(String.t()) :: String.t()
   def golden_fixture_path(scenario_name) do
     Path.join(@fixtures_dir, "#{scenario_name}.json")
+  end
+
+  @doc """
+  Returns the absolute path to a named real-game capture fixture, e.g.
+  `real_game_fixture_path("sample_synthetic_capture")` ->
+  `test/fixtures/fiba_scoresheet/real_games/sample_synthetic_capture.json`.
+
+  This is the single place that defines where
+  `Mix.Tasks.FibaScoresheet.ExportGame` writes captures and where
+  `GoChampsScoreboard.FibaScoresheetScenarios.replay_real_game_fixture!/1`
+  reads them back from. Note: the Mix task itself (under `lib/`, compiled in
+  every `MIX_ENV`) cannot depend on this test-only module, so it duplicates
+  this same path rather than calling into it — see the comment on
+  `fixture_output_path/1` in
+  `lib/mix/tasks/fiba_scoresheet.export_game.ex`.
+  """
+  @spec real_game_fixture_path(String.t()) :: String.t()
+  def real_game_fixture_path(name) do
+    Path.join(@real_games_dir, "#{name}.json")
   end
 
   @doc """
