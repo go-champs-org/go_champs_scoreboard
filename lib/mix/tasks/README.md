@@ -23,8 +23,28 @@ mix fiba_scoresheet.export_game <game_id> <output_name>
 - Read-only — it only calls `EventLogs.get_all_by_game_id/2` and never writes to the database.
 - Anonymizes every real player/coach/official name, license number, signature, and tournament/organization/sponsor detail it finds, deterministically (the same person always maps to the same placeholder across the whole fixture).
 - Leaves every score/stat/clock-timing value untouched, since those are what make the fixture useful for regression testing.
+- Writes the fixture to `test/fixtures/fiba_scoresheet/real_games/<output_name>.json` **and** prints the same JSON to stdout, so it can be captured directly without a separate `cat` step.
 
-**Running against production:**
+**Running against production (via Heroku):**
+
+This app runs on Heroku, so the simplest way to export a real game is `heroku run`, redirecting stdout straight to a local file (the on-disk copy on the dyno itself is discarded when the one-off dyno exits, which is fine — stdout is what you actually want):
+
+```bash
+heroku run "mix fiba_scoresheet.export_game <game_id> <output_name>" -a go-champs-scoreboard-prod > <output_name>.json
+```
+
+Example:
+
+```bash
+heroku run "mix fiba_scoresheet.export_game bc29d5da-ea48-40ae-91d1-4126267cc351 final-cbi-05-10-2026" -a go-champs-scoreboard-prod > final-cbi-05-10-2026.json
+```
+
+Sanity-check the result is valid JSON before trusting it (e.g. `jq . final-cbi-05-10-2026.json`) — any stray output from the dyno mixed into the stream would break parsing and need to be stripped from the top of the file.
+
+**Running against production (direct database connection):**
+
+If you're not going through Heroku (e.g. running from your own machine against a read replica), you can instead run the task directly with production credentials:
+
 ```bash
 MIX_ENV=prod \
 SECRET_KEY_BASE=$(mix phx.gen.secret) \
