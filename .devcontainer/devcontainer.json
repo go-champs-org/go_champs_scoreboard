@@ -28,7 +28,8 @@
 		"GitHub.copilot",
 		"GitHub.copilot-chat",
 		"cweijan.vscode-redis-client",
-		"esbenp.prettier-vscode"
+		"esbenp.prettier-vscode",
+		"Anthropic.claude-code"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
