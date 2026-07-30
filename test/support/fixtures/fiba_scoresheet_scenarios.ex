@@ -25,9 +25,14 @@ defmodule GoChampsScoreboard.FibaScoresheetScenarios do
 
   alias GoChampsScoreboard.Games.Models.PlayerState
   alias GoChampsScoreboard.Games.Models.InfoState
+  alias GoChampsScoreboard.Games.Models.GameState
   alias GoChampsScoreboard.Events.Handler
   alias GoChampsScoreboard.Events.EventLog
+  alias GoChampsScoreboard.Events.GameSnapshot
+  alias GoChampsScoreboard.Events.ValidatorCreator
   alias GoChampsScoreboard.Games.EventLogs
+  alias GoChampsScoreboard.Repo
+  alias GoChampsScoreboard.FibaScoresheetFixtures
   import GoChampsScoreboard.GameStateFixtures
 
   # Fixed so the resulting FibaScoresheet.Info#datetime is deterministic across
@@ -567,6 +572,125 @@ defmodule GoChampsScoreboard.FibaScoresheetScenarios do
     {:ok, _added} = EventLogs.add(b2_ft_log)
 
     game_state.id
+  end
+
+  @doc """
+  Replays an anonymized real-game capture (produced by
+  `Mix.Tasks.FibaScoresheet.ExportGame.export_game/2`, see
+  `lib/mix/tasks/fiba_scoresheet.export_game.ex`) against a **fresh** game
+  ID, so repeated replays (including of the same named fixture, across
+  separate test runs) never collide with each other or with the game the
+  fixture was originally captured from.
+
+  Loads `test/fixtures/fiba_scoresheet/real_games/<fixture_name>.json` (see
+  `GoChampsScoreboard.FibaScoresheetFixtures.real_game_fixture_path/1`),
+  rehydrates its `initial_state` via `GameState.from_json/1`, and inserts it
+  directly as the first `EventLog` + `GameSnapshot` row for the new game ID
+  (there is no original first event's `key`/`payload` to replay here — the
+  export task intentionally keeps only that first event's snapshot state,
+  see its module doc — so this row uses a no-op key that
+  `FibaScoresheet.EventProcessor.process/2` already falls through
+  unchanged for any unrecognized key).
+
+  Every entry in `event_log_sequence` is then reconstructed via
+  `ValidatorCreator.create/5` and replayed through `Handler.handle/2` +
+  `EventLogs.persist/2` — the same real production code path used
+  everywhere else in this module — threading the *actual* post-handle game
+  state from one event to the next (matching how
+  `GoChampsScoreboard.Infrastructure.GameEventsListener` persists events in
+  production: `EventLogs.persist(event, game_state_after_handling)`), so
+  that roster/info changes carried by the replayed events (not just pure
+  stat/clock events) are correctly reflected in the final snapshot.
+
+  Returns the new game ID for the caller to pass to
+  `GoChampsScoreboard.Sports.Basketball.Reports.fetch_report_data/2`, same
+  as the hand-built scenarios above.
+  """
+  @spec replay_real_game_fixture!(String.t()) :: String.t()
+  def replay_real_game_fixture!(fixture_name) do
+    raw =
+      fixture_name
+      |> FibaScoresheetFixtures.real_game_fixture_path()
+      |> File.read!()
+      |> Poison.decode!()
+
+    new_game_id = Ecto.UUID.generate()
+
+    initial_state =
+      raw["initial_state"]
+      |> Poison.encode!()
+      |> GameState.from_json()
+      |> Map.put(:id, new_game_id)
+
+    event_log_sequence = raw["event_log_sequence"] || []
+
+    insert_base_event_log!(new_game_id, initial_state, event_log_sequence)
+
+    Enum.reduce(event_log_sequence, initial_state, fn entry, acc_state ->
+      %{
+        "key" => key,
+        "payload" => payload,
+        "game_clock_time" => game_clock_time,
+        "game_clock_period" => game_clock_period
+      } = entry
+
+      {:ok, event} =
+        ValidatorCreator.create(key, new_game_id, game_clock_time, game_clock_period, payload)
+
+      reacted_state = Handler.handle(acc_state, event)
+
+      {:ok, _event_log} = EventLogs.persist(event, reacted_state)
+
+      reacted_state
+    end)
+
+    new_game_id
+  end
+
+  # Inserts a synthetic "base" EventLog + GameSnapshot row directly (bypassing
+  # ValidatorCreator/Handler, since we have no original key/payload for this
+  # entry — only its snapshot state was captured). Its game_clock_period/time
+  # are chosen so it sorts chronologically before every replayed event (see
+  # GoChampsScoreboard.Sports.Basketball.EventLogsOperations.order_by/1: asc
+  # period, desc time, asc timestamp) -- reusing the first replayed event's
+  # own (period, time) is sufficient, because ties are then broken by
+  # timestamp ascending, and this row is always inserted (and so timestamped)
+  # before the replay loop below runs.
+  defp insert_base_event_log!(game_id, initial_state, event_log_sequence) do
+    {base_period, base_time} =
+      case event_log_sequence do
+        [%{"game_clock_period" => period, "game_clock_time" => time} | _] ->
+          {period, time}
+
+        _ ->
+          {initial_state.clock_state.period, initial_state.clock_state.time}
+      end
+
+    {:ok, event_log} =
+      %EventLog{}
+      |> EventLog.changeset(%{
+        id: Ecto.UUID.generate(),
+        game_id: game_id,
+        key: "captured-game-initial-state",
+        payload: %{},
+        timestamp: DateTime.utc_now(),
+        game_clock_time: base_time,
+        game_clock_period: base_period
+      })
+      |> Repo.insert()
+
+    state_map = initial_state |> Poison.encode!() |> Poison.decode!()
+
+    {:ok, _snapshot} =
+      %GameSnapshot{}
+      |> GameSnapshot.changeset(%{
+        event_log_id: event_log.id,
+        state: state_map,
+        game_id: game_id
+      })
+      |> Repo.insert()
+
+    event_log
   end
 
   # Persists `events` in order against `game_state`, following the exact
