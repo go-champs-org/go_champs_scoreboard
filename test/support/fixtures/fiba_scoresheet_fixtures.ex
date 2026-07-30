@@ -6,6 +6,47 @@ defmodule GoChampsScoreboard.FibaScoresheetFixtures do
 
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet
 
+  # Shared golden fixture directory for the FIBA scoresheet regression suite
+  # (see test/go_champs_scoreboard/sports/basketball/reports/fiba_scoresheet_regression_test.exs).
+  # Centralized here so any future consumer of these fixtures (a JS PDF
+  # rendering suite, a real-game-export regression check, etc.) points at
+  # the exact same files instead of re-deriving the path.
+  @fixtures_dir Path.expand("../../fixtures/fiba_scoresheet", __DIR__)
+
+  @doc """
+  Returns the absolute path to the shared golden fixture directory for FIBA
+  scoresheet regression scenarios.
+  """
+  @spec fixtures_dir() :: String.t()
+  def fixtures_dir, do: @fixtures_dir
+
+  @doc """
+  Returns the absolute path to a named scenario's golden JSON fixture file,
+  e.g. `golden_fixture_path("normal_game")` ->
+  `test/fixtures/fiba_scoresheet/normal_game.json`.
+  """
+  @spec golden_fixture_path(String.t()) :: String.t()
+  def golden_fixture_path(scenario_name) do
+    Path.join(@fixtures_dir, "#{scenario_name}.json")
+  end
+
+  @doc """
+  Loads and Poison-decodes a named scenario's golden JSON fixture.
+
+  Intended to be compared against a `Poison.encode!/1` + `Poison.decode!/1`
+  roundtrip of an actual `Reports.fetch_report_data/2` result, so both sides
+  of the comparison go through the same string-keyed JSON shape (avoiding
+  brittle struct/atom-vs-string mismatches) and test the actual wire
+  contract shape the frontend receives.
+  """
+  @spec load_golden!(String.t()) :: map()
+  def load_golden!(scenario_name) do
+    scenario_name
+    |> golden_fixture_path()
+    |> File.read!()
+    |> Poison.decode!()
+  end
+
   @doc """
   Creates a FIBA scoresheet fixture with default values.
 
