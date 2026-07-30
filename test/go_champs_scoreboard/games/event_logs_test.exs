@@ -736,6 +736,10 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
           }
         )
 
+      # Add a small delay to ensure different timestamps since event4 and event5
+      # share the same game_clock_period/game_clock_time and are tie-broken by timestamp
+      :timer.sleep(10)
+
       event5 =
         GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
           game_id,
@@ -1334,6 +1338,10 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
           1,
           %{}
         )
+
+      # Add a small delay to ensure different timestamps since get_first_created_by_game_id
+      # is tie-broken by timestamp, not by persist order
+      :timer.sleep(10)
 
       update_player_stat_event =
         GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
@@ -2605,6 +2613,10 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
           payload
         )
 
+      # Add a small delay to ensure different timestamps since get_first_created_by_game_id
+      # (used by rebuild_all_snapshots) is tie-broken by timestamp
+      :timer.sleep(10)
+
       event2 =
         GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
           game_state.id,
@@ -2612,6 +2624,8 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
           1,
           payload
         )
+
+      :timer.sleep(10)
 
       event3 =
         GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
