@@ -1,0 +1,168 @@
+{
+  "umpire_2": {
+    "signature": null,
+    "name": "",
+    "id": "",
+    "federation": null
+  },
+  "umpire_1": {
+    "signature": null,
+    "name": "",
+    "id": "",
+    "federation": null
+  },
+  "tournament_name": null,
+  "timekeeper": {
+    "signature": null,
+    "name": "",
+    "id": "",
+    "federation": null
+  },
+  "team_b": {
+    "timeouts": [],
+    "score": 0,
+    "running_score": {},
+    "points_by_period": {},
+    "players": [
+      {
+        "signature": null,
+        "number": 34,
+        "name": "Buck One",
+        "license_number": null,
+        "is_captain": true,
+        "id": "k1",
+        "has_started": null,
+        "has_played": null,
+        "fouls": [],
+        "first_played_period": null
+      }
+    ],
+    "name": "Bucks",
+    "head_coach_challenges": [],
+    "has_walkover": false,
+    "coach": {
+      "signature": null,
+      "name": "",
+      "id": "",
+      "fouls": []
+    },
+    "assistant_coach": {
+      "signature": null,
+      "name": "",
+      "id": "",
+      "fouls": []
+    },
+    "all_fouls": []
+  },
+  "team_a": {
+    "timeouts": [],
+    "score": 3,
+    "running_score": {
+      "3": {
+        "type": "FT",
+        "player_number": 33,
+        "period": 1,
+        "is_last_of_period": false
+      },
+      "2": {
+        "type": "2PT",
+        "player_number": 23,
+        "period": 1,
+        "is_last_of_period": false
+      }
+    },
+    "points_by_period": {
+      "1": 3
+    },
+    "players": [
+      {
+        "signature": null,
+        "number": 23,
+        "name": "Bull One",
+        "license_number": null,
+        "is_captain": true,
+        "id": "b1",
+        "has_started": null,
+        "has_played": null,
+        "fouls": [],
+        "first_played_period": null
+      },
+      {
+        "signature": null,
+        "number": 33,
+        "name": "Bull Two",
+        "license_number": null,
+        "is_captain": false,
+        "id": "b2",
+        "has_started": null,
+        "has_played": null,
+        "fouls": [],
+        "first_played_period": null
+      }
+    ],
+    "name": "Bulls",
+    "head_coach_challenges": [],
+    "has_walkover": false,
+    "coach": {
+      "signature": null,
+      "name": "",
+      "id": "",
+      "fouls": []
+    },
+    "assistant_coach": {
+      "signature": null,
+      "name": "",
+      "id": "",
+      "fouls": []
+    },
+    "all_fouls": []
+  },
+  "shot_clock_operator": {
+    "signature": null,
+    "name": "",
+    "id": "",
+    "federation": null
+  },
+  "scorer": {
+    "signature": null,
+    "name": "",
+    "id": "",
+    "federation": null
+  },
+  "protest": {
+    "state": "no_protest",
+    "signature": null,
+    "player_name": ""
+  },
+  "info": {
+    "web_url": "",
+    "tournament_slug": "",
+    "tournament_name": "",
+    "tournament_logo_url": "",
+    "sponsors": [],
+    "organization_slug": "",
+    "organization_name": "",
+    "organization_logo_url": "",
+    "number": "",
+    "location": "",
+    "initial_period_time": 0,
+    "game_report": "",
+    "datetime": "2025-01-01T12:00:00Z",
+    "city": "",
+    "actual_start_datetime": null,
+    "actual_end_datetime": null
+  },
+  "game_id": "a0000000-0000-0000-0000-000000000004",
+  "crew_chief": {
+    "signature": null,
+    "name": "",
+    "id": "",
+    "federation": null
+  },
+  "assistant_scorer": {
+    "signature": null,
+    "name": "",
+    "id": "",
+    "federation": null
+  }
+}

@@ -6,6 +6,73 @@ defmodule GoChampsScoreboard.FibaScoresheetFixtures do
 
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet
 
+  # Shared golden fixture directory for the FIBA scoresheet regression suite
+  # (see test/go_champs_scoreboard/sports/basketball/reports/fiba_scoresheet_regression_test.exs).
+  # Centralized here so any future consumer of these fixtures (a JS PDF
+  # rendering suite, a real-game-export regression check, etc.) points at
+  # the exact same files instead of re-deriving the path.
+  @fixtures_dir Path.expand("../../fixtures/fiba_scoresheet", __DIR__)
+
+  # Real-game captures (from Mix.Tasks.FibaScoresheet.ExportGame) live in
+  # their own subdirectory, separate from the hand-built scenario goldens,
+  # since they follow a different format (`initial_state` +
+  # `event_log_sequence` to be replayed, rather than a golden FibaScoresheet
+  # contract to compare against directly).
+  @real_games_dir Path.join(@fixtures_dir, "real_games")
+
+  @doc """
+  Returns the absolute path to the shared golden fixture directory for FIBA
+  scoresheet regression scenarios.
+  """
+  @spec fixtures_dir() :: String.t()
+  def fixtures_dir, do: @fixtures_dir
+
+  @doc """
+  Returns the absolute path to a named scenario's golden JSON fixture file,
+  e.g. `golden_fixture_path("normal_game")` ->
+  `test/fixtures/fiba_scoresheet/normal_game.json`.
+  """
+  @spec golden_fixture_path(String.t()) :: String.t()
+  def golden_fixture_path(scenario_name) do
+    Path.join(@fixtures_dir, "#{scenario_name}.json")
+  end
+
+  @doc """
+  Returns the absolute path to a named real-game capture fixture, e.g.
+  `real_game_fixture_path("sample_synthetic_capture")` ->
+  `test/fixtures/fiba_scoresheet/real_games/sample_synthetic_capture.json`.
+
+  This is the single place that defines where
+  `Mix.Tasks.FibaScoresheet.ExportGame` writes captures and where
+  `GoChampsScoreboard.FibaScoresheetScenarios.replay_real_game_fixture!/1`
+  reads them back from. Note: the Mix task itself (under `lib/`, compiled in
+  every `MIX_ENV`) cannot depend on this test-only module, so it duplicates
+  this same path rather than calling into it — see the comment on
+  `fixture_output_path/1` in
+  `lib/mix/tasks/fiba_scoresheet.export_game.ex`.
+  """
+  @spec real_game_fixture_path(String.t()) :: String.t()
+  def real_game_fixture_path(name) do
+    Path.join(@real_games_dir, "#{name}.json")
+  end
+
+  @doc """
+  Loads and Poison-decodes a named scenario's golden JSON fixture.
+
+  Intended to be compared against a `Poison.encode!/1` + `Poison.decode!/1`
+  roundtrip of an actual `Reports.fetch_report_data/2` result, so both sides
+  of the comparison go through the same string-keyed JSON shape (avoiding
+  brittle struct/atom-vs-string mismatches) and test the actual wire
+  contract shape the frontend receives.
+  """
+  @spec load_golden!(String.t()) :: map()
+  def load_golden!(scenario_name) do
+    scenario_name
+    |> golden_fixture_path()
+    |> File.read!()
+    |> Poison.decode!()
+  end
+
   @doc """
   Creates a FIBA scoresheet fixture with default values.
 
