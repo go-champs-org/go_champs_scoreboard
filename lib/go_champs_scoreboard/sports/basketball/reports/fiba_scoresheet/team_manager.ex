@@ -35,7 +35,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
       head_coach_challenges: [],
       score: 0,
       has_walkover: false,
-      points_by_period: %{}
+      points_by_period: %{},
+      points_summary: %{}
     }
   end
 
@@ -92,6 +93,43 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
   def points_for_score_type("2PT"), do: 2
   def points_for_score_type("3PT"), do: 3
   def points_for_score_type(_), do: 0
+
+  @doc """
+  Adds points to a player's points summary entry, tracking per-period totals
+  (periods 5+ folded into `extra`), the running total, and the period of
+  their most recent score.
+  """
+  @spec add_points_to_summary(FibaScoresheet.Team.t(), integer(), integer(), integer()) ::
+          FibaScoresheet.Team.t()
+  def add_points_to_summary(team, player_number, period, points) do
+    existing =
+      Map.get(team.points_summary, player_number, %FibaScoresheet.PlayerPointsSummary{
+        player_number: player_number,
+        points_per_period: %{},
+        extra: 0,
+        total: 0,
+        last_scored_period: nil
+      })
+
+    updated =
+      if period > 4 do
+        %{existing | extra: existing.extra + points}
+      else
+        current = Map.get(existing.points_per_period, period, 0)
+
+        %{
+          existing
+          | points_per_period: Map.put(existing.points_per_period, period, current + points)
+        }
+      end
+      |> Map.put(:total, existing.total + points)
+      |> Map.put(:last_scored_period, period)
+
+    %FibaScoresheet.Team{
+      team
+      | points_summary: Map.put(team.points_summary, player_number, updated)
+    }
+  end
 
   @doc """
   Updates the running score for a team.

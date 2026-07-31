@@ -31,6 +31,12 @@
         "coach": "Coach",
         "assistantCoach": "Asst. Coach",
         "captain": "CAP.",
+        "pointsSummary": {
+          "title": "TECHNICAL SUMMARY OF SCORERS",
+          "extra": "Extra",
+          "total": "Total",
+          "totalTeam": "Team Total"
+        },
         "protest": {
           "captainSignature": "Captain signature in case of protest:",
           "player": "Player"

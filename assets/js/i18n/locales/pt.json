@@ -31,6 +31,12 @@
         "coach": "Técnico",
         "assistantCoach": "Ass. Técnico",
         "captain": "CAP.",
+        "pointsSummary": {
+          "title": "RESUMO TÉCNICO SOBRE OS MARCADORES",
+          "extra": "Extra",
+          "total": "Total",
+          "totalTeam": "Total Equipe"
+        },
         "protest": {
           "captainSignature": "Assinatura do capitão em caso de protesto:",
           "player": "Atleta"
