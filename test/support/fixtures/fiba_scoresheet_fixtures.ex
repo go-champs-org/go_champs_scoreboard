@@ -159,7 +159,8 @@ defmodule GoChampsScoreboard.FibaScoresheetFixtures do
         timeouts: [],
         head_coach_challenges: [],
         has_walkover: false,
-        points_by_period: %{}
+        points_by_period: %{},
+        points_summary: %{}
       },
       team_b: %FibaScoresheet.Team{
         name: team_b_name,
@@ -172,7 +173,8 @@ defmodule GoChampsScoreboard.FibaScoresheetFixtures do
         timeouts: [],
         head_coach_challenges: [],
         has_walkover: false,
-        points_by_period: %{}
+        points_by_period: %{},
+        points_summary: %{}
       }
     }
   end

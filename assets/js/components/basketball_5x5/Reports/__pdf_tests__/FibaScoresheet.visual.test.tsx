@@ -56,28 +56,28 @@ const fixtures: FixtureCase[] = [
     path: 'test/fixtures/fiba_scoresheet/normal_game.json',
     // team_a.score=5, team_b.score=4 (<=160, no extended page);
     // info.game_report is blank (no game-report page)
-    expectedNumPages: 1,
+    expectedNumPages: 2,
     expectedStrings: ['Eagles', 'Hawks'],
   },
   {
     name: 'game_with_deleted_event',
     path: 'test/fixtures/fiba_scoresheet/game_with_deleted_event.json',
     // team_a.score=4, team_b.score=0
-    expectedNumPages: 1,
+    expectedNumPages: 2,
     expectedStrings: ['Comets', 'Meteors'],
   },
   {
     name: 'game_with_corrected_payload',
     path: 'test/fixtures/fiba_scoresheet/game_with_corrected_payload.json',
     // team_a.score=3, team_b.score=1
-    expectedNumPages: 1,
+    expectedNumPages: 2,
     expectedStrings: ['Suns', 'Sharks'],
   },
   {
     name: 'game_with_out_of_order_add',
     path: 'test/fixtures/fiba_scoresheet/game_with_out_of_order_add.json',
     // team_a.score=3, team_b.score=0
-    expectedNumPages: 1,
+    expectedNumPages: 2,
     expectedStrings: ['Bulls', 'Bucks'],
   },
   {
@@ -89,7 +89,7 @@ const fixtures: FixtureCase[] = [
     // page). Note: this fixture deliberately has no `game_id` key and null
     // info.actual_start_datetime/actual_end_datetime - stripped by the
     // Elixir suite because they're non-deterministic on replay, not a bug.
-    expectedNumPages: 1,
+    expectedNumPages: 2,
     expectedStrings: ['PINHEIROS', 'SESI FRANCA'],
   },
 ];

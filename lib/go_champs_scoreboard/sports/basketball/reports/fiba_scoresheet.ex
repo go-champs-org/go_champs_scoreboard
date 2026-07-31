@@ -149,6 +149,28 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
     end
   end
 
+  defmodule PlayerPointsSummary do
+    @moduledoc """
+    PlayerPointsSummary struct for FIBA scoresheet points summary page.
+    """
+
+    @type t :: %__MODULE__{
+            player_number: Integer.t(),
+            points_per_period: %{Integer.t() => Integer.t()},
+            extra: integer(),
+            total: integer(),
+            last_scored_period: Integer.t() | nil
+          }
+
+    defstruct [
+      :player_number,
+      :points_per_period,
+      :extra,
+      :total,
+      :last_scored_period
+    ]
+  end
+
   defmodule Timeout do
     @moduledoc """
     Timeout struct for FIBA scoresheet.
@@ -199,7 +221,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
             head_coach_challenges: list(HeadCoachChallenge.t()),
             score: integer(),
             has_walkover: boolean(),
-            points_by_period: %{integer() => integer()}
+            points_by_period: %{integer() => integer()},
+            points_summary: %{integer() => PlayerPointsSummary.t()}
           }
 
     defstruct [
@@ -213,7 +236,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
       :head_coach_challenges,
       :score,
       :has_walkover,
-      :points_by_period
+      :points_by_period,
+      :points_summary
     ]
   end
 

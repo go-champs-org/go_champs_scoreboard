@@ -22,6 +22,7 @@
     "timeouts": [],
     "score": 0,
     "running_score": {},
+    "points_summary": {},
     "points_by_period": {},
     "players": [
       {
@@ -83,6 +84,26 @@
         "player_number": 10,
         "period": 1,
         "is_last_of_period": false
+      }
+    },
+    "points_summary": {
+      "11": {
+        "total": 2,
+        "points_per_period": {
+          "1": 2
+        },
+        "player_number": 11,
+        "last_scored_period": 1,
+        "extra": 0
+      },
+      "10": {
+        "total": 2,
+        "points_per_period": {
+          "1": 2
+        },
+        "player_number": 10,
+        "last_scored_period": 1,
+        "extra": 0
       }
     },
     "points_by_period": {

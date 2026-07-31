@@ -62,7 +62,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
         head_coach_challenges: [],
         score: 0,
         has_walkover: false,
-        points_by_period: %{}
+        points_by_period: %{},
+        points_summary: %{}
       }
 
       assert expected == TeamManager.bootstrap(team_state)
@@ -112,7 +113,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
         head_coach_challenges: [],
         score: 0,
         has_walkover: false,
-        points_by_period: %{}
+        points_by_period: %{},
+        points_summary: %{}
       }
 
       assert expected == TeamManager.bootstrap(team_state)
@@ -157,7 +159,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
         head_coach_challenges: [],
         score: 0,
         has_walkover: false,
-        points_by_period: %{}
+        points_by_period: %{},
+        points_summary: %{}
       }
 
       assert expected == TeamManager.bootstrap(team_state)
@@ -189,7 +192,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
         head_coach_challenges: [],
         score: 0,
         has_walkover: false,
-        points_by_period: %{}
+        points_by_period: %{},
+        points_summary: %{}
       }
 
       assert expected == TeamManager.bootstrap(team_state)
@@ -1441,6 +1445,117 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.TeamManage
         |> TeamManager.add_points_to_period(2, 1)
 
       assert updated_team.points_by_period == %{1 => 8, 2 => 3}
+    end
+  end
+
+  describe "add_points_to_summary/4" do
+    setup do
+      team = %FibaScoresheet.Team{
+        name: "Test",
+        players: [],
+        coach: %FibaScoresheet.Coach{id: "", name: "", fouls: []},
+        assistant_coach: %FibaScoresheet.Coach{id: "", name: "", fouls: []},
+        all_fouls: [],
+        timeouts: [],
+        running_score: %{},
+        head_coach_challenges: [],
+        score: 0,
+        has_walkover: false,
+        points_by_period: %{},
+        points_summary: %{}
+      }
+
+      %{team: team}
+    end
+
+    test "creates a new summary entry for a player's first score", %{team: team} do
+      updated_team = TeamManager.add_points_to_summary(team, 12, 1, 2)
+
+      assert updated_team.points_summary == %{
+               12 => %FibaScoresheet.PlayerPointsSummary{
+                 player_number: 12,
+                 points_per_period: %{1 => 2},
+                 extra: 0,
+                 total: 2,
+                 last_scored_period: 1
+               }
+             }
+    end
+
+    test "accumulates points for the same player and period", %{team: team} do
+      updated_team =
+        team
+        |> TeamManager.add_points_to_summary(12, 1, 2)
+        |> TeamManager.add_points_to_summary(12, 1, 3)
+
+      assert updated_team.points_summary == %{
+               12 => %FibaScoresheet.PlayerPointsSummary{
+                 player_number: 12,
+                 points_per_period: %{1 => 5},
+                 extra: 0,
+                 total: 5,
+                 last_scored_period: 1
+               }
+             }
+    end
+
+    test "tracks separate periods and updates last_scored_period", %{team: team} do
+      updated_team =
+        team
+        |> TeamManager.add_points_to_summary(12, 1, 2)
+        |> TeamManager.add_points_to_summary(12, 2, 3)
+
+      assert updated_team.points_summary == %{
+               12 => %FibaScoresheet.PlayerPointsSummary{
+                 player_number: 12,
+                 points_per_period: %{1 => 2, 2 => 3},
+                 extra: 0,
+                 total: 5,
+                 last_scored_period: 2
+               }
+             }
+    end
+
+    test "folds periods beyond 4 into extra", %{team: team} do
+      updated_team =
+        team
+        |> TeamManager.add_points_to_summary(12, 4, 2)
+        |> TeamManager.add_points_to_summary(12, 5, 1)
+        |> TeamManager.add_points_to_summary(12, 6, 3)
+
+      assert updated_team.points_summary == %{
+               12 => %FibaScoresheet.PlayerPointsSummary{
+                 player_number: 12,
+                 points_per_period: %{4 => 2},
+                 extra: 4,
+                 total: 6,
+                 last_scored_period: 6
+               }
+             }
+    end
+
+    test "keeps separate entries per player", %{team: team} do
+      updated_team =
+        team
+        |> TeamManager.add_points_to_summary(12, 1, 2)
+        |> TeamManager.add_points_to_summary(23, 1, 3)
+
+      assert updated_team.points_summary == %{
+               12 => %FibaScoresheet.PlayerPointsSummary{
+                 player_number: 12,
+                 points_per_period: %{1 => 2},
+                 extra: 0,
+                 total: 2,
+                 last_scored_period: 1
+               },
+               23 => %FibaScoresheet.PlayerPointsSummary{
+                 player_number: 23,
+                 points_per_period: %{1 => 3},
+                 extra: 0,
+                 total: 3,
+                 last_scored_period: 1
+               }
+             }
     end
   end
 end

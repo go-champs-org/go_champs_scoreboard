@@ -97,7 +97,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
           head_coach_challenges: [],
           score: 0,
           has_walkover: false,
-          points_by_period: %{}
+          points_by_period: %{},
+          points_summary: %{}
         },
         team_b: %FibaScoresheet.Team{
           name: "Some away team",
@@ -122,7 +123,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
           head_coach_challenges: [],
           score: 0,
           has_walkover: false,
-          points_by_period: %{}
+          points_by_period: %{},
+          points_summary: %{}
         },
         scorer: %FibaScoresheet.Official{
           id: "scorer-official-id",

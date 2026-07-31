@@ -13,6 +13,7 @@ import TeamBox from './FibaScoresheet/TeamBox';
 import OfficialsBox from './FibaScoresheet/OfficialsBox';
 import FiscalsBox from './FibaScoresheet/FiscalsBox';
 import HeaderBox from './FibaScoresheet/HeaderBox';
+import PointsSummaryPage from './FibaScoresheet/PointsSummaryPage';
 import { textColorForPeriod } from './FibaScoresheet/styles';
 import PageHeader from './Shared/PageHeader';
 
@@ -59,6 +60,14 @@ export interface ScoreMark {
   is_last_of_period: boolean;
 }
 
+export interface PlayerPointsSummary {
+  player_number: number;
+  points_per_period: { [period: string]: number };
+  extra: number;
+  total: number;
+  last_scored_period: number | null;
+}
+
 export interface RunningScore {
   [score: number]: ScoreMark;
 }
@@ -93,6 +102,7 @@ export interface Team {
   all_fouls: PlayerFoul[];
   has_walkover: boolean;
   points_by_period: { [period: string]: number };
+  points_summary: { [player_number: number]: PlayerPointsSummary };
 }
 
 export interface Sponsor {
@@ -260,7 +270,7 @@ function Period({
   );
 }
 
-function sumExtraTimeTotalScore(team: Team) {
+export function sumExtraTimeTotalScore(team: Team) {
   return Object.entries(team.points_by_period).reduce(
     (total, [period, points]) => {
       const periodNumber = parseInt(period, 10);
@@ -720,6 +730,7 @@ function FibaScoresheet({ scoresheetData }: FibaScoresheetProps) {
         <ExtendedScoresheetPage scoresheetData={scoresheetData} />
       )}
       {hasGameReport && <GameReportPage scoresheetData={scoresheetData} />}
+      <PointsSummaryPage scoresheetData={scoresheetData} />
     </Document>
   );
 }
