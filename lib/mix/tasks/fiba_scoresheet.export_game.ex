@@ -12,7 +12,12 @@ defmodule Mix.Tasks.FibaScoresheet.ExportGame do
       mix fiba_scoresheet.export_game <game_id> <output_name>
 
   This writes
-  `test/fixtures/fiba_scoresheet/real_games/<output_name>.json`, containing:
+  `test/fixtures/fiba_scoresheet/real_games/<output_name>.json` **and**
+  prints the same JSON to stdout, so it can be captured directly (e.g.
+  `heroku run "mix fiba_scoresheet.export_game <game_id> <output_name>" -a <app> > <output_name>.json`)
+  without a separate `cat` step — the on-disk copy only matters when running
+  against a locally-reachable database, since a Heroku one-off dyno's
+  filesystem is ephemeral anyway. The fixture shape:
 
       {
         "initial_state": <anonymized GameState, JSON-encoded>,
@@ -100,7 +105,14 @@ defmodule Mix.Tasks.FibaScoresheet.ExportGame do
       [game_id, output_name] ->
         case export_game(game_id, output_name) do
           {:ok, path} ->
-            Mix.shell().info("Exported anonymized fixture for game #{game_id} to #{path}")
+            # Status message goes to stderr, and the fixture itself is
+            # printed to stdout as its own step: this task is commonly run
+            # as `heroku run "mix fiba_scoresheet.export_game ..." -a app
+            # > file.json`, so stdout must contain the JSON and nothing
+            # else. Mix.shell().info/1 would otherwise land on stdout ahead
+            # of the JSON and corrupt the redirected file.
+            Mix.shell().error("Exported anonymized fixture for game #{game_id} to #{path}")
+            path |> File.read!() |> IO.puts()
 
           {:error, reason} ->
             Mix.raise("Failed to export game #{game_id}: #{inspect(reason)}")

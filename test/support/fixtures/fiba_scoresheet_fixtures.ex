@@ -74,6 +74,25 @@ defmodule GoChampsScoreboard.FibaScoresheetFixtures do
   end
 
   @doc """
+  Loads and Poison-decodes a named real-game capture's locked expected
+  contract (`test/fixtures/fiba_scoresheet/real_games/<name>.expected.json`).
+
+  Analogous to `load_golden!/1`, but for fixtures replayed via
+  `GoChampsScoreboard.FibaScoresheetScenarios.replay_real_game_fixture!/1`.
+  Unlike a hand-built scenario's golden file (whose correctness is reasoned
+  about from the events fed in), this is a regression lock, not a
+  correctness proof — there's no independent source of truth for what a
+  real captured game's contract "should" be.
+  """
+  @spec load_real_game_golden!(String.t()) :: map()
+  def load_real_game_golden!(name) do
+    "#{name}.expected"
+    |> real_game_fixture_path()
+    |> File.read!()
+    |> Poison.decode!()
+  end
+
+  @doc """
   Creates a FIBA scoresheet fixture with default values.
 
   ## Options
