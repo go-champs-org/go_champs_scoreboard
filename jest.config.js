@@ -44,6 +44,7 @@ module.exports = {
       setupFilesAfterEnv: [
         '<rootDir>/assets/js/testUtils/i18nTestSetup.ts',
         '<rootDir>/assets/js/testUtils/imageSnapshotSetup.ts',
+        '<rootDir>/assets/js/testUtils/suppressKnownWarnings.ts',
       ],
     },
   ],

@@ -25,9 +25,7 @@
 import React from 'react';
 import { pdf } from '@react-pdf/renderer';
 
-import FibaScoresheet, {
-  parseFibaScoresheetData,
-} from '../FibaScoresheet';
+import FibaScoresheet, { parseFibaScoresheetData } from '../FibaScoresheet';
 import { loadFibaScoresheetFixture } from '../../../../testUtils/loadFibaScoresheetFixture';
 import { renderPdfToPages } from '../../../../testUtils/renderPdfToPages';
 
@@ -142,10 +140,7 @@ describe.each(fixtures)(
       const buffer = await renderToPdfBuffer(scoresheetData);
       expect(buffer.length).toBeGreaterThan(0);
 
-      const { numPages, pages } = await renderPdfToPages(
-        buffer,
-        RENDER_SCALE,
-      );
+      const { numPages, pages } = await renderPdfToPages(buffer, RENDER_SCALE);
 
       expect(numPages).toBe(expectedNumPages);
       expect(pages).toHaveLength(expectedNumPages);

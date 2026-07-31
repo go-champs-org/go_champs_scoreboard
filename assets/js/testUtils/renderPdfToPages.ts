@@ -141,8 +141,7 @@ export async function renderPdfToPages(
           Math.ceil(viewport.height),
         );
 
-        await page.render({ canvasContext: context as any, viewport })
-          .promise;
+        await page.render({ canvasContext: context as any, viewport }).promise;
 
         const textContent = await page.getTextContent();
         const text = textContent.items
