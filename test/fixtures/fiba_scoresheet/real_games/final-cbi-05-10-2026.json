@@ -1,0 +1,5018 @@
+{
+  "initial_state": {
+    "protest": {
+      "player_id": "",
+      "team_type": "",
+      "state": "no_protest"
+    },
+    "view_settings_state": {
+      "view": "basketball-scoresheet",
+      "available_views": [
+        "basketball-scoresheet"
+      ]
+    },
+    "officials": [
+      {
+        "federation": "FIBA",
+        "license_number": "OFFICIAL-LICENSE-0001",
+        "username": "official1",
+        "signature": null,
+        "type": "crew_chief",
+        "name": "Official 1",
+        "id": "45a9b2ee-771c-47b2-9c31-f77ccf7b22f2"
+      },
+      {
+        "federation": "FIBA",
+        "license_number": "OFFICIAL-LICENSE-0002",
+        "username": "official2",
+        "signature": null,
+        "type": "umpire_1",
+        "name": "Official 2",
+        "id": "0fc47484-a838-41a2-ae84-70a9f042f32a"
+      },
+      {
+        "federation": "CBB",
+        "license_number": "OFFICIAL-LICENSE-0003",
+        "username": "official3",
+        "signature": null,
+        "type": "umpire_2",
+        "name": "Official 3",
+        "id": "11552339-06ce-449e-bf60-ddcaa62d96ab"
+      },
+      {
+        "federation": "REG",
+        "license_number": "OFFICIAL-LICENSE-0004",
+        "username": "official4",
+        "signature": null,
+        "type": "scorer",
+        "name": "Official 4",
+        "id": "8a656e97-be57-4490-9a20-2a03cc41c419"
+      },
+      {
+        "federation": "FIBA",
+        "license_number": "OFFICIAL-LICENSE-0005",
+        "username": "official5",
+        "signature": null,
+        "type": "assistant_scorer",
+        "name": "Official 5",
+        "id": "f0a79c84-a7e2-4168-b0d4-8b6d4ca6e14c"
+      },
+      {
+        "federation": "CBB",
+        "license_number": "OFFICIAL-LICENSE-0006",
+        "username": "official6",
+        "signature": null,
+        "type": "timekeeper",
+        "name": "Official 6",
+        "id": "20ae8811-d4c4-4b62-bf9d-9bc8d947c358"
+      },
+      {
+        "federation": "FIBA",
+        "license_number": "OFFICIAL-LICENSE-0007",
+        "username": "official7",
+        "signature": null,
+        "type": "shot_clock_operator",
+        "name": "Official 7",
+        "id": "44eea0bb-a4f3-41dd-91b8-75252e1cd8d7"
+      }
+    ],
+    "away_team": {
+      "period_stats": {},
+      "total_coach_stats": {},
+      "total_player_stats": {},
+      "coaches": [
+        {
+          "stats_values": {
+            "fouls_technical_bench_disqualifying": 0,
+            "fouls_technical_bench": 0,
+            "fouls_technical": 0,
+            "fouls_game_disqualifying": 0,
+            "fouls_disqualifying_fighting": 0,
+            "fouls_disqualifying": 0,
+            "fouls": 0
+          },
+          "signature": null,
+          "state": "available",
+          "type": "head_coach",
+          "name": "Coach 3",
+          "id": "93295be1-8a04-4850-97dd-59fa60fdd627"
+        },
+        {
+          "stats_values": {
+            "fouls_technical_bench_disqualifying": 0,
+            "fouls_technical_bench": 0,
+            "fouls_technical": 0,
+            "fouls_game_disqualifying": 0,
+            "fouls_disqualifying_fighting": 0,
+            "fouls_disqualifying": 0,
+            "fouls": 0
+          },
+          "signature": null,
+          "state": "available",
+          "type": "assistant_coach",
+          "name": "Coach 4",
+          "id": "56102998-0ed4-4e58-a2f6-00fb31642adf"
+        }
+      ],
+      "primary_color": "#ff0000",
+      "tri_code": "FRA",
+      "logo_url": "https://go-champs.com/media/team-logos/uploads/9e0b2f78-390d-4de3-b9c2-c4e0a265ca5c_Franca.png",
+      "stats_values": {
+        "total_fouls_technical": 0,
+        "timeouts": 0,
+        "points": 0,
+        "lost_timeouts": 0,
+        "head_coach_challenge": 0,
+        "game_walkover_against": 0,
+        "game_walkover": 0,
+        "fouls_technical": 0,
+        "fouls": 0
+      },
+      "players": [
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0013",
+          "number": "3",
+          "signature": null,
+          "state": "available",
+          "name": "Player 13",
+          "id": "ef21a3f4-8da6-46d8-a151-e8ff95c4b58d"
+        },
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0014",
+          "number": "7",
+          "signature": null,
+          "state": "available",
+          "name": "Player 14",
+          "id": "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa"
+        },
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0015",
+          "number": "10",
+          "signature": null,
+          "state": "available",
+          "name": "Player 15",
+          "id": "e548bd3f-070c-4c67-b82b-603cf16696cc"
+        },
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0016",
+          "number": "9",
+          "signature": null,
+          "state": "available",
+          "name": "Player 16",
+          "id": "470c3343-1d10-45d2-a78f-332dfaa969b9"
+        },
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0017",
+          "number": "11",
+          "signature": null,
+          "state": "available",
+          "name": "Player 17",
+          "id": "d065b461-afbb-4d24-83f4-754258537db6"
+        },
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0018",
+          "number": "15",
+          "signature": null,
+          "state": "available",
+          "name": "Player 18",
+          "id": "9238bb9d-2cd2-4017-8ea6-751859d50cc7"
+        },
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0019",
+          "number": "17",
+          "signature": null,
+          "state": "available",
+          "name": "Player 19",
+          "id": "b794bdc9-0b70-4da2-b654-e77e6e5fef6c"
+        },
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0020",
+          "number": "43",
+          "signature": null,
+          "state": "available",
+          "name": "Player 20",
+          "id": "888b2328-c503-4d56-8c09-eaf707a585df"
+        },
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0021",
+          "number": "12",
+          "signature": null,
+          "state": "available",
+          "name": "Player 21",
+          "id": "ca2b95a9-29f2-4317-862c-00b4f66bf141"
+        },
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0022",
+          "number": "14",
+          "signature": null,
+          "state": "available",
+          "name": "Player 22",
+          "id": "699d0474-d88f-40aa-9c5b-5a0bd5ae1c52"
+        },
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0023",
+          "number": "16",
+          "signature": null,
+          "state": "available",
+          "name": "Player 23",
+          "id": "5b6bd89a-44ba-42a3-955d-3f4b1a783d97"
+        },
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0024",
+          "number": "30",
+          "signature": null,
+          "state": "available",
+          "name": "Player 24",
+          "id": "77a1f36e-98c9-4f1e-bcd0-63ae083da3d0"
+        }
+      ],
+      "name": "SESI FRANCA",
+      "id": "bb67d8b1-5b77-4c6a-b391-7646d2131c54"
+    },
+    "home_team": {
+      "period_stats": {},
+      "total_coach_stats": {},
+      "total_player_stats": {},
+      "coaches": [
+        {
+          "stats_values": {
+            "fouls_technical_bench_disqualifying": 0,
+            "fouls_technical_bench": 0,
+            "fouls_technical": 0,
+            "fouls_game_disqualifying": 0,
+            "fouls_disqualifying_fighting": 0,
+            "fouls_disqualifying": 0,
+            "fouls": 0
+          },
+          "signature": null,
+          "state": "available",
+          "type": "head_coach",
+          "name": "Coach 1",
+          "id": "6217f53e-a836-4da6-b2a3-708ce85cc5c2"
+        },
+        {
+          "stats_values": {
+            "fouls_technical_bench_disqualifying": 0,
+            "fouls_technical_bench": 0,
+            "fouls_technical": 0,
+            "fouls_game_disqualifying": 0,
+            "fouls_disqualifying_fighting": 0,
+            "fouls_disqualifying": 0,
+            "fouls": 0
+          },
+          "signature": null,
+          "state": "available",
+          "type": "assistant_coach",
+          "name": "Coach 2",
+          "id": "179cb888-a666-4f75-8224-a38fb4afa11c"
+        }
+      ],
+      "primary_color": "#009dff",
+      "tri_code": "ECP",
+      "logo_url": "https://go-champs.com/media/team-logos/uploads/7d447dfa-83c8-44fb-858e-50add5b5a205_Esporte Clube Pinheiros.png",
+      "stats_values": {
+        "total_fouls_technical": 0,
+        "timeouts": 0,
+        "points": 0,
+        "lost_timeouts": 0,
+        "head_coach_challenge": 0,
+        "game_walkover_against": 0,
+        "game_walkover": 0,
+        "fouls_technical": 0,
+        "fouls": 0
+      },
+      "players": [
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0001",
+          "number": "8",
+          "signature": null,
+          "state": "available",
+          "name": "Player 1",
+          "id": "e5b3db4c-eacf-4877-ada7-63c24364b45f"
+        },
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0002",
+          "number": "14",
+          "signature": null,
+          "state": "available",
+          "name": "Player 2",
+          "id": "6408de2d-107f-4b1c-92de-78fe5e9e19e4"
+        },
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0003",
+          "number": "5",
+          "signature": null,
+          "state": "available",
+          "name": "Player 3",
+          "id": "9147c9f1-95ab-4303-9ec9-4b632fde4509"
+        },
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0004",
+          "number": "9",
+          "signature": null,
+          "state": "available",
+          "name": "Player 4",
+          "id": "5bf15e84-a9f6-463a-bca5-773411819c09"
+        },
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0005",
+          "number": "6",
+          "signature": null,
+          "state": "available",
+          "name": "Player 5",
+          "id": "65a41a3a-bac3-4f38-8ce0-51c4aadcf6e0"
+        },
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0006",
+          "number": "7",
+          "signature": null,
+          "state": "available",
+          "name": "Player 6",
+          "id": "25927d07-d3e7-4fe3-a5dd-3ec5e888883b"
+        },
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0007",
+          "number": "17",
+          "signature": null,
+          "state": "available",
+          "name": "Player 7",
+          "id": "4c653d35-95e3-4d2d-8d14-3b89cc4a6cdf"
+        },
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0008",
+          "number": "15",
+          "signature": null,
+          "state": "available",
+          "name": "Player 8",
+          "id": "63c039ff-6fa4-4749-8678-79f6380c3fa9"
+        },
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0009",
+          "number": "4",
+          "signature": null,
+          "state": "available",
+          "name": "Player 9",
+          "id": "bc2a6165-6c49-4cb2-9018-cd84de572082"
+        },
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0010",
+          "number": "10",
+          "signature": null,
+          "state": "available",
+          "name": "Player 10",
+          "id": "4295134c-8102-4cdc-88b8-67a8b9a0eadf"
+        },
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0011",
+          "number": "22",
+          "signature": null,
+          "state": "available",
+          "name": "Player 11",
+          "id": "d10d7084-5f10-4a84-ac75-6a0643ce7d02"
+        },
+        {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "is_captain": false,
+          "license_number": "LICENSE-0012",
+          "number": "23",
+          "signature": null,
+          "state": "available",
+          "name": "Player 12",
+          "id": "1e2d9d2b-b849-4ae3-b16b-64db702085b6"
+        }
+      ],
+      "name": "PINHEIROS",
+      "id": "75bb653a-ad43-49cb-8157-bde59979cd40"
+    },
+    "live_state": {
+      "ended_at": null,
+      "started_at": "2026-05-10T22:13:54.148746Z",
+      "state": "in_progress"
+    },
+    "clock_state": {
+      "finished_at": null,
+      "initial_extra_period_time": 300,
+      "initial_period_time": 600,
+      "last_action_period": null,
+      "last_action_time": null,
+      "period": 1,
+      "started_at": null,
+      "state": "not_started",
+      "time": 600
+    },
+    "sport_id": "basketball",
+    "info": {
+      "sponsors": [
+        {
+          "name": "Sponsor 1",
+          "logo_url": "https://example.invalid/sponsor-1-logo.png",
+          "link": "https://example.invalid/sponsor-1"
+        }
+      ],
+      "organization_logo_url": "https://example.invalid/synthetic-organization-logo.png",
+      "organization_slug": "cbb",
+      "organization_name": "Synthetic Organization",
+      "tournament_logo_url": "https://example.invalid/synthetic-tournament-logo.png",
+      "tournament_slug": "cbi",
+      "tournament_name": "Synthetic Tournament",
+      "tournament_id": "12b5b26b-93a6-4dd3-bf1e-f24fea009845",
+      "web_url": "https://go-champs.com/cbb/cbi/GameView/bc29d5da-ea48-40ae-91d1-4126267cc351",
+      "game_report": "",
+      "city": "Synthetic City",
+      "datetime": "2026-05-10T19:00:00Z",
+      "assets": [],
+      "result_type": "automatic",
+      "number": "48",
+      "location": "Synthetic Location"
+    },
+    "id": "bc29d5da-ea48-40ae-91d1-4126267cc351"
+  },
+  "event_log_sequence": [
+    {
+      "payload": {
+        "team-type": "home",
+        "player": {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "state": "available",
+          "signature": null,
+          "number": "9",
+          "name": "Player 4",
+          "license_number": "LICENSE-0004",
+          "is_captain": true,
+          "id": "5bf15e84-a9f6-463a-bca5-773411819c09"
+        }
+      },
+      "key": "update-player-in-team",
+      "game_clock_time": 600,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "player": {
+          "stats_values": {
+            "three_point_field_goals_made": 0,
+            "fouls_disqualifying": 0,
+            "field_goals_attempted": 0,
+            "fouls_personal": 0,
+            "free_throws_attempted": 0,
+            "fouls_disqualifying_fighting": 0,
+            "plus_minus": 0,
+            "ejections": 0,
+            "assists": 0,
+            "field_goals_made": 0,
+            "fouls_unsportsmanlike": 0,
+            "disqualifications": 0,
+            "blocks": 0,
+            "free_throws_missed": 0,
+            "turnovers": 0,
+            "rebounds": 0,
+            "free_throw_percentage": 0,
+            "fouls": 0,
+            "field_goal_percentage": 0,
+            "three_point_field_goals_attempted": 0,
+            "fouls_technical": 0,
+            "rebounds_defensive": 0,
+            "rebounds_offensive": 0,
+            "field_goals_missed": 0,
+            "minutes_played": 0,
+            "game_started": 0,
+            "steals": 0,
+            "three_point_field_goals_missed": 0,
+            "fouls_game_disqualifying": 0,
+            "game_played": 0,
+            "three_point_field_goal_percentage": 0,
+            "points": 0,
+            "free_throws_made": 0,
+            "fouls_flagrant": 0,
+            "efficiency": 0
+          },
+          "state": "available",
+          "signature": null,
+          "number": "10",
+          "name": "Player 15",
+          "license_number": "LICENSE-0015",
+          "is_captain": true,
+          "id": "e548bd3f-070c-4c67-b82b-603cf16696cc"
+        }
+      },
+      "key": "update-player-in-team",
+      "game_clock_time": 600,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "9147c9f1-95ab-4303-9ec9-4b632fde4509",
+          "65a41a3a-bac3-4f38-8ce0-51c4aadcf6e0",
+          "5bf15e84-a9f6-463a-bca5-773411819c09",
+          "6408de2d-107f-4b1c-92de-78fe5e9e19e4",
+          "63c039ff-6fa4-4749-8678-79f6380c3fa9"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 600,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa",
+          "e548bd3f-070c-4c67-b82b-603cf16696cc",
+          "699d0474-d88f-40aa-9c5b-5a0bd5ae1c52",
+          "d065b461-afbb-4d24-83f4-754258537db6",
+          "5b6bd89a-44ba-42a3-955d-3f4b1a783d97"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 600,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "coach": {
+          "signature": "SIGNATURE-0001",
+          "id": "6217f53e-a836-4da6-b2a3-708ce85cc5c2"
+        }
+      },
+      "key": "update-coach-in-team",
+      "game_clock_time": 600,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "coach": {
+          "signature": "SIGNATURE-0002",
+          "id": "93295be1-8a04-4850-97dd-59fa60fdd627"
+        }
+      },
+      "key": "update-coach-in-team",
+      "game_clock_time": 600,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 600,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 579,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 579,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 574,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "fouls_personal",
+        "player-id": "d065b461-afbb-4d24-83f4-754258537db6",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 574,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 574,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 548,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "three_point_field_goals_made",
+        "player-id": "65a41a3a-bac3-4f38-8ce0-51c4aadcf6e0",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 548,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 548,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "field_goals_made",
+        "player-id": "5bf15e84-a9f6-463a-bca5-773411819c09",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 536,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "three_point_field_goals_made",
+        "player-id": "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 516,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "field_goals_made",
+        "player-id": "65a41a3a-bac3-4f38-8ce0-51c4aadcf6e0",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 503,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "field_goals_made",
+        "player-id": "65a41a3a-bac3-4f38-8ce0-51c4aadcf6e0",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 461,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "three_point_field_goals_made",
+        "player-id": "d065b461-afbb-4d24-83f4-754258537db6",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 436,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 425,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "fouls_personal",
+        "player-id": "e548bd3f-070c-4c67-b82b-603cf16696cc",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 425,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 425,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "field_goals_made",
+        "player-id": "699d0474-d88f-40aa-9c5b-5a0bd5ae1c52",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 411,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "field_goals_made",
+        "player-id": "5bf15e84-a9f6-463a-bca5-773411819c09",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 395,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 377,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 377,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "field_goals_made",
+        "player-id": "9147c9f1-95ab-4303-9ec9-4b632fde4509",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 375,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "three_point_field_goals_made",
+        "player-id": "5bf15e84-a9f6-463a-bca5-773411819c09",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 350,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 349,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "timeouts",
+        "operation": "increment"
+      },
+      "key": "update-team-stat",
+      "game_clock_time": 349,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "699d0474-d88f-40aa-9c5b-5a0bd5ae1c52"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 349,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "77a1f36e-98c9-4f1e-bcd0-63ae083da3d0"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 349,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 349,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 319,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "fouls_unsportsmanlike",
+        "player-id": "5bf15e84-a9f6-463a-bca5-773411819c09",
+        "operation": "increment",
+        "metadata": {
+          "free-throws-awarded": "2"
+        }
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 308,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 306,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "free_throws_made",
+        "player-id": "77a1f36e-98c9-4f1e-bcd0-63ae083da3d0",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 306,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "free_throws_made",
+        "player-id": "77a1f36e-98c9-4f1e-bcd0-63ae083da3d0",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 306,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 306,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 289,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "fouls_personal",
+        "player-id": "63c039ff-6fa4-4749-8678-79f6380c3fa9",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 289,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "bench",
+        "player-ids": [
+          "63c039ff-6fa4-4749-8678-79f6380c3fa9"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 289,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "1e2d9d2b-b849-4ae3-b16b-64db702085b6"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 289,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 289,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 287,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "field_goals_made",
+        "player-id": "5b6bd89a-44ba-42a3-955d-3f4b1a783d97",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 287,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 287,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "field_goals_made",
+        "player-id": "d065b461-afbb-4d24-83f4-754258537db6",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 268,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 261,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "fouls_personal",
+        "player-id": "6408de2d-107f-4b1c-92de-78fe5e9e19e4",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 261,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "fouls_personal",
+        "player-id": "d065b461-afbb-4d24-83f4-754258537db6",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 261,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "e548bd3f-070c-4c67-b82b-603cf16696cc"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 261,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "ef21a3f4-8da6-46d8-a151-e8ff95c4b58d"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 261,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "bench",
+        "player-ids": [
+          "65a41a3a-bac3-4f38-8ce0-51c4aadcf6e0"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 261,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "65a41a3a-bac3-4f38-8ce0-51c4aadcf6e0"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 261,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 261,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 239,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "field_goals_made",
+        "player-id": "ef21a3f4-8da6-46d8-a151-e8ff95c4b58d",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 239,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "fouls_personal",
+        "player-id": "9147c9f1-95ab-4303-9ec9-4b632fde4509",
+        "operation": "increment",
+        "metadata": {
+          "free-throws-awarded": "2"
+        }
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 239,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "5b6bd89a-44ba-42a3-955d-3f4b1a783d97"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 239,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "b794bdc9-0b70-4da2-b654-e77e6e5fef6c"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 239,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "free_throws_made",
+        "player-id": "ef21a3f4-8da6-46d8-a151-e8ff95c4b58d",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 239,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 239,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 228,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "77a1f36e-98c9-4f1e-bcd0-63ae083da3d0"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 228,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "e548bd3f-070c-4c67-b82b-603cf16696cc"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 228,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "fouls_personal",
+        "player-id": "e548bd3f-070c-4c67-b82b-603cf16696cc",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 228,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "e548bd3f-070c-4c67-b82b-603cf16696cc"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 228,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "470c3343-1d10-45d2-a78f-332dfaa969b9"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 228,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "bench",
+        "player-ids": [
+          "9147c9f1-95ab-4303-9ec9-4b632fde4509",
+          "65a41a3a-bac3-4f38-8ce0-51c4aadcf6e0",
+          "5bf15e84-a9f6-463a-bca5-773411819c09",
+          "6408de2d-107f-4b1c-92de-78fe5e9e19e4",
+          "1e2d9d2b-b849-4ae3-b16b-64db702085b6"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 228,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "25927d07-d3e7-4fe3-a5dd-3ec5e888883b",
+          "5bf15e84-a9f6-463a-bca5-773411819c09",
+          "6408de2d-107f-4b1c-92de-78fe5e9e19e4",
+          "bc2a6165-6c49-4cb2-9018-cd84de572082",
+          "9147c9f1-95ab-4303-9ec9-4b632fde4509"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 228,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 228,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "ef21a3f4-8da6-46d8-a151-e8ff95c4b58d",
+          "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa",
+          "470c3343-1d10-45d2-a78f-332dfaa969b9",
+          "d065b461-afbb-4d24-83f4-754258537db6",
+          "b794bdc9-0b70-4da2-b654-e77e6e5fef6c"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 218,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa",
+          "77a1f36e-98c9-4f1e-bcd0-63ae083da3d0",
+          "ef21a3f4-8da6-46d8-a151-e8ff95c4b58d",
+          "470c3343-1d10-45d2-a78f-332dfaa969b9",
+          "b794bdc9-0b70-4da2-b654-e77e6e5fef6c"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 205,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "field_goals_made",
+        "player-id": "470c3343-1d10-45d2-a78f-332dfaa969b9",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 185,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 168,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "fouls_personal",
+        "player-id": "b794bdc9-0b70-4da2-b654-e77e6e5fef6c",
+        "operation": "increment",
+        "metadata": {
+          "free-throws-awarded": "2"
+        }
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 168,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "free_throws_made",
+        "player-id": "6408de2d-107f-4b1c-92de-78fe5e9e19e4",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 168,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "bench",
+        "player-ids": [
+          "6408de2d-107f-4b1c-92de-78fe5e9e19e4"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 168,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "63c039ff-6fa4-4749-8678-79f6380c3fa9"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 168,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 168,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 152,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "fouls_personal",
+        "player-id": "bc2a6165-6c49-4cb2-9018-cd84de572082",
+        "operation": "increment",
+        "metadata": {
+          "free-throws-awarded": "2"
+        }
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 152,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "bench",
+        "player-ids": [
+          "5bf15e84-a9f6-463a-bca5-773411819c09"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 152,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "65a41a3a-bac3-4f38-8ce0-51c4aadcf6e0"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 152,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "free_throws_made",
+        "player-id": "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 152,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "free_throws_made",
+        "player-id": "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 152,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 152,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 111,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "bench",
+        "player-ids": [
+          "9147c9f1-95ab-4303-9ec9-4b632fde4509"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 111,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "4295134c-8102-4cdc-88b8-67a8b9a0eadf"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 111,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 111,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 51,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 51,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 18,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "three_point_field_goals_made",
+        "player-id": "25927d07-d3e7-4fe3-a5dd-3ec5e888883b",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 18,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 18,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "bench",
+        "player-ids": [
+          "bc2a6165-6c49-4cb2-9018-cd84de572082",
+          "65a41a3a-bac3-4f38-8ce0-51c4aadcf6e0",
+          "25927d07-d3e7-4fe3-a5dd-3ec5e888883b",
+          "4295134c-8102-4cdc-88b8-67a8b9a0eadf",
+          "63c039ff-6fa4-4749-8678-79f6380c3fa9"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 0,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "ef21a3f4-8da6-46d8-a151-e8ff95c4b58d",
+          "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa",
+          "470c3343-1d10-45d2-a78f-332dfaa969b9",
+          "b794bdc9-0b70-4da2-b654-e77e6e5fef6c",
+          "77a1f36e-98c9-4f1e-bcd0-63ae083da3d0"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 0,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "25927d07-d3e7-4fe3-a5dd-3ec5e888883b",
+          "bc2a6165-6c49-4cb2-9018-cd84de572082",
+          "9147c9f1-95ab-4303-9ec9-4b632fde4509",
+          "65a41a3a-bac3-4f38-8ce0-51c4aadcf6e0",
+          "63c039ff-6fa4-4749-8678-79f6380c3fa9"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 0,
+      "game_clock_period": 1
+    },
+    {
+      "payload": null,
+      "key": "end-period",
+      "game_clock_time": 0,
+      "game_clock_period": 1
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "ef21a3f4-8da6-46d8-a151-e8ff95c4b58d",
+          "470c3343-1d10-45d2-a78f-332dfaa969b9",
+          "77a1f36e-98c9-4f1e-bcd0-63ae083da3d0",
+          "9238bb9d-2cd2-4017-8ea6-751859d50cc7",
+          "b794bdc9-0b70-4da2-b654-e77e6e5fef6c"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 600,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 600,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "field_goals_made",
+        "player-id": "9147c9f1-95ab-4303-9ec9-4b632fde4509",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 575,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "field_goals_made",
+        "player-id": "25927d07-d3e7-4fe3-a5dd-3ec5e888883b",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 568,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 561,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 561,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "field_goals_made",
+        "player-id": "25927d07-d3e7-4fe3-a5dd-3ec5e888883b",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 531,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 496,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "b794bdc9-0b70-4da2-b654-e77e6e5fef6c"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 496,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "e548bd3f-070c-4c67-b82b-603cf16696cc"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 496,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "77a1f36e-98c9-4f1e-bcd0-63ae083da3d0"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 496,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "5b6bd89a-44ba-42a3-955d-3f4b1a783d97"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 496,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 496,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 494,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 494,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "field_goals_made",
+        "player-id": "5b6bd89a-44ba-42a3-955d-3f4b1a783d97",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 474,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "three_point_field_goals_made",
+        "player-id": "9147c9f1-95ab-4303-9ec9-4b632fde4509",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 451,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "bench",
+        "player-ids": [
+          "bc2a6165-6c49-4cb2-9018-cd84de572082"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 424,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "5bf15e84-a9f6-463a-bca5-773411819c09"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 421,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "470c3343-1d10-45d2-a78f-332dfaa969b9"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 415,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 409,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 382,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "fouls_personal",
+        "player-id": "9238bb9d-2cd2-4017-8ea6-751859d50cc7",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 382,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 382,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "field_goals_made",
+        "player-id": "63c039ff-6fa4-4749-8678-79f6380c3fa9",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 371,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "field_goals_made",
+        "player-id": "65a41a3a-bac3-4f38-8ce0-51c4aadcf6e0",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 339,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 338,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "timeouts",
+        "operation": "increment"
+      },
+      "key": "update-team-stat",
+      "game_clock_time": 338,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 338,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "d065b461-afbb-4d24-83f4-754258537db6"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 338,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "ef21a3f4-8da6-46d8-a151-e8ff95c4b58d"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 338,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 338,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "field_goals_made",
+        "player-id": "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 338,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "head_coach_challenge",
+        "operation": "increment"
+      },
+      "key": "update-team-stat",
+      "game_clock_time": 338,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "fouls_personal",
+        "player-id": "63c039ff-6fa4-4749-8678-79f6380c3fa9",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 338,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "bench",
+        "player-ids": [
+          "65a41a3a-bac3-4f38-8ce0-51c4aadcf6e0"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 338,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "6408de2d-107f-4b1c-92de-78fe5e9e19e4"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 338,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 338,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "three_point_field_goals_made",
+        "player-id": "25927d07-d3e7-4fe3-a5dd-3ec5e888883b",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 307,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "9238bb9d-2cd2-4017-8ea6-751859d50cc7"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 274,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "699d0474-d88f-40aa-9c5b-5a0bd5ae1c52"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 271,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "three_point_field_goals_made",
+        "player-id": "699d0474-d88f-40aa-9c5b-5a0bd5ae1c52",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 268,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "fouls_personal",
+        "player-id": "699d0474-d88f-40aa-9c5b-5a0bd5ae1c52",
+        "operation": "increment",
+        "metadata": {
+          "free-throws-awarded": "3"
+        }
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 252,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 245,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 245,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "free_throws_made",
+        "player-id": "6408de2d-107f-4b1c-92de-78fe5e9e19e4",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 245,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "free_throws_made",
+        "player-id": "6408de2d-107f-4b1c-92de-78fe5e9e19e4",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 245,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "free_throws_made",
+        "player-id": "6408de2d-107f-4b1c-92de-78fe5e9e19e4",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 245,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "bench",
+        "player-ids": [
+          "63c039ff-6fa4-4749-8678-79f6380c3fa9"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 245,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "d10d7084-5f10-4a84-ac75-6a0643ce7d02"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 245,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "e548bd3f-070c-4c67-b82b-603cf16696cc"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 245,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "ca2b95a9-29f2-4317-862c-00b4f66bf141"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 245,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 245,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "fouls_personal",
+        "player-id": "ca2b95a9-29f2-4317-862c-00b4f66bf141",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 236,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 174,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "bench",
+        "player-ids": [
+          "9147c9f1-95ab-4303-9ec9-4b632fde4509"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 174,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "bc2a6165-6c49-4cb2-9018-cd84de572082"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 174,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "field_goals_made",
+        "player-id": "d065b461-afbb-4d24-83f4-754258537db6",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 174,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 174,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "bench",
+        "player-ids": [
+          "25927d07-d3e7-4fe3-a5dd-3ec5e888883b"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 162,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "65a41a3a-bac3-4f38-8ce0-51c4aadcf6e0"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 158,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 127,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "three_point_field_goals_made",
+        "player-id": "5bf15e84-a9f6-463a-bca5-773411819c09",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 127,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "field_goals_made",
+        "player-id": "5b6bd89a-44ba-42a3-955d-3f4b1a783d97",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 127,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "fouls_technical",
+        "player-id": "5bf15e84-a9f6-463a-bca5-773411819c09",
+        "operation": "increment",
+        "metadata": {
+          "free-throws-awarded": "1"
+        }
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 127,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "9147c9f1-95ab-4303-9ec9-4b632fde4509"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 127,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "bench",
+        "player-ids": [
+          "d10d7084-5f10-4a84-ac75-6a0643ce7d02"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 127,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "1e2d9d2b-b849-4ae3-b16b-64db702085b6"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 127,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "timeouts",
+        "operation": "increment"
+      },
+      "key": "update-team-stat",
+      "game_clock_time": 127,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 127,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "three_point_field_goals_made",
+        "player-id": "6408de2d-107f-4b1c-92de-78fe5e9e19e4",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 118,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "field_goals_made",
+        "player-id": "5b6bd89a-44ba-42a3-955d-3f4b1a783d97",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 96,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "fouls_personal",
+        "player-id": "1e2d9d2b-b849-4ae3-b16b-64db702085b6",
+        "operation": "increment",
+        "metadata": {
+          "free-throws-awarded": "2"
+        }
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 76,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 1,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 1,
+      "game_clock_period": 2
+    },
+    {
+      "payload": null,
+      "key": "end-period",
+      "game_clock_time": 0,
+      "game_clock_period": 2
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "bench",
+        "player-ids": [
+          "bc2a6165-6c49-4cb2-9018-cd84de572082",
+          "9147c9f1-95ab-4303-9ec9-4b632fde4509",
+          "65a41a3a-bac3-4f38-8ce0-51c4aadcf6e0",
+          "6408de2d-107f-4b1c-92de-78fe5e9e19e4",
+          "1e2d9d2b-b849-4ae3-b16b-64db702085b6"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 600,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa",
+          "d065b461-afbb-4d24-83f4-754258537db6",
+          "ca2b95a9-29f2-4317-862c-00b4f66bf141",
+          "699d0474-d88f-40aa-9c5b-5a0bd5ae1c52",
+          "5b6bd89a-44ba-42a3-955d-3f4b1a783d97"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 600,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "65a41a3a-bac3-4f38-8ce0-51c4aadcf6e0",
+          "bc2a6165-6c49-4cb2-9018-cd84de572082",
+          "9147c9f1-95ab-4303-9ec9-4b632fde4509",
+          "63c039ff-6fa4-4749-8678-79f6380c3fa9",
+          "6408de2d-107f-4b1c-92de-78fe5e9e19e4"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 600,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa",
+          "699d0474-d88f-40aa-9c5b-5a0bd5ae1c52",
+          "d065b461-afbb-4d24-83f4-754258537db6",
+          "e548bd3f-070c-4c67-b82b-603cf16696cc",
+          "5b6bd89a-44ba-42a3-955d-3f4b1a783d97"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 600,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 600,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "field_goals_made",
+        "player-id": "6408de2d-107f-4b1c-92de-78fe5e9e19e4",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 585,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "field_goals_made",
+        "player-id": "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 539,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "field_goals_made",
+        "player-id": "e548bd3f-070c-4c67-b82b-603cf16696cc",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 514,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "three_point_field_goals_made",
+        "player-id": "bc2a6165-6c49-4cb2-9018-cd84de572082",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 498,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 398,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "fouls_personal",
+        "player-id": "5b6bd89a-44ba-42a3-955d-3f4b1a783d97",
+        "operation": "increment",
+        "metadata": {
+          "free-throws-awarded": "2"
+        }
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 398,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "free_throws_made",
+        "player-id": "6408de2d-107f-4b1c-92de-78fe5e9e19e4",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 398,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "free_throws_made",
+        "player-id": "6408de2d-107f-4b1c-92de-78fe5e9e19e4",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 398,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "field_goals_made",
+        "player-id": "5b6bd89a-44ba-42a3-955d-3f4b1a783d97",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 398,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "bench",
+        "player-ids": [
+          "65a41a3a-bac3-4f38-8ce0-51c4aadcf6e0"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 398,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "25927d07-d3e7-4fe3-a5dd-3ec5e888883b"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 398,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 398,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "fouls_personal",
+        "player-id": "5b6bd89a-44ba-42a3-955d-3f4b1a783d97",
+        "operation": "increment",
+        "metadata": {
+          "free-throws-awarded": "2"
+        }
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 377,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 344,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "fouls_personal",
+        "player-id": "63c039ff-6fa4-4749-8678-79f6380c3fa9",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 344,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "e548bd3f-070c-4c67-b82b-603cf16696cc"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 344,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "77a1f36e-98c9-4f1e-bcd0-63ae083da3d0"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 344,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "bench",
+        "player-ids": [
+          "63c039ff-6fa4-4749-8678-79f6380c3fa9"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 344,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "d10d7084-5f10-4a84-ac75-6a0643ce7d02"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 344,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 344,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "field_goals_made",
+        "player-id": "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 288,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "field_goals_made",
+        "player-id": "d10d7084-5f10-4a84-ac75-6a0643ce7d02",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 260,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "fouls_personal",
+        "player-id": "6408de2d-107f-4b1c-92de-78fe5e9e19e4",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 227,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 226,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "bench",
+        "player-ids": [
+          "6408de2d-107f-4b1c-92de-78fe5e9e19e4"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 226,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "e5b3db4c-eacf-4877-ada7-63c24364b45f"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 226,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "699d0474-d88f-40aa-9c5b-5a0bd5ae1c52",
+          "d065b461-afbb-4d24-83f4-754258537db6"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 226,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "470c3343-1d10-45d2-a78f-332dfaa969b9"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 226,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa",
+          "470c3343-1d10-45d2-a78f-332dfaa969b9",
+          "5b6bd89a-44ba-42a3-955d-3f4b1a783d97",
+          "77a1f36e-98c9-4f1e-bcd0-63ae083da3d0"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 226,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa",
+          "470c3343-1d10-45d2-a78f-332dfaa969b9",
+          "699d0474-d88f-40aa-9c5b-5a0bd5ae1c52",
+          "b794bdc9-0b70-4da2-b654-e77e6e5fef6c",
+          "77a1f36e-98c9-4f1e-bcd0-63ae083da3d0"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 226,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "field_goals_made",
+        "player-id": "470c3343-1d10-45d2-a78f-332dfaa969b9",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 226,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 226,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 170,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 170,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "field_goals_made",
+        "player-id": "bc2a6165-6c49-4cb2-9018-cd84de572082",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 142,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "bench",
+        "player-ids": [
+          "9147c9f1-95ab-4303-9ec9-4b632fde4509"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 126,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "1e2d9d2b-b849-4ae3-b16b-64db702085b6"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 121,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "699d0474-d88f-40aa-9c5b-5a0bd5ae1c52"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 109,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "ef21a3f4-8da6-46d8-a151-e8ff95c4b58d"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 104,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 75,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "fouls_personal",
+        "player-id": "b794bdc9-0b70-4da2-b654-e77e6e5fef6c",
+        "operation": "increment",
+        "metadata": {
+          "free-throws-awarded": "2"
+        }
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 75,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "free_throws_made",
+        "player-id": "bc2a6165-6c49-4cb2-9018-cd84de572082",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 75,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "free_throws_made",
+        "player-id": "bc2a6165-6c49-4cb2-9018-cd84de572082",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 75,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "fouls_technical",
+        "player-id": "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa",
+        "operation": "increment",
+        "metadata": {
+          "free-throws-awarded": "1"
+        }
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 75,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "fouls_personal",
+        "player-id": "bc2a6165-6c49-4cb2-9018-cd84de572082",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 75,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 75,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "e548bd3f-070c-4c67-b82b-603cf16696cc"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 75,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 75,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "field_goals_made",
+        "player-id": "1e2d9d2b-b849-4ae3-b16b-64db702085b6",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 68,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 25,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 25,
+      "game_clock_period": 3
+    },
+    {
+      "payload": null,
+      "key": "end-period",
+      "game_clock_time": 0,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "ef21a3f4-8da6-46d8-a151-e8ff95c4b58d",
+          "470c3343-1d10-45d2-a78f-332dfaa969b9",
+          "e548bd3f-070c-4c67-b82b-603cf16696cc",
+          "b794bdc9-0b70-4da2-b654-e77e6e5fef6c",
+          "77a1f36e-98c9-4f1e-bcd0-63ae083da3d0"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 0,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "ef21a3f4-8da6-46d8-a151-e8ff95c4b58d",
+          "470c3343-1d10-45d2-a78f-332dfaa969b9",
+          "77a1f36e-98c9-4f1e-bcd0-63ae083da3d0",
+          "b794bdc9-0b70-4da2-b654-e77e6e5fef6c",
+          "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 0,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "bench",
+        "player-ids": [
+          "bc2a6165-6c49-4cb2-9018-cd84de572082",
+          "25927d07-d3e7-4fe3-a5dd-3ec5e888883b",
+          "e5b3db4c-eacf-4877-ada7-63c24364b45f",
+          "d10d7084-5f10-4a84-ac75-6a0643ce7d02",
+          "1e2d9d2b-b849-4ae3-b16b-64db702085b6"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 0,
+      "game_clock_period": 3
+    },
+    {
+      "payload": null,
+      "key": "end-period",
+      "game_clock_time": 0,
+      "game_clock_period": 3
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "1e2d9d2b-b849-4ae3-b16b-64db702085b6",
+          "bc2a6165-6c49-4cb2-9018-cd84de572082",
+          "9147c9f1-95ab-4303-9ec9-4b632fde4509",
+          "25927d07-d3e7-4fe3-a5dd-3ec5e888883b",
+          "e5b3db4c-eacf-4877-ada7-63c24364b45f"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 600,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 600,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "three_point_field_goals_made",
+        "player-id": "e5b3db4c-eacf-4877-ada7-63c24364b45f",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 546,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 482,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "ef21a3f4-8da6-46d8-a151-e8ff95c4b58d",
+          "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa",
+          "470c3343-1d10-45d2-a78f-332dfaa969b9",
+          "b794bdc9-0b70-4da2-b654-e77e6e5fef6c",
+          "77a1f36e-98c9-4f1e-bcd0-63ae083da3d0"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 482,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "5b6bd89a-44ba-42a3-955d-3f4b1a783d97",
+          "77a1f36e-98c9-4f1e-bcd0-63ae083da3d0",
+          "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa",
+          "e548bd3f-070c-4c67-b82b-603cf16696cc",
+          "d065b461-afbb-4d24-83f4-754258537db6"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 482,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 482,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "77a1f36e-98c9-4f1e-bcd0-63ae083da3d0"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 468,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "470c3343-1d10-45d2-a78f-332dfaa969b9"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 464,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "field_goals_made",
+        "player-id": "5b6bd89a-44ba-42a3-955d-3f4b1a783d97",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 436,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 419,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "470c3343-1d10-45d2-a78f-332dfaa969b9"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 419,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "9238bb9d-2cd2-4017-8ea6-751859d50cc7"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 419,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "bench",
+        "player-ids": [
+          "1e2d9d2b-b849-4ae3-b16b-64db702085b6"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 419,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "63c039ff-6fa4-4749-8678-79f6380c3fa9"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 419,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "field_goals_made",
+        "player-id": "9147c9f1-95ab-4303-9ec9-4b632fde4509",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 419,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "field_goals_made",
+        "player-id": "bc2a6165-6c49-4cb2-9018-cd84de572082",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 419,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "timeouts",
+        "operation": "increment"
+      },
+      "key": "update-team-stat",
+      "game_clock_time": 419,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "9238bb9d-2cd2-4017-8ea6-751859d50cc7"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 419,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "77a1f36e-98c9-4f1e-bcd0-63ae083da3d0"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 419,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 419,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "fouls_personal",
+        "player-id": "63c039ff-6fa4-4749-8678-79f6380c3fa9",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 399,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 385,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 385,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "fouls_personal",
+        "player-id": "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 385,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "field_goals_made",
+        "player-id": "63c039ff-6fa4-4749-8678-79f6380c3fa9",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 385,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "fouls_personal",
+        "player-id": "25927d07-d3e7-4fe3-a5dd-3ec5e888883b",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 385,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "free_throws_made",
+        "player-id": "e548bd3f-070c-4c67-b82b-603cf16696cc",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 385,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "free_throws_made",
+        "player-id": "e548bd3f-070c-4c67-b82b-603cf16696cc",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 385,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "field_goals_made",
+        "player-id": "25927d07-d3e7-4fe3-a5dd-3ec5e888883b",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 385,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "field_goals_made",
+        "player-id": "5b6bd89a-44ba-42a3-955d-3f4b1a783d97",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 385,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "fouls_personal",
+        "player-id": "63c039ff-6fa4-4749-8678-79f6380c3fa9",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 385,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "6408de2d-107f-4b1c-92de-78fe5e9e19e4"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 385,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 385,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "bench",
+        "player-ids": [
+          "9147c9f1-95ab-4303-9ec9-4b632fde4509"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 382,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "4295134c-8102-4cdc-88b8-67a8b9a0eadf"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 376,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "fouls_personal",
+        "player-id": "77a1f36e-98c9-4f1e-bcd0-63ae083da3d0",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 344,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "5b6bd89a-44ba-42a3-955d-3f4b1a783d97"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 335,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "699d0474-d88f-40aa-9c5b-5a0bd5ae1c52"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 330,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "field_goals_made",
+        "player-id": "4295134c-8102-4cdc-88b8-67a8b9a0eadf",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 298,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "field_goals_made",
+        "player-id": "25927d07-d3e7-4fe3-a5dd-3ec5e888883b",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 259,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 255,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "timeouts",
+        "operation": "increment"
+      },
+      "key": "update-team-stat",
+      "game_clock_time": 255,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "bench",
+        "player-ids": [
+          "25927d07-d3e7-4fe3-a5dd-3ec5e888883b"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 255,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "d10d7084-5f10-4a84-ac75-6a0643ce7d02"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 255,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 255,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "field_goals_made",
+        "player-id": "77a1f36e-98c9-4f1e-bcd0-63ae083da3d0",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 239,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 223,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 223,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "field_goals_made",
+        "player-id": "e548bd3f-070c-4c67-b82b-603cf16696cc",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 211,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 184,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "fouls_unsportsmanlike",
+        "player-id": "699d0474-d88f-40aa-9c5b-5a0bd5ae1c52",
+        "operation": "increment",
+        "metadata": {
+          "free-throws-awarded": "2"
+        }
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 184,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "free_throws_made",
+        "player-id": "bc2a6165-6c49-4cb2-9018-cd84de572082",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 184,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 184,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "fouls_personal",
+        "player-id": "6408de2d-107f-4b1c-92de-78fe5e9e19e4",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 171,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "77a1f36e-98c9-4f1e-bcd0-63ae083da3d0"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 158,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "ca2b95a9-29f2-4317-862c-00b4f66bf141"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 152,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "field_goals_made",
+        "player-id": "e548bd3f-070c-4c67-b82b-603cf16696cc",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 139,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "fouls_personal",
+        "player-id": "6408de2d-107f-4b1c-92de-78fe5e9e19e4",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 112,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "state": "paused"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 109,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "bench",
+        "player-ids": [
+          "6408de2d-107f-4b1c-92de-78fe5e9e19e4"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 109,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "state": "playing",
+        "player-ids": [
+          "25927d07-d3e7-4fe3-a5dd-3ec5e888883b"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 109,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "field_goals_made",
+        "player-id": "25927d07-d3e7-4fe3-a5dd-3ec5e888883b",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 109,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "fouls_personal",
+        "player-id": "e5b3db4c-eacf-4877-ada7-63c24364b45f",
+        "operation": "increment",
+        "metadata": {
+          "free-throws-awarded": "2"
+        }
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 109,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "fouls_personal",
+        "player-id": "d10d7084-5f10-4a84-ac75-6a0643ce7d02",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 109,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "free_throws_made",
+        "player-id": "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 109,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "free_throws_made",
+        "player-id": "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 109,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "state": "running"
+      },
+      "key": "update-clock-state",
+      "game_clock_time": 109,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "fouls_personal",
+        "player-id": "ca2b95a9-29f2-4317-862c-00b4f66bf141",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 91,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "fouls_personal",
+        "player-id": "699d0474-d88f-40aa-9c5b-5a0bd5ae1c52",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 75,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "fouls_personal",
+        "player-id": "470c3343-1d10-45d2-a78f-332dfaa969b9",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 55,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "free_throws_made",
+        "player-id": "25927d07-d3e7-4fe3-a5dd-3ec5e888883b",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 46,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "free_throws_made",
+        "player-id": "25927d07-d3e7-4fe3-a5dd-3ec5e888883b",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 34,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "fouls_personal",
+        "player-id": "4295134c-8102-4cdc-88b8-67a8b9a0eadf",
+        "operation": "increment",
+        "metadata": {
+          "free-throws-awarded": "2"
+        }
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 19,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "home",
+        "stat-id": "free_throws_made",
+        "player-id": "e5b3db4c-eacf-4877-ada7-63c24364b45f",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 0,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "699d0474-d88f-40aa-9c5b-5a0bd5ae1c52"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 0,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "470c3343-1d10-45d2-a78f-332dfaa969b9"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 0,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "free_throws_made",
+        "player-id": "470c3343-1d10-45d2-a78f-332dfaa969b9",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 0,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "three_point_field_goals_made",
+        "player-id": "ca2b95a9-29f2-4317-862c-00b4f66bf141",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 0,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "field_goals_made",
+        "player-id": "470c3343-1d10-45d2-a78f-332dfaa969b9",
+        "operation": "increment"
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 0,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "bench",
+        "player-ids": [
+          "3c3ab8ab-dda0-42e3-9f22-afb8298af9fa"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 0,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "state": "playing",
+        "player-ids": [
+          "699d0474-d88f-40aa-9c5b-5a0bd5ae1c52"
+        ]
+      },
+      "key": "update-players-state",
+      "game_clock_time": 0,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "team-type": "away",
+        "stat-id": "fouls_personal",
+        "player-id": "699d0474-d88f-40aa-9c5b-5a0bd5ae1c52",
+        "operation": "increment",
+        "metadata": {
+          "free-throws-awarded": "2"
+        }
+      },
+      "key": "update-player-stat",
+      "game_clock_time": 0,
+      "game_clock_period": 4
+    },
+    {
+      "payload": null,
+      "key": "end-game",
+      "game_clock_time": 0,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "signature": "SIGNATURE-0003",
+        "id": "45a9b2ee-771c-47b2-9c31-f77ccf7b22f2"
+      },
+      "key": "update-official-in-game",
+      "game_clock_time": 0,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "signature": "SIGNATURE-0004",
+        "id": "11552339-06ce-449e-bf60-ddcaa62d96ab"
+      },
+      "key": "update-official-in-game",
+      "game_clock_time": 0,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "signature": "SIGNATURE-0005",
+        "id": "0fc47484-a838-41a2-ae84-70a9f042f32a"
+      },
+      "key": "update-official-in-game",
+      "game_clock_time": 0,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "signature": "SIGNATURE-0006",
+        "id": "8a656e97-be57-4490-9a20-2a03cc41c419"
+      },
+      "key": "update-official-in-game",
+      "game_clock_time": 0,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "signature": "SIGNATURE-0007",
+        "id": "f0a79c84-a7e2-4168-b0d4-8b6d4ca6e14c"
+      },
+      "key": "update-official-in-game",
+      "game_clock_time": 0,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "signature": "SIGNATURE-0008",
+        "id": "20ae8811-d4c4-4b62-bf9d-9bc8d947c358"
+      },
+      "key": "update-official-in-game",
+      "game_clock_time": 0,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "signature": "SIGNATURE-0009",
+        "id": "44eea0bb-a4f3-41dd-91b8-75252e1cd8d7"
+      },
+      "key": "update-official-in-game",
+      "game_clock_time": 0,
+      "game_clock_period": 4
+    },
+    {
+      "payload": {
+        "assets": [
+          {
+            "url": "https://go-champs.com/media/game-assets/uploads/d001483d-c75e-4e9d-8ab9-e429f6b1f4ab_fiba-boxscore.pdf",
+            "type": "fiba-boxscore"
+          },
+          {
+            "url": "https://go-champs.com/media/game-assets/uploads/c3a9b793-66fb-4bf8-9475-a98eec627099_fiba-scoresheet.pdf",
+            "type": "fiba-scoresheet"
+          }
+        ]
+      },
+      "key": "end-game-live-mode",
+      "game_clock_time": 0,
+      "game_clock_period": 4
+    }
+  ]
+}
