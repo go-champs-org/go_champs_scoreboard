@@ -209,15 +209,22 @@ function PeriodCell({
   period,
   points,
   isGameEnded,
+  firstPlayedPeriod,
 }: {
   period: number;
   points: number | undefined;
   isGameEnded: boolean;
+  firstPlayedPeriod: number;
 }) {
+  const hasEnteredByPeriod =
+    firstPlayedPeriod !== 0 && firstPlayedPeriod <= period;
+
   return (
     <View style={styles.table.row.periodCell}>
       {points ? (
         <Text style={textColorForPeriod(period)}>{points}</Text>
+      ) : hasEnteredByPeriod ? (
+        isGameEnded && <Text style={textColorForPeriod(period)}>0</Text>
       ) : (
         isGameEnded && <UnusedCell color={colorForPeriod(period)} />
       )}
@@ -247,6 +254,7 @@ function PlayerRow({
           period={period}
           points={summary?.points_per_period?.[period]}
           isGameEnded={isGameEnded}
+          firstPlayedPeriod={player.first_played_period}
         />
       ))}
       <View style={styles.table.row.extraCell}>
