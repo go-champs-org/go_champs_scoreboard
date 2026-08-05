@@ -186,6 +186,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        position: 'relative',
       },
       totalCell: {
         flex: 1,
@@ -236,10 +237,12 @@ function PlayerRow({
   player,
   team,
   isGameEnded,
+  hasExtraPeriod,
 }: {
   player: Player;
   team: Team;
   isGameEnded: boolean;
+  hasExtraPeriod: boolean;
 }) {
   const summary = team.points_summary?.[player.number];
 
@@ -260,6 +263,8 @@ function PlayerRow({
       <View style={styles.table.row.extraCell}>
         {summary?.extra ? (
           <Text>{summary.extra}</Text>
+        ) : hasExtraPeriod ? (
+          isGameEnded && <Text>0</Text>
         ) : (
           isGameEnded && <UnusedCell />
         )}
@@ -287,6 +292,9 @@ function PointsSummaryTable({
   const { t } = useTranslation();
   const sortedPlayers = [...team.players].sort((a, b) => a.number - b.number);
   const extraTimeScore = sumExtraTimeTotalScore(team);
+  const hasExtraPeriod = Object.keys(team.points_by_period).some(
+    (period) => parseInt(period, 10) > 4,
+  );
 
   return (
     <View style={styles.table}>
@@ -340,6 +348,7 @@ function PointsSummaryTable({
           player={player}
           team={team}
           isGameEnded={isGameEnded}
+          hasExtraPeriod={hasExtraPeriod}
         />
       ))}
       <View style={styles.table.totalRow}>
@@ -354,7 +363,11 @@ function PointsSummaryTable({
           </View>
         ))}
         <View style={styles.table.totalRow.extraCell}>
-          <Text>{extraTimeScore}</Text>
+          {hasExtraPeriod || !isGameEnded ? (
+            <Text>{extraTimeScore}</Text>
+          ) : (
+            <UnusedCell />
+          )}
         </View>
         <View style={styles.table.totalRow.totalCell}>
           <Text>{team.score}</Text>
