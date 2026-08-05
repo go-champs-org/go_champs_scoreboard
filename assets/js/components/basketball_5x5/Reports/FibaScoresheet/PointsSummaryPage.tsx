@@ -217,8 +217,7 @@ function PeriodCell({
   isGameEnded: boolean;
   firstPlayedPeriod: number;
 }) {
-  const hasEnteredByPeriod =
-    !!firstPlayedPeriod && firstPlayedPeriod <= period;
+  const hasEnteredByPeriod = !!firstPlayedPeriod && firstPlayedPeriod <= period;
 
   return (
     <View style={styles.table.row.periodCell}>
