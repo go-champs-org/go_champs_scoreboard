@@ -245,6 +245,7 @@ function PlayerRow({
   hasExtraPeriod: boolean;
 }) {
   const summary = team.points_summary?.[player.number];
+  const didPlay = player.first_played_period !== 0;
 
   return (
     <View style={styles.table.row}>
@@ -261,7 +262,9 @@ function PlayerRow({
         />
       ))}
       <View style={styles.table.row.extraCell}>
-        {summary?.extra ? (
+        {!didPlay ? (
+          isGameEnded && <UnusedCell />
+        ) : summary?.extra ? (
           <Text>{summary.extra}</Text>
         ) : hasExtraPeriod ? (
           isGameEnded && <Text>0</Text>
@@ -270,10 +273,12 @@ function PlayerRow({
         )}
       </View>
       <View style={styles.table.row.totalCell}>
-        {summary?.total ? (
+        {!didPlay ? (
+          isGameEnded && <UnusedCell />
+        ) : summary?.total ? (
           <Text>{summary.total}</Text>
         ) : (
-          isGameEnded && <UnusedCell />
+          isGameEnded && <Text>0</Text>
         )}
       </View>
     </View>
