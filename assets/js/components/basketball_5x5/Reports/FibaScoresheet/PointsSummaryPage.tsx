@@ -218,7 +218,7 @@ function PeriodCell({
   firstPlayedPeriod: number;
 }) {
   const hasEnteredByPeriod =
-    firstPlayedPeriod !== 0 && firstPlayedPeriod <= period;
+    !!firstPlayedPeriod && firstPlayedPeriod <= period;
 
   return (
     <View style={styles.table.row.periodCell}>
@@ -245,7 +245,7 @@ function PlayerRow({
   hasExtraPeriod: boolean;
 }) {
   const summary = team.points_summary?.[player.number];
-  const didPlay = player.first_played_period !== 0;
+  const didPlay = !!player.first_played_period || !!summary;
 
   return (
     <View style={styles.table.row}>

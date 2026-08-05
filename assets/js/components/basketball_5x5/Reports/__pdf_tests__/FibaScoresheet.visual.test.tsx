@@ -81,6 +81,16 @@ const fixtures: FixtureCase[] = [
     expectedStrings: ['Bulls', 'Bucks'],
   },
   {
+    name: 'game_with_unplayed_players',
+    path: 'test/fixtures/fiba_scoresheet/game_with_unplayed_players.json',
+    // team_a: 2 players never entered (first_played_period=null), 2 entered
+    // at different periods (1 and 3); team_a.score=5, team_b.score=3.
+    // Covers GC-94 rules: unused-cell for every column when a player never
+    // played, vs. period cells before a mid-game sub's entry period.
+    expectedNumPages: 2,
+    expectedStrings: ['Sharks', 'Wolves'],
+  },
+  {
     name: 'real_game_final_cbi_05_10_2026',
     path: 'test/fixtures/fiba_scoresheet/real_games/final-cbi-05-10-2026.expected.json',
     // A real, anonymized production game's contract (team names/scores are
