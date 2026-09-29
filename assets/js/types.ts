@@ -131,9 +131,12 @@ export type BasketballViews =
   | 'basketball-basic-stats'
   | 'basketball-scoresheet';
 
+export type RulesVersion = 'fiba-2024' | 'fiba-2026';
+
 export interface ViewSettingsState {
   view: BasketballViews;
   available_views: BasketballViews[];
+  rules_version: RulesVersion;
 }
 
 export interface ProtestState {
@@ -221,6 +224,7 @@ export const DEFAULT_GAME_STATE = {
   view_settings_state: {
     view: 'basketball-medium-stats',
     available_views: [],
+    rules_version: 'fiba-2024',
   },
   officials: [],
   protest: {
