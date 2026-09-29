@@ -397,7 +397,8 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
           "basketball-medium-stats-plus-scoresheet-scoresheet-only"
         ],
         "initial_extra_period_time" => 200,
-        "initial_period_time" => 500
+        "initial_period_time" => 500,
+        "rules_version" => "fiba-2026"
       }
     }
 
@@ -614,6 +615,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
                "basketball-medium-stats-plus-scoresheet-scoresheet-only"
              ]
 
+      assert game.view_settings_state.rules_version == "fiba-2026"
       assert game.clock_state.initial_period_time == 500
       assert game.clock_state.initial_extra_period_time == 200
     end
@@ -646,6 +648,7 @@ defmodule GoChampsScoreboard.Games.BootstrapperTest do
       assert game.sport_id == "basketball"
       assert game.view_settings_state.view == "basketball-medium-stats"
       assert game.view_settings_state.available_views == []
+      assert game.view_settings_state.rules_version == "fiba-2024"
       assert game.clock_state.initial_period_time == 600
       assert game.clock_state.initial_extra_period_time == 300
     end
