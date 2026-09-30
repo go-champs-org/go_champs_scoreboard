@@ -14,11 +14,17 @@
 }
 
 .foul-letter.is-circled {
-  display: inline-block;
-  min-width: 1.5em;
-  padding: 0 3px;
+  // Perfect circle around the letter and its free throw marker (T1, FLC...)
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2em;
+  height: 2.2em;
+  // Keeps circled buttons as tall as the other buttons
+  margin: -0.3em 0;
   border: 1px solid currentColor;
-  border-radius: 50px;
-  line-height: 1.3;
-  text-align: center;
+  border-radius: 50%;
+  font-size: 0.95em;
+  line-height: 1;
+  letter-spacing: -0.05em;
 }

@@ -305,8 +305,8 @@ const styles = StyleSheet.create({
   },
 });
 
-function borderForFoul(foul: PlayerFoul | CoachFoul) {
-  if (foul.type === 'BD' || ('is_circled' in foul && foul.is_circled)) {
+function borderForFoul(foul: CoachFoul) {
+  if (foul.type === 'BD') {
     return {
       margin: '-1px 0 0 -1px',
       padding: '1px 3px',
@@ -317,6 +317,30 @@ function borderForFoul(foul: PlayerFoul | CoachFoul) {
   }
 
   return {};
+}
+
+// FIBA 2026: circled player fouls (category 1 technical and flagrant) use
+// the same period-coloured circle as the coach BD foul, a little bigger so
+// the free throw marker fits inside it.
+function borderForCircledPlayerFoul(foul: PlayerFoul) {
+  if (foul.is_circled) {
+    return {
+      margin: '-2px 0 0 -2px',
+      padding: '2px 4px',
+      border: `1px`,
+      borderColor: colorForPeriod(foul.period),
+      borderRadius: '50px',
+      // Two-letter fouls (FL) shrink a little so the free throw marker fits
+      ...(foul.type.length > 1 ? { fontSize: '7px', padding: '3px 3px' } : {}),
+    };
+  }
+
+  return {};
+}
+
+// Moves the free throw marker 1px left so it sits inside the circle.
+function extraActionOffsetForCircledPlayerFoul(foul: PlayerFoul) {
+  return foul.is_circled ? { right: '2px' } : {};
 }
 
 function foulContent(foul: CoachFoul) {
@@ -718,7 +742,7 @@ function PlayerRow({
                     style={{
                       ...styles.teamContainer.table.row.columnFouls.fouls.type,
                       ...textColorForPeriod(foul.period),
-                      ...borderForFoul(foul),
+                      ...borderForCircledPlayerFoul(foul),
                     }}
                   >
                     {foul.type}
@@ -729,6 +753,7 @@ function PlayerRow({
                         ...styles.teamContainer.table.row.columnFouls.fouls
                           .extraAction,
                         ...textColorForPeriod(foul.period),
+                        ...extraActionOffsetForCircledPlayerFoul(foul),
                       }}
                     >
                       {foul.extra_action}
