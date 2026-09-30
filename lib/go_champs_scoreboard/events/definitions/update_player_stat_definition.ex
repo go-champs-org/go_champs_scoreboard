@@ -2,6 +2,7 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition do
   @behaviour GoChampsScoreboard.Events.Definitions.DefinitionBehavior
 
   alias GoChampsScoreboard.Games.Models.GameState
+  alias GoChampsScoreboard.Games.Models.ViewSettingsState
   alias GoChampsScoreboard.Sports.Sports
   alias GoChampsScoreboard.Games.Games
   alias GoChampsScoreboard.Events.Models.Event
@@ -59,9 +60,11 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition do
       current_game.sport_id
       |> Sports.find_player_stat(stat_id)
 
+    rules_version = ViewSettingsState.rules_version(current_game.view_settings_state)
+
     calculated_player_stats =
       current_game.sport_id
-      |> Sports.find_calculated_player_stats()
+      |> Sports.find_calculated_player_stats(rules_version)
 
     calculated_team_stats =
       current_game.sport_id

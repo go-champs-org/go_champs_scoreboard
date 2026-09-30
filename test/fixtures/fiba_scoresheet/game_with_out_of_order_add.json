@@ -172,7 +172,8 @@
     "datetime": "2025-01-01T12:00:00Z",
     "city": "",
     "actual_start_datetime": null,
-    "actual_end_datetime": null
+    "actual_end_datetime": null,
+    "rules_version": "fiba-2024"
   },
   "game_id": "a0000000-0000-0000-0000-000000000004",
   "crew_chief": {

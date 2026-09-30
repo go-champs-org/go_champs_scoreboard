@@ -39,7 +39,8 @@
             "type": "P",
             "period": 1,
             "is_last_of_half": false,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           }
         ],
         "first_played_period": null
@@ -65,7 +66,8 @@
         "type": "P",
         "period": 1,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       }
     ]
   },
@@ -186,7 +188,8 @@
     "datetime": "2025-01-01T12:00:00Z",
     "city": "",
     "actual_start_datetime": null,
-    "actual_end_datetime": null
+    "actual_end_datetime": null,
+    "rules_version": "fiba-2024"
   },
   "game_id": "a0000000-0000-0000-0000-000000000002",
   "crew_chief": {

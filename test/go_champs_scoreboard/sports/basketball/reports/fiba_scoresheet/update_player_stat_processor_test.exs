@@ -1080,4 +1080,158 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
       assert length(f_fouls) == 4
     end
   end
+
+  describe "process/2 with fiba-2026 rules" do
+    alias GoChampsScoreboard.Events.EventLog
+
+    defp foul_event_log(stat_id, metadata \\ nil) do
+      payload = %{
+        "operation" => "increment",
+        "team-type" => "home",
+        "player-id" => "123",
+        "stat-id" => stat_id
+      }
+
+      payload = if metadata, do: Map.put(payload, "metadata", metadata), else: payload
+
+      %EventLog{key: "update-player-stat", payload: payload, game_clock_period: 2}
+    end
+
+    defp scoresheet_for_rules(rules_version, existing_fouls \\ []) do
+      team_a_players = [
+        %FibaScoresheet.Player{id: "123", name: "Player 1", number: 12, fouls: existing_fouls}
+      ]
+
+      %{
+        fiba_scoresheet_fixture(team_a_players: team_a_players)
+        | info: %FibaScoresheet.Info{rules_version: rules_version}
+      }
+    end
+
+    defp circled_foul(type) do
+      %FibaScoresheet.Foul{type: type, period: 1, is_last_of_half: false, is_circled: true}
+    end
+
+    defp player_fouls(scoresheet) do
+      [player] = scoresheet.team_a.players
+      player.fouls
+    end
+
+    test "records category 1 technical fouls as circled T" do
+      fouls =
+        "fouls_technical_category_1"
+        |> foul_event_log(%{"free-throws-awarded" => "1"})
+        |> UpdatePlayerStatProcessor.process(scoresheet_for_rules("fiba-2026"))
+        |> player_fouls()
+
+      assert [%FibaScoresheet.Foul{type: "T", extra_action: "1", is_circled: true, period: 2}] =
+               fouls
+    end
+
+    test "records category 2 technical fouls as T without circle" do
+      fouls =
+        "fouls_technical"
+        |> foul_event_log()
+        |> UpdatePlayerStatProcessor.process(scoresheet_for_rules("fiba-2026"))
+        |> player_fouls()
+
+      assert [%FibaScoresheet.Foul{type: "T", is_circled: false}] = fouls
+    end
+
+    test "records disruptive fouls as DI without circle" do
+      fouls =
+        "fouls_disruptive"
+        |> foul_event_log(%{"free-throws-awarded" => "2"})
+        |> UpdatePlayerStatProcessor.process(scoresheet_for_rules("fiba-2026"))
+        |> player_fouls()
+
+      assert [%FibaScoresheet.Foul{type: "DI", extra_action: "2", is_circled: false}] = fouls
+    end
+
+    test "records flagrant fouls as circled FL" do
+      fouls =
+        "fouls_flagrant"
+        |> foul_event_log(%{"free-throws-awarded" => "C"})
+        |> UpdatePlayerStatProcessor.process(scoresheet_for_rules("fiba-2026"))
+        |> player_fouls()
+
+      assert [%FibaScoresheet.Foul{type: "FL", extra_action: "C", is_circled: true}] = fouls
+    end
+
+    test "adds GD after the second circled foul" do
+      fouls =
+        "fouls_flagrant"
+        |> foul_event_log()
+        |> UpdatePlayerStatProcessor.process(
+          scoresheet_for_rules("fiba-2026", [circled_foul("T")])
+        )
+        |> player_fouls()
+
+      assert Enum.map(fouls, &{&1.type, &1.is_circled}) == [
+               {"T", true},
+               {"FL", true},
+               {"GD", false}
+             ]
+    end
+
+    test "adds GD after two circled technical fouls" do
+      fouls =
+        "fouls_technical_category_1"
+        |> foul_event_log()
+        |> UpdatePlayerStatProcessor.process(
+          scoresheet_for_rules("fiba-2026", [circled_foul("T")])
+        )
+        |> player_fouls()
+
+      assert Enum.map(fouls, & &1.type) == ["T", "T", "GD"]
+    end
+
+    test "does not add GD after two technical fouls without circle" do
+      existing_foul = %FibaScoresheet.Foul{type: "T", period: 1, is_last_of_half: false}
+
+      fouls =
+        "fouls_technical"
+        |> foul_event_log()
+        |> UpdatePlayerStatProcessor.process(scoresheet_for_rules("fiba-2026", [existing_foul]))
+        |> player_fouls()
+
+      assert Enum.map(fouls, & &1.type) == ["T", "T"]
+    end
+
+    test "does not add GD after two disruptive fouls" do
+      existing_foul = %FibaScoresheet.Foul{type: "DI", period: 1, is_last_of_half: false}
+
+      fouls =
+        "fouls_disruptive"
+        |> foul_event_log()
+        |> UpdatePlayerStatProcessor.process(scoresheet_for_rules("fiba-2026", [existing_foul]))
+        |> player_fouls()
+
+      assert Enum.map(fouls, & &1.type) == ["DI", "DI"]
+    end
+
+    test "fiba-2024 keeps adding GD after two technical fouls" do
+      existing_foul = %FibaScoresheet.Foul{type: "T", period: 1, is_last_of_half: false}
+
+      fouls =
+        "fouls_technical"
+        |> foul_event_log()
+        |> UpdatePlayerStatProcessor.process(scoresheet_for_rules("fiba-2024", [existing_foul]))
+        |> player_fouls()
+
+      assert Enum.map(fouls, & &1.type) == ["T", "T", "GD"]
+      assert Enum.all?(fouls, &(&1.is_circled == false))
+    end
+
+    test "fiba-2024 ignores the fiba-2026 foul stats" do
+      scoresheet = scoresheet_for_rules("fiba-2024")
+
+      for stat_id <- ["fouls_technical_category_1", "fouls_disruptive", "fouls_flagrant"] do
+        assert stat_id
+               |> foul_event_log()
+               |> UpdatePlayerStatProcessor.process(scoresheet)
+               |> player_fouls() == []
+      end
+    end
+  end
 end

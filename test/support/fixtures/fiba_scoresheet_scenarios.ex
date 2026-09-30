@@ -575,6 +575,139 @@ defmodule GoChampsScoreboard.FibaScoresheetScenarios do
   end
 
   @doc """
+  FIBA 2026 rules: every player foul type with every free throw variant,
+  spread over the four periods so each period colour shows up.
+
+  Home:
+  - #4: T1, TC (category 2 technical, no circle)
+  - #5: circled T1, circled TC, then GD (two circled fouls)
+  - #6: DI, DI1, DI2, DI3, DIC (no circle, no GD)
+  - #7: circled FL, circled FL1, then GD
+  - #8: circled FL2, circled FL3, then GD
+  - #9: circled FLC, P2, D1
+
+  Away:
+  - #10: circled T1, circled FL3, then GD
+  - #11: DIC, P
+
+  Proves: under fiba-2026 category 1 technical and flagrant fouls are
+  circled, DI and category 2 technical fouls are not, the free throw marker
+  sits next to each of them, and GD follows the second circled foul.
+  """
+  @spec fiba_2026_all_fouls_scenario_fixture() :: String.t()
+  def fiba_2026_all_fouls_scenario_fixture() do
+    home_players = [
+      fiba_2026_player("h1", "Home Technical", 4, true),
+      fiba_2026_player("h2", "Home Circled Technical", 5, false),
+      fiba_2026_player("h3", "Home Disruptive", 6, false),
+      fiba_2026_player("h4", "Home Flagrant", 7, false),
+      fiba_2026_player("h5", "Home Flagrant Two", 8, false),
+      fiba_2026_player("h6", "Home Mixed", 9, false)
+    ]
+
+    away_players = [
+      fiba_2026_player("a1", "Away Circled", 10, true),
+      fiba_2026_player("a2", "Away Disruptive", 11, false)
+    ]
+
+    game_state =
+      game_state_with_players_fixture(
+        game_id: "a0000000-0000-0000-0000-000000000006",
+        home_team_name: "Falcons",
+        away_team_name: "Ravens",
+        home_players: home_players,
+        away_players: away_players,
+        info_state: InfoState.new(@fixed_datetime),
+        view_settings_state:
+          GoChampsScoreboard.Games.Models.ViewSettingsState.new(
+            "basketball-medium-stats",
+            [],
+            "fiba-2026"
+          )
+      )
+
+    foul = fn time, period, team_type, player_id, stat_id, free_throws ->
+      payload = %{
+        "operation" => "increment",
+        "team-type" => team_type,
+        "player-id" => player_id,
+        "stat-id" => stat_id
+      }
+
+      payload =
+        if free_throws,
+          do: Map.put(payload, "metadata", %{"free-throws-awarded" => free_throws}),
+          else: payload
+
+      GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+        game_state.id,
+        time,
+        period,
+        payload
+      )
+    end
+
+    start_event =
+      GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+        game_state.id,
+        600,
+        1,
+        %{}
+      )
+
+    end_event =
+      GoChampsScoreboard.Events.Definitions.EndGameLiveModeDefinition.create(
+        game_state.id,
+        0,
+        4,
+        %{}
+      )
+
+    persist_sequence(game_state, [
+      start_event,
+      foul.(590, 1, "home", "h1", "fouls_technical", "1"),
+      foul.(580, 1, "home", "h2", "fouls_technical_category_1", "1"),
+      foul.(570, 1, "home", "h3", "fouls_disruptive", nil),
+      foul.(560, 1, "home", "h4", "fouls_flagrant", nil),
+      foul.(550, 1, "home", "h6", "fouls_flagrant", "C"),
+      foul.(590, 2, "home", "h1", "fouls_technical", "C"),
+      foul.(580, 2, "home", "h3", "fouls_disruptive", "1"),
+      foul.(570, 2, "home", "h4", "fouls_flagrant", "1"),
+      foul.(560, 2, "home", "h6", "fouls_personal", "2"),
+      foul.(550, 2, "away", "a1", "fouls_technical_category_1", "1"),
+      foul.(590, 3, "home", "h2", "fouls_technical_category_1", "C"),
+      foul.(580, 3, "home", "h3", "fouls_disruptive", "2"),
+      foul.(570, 3, "home", "h5", "fouls_flagrant", "2"),
+      foul.(560, 3, "home", "h6", "fouls_disqualifying", "1"),
+      foul.(550, 3, "away", "a2", "fouls_disruptive", "C"),
+      foul.(590, 4, "home", "h3", "fouls_disruptive", "3"),
+      foul.(580, 4, "home", "h3", "fouls_disruptive", "C"),
+      foul.(570, 4, "home", "h5", "fouls_flagrant", "3"),
+      foul.(560, 4, "away", "a1", "fouls_flagrant", "3"),
+      foul.(550, 4, "away", "a2", "fouls_personal", nil),
+      end_event
+    ])
+
+    game_state.id
+  end
+
+  defp fiba_2026_player(id, name, number, is_captain) do
+    %PlayerState{
+      id: id,
+      name: name,
+      number: number,
+      stats_values:
+        Map.merge(base_stats_values(), %{
+          "fouls_technical_category_1" => 0,
+          "fouls_disruptive" => 0,
+          "fouls_flagrant" => 0
+        }),
+      state: :playing,
+      is_captain: is_captain
+    }
+  end
+
+  @doc """
   Replays an anonymized real-game capture (produced by
   `Mix.Tasks.FibaScoresheet.ExportGame.export_game/2`, see
   `lib/mix/tasks/fiba_scoresheet.export_game.ex`) against a **fresh** game

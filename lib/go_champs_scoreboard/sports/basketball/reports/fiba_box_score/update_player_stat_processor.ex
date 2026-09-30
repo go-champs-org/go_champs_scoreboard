@@ -24,6 +24,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.UpdatePlayer
     "rebounds_offensive",
     "fouls_personal",
     "fouls_technical",
+    "fouls_technical_category_1",
+    "fouls_disruptive",
     "fouls_flagrant",
     "fouls_disqualifying",
     "fouls_disqualifying_fighting",

@@ -281,7 +281,37 @@ defmodule GoChampsScoreboard.Sports.Basketball.StatisticsTest do
     end
   end
 
+  describe "calc_player_fouls with FIBA 2026 fouls" do
+    test "counts category 1 technical, disruptive and flagrant fouls" do
+      player_state = %GoChampsScoreboard.Games.Models.PlayerState{
+        stats_values: %{
+          "fouls_personal" => 1,
+          "fouls_technical" => 1,
+          "fouls_technical_category_1" => 1,
+          "fouls_disruptive" => 1,
+          "fouls_flagrant" => 1
+        }
+      }
+
+      assert Statistics.calc_player_fouls(player_state) == 5
+    end
+  end
+
   describe "calc_team_fouls" do
+    test "counts category 1 technical and disruptive fouls" do
+      team_state = %GoChampsScoreboard.Games.Models.TeamState{
+        total_player_stats: %{
+          "fouls_personal" => 3,
+          "fouls_technical" => 1,
+          "fouls_technical_category_1" => 2,
+          "fouls_disruptive" => 2,
+          "fouls_flagrant" => 1
+        }
+      }
+
+      assert Statistics.calc_team_fouls(team_state) == 9
+    end
+
     test "returns the sum of specific player foul types" do
       team_state = %GoChampsScoreboard.Games.Models.TeamState{
         total_player_stats: %{
@@ -777,6 +807,54 @@ defmodule GoChampsScoreboard.Sports.Basketball.StatisticsTest do
       }
 
       assert Statistics.calc_player_game_disqualifying_fouls(player_state) == 1
+    end
+  end
+
+  describe "calc_player_game_disqualifying_fouls_fiba_2026" do
+    defp fiba_2026_player(stats_values) do
+      %GoChampsScoreboard.Games.Models.PlayerState{stats_values: stats_values}
+    end
+
+    test "returns 1 when player has 1 category 1 technical and 1 flagrant foul" do
+      player_state =
+        fiba_2026_player(%{"fouls_technical_category_1" => 1, "fouls_flagrant" => 1})
+
+      assert Statistics.calc_player_game_disqualifying_fouls_fiba_2026(player_state) == 1
+    end
+
+    test "returns 1 when player has 2 category 1 technical fouls" do
+      player_state = fiba_2026_player(%{"fouls_technical_category_1" => 2})
+
+      assert Statistics.calc_player_game_disqualifying_fouls_fiba_2026(player_state) == 1
+    end
+
+    test "returns 1 when player has 2 flagrant fouls" do
+      player_state = fiba_2026_player(%{"fouls_flagrant" => 2})
+
+      assert Statistics.calc_player_game_disqualifying_fouls_fiba_2026(player_state) == 1
+    end
+
+    test "returns 0 when player has 2 category 2 technical fouls" do
+      player_state = fiba_2026_player(%{"fouls_technical" => 2})
+
+      assert Statistics.calc_player_game_disqualifying_fouls_fiba_2026(player_state) == 0
+    end
+
+    test "returns 0 when player has 2 disruptive fouls" do
+      player_state = fiba_2026_player(%{"fouls_disruptive" => 2})
+
+      assert Statistics.calc_player_game_disqualifying_fouls_fiba_2026(player_state) == 0
+    end
+
+    test "returns 0 when player has only 1 circled foul" do
+      player_state =
+        fiba_2026_player(%{
+          "fouls_technical_category_1" => 1,
+          "fouls_technical" => 1,
+          "fouls_disruptive" => 1
+        })
+
+      assert Statistics.calc_player_game_disqualifying_fouls_fiba_2026(player_state) == 0
     end
   end
 

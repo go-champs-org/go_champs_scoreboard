@@ -464,6 +464,7 @@
       "warning": "Faltas T ou U",
       "warningTechnical": "Falta T",
       "warningUnsportsmanlike": "Falta U",
+      "warningCircled": "Falta com círculo",
       "controls": {
         "substitute": "Substituir",
         "cancel": "Cancelar"

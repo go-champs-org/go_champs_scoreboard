@@ -464,6 +464,7 @@
       "warning": "Player with T or U foul",
       "warningTechnical": "T Foul",
       "warningUnsportsmanlike": "U Foul",
+      "warningCircled": "Circled foul",
       "controls": {
         "substitute": "Substitute",
         "cancel": "Cancel"

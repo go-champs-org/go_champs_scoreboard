@@ -8,6 +8,53 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
   import GoChampsScoreboard.GameStateFixtures
 
   describe "bootstrap/1" do
+    test "reads the rules version from the stored snapshot" do
+      game_state = %{
+        basketball_game_state_fixture()
+        | view_settings_state:
+            GoChampsScoreboard.Games.Models.ViewSettingsState.new(
+              "basketball-medium-stats",
+              [],
+              "fiba-2026"
+            )
+      }
+
+      event =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          game_state.id,
+          game_state.clock_state.time,
+          game_state.clock_state.period,
+          %{}
+        )
+
+      updated_game_state = GoChampsScoreboard.Events.Handler.handle(game_state, event)
+      {:ok, _event_log} = EventLogs.persist(event, updated_game_state)
+
+      stored_event_log =
+        game_state.id
+        |> EventLogs.get_all_by_game_id(with_snapshot: true)
+        |> List.last()
+
+      assert FibaScoresheetManager.bootstrap(stored_event_log).info.rules_version == "fiba-2026"
+    end
+
+    test "defaults the rules version to fiba-2024" do
+      game_state = basketball_game_state_fixture()
+
+      event =
+        GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+          game_state.id,
+          game_state.clock_state.time,
+          game_state.clock_state.period,
+          %{}
+        )
+
+      updated_game_state = GoChampsScoreboard.Events.Handler.handle(game_state, event)
+      {:ok, event_log} = EventLogs.persist(event, updated_game_state)
+
+      assert FibaScoresheetManager.bootstrap(event_log).info.rules_version == "fiba-2024"
+    end
+
     test "returns a FibaScoresheet struct with game_id" do
       game_state = basketball_game_state_fixture()
 

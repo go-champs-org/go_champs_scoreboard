@@ -24,4 +24,10 @@ defmodule GoChampsScoreboard.Games.Models.ViewSettingsState do
 
   @spec default_rules_version() :: String.t()
   def default_rules_version, do: @default_rules_version
+
+  @spec rules_version(t() | nil) :: String.t()
+  def rules_version(%__MODULE__{rules_version: rules_version}) when is_binary(rules_version),
+    do: rules_version
+
+  def rules_version(_view_settings_state), do: @default_rules_version
 end

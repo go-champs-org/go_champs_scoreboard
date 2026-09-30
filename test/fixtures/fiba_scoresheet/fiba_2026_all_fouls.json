@@ -1,0 +1,535 @@
+{
+  "umpire_2": {
+    "signature": null,
+    "name": "",
+    "id": "",
+    "federation": null
+  },
+  "umpire_1": {
+    "signature": null,
+    "name": "",
+    "id": "",
+    "federation": null
+  },
+  "tournament_name": null,
+  "timekeeper": {
+    "signature": null,
+    "name": "",
+    "id": "",
+    "federation": null
+  },
+  "team_b": {
+    "timeouts": [],
+    "score": 0,
+    "running_score": {},
+    "points_summary": {},
+    "points_by_period": {},
+    "players": [
+      {
+        "signature": null,
+        "number": 10,
+        "name": "Away Circled",
+        "license_number": null,
+        "is_captain": true,
+        "id": "a1",
+        "has_started": null,
+        "has_played": null,
+        "fouls": [
+          {
+            "type": "T",
+            "period": 2,
+            "is_last_of_half": false,
+            "is_circled": true,
+            "extra_action": "1"
+          },
+          {
+            "type": "FL",
+            "period": 4,
+            "is_last_of_half": false,
+            "is_circled": true,
+            "extra_action": "3"
+          },
+          {
+            "type": "GD",
+            "period": 4,
+            "is_last_of_half": false,
+            "is_circled": false,
+            "extra_action": null
+          }
+        ],
+        "first_played_period": null
+      },
+      {
+        "signature": null,
+        "number": 11,
+        "name": "Away Disruptive",
+        "license_number": null,
+        "is_captain": false,
+        "id": "a2",
+        "has_started": null,
+        "has_played": null,
+        "fouls": [
+          {
+            "type": "DI",
+            "period": 3,
+            "is_last_of_half": false,
+            "is_circled": false,
+            "extra_action": "C"
+          },
+          {
+            "type": "P",
+            "period": 4,
+            "is_last_of_half": false,
+            "is_circled": false,
+            "extra_action": null
+          }
+        ],
+        "first_played_period": null
+      }
+    ],
+    "name": "Ravens",
+    "head_coach_challenges": [],
+    "has_walkover": false,
+    "coach": {
+      "signature": null,
+      "name": "",
+      "id": "",
+      "fouls": []
+    },
+    "assistant_coach": {
+      "signature": null,
+      "name": "",
+      "id": "",
+      "fouls": []
+    },
+    "all_fouls": [
+      {
+        "type": "T",
+        "period": 2,
+        "is_last_of_half": false,
+        "is_circled": true,
+        "extra_action": "1"
+      },
+      {
+        "type": "DI",
+        "period": 3,
+        "is_last_of_half": false,
+        "is_circled": false,
+        "extra_action": "C"
+      },
+      {
+        "type": "FL",
+        "period": 4,
+        "is_last_of_half": false,
+        "is_circled": true,
+        "extra_action": "3"
+      },
+      {
+        "type": "P",
+        "period": 4,
+        "is_last_of_half": false,
+        "is_circled": false,
+        "extra_action": null
+      }
+    ]
+  },
+  "team_a": {
+    "timeouts": [],
+    "score": 0,
+    "running_score": {},
+    "points_summary": {},
+    "points_by_period": {},
+    "players": [
+      {
+        "signature": null,
+        "number": 4,
+        "name": "Home Technical",
+        "license_number": null,
+        "is_captain": true,
+        "id": "h1",
+        "has_started": null,
+        "has_played": null,
+        "fouls": [
+          {
+            "type": "T",
+            "period": 1,
+            "is_last_of_half": false,
+            "is_circled": false,
+            "extra_action": "1"
+          },
+          {
+            "type": "T",
+            "period": 2,
+            "is_last_of_half": false,
+            "is_circled": false,
+            "extra_action": "C"
+          }
+        ],
+        "first_played_period": null
+      },
+      {
+        "signature": null,
+        "number": 5,
+        "name": "Home Circled Technical",
+        "license_number": null,
+        "is_captain": false,
+        "id": "h2",
+        "has_started": null,
+        "has_played": null,
+        "fouls": [
+          {
+            "type": "T",
+            "period": 1,
+            "is_last_of_half": false,
+            "is_circled": true,
+            "extra_action": "1"
+          },
+          {
+            "type": "T",
+            "period": 3,
+            "is_last_of_half": false,
+            "is_circled": true,
+            "extra_action": "C"
+          },
+          {
+            "type": "GD",
+            "period": 3,
+            "is_last_of_half": false,
+            "is_circled": false,
+            "extra_action": null
+          }
+        ],
+        "first_played_period": null
+      },
+      {
+        "signature": null,
+        "number": 6,
+        "name": "Home Disruptive",
+        "license_number": null,
+        "is_captain": false,
+        "id": "h3",
+        "has_started": null,
+        "has_played": null,
+        "fouls": [
+          {
+            "type": "DI",
+            "period": 1,
+            "is_last_of_half": false,
+            "is_circled": false,
+            "extra_action": null
+          },
+          {
+            "type": "DI",
+            "period": 2,
+            "is_last_of_half": false,
+            "is_circled": false,
+            "extra_action": "1"
+          },
+          {
+            "type": "DI",
+            "period": 3,
+            "is_last_of_half": false,
+            "is_circled": false,
+            "extra_action": "2"
+          },
+          {
+            "type": "DI",
+            "period": 4,
+            "is_last_of_half": false,
+            "is_circled": false,
+            "extra_action": "3"
+          },
+          {
+            "type": "DI",
+            "period": 4,
+            "is_last_of_half": false,
+            "is_circled": false,
+            "extra_action": "C"
+          }
+        ],
+        "first_played_period": null
+      },
+      {
+        "signature": null,
+        "number": 7,
+        "name": "Home Flagrant",
+        "license_number": null,
+        "is_captain": false,
+        "id": "h4",
+        "has_started": null,
+        "has_played": null,
+        "fouls": [
+          {
+            "type": "FL",
+            "period": 1,
+            "is_last_of_half": false,
+            "is_circled": true,
+            "extra_action": null
+          },
+          {
+            "type": "FL",
+            "period": 2,
+            "is_last_of_half": false,
+            "is_circled": true,
+            "extra_action": "1"
+          },
+          {
+            "type": "GD",
+            "period": 2,
+            "is_last_of_half": false,
+            "is_circled": false,
+            "extra_action": null
+          }
+        ],
+        "first_played_period": null
+      },
+      {
+        "signature": null,
+        "number": 8,
+        "name": "Home Flagrant Two",
+        "license_number": null,
+        "is_captain": false,
+        "id": "h5",
+        "has_started": null,
+        "has_played": null,
+        "fouls": [
+          {
+            "type": "FL",
+            "period": 3,
+            "is_last_of_half": false,
+            "is_circled": true,
+            "extra_action": "2"
+          },
+          {
+            "type": "FL",
+            "period": 4,
+            "is_last_of_half": false,
+            "is_circled": true,
+            "extra_action": "3"
+          },
+          {
+            "type": "GD",
+            "period": 4,
+            "is_last_of_half": false,
+            "is_circled": false,
+            "extra_action": null
+          }
+        ],
+        "first_played_period": null
+      },
+      {
+        "signature": null,
+        "number": 9,
+        "name": "Home Mixed",
+        "license_number": null,
+        "is_captain": false,
+        "id": "h6",
+        "has_started": null,
+        "has_played": null,
+        "fouls": [
+          {
+            "type": "FL",
+            "period": 1,
+            "is_last_of_half": false,
+            "is_circled": true,
+            "extra_action": "C"
+          },
+          {
+            "type": "P",
+            "period": 2,
+            "is_last_of_half": false,
+            "is_circled": false,
+            "extra_action": "2"
+          },
+          {
+            "type": "D",
+            "period": 3,
+            "is_last_of_half": false,
+            "is_circled": false,
+            "extra_action": "1"
+          }
+        ],
+        "first_played_period": null
+      }
+    ],
+    "name": "Falcons",
+    "head_coach_challenges": [],
+    "has_walkover": false,
+    "coach": {
+      "signature": null,
+      "name": "",
+      "id": "",
+      "fouls": []
+    },
+    "assistant_coach": {
+      "signature": null,
+      "name": "",
+      "id": "",
+      "fouls": []
+    },
+    "all_fouls": [
+      {
+        "type": "T",
+        "period": 1,
+        "is_last_of_half": false,
+        "is_circled": false,
+        "extra_action": "1"
+      },
+      {
+        "type": "T",
+        "period": 1,
+        "is_last_of_half": false,
+        "is_circled": true,
+        "extra_action": "1"
+      },
+      {
+        "type": "DI",
+        "period": 1,
+        "is_last_of_half": false,
+        "is_circled": false,
+        "extra_action": null
+      },
+      {
+        "type": "FL",
+        "period": 1,
+        "is_last_of_half": false,
+        "is_circled": true,
+        "extra_action": null
+      },
+      {
+        "type": "FL",
+        "period": 1,
+        "is_last_of_half": false,
+        "is_circled": true,
+        "extra_action": "C"
+      },
+      {
+        "type": "T",
+        "period": 2,
+        "is_last_of_half": false,
+        "is_circled": false,
+        "extra_action": "C"
+      },
+      {
+        "type": "DI",
+        "period": 2,
+        "is_last_of_half": false,
+        "is_circled": false,
+        "extra_action": "1"
+      },
+      {
+        "type": "FL",
+        "period": 2,
+        "is_last_of_half": false,
+        "is_circled": true,
+        "extra_action": "1"
+      },
+      {
+        "type": "P",
+        "period": 2,
+        "is_last_of_half": false,
+        "is_circled": false,
+        "extra_action": "2"
+      },
+      {
+        "type": "T",
+        "period": 3,
+        "is_last_of_half": false,
+        "is_circled": true,
+        "extra_action": "C"
+      },
+      {
+        "type": "DI",
+        "period": 3,
+        "is_last_of_half": false,
+        "is_circled": false,
+        "extra_action": "2"
+      },
+      {
+        "type": "FL",
+        "period": 3,
+        "is_last_of_half": false,
+        "is_circled": true,
+        "extra_action": "2"
+      },
+      {
+        "type": "D",
+        "period": 3,
+        "is_last_of_half": false,
+        "is_circled": false,
+        "extra_action": "1"
+      },
+      {
+        "type": "DI",
+        "period": 4,
+        "is_last_of_half": false,
+        "is_circled": false,
+        "extra_action": "3"
+      },
+      {
+        "type": "DI",
+        "period": 4,
+        "is_last_of_half": false,
+        "is_circled": false,
+        "extra_action": "C"
+      },
+      {
+        "type": "FL",
+        "period": 4,
+        "is_last_of_half": false,
+        "is_circled": true,
+        "extra_action": "3"
+      }
+    ]
+  },
+  "shot_clock_operator": {
+    "signature": null,
+    "name": "",
+    "id": "",
+    "federation": null
+  },
+  "scorer": {
+    "signature": null,
+    "name": "",
+    "id": "",
+    "federation": null
+  },
+  "protest": {
+    "state": "no_protest",
+    "signature": null,
+    "player_name": ""
+  },
+  "info": {
+    "web_url": "",
+    "tournament_slug": "",
+    "tournament_name": "",
+    "tournament_logo_url": "",
+    "sponsors": [],
+    "rules_version": "fiba-2026",
+    "organization_slug": "",
+    "organization_name": "",
+    "organization_logo_url": "",
+    "number": "",
+    "location": "",
+    "initial_period_time": 0,
+    "game_report": "",
+    "ended_periods": [],
+    "datetime": "2025-01-01T12:00:00Z",
+    "city": "",
+    "actual_start_datetime": null,
+    "actual_end_datetime": null
+  },
+  "game_id": "a0000000-0000-0000-0000-000000000006",
+  "crew_chief": {
+    "signature": null,
+    "name": "",
+    "id": "",
+    "federation": null
+  },
+  "assistant_scorer": {
+    "signature": null,
+    "name": "",
+    "id": "",
+    "federation": null
+  }
+}

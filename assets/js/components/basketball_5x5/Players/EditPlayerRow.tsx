@@ -4,6 +4,7 @@ import { PlayerState, TeamType } from '../../../types';
 import FormField from '../../FormField';
 import CheckboxFormField from '../../CheckboxFormField';
 import DoubleClickButton from '../../DoubleClickButton';
+import { useRulesVersion } from '../../../shared/ViewSettingsContext';
 
 interface StatInputProps {
   teamType: TeamType;
@@ -243,6 +244,7 @@ function MediumEditPlayerRow({
   pushEvent,
   highlighted = false,
 }: EditPlayerRowProps) {
+  const rulesVersion = useRulesVersion();
   const onUpdatePlayerNumber = (value: string) => {
     pushEvent('update-player-in-team', {
       ['team-type']: teamType,
@@ -445,14 +447,43 @@ function MediumEditPlayerRow({
           teamType={teamType}
         />
       </td>
-      <td>
-        <StatInput
-          player={player}
-          statKey="fouls_unsportsmanlike"
-          pushEvent={pushEvent}
-          teamType={teamType}
-        />
-      </td>
+      {rulesVersion === 'fiba-2026' ? (
+        <>
+          <td>
+            <StatInput
+              player={player}
+              statKey="fouls_technical_category_1"
+              pushEvent={pushEvent}
+              teamType={teamType}
+            />
+          </td>
+          <td>
+            <StatInput
+              player={player}
+              statKey="fouls_disruptive"
+              pushEvent={pushEvent}
+              teamType={teamType}
+            />
+          </td>
+          <td>
+            <StatInput
+              player={player}
+              statKey="fouls_flagrant"
+              pushEvent={pushEvent}
+              teamType={teamType}
+            />
+          </td>
+        </>
+      ) : (
+        <td>
+          <StatInput
+            player={player}
+            statKey="fouls_unsportsmanlike"
+            pushEvent={pushEvent}
+            teamType={teamType}
+          />
+        </td>
+      )}
     </tr>
   );
 }

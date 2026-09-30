@@ -4,6 +4,7 @@ import { Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import {
   Coach,
   CoachFoul,
+  PlayerFoul,
   Team,
   Timeout,
   HeadCoachChallenge as HeadCoachChallengeType,
@@ -316,6 +317,69 @@ function borderForFoul(foul: CoachFoul) {
   }
 
   return {};
+}
+
+// FIBA 2026: circled player fouls (category 1 technical and flagrant).
+// The circle is drawn inside the foul box so the box lines never cover it,
+// and the free throw marker is drawn last (on top of the circle), tucked
+// against the letter without covering it.
+const CIRCLED_FOUL_LAYOUT: Record<
+  string,
+  { fontSize: number; letterLeft: number; extraActionLeft: number }
+> = {
+  T: { fontSize: 7, letterLeft: 3.6, extraActionLeft: 7.6 },
+  FL: { fontSize: 6, letterLeft: 2, extraActionLeft: 8.3 },
+};
+
+// FIBA 2026: the disruptive foul (DI) keeps the regular layout, with its free
+// throw marker tucked against the letter.
+function extraActionOffsetForDisruptiveFoul(foul: PlayerFoul) {
+  // Anchored to the left, like the letter, so thicker period borders shift both
+  return foul.type === 'DI' ? { bottom: 3, left: 9, right: 'auto' } : {};
+}
+
+function CircledPlayerFoul({ foul }: { foul: PlayerFoul }) {
+  const layout = CIRCLED_FOUL_LAYOUT[foul.type] || CIRCLED_FOUL_LAYOUT.T;
+
+  return (
+    <>
+      <View
+        style={{
+          position: 'absolute',
+          top: 1,
+          left: 0.5,
+          width: 12,
+          height: 12,
+          borderRadius: 6,
+          border: `0.75px solid ${colorForPeriod(foul.period)}`,
+        }}
+      />
+      <Text
+        style={{
+          position: 'absolute',
+          top: 3,
+          left: layout.letterLeft,
+          fontSize: layout.fontSize,
+          ...textColorForPeriod(foul.period),
+        }}
+      >
+        {foul.type}
+      </Text>
+      {foul.extra_action && (
+        <Text
+          style={{
+            position: 'absolute',
+            top: 5.5,
+            left: layout.extraActionLeft,
+            fontSize: 4.5,
+            ...textColorForPeriod(foul.period),
+          }}
+        >
+          {foul.extra_action}
+        </Text>
+      )}
+    </>
+  );
 }
 
 function foulContent(foul: CoachFoul) {
@@ -711,7 +775,9 @@ function PlayerRow({
                 isFirstEmptyPlayerAndGameEnded && !hasMultipleEmptyPlayers
               }
             >
-              {foul !== EMPTY_FOUL ? (
+              {foul !== EMPTY_FOUL && foul.is_circled ? (
+                <CircledPlayerFoul foul={foul} />
+              ) : foul !== EMPTY_FOUL ? (
                 <>
                   <Text
                     style={{
@@ -727,6 +793,7 @@ function PlayerRow({
                         ...styles.teamContainer.table.row.columnFouls.fouls
                           .extraAction,
                         ...textColorForPeriod(foul.period),
+                        ...extraActionOffsetForDisruptiveFoul(foul),
                       }}
                     >
                       {foul.extra_action}
@@ -875,6 +942,7 @@ export default function TeamBox({
                 period: teamPlayer.fouls[index].period,
                 extra_action: teamPlayer.fouls[index].extra_action,
                 is_last_of_half: teamPlayer.fouls[index].is_last_of_half,
+                is_circled: teamPlayer.fouls[index].is_circled,
               }
             : EMPTY_FOUL,
         ),

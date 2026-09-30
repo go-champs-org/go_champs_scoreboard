@@ -22,6 +22,22 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
     "fouls_game_disqualifying"
   ]
 
+  # FIBA 2026 foul stats: U no longer exists, DI and FL are new and
+  # category 1 technical fouls are recorded as circled T
+  @fiba_2026_foul_stats [
+    "fouls_personal",
+    "fouls_technical",
+    "fouls_technical_category_1",
+    "fouls_disruptive",
+    "fouls_flagrant",
+    "fouls_disqualifying",
+    "fouls_disqualifying_fighting",
+    "fouls_game_disqualifying"
+  ]
+
+  # Under FIBA 2026 only circled fouls count toward GD
+  @max_circled_fouls 2
+
   # GD foul triggering rules
   @gd_triggering_fouls ["T", "U"]
   @max_technical_fouls 2
@@ -37,7 +53,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
       FibaScoresheetManager.find_team(data, team_type)
 
     result_team =
-      process_stat_by_category(current_team, stat_id, event_log)
+      process_stat_by_category(current_team, stat_id, event_log, rules_version(data))
 
     data
     |> FibaScoresheetManager.update_team(team_type, result_team)
@@ -46,18 +62,27 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
   @doc """
   Routes the processing to the appropriate function based on stat category.
   """
-  @spec process_stat_by_category(FibaScoresheet.Team.t(), String.t(), EventLog.t()) ::
+  @spec process_stat_by_category(FibaScoresheet.Team.t(), String.t(), EventLog.t(), String.t()) ::
           FibaScoresheet.Team.t()
-  def process_stat_by_category(team, stat_id, event_log) when stat_id in @scoring_stats do
+  def process_stat_by_category(team, stat_id, event_log, rules_version \\ "fiba-2024")
+
+  def process_stat_by_category(team, stat_id, event_log, _rules_version)
+      when stat_id in @scoring_stats do
     process_scoring_stat(team, event_log)
   end
 
-  def process_stat_by_category(team, stat_id, event_log) when stat_id in @foul_stats do
+  def process_stat_by_category(team, stat_id, event_log, "fiba-2026")
+      when stat_id in @fiba_2026_foul_stats do
+    process_fiba_2026_foul_stat(team, stat_id, event_log)
+  end
+
+  def process_stat_by_category(team, stat_id, event_log, _rules_version)
+      when stat_id in @foul_stats do
     process_foul_stat(team, stat_id, event_log)
   end
 
   # Default handler for any other stat
-  def process_stat_by_category(team, _stat_id, _event_log), do: team
+  def process_stat_by_category(team, _stat_id, _event_log, _rules_version), do: team
 
   def process_scoring_stat(team, event_log) do
     player_id = event_log.payload["player-id"]
@@ -141,6 +166,71 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdatePlay
       handle_fighting_foul_logic(team_after_gd, updated_player_after_gd, foul_type, event_log)
     end
   end
+
+  @doc """
+  Processes a player foul under the FIBA 2026 rules.
+  Category 1 technical fouls and flagrant fouls are circled, and a GD foul is
+  added once the player has #{@max_circled_fouls} circled fouls.
+  """
+  @spec process_fiba_2026_foul_stat(FibaScoresheet.Team.t(), String.t(), EventLog.t()) ::
+          FibaScoresheet.Team.t()
+  def process_fiba_2026_foul_stat(team, stat_id, event_log) do
+    player_id = event_log.payload["player-id"]
+
+    # Skip processing if player not found
+    player = PlayerManager.find_player(team, player_id)
+
+    if is_nil(player) do
+      team
+    else
+      {foul_type, is_circled} =
+        case stat_id do
+          "fouls_personal" -> {"P", false}
+          "fouls_technical" -> {"T", false}
+          "fouls_technical_category_1" -> {"T", true}
+          "fouls_disruptive" -> {"DI", false}
+          "fouls_flagrant" -> {"FL", true}
+          "fouls_disqualifying" -> {"D", false}
+          "fouls_disqualifying_fighting" -> {"F", false}
+          "fouls_game_disqualifying" -> {"GD", false}
+        end
+
+      foul = %FibaScoresheet.Foul{
+        type: foul_type,
+        period: event_log.game_clock_period,
+        extra_action: get_in(event_log.payload, ["metadata", "free-throws-awarded"]),
+        is_last_of_half: false,
+        is_circled: is_circled
+      }
+
+      team_with_foul = TeamManager.add_player_foul(team, player_id, foul)
+
+      updated_player = PlayerManager.find_player(team_with_foul, player_id)
+
+      team_after_gd =
+        check_and_add_fiba_2026_gd_foul(team_with_foul, updated_player, foul, event_log)
+
+      updated_player_after_gd = PlayerManager.find_player(team_after_gd, player_id)
+      handle_fighting_foul_logic(team_after_gd, updated_player_after_gd, foul_type, event_log)
+    end
+  end
+
+  defp check_and_add_fiba_2026_gd_foul(team, player, foul, event_log) do
+    with true <- foul.is_circled,
+         %{} <- player,
+         true <- Enum.count(player.fouls, & &1.is_circled) >= @max_circled_fouls do
+      gd_foul = create_gd_foul(event_log.game_clock_period)
+      TeamManager.add_player_foul(team, player.id, gd_foul)
+    else
+      _ -> team
+    end
+  end
+
+  defp rules_version(%FibaScoresheet{info: %FibaScoresheet.Info{rules_version: rules_version}})
+       when is_binary(rules_version),
+       do: rules_version
+
+  defp rules_version(_data), do: "fiba-2024"
 
   # Private helper functions for GD foul logic
 

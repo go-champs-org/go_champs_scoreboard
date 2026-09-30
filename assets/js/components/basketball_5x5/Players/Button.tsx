@@ -3,6 +3,7 @@ import { PlayerState, TeamState } from '../../../types';
 import { useTranslation } from '../../../hooks/useTranslation';
 import { getPlayerTooltipText, getPlayerButtonClassName } from './utils';
 import { teamColorStyle } from '../../../shared/styleHelpers';
+import { useRulesVersion } from '../../../shared/ViewSettingsContext';
 
 interface ButtonProps {
   player: PlayerState;
@@ -20,6 +21,7 @@ function Button({
   className = '',
 }: ButtonProps) {
   const { t } = useTranslation();
+  const rulesVersion = useRulesVersion();
   const fouls = player.stats_values['fouls'] || 0;
   const [isAnimating, setIsAnimating] = React.useState(false);
   const previousFouls = React.useRef(fouls);
@@ -43,8 +45,9 @@ function Button({
         isSelected,
         disabled,
         className,
+        rulesVersion,
       )}
-      data-tooltip={getPlayerTooltipText(player, t)}
+      data-tooltip={getPlayerTooltipText(player, t, rulesVersion)}
       onClick={onClick}
       disabled={disabled}
     >

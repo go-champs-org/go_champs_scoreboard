@@ -42,13 +42,18 @@ function Scoreboard({
       : game_state.view_settings_state
       ? game_state.view_settings_state.view
       : 'default';
+  const rulesVersion =
+    game_state.view_settings_state?.rules_version || 'fiba-2024';
   const Component = ScoreboardRegistry[sportId];
   const isLoading = object.loading || false;
 
   return (
     <ConfigProvider configString={env}>
       <FeatureFlagProvider initialFlags={feature_flags_data}>
-        <ViewSettingsProvider selectedView={selectedView}>
+        <ViewSettingsProvider
+          selectedView={selectedView}
+          rulesVersion={rulesVersion}
+        >
           <div className="container">
             {isLoading ? (
               <p>Loading...</p>

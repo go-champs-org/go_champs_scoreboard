@@ -12,7 +12,11 @@ import MediumEditPlayerRow, {
 } from './EditPlayerRow';
 import AddPlayerPanel from './AddPlayerPanel';
 import { BASKETBALL_VIEWS } from '../constants';
-import { useSelectedView } from '../../../shared/ViewSettingsContext';
+import {
+  useRulesVersion,
+  useSelectedView,
+} from '../../../shared/ViewSettingsContext';
+import FoulLetter from '../Stats/FoulLetter';
 import { sortPlayers } from './utils';
 
 interface PlayersTableProps {
@@ -140,6 +144,7 @@ function MediumPlayersTable({
   highlightedPlayerId,
 }: PlayersTableProps) {
   const { t } = useTranslation();
+  const rulesVersion = useRulesVersion();
 
   return (
     <div className="table-container">
@@ -200,9 +205,23 @@ function MediumPlayersTable({
             <th style={{ minWidth: '65px', maxWidth: '65px' }}>
               {t('basketball.stats.abbreviations.technicalFoulsShort')}
             </th>
-            <th style={{ minWidth: '65px', maxWidth: '65px' }}>
-              {t('basketball.stats.abbreviations.unsportsmanlikeFoulsShort')}
-            </th>
+            {rulesVersion === 'fiba-2026' ? (
+              <>
+                <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+                  <FoulLetter letter="T" isCircled />
+                </th>
+                <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+                  <FoulLetter letter="DI" />
+                </th>
+                <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+                  <FoulLetter letter="FL" isCircled />
+                </th>
+              </>
+            ) : (
+              <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+                {t('basketball.stats.abbreviations.unsportsmanlikeFoulsShort')}
+              </th>
+            )}
           </tr>
         </thead>
         <tbody>
