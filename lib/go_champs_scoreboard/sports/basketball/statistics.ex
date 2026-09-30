@@ -155,7 +155,13 @@ defmodule GoChampsScoreboard.Sports.Basketball.Statistics do
     fouls_game_disqualifying = Map.get(coach_state.stats_values, "fouls_game_disqualifying", 0)
     fouls_technical_bench = Map.get(coach_state.stats_values, "fouls_technical_bench", 0)
 
-    fouls_technical + fouls_disqualifying + fouls_game_disqualifying + fouls_technical_bench
+    # FIBA 2026: the circled BD counts like a B. It is only recorded under fiba-2026,
+    # so fiba-2024 games keep the same result.
+    fouls_technical_bench_disqualifying_circled =
+      Map.get(coach_state.stats_values, "fouls_technical_bench_disqualifying_circled", 0)
+
+    fouls_technical + fouls_disqualifying + fouls_game_disqualifying + fouls_technical_bench +
+      fouls_technical_bench_disqualifying_circled
   end
 
   @spec calc_player_game_disqualifying_fouls(PlayerState.t()) :: float()
@@ -185,10 +191,17 @@ defmodule GoChampsScoreboard.Sports.Basketball.Statistics do
     if technical_fouls_category_1 + flagrant_fouls >= 2, do: 1, else: 0
   end
 
+  @doc """
+  FIBA 2026 (B.8.6) also counts the circled BD together with the B fouls. The circled BD
+  is only recorded under fiba-2026, so fiba-2024 games keep the same result.
+  """
   @spec calc_coach_game_disqualifying_fouls(CoachState.t()) :: float()
   def calc_coach_game_disqualifying_fouls(coach_state) do
     technical_fouls = Map.get(coach_state.stats_values, "fouls_technical", 0)
-    technical_bench_fouls = Map.get(coach_state.stats_values, "fouls_technical_bench", 0)
+
+    technical_bench_fouls =
+      Map.get(coach_state.stats_values, "fouls_technical_bench", 0) +
+        Map.get(coach_state.stats_values, "fouls_technical_bench_disqualifying_circled", 0)
 
     cond do
       technical_fouls >= 2 -> 1

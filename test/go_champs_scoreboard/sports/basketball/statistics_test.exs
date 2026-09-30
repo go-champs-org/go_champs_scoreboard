@@ -415,6 +415,18 @@ defmodule GoChampsScoreboard.Sports.Basketball.StatisticsTest do
       # 2 + 1 + 0 + 0 = 3
       assert Statistics.calc_coach_fouls(coach_state) == 3
     end
+
+    test "includes the circled BD but not the BD without circle" do
+      coach_state = %GoChampsScoreboard.Games.Models.CoachState{
+        stats_values: %{
+          "fouls_technical_bench" => 1,
+          "fouls_technical_bench_disqualifying" => 1,
+          "fouls_technical_bench_disqualifying_circled" => 1
+        }
+      }
+
+      assert Statistics.calc_coach_fouls(coach_state) == 2
+    end
   end
 
   describe "calc_player_plus_minus" do
@@ -934,6 +946,39 @@ defmodule GoChampsScoreboard.Sports.Basketball.StatisticsTest do
       }
 
       assert Statistics.calc_coach_game_disqualifying_fouls(coach_state) == 1
+    end
+
+    test "returns 1 when coach has 2 technical bench fouls and 1 circled BD" do
+      coach_state = %GoChampsScoreboard.Games.Models.CoachState{
+        stats_values: %{
+          "fouls_technical_bench" => 2,
+          "fouls_technical_bench_disqualifying_circled" => 1
+        }
+      }
+
+      assert Statistics.calc_coach_game_disqualifying_fouls(coach_state) == 1
+    end
+
+    test "returns 1 when coach has 1 technical foul and 2 circled BD" do
+      coach_state = %GoChampsScoreboard.Games.Models.CoachState{
+        stats_values: %{
+          "fouls_technical" => 1,
+          "fouls_technical_bench_disqualifying_circled" => 2
+        }
+      }
+
+      assert Statistics.calc_coach_game_disqualifying_fouls(coach_state) == 1
+    end
+
+    test "returns 0 when coach has 2 technical bench fouls and 1 BD without circle" do
+      coach_state = %GoChampsScoreboard.Games.Models.CoachState{
+        stats_values: %{
+          "fouls_technical_bench" => 2,
+          "fouls_technical_bench_disqualifying" => 1
+        }
+      }
+
+      assert Statistics.calc_coach_game_disqualifying_fouls(coach_state) == 0
     end
   end
 end

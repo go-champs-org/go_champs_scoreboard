@@ -5,6 +5,7 @@ import { useRulesVersion } from '../../../shared/ViewSettingsContext';
 import PlayerFoulsPanel from './PlayerFoulsPanel';
 import Fiba2026PlayerFoulsPanel from './Fiba2026PlayerFoulsPanel';
 import CoachFoulsPanel from './CoachFoulsPanel';
+import Fiba2026CoachFoulsPanel from './Fiba2026CoachFoulsPanel';
 
 interface AdditionalFoulButtonProps {
   type: 'player' | 'coach';
@@ -65,6 +66,15 @@ function AdditionalFoulButton({
     closePanel();
   };
 
+  const handleFoul = (
+    foulType: string,
+    metadata: Record<string, string | number> | undefined,
+    closePanel: () => void,
+  ) => {
+    onStatUpdate(foulType, metadata);
+    closePanel();
+  };
+
   const popUpPanel = (
     panelRef: { close: () => void },
     firstButtonRef: React.RefObject<HTMLButtonElement | null>,
@@ -89,6 +99,15 @@ function AdditionalFoulButton({
           firstButtonRef={firstButtonRef}
           disableUnsportsmanlike={disablePlayerUnsportsmanlike}
           disableDisqualifying={disablePlayerDisqualifying}
+        />
+      );
+    } else if (rulesVersion === 'fiba-2026') {
+      return (
+        <Fiba2026CoachFoulsPanel
+          panelRef={panelRef}
+          onFoul={handleFoul}
+          firstButtonRef={firstButtonRef}
+          disableDisqualifying={disableCoachDisqualifying}
         />
       );
     } else {

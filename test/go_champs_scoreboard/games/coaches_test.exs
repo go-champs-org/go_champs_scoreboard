@@ -45,6 +45,20 @@ defmodule GoChampsScoreboard.Games.CoachesTest do
                }
              } == Coaches.update_manual_stats_values(coach_state, coach_stat, "decrement")
     end
+
+    test "records a stat missing from the coach state" do
+      coach_state = %{stats_values: %{"fouls_technical" => 1}}
+
+      coach_stat =
+        Stat.new("fouls_technical_bench_disqualifying_circled", :manual, [:increment])
+
+      assert %{
+               stats_values: %{
+                 "fouls_technical" => 1,
+                 "fouls_technical_bench_disqualifying_circled" => 1
+               }
+             } == Coaches.update_manual_stats_values(coach_state, coach_stat, "increment")
+    end
   end
 
   describe "update_calculated_stats_values" do

@@ -16,6 +16,7 @@ import HeaderBox from './FibaScoresheet/HeaderBox';
 import PointsSummaryPage from './FibaScoresheet/PointsSummaryPage';
 import { textColorForPeriod } from './FibaScoresheet/styles';
 import PageHeader from './Shared/PageHeader';
+import { RulesVersion } from '../../../types';
 
 export interface PlayerFoul {
   type: 'P' | 'T' | 'U' | 'D' | 'GD' | 'DI' | 'FL';
@@ -31,6 +32,8 @@ export interface CoachFoul {
   period: number;
   extra_action?: '1' | '2' | '3' | 'C' | '';
   is_last_of_half: boolean;
+  // FIBA 2026: C, B and the circled BD are circled
+  is_circled?: boolean;
 }
 
 export interface Coach {
@@ -129,6 +132,7 @@ export interface Info {
   game_report: string;
   web_url: string;
   ended_periods: number[];
+  rules_version?: RulesVersion;
 }
 
 const styles = StyleSheet.create({
@@ -519,11 +523,13 @@ function ScoresheetPage({ scoresheetData }: FibaScoresheetProps) {
               type="A"
               team={scoresheetData.team_a}
               isGameEnded={!!scoresheetData.info.actual_end_datetime}
+              rulesVersion={scoresheetData.info.rules_version}
             />
             <TeamBox
               type="B"
               team={scoresheetData.team_b}
               isGameEnded={!!scoresheetData.info.actual_end_datetime}
+              rulesVersion={scoresheetData.info.rules_version}
             />
             <OfficialsBox
               scorer={scoresheetData.scorer}
@@ -604,11 +610,13 @@ function ExtendedScoresheetPage({ scoresheetData }: FibaScoresheetProps) {
               type="A"
               team={scoresheetData.team_a}
               isGameEnded={!!scoresheetData.info.actual_end_datetime}
+              rulesVersion={scoresheetData.info.rules_version}
             />
             <TeamBox
               type="B"
               team={scoresheetData.team_b}
               isGameEnded={!!scoresheetData.info.actual_end_datetime}
+              rulesVersion={scoresheetData.info.rules_version}
             />
             <OfficialsBox
               scorer={scoresheetData.scorer}

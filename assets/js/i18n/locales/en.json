@@ -185,6 +185,7 @@
             "decrement": "Decrement (-)",
             "set": "Set (=)",
             "freeThrowsAwarded": "Free Throws Awarded",
+            "disqualifiedMembers": "Disqualified Bench Members",
             "noFreeThrows": "No free throws"
           },
           "teamStat": {
@@ -334,6 +335,7 @@
         "disqualifyingFightingFouls": "Disqualifying Fighting Fouls",
         "technicalBenchFouls": "Technical Bench Fouls",
         "technicalBenchDisqualifyingFouls": "Technical Bench Disqualifying Fouls",
+        "technicalBenchDisqualifyingFoulsCircled": "Technical Bench Disqualifying Fouls (Circled BD)",
         "gameDisqualifyingFouls": "Game Disqualifying Fouls",
         "freeThrowPercentage": "Free Throw Percentage",
         "freeThrowsAttempted": "Free Throws Attempted",
@@ -444,6 +446,7 @@
         "disqualifyingFightingFouls": "DQ.F. FLT (F)",
         "technicalBenchFouls": "TBF (B)",
         "technicalBenchDisqualifyingFouls": "TBDF (B CIRC)",
+        "technicalBenchDisqualifyingFoulsCircled": "TBDF (BD CIRC)",
         "gameDisqualifyingFouls": "GD. FLT",
         "fouls": "F"
       },
@@ -453,6 +456,7 @@
         "disqualifyingFightingFouls": "Disqualifying Fighting Fouls",
         "technicalBenchFouls": "Technical Bench Fouls",
         "technicalBenchDisqualifyingFouls": "Technical Bench Disqualifying Fouls",
+        "technicalBenchDisqualifyingFoulsCircled": "Technical Bench Disqualifying Fouls (Circled BD)",
         "gameDisqualifyingFouls": "Game Disqualifying Fouls",
         "fouls": "Total Fouls"
       }

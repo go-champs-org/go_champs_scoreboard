@@ -691,6 +691,105 @@ defmodule GoChampsScoreboard.FibaScoresheetScenarios do
     game_state.id
   end
 
+  @doc """
+  FIBA 2026 rules: every coach foul type. Circled C/B/BD with their free throw
+  variants, BD without circle for one and two bench members, and GD after
+  2 circled C.
+  """
+  def fiba_2026_coach_fouls_scenario_fixture() do
+    game_state =
+      game_state_with_players_fixture(
+        game_id: "a0000000-0000-0000-0000-000000000007",
+        home_team_name: "Falcons",
+        away_team_name: "Ravens",
+        home_players: [fiba_2026_player("h1", "Home Player", 4, true)],
+        away_players: [fiba_2026_player("a1", "Away Player", 10, true)],
+        home_coaches: [
+          fiba_2026_coach("hc", "Home Coach", :head_coach),
+          fiba_2026_coach("ha", "Home Assistant", :assistant_coach)
+        ],
+        away_coaches: [
+          fiba_2026_coach("ac", "Away Coach", :head_coach),
+          fiba_2026_coach("aa", "Away Assistant", :assistant_coach)
+        ],
+        info_state: InfoState.new(@fixed_datetime),
+        view_settings_state:
+          GoChampsScoreboard.Games.Models.ViewSettingsState.new(
+            "basketball-medium-stats",
+            [],
+            "fiba-2026"
+          )
+      )
+
+    foul = fn time, period, team_type, coach_id, stat_id, metadata ->
+      payload = %{
+        "operation" => "increment",
+        "team-type" => team_type,
+        "coach-id" => coach_id,
+        "stat-id" => stat_id
+      }
+
+      payload = if metadata, do: Map.put(payload, "metadata", metadata), else: payload
+
+      GoChampsScoreboard.Events.Definitions.UpdateCoachStatDefinition.create(
+        game_state.id,
+        time,
+        period,
+        payload
+      )
+    end
+
+    start_event =
+      GoChampsScoreboard.Events.Definitions.StartGameLiveModeDefinition.create(
+        game_state.id,
+        600,
+        1,
+        %{}
+      )
+
+    end_event =
+      GoChampsScoreboard.Events.Definitions.EndGameLiveModeDefinition.create(
+        game_state.id,
+        0,
+        4,
+        %{}
+      )
+
+    persist_sequence(game_state, [
+      start_event,
+      foul.(590, 1, "home", "hc", "fouls_technical", %{"free-throws-awarded" => "1"}),
+      foul.(580, 1, "home", "ha", "fouls_technical_bench", nil),
+      foul.(570, 1, "away", "aa", "fouls_technical_bench_disqualifying_circled", %{
+        "free-throws-awarded" => "2"
+      }),
+      foul.(590, 2, "home", "hc", "fouls_technical", %{"free-throws-awarded" => "C"}),
+      foul.(580, 2, "away", "aa", "fouls_technical_bench", %{"free-throws-awarded" => "C"}),
+      foul.(590, 3, "away", "ac", "fouls_technical_bench", %{"free-throws-awarded" => "2"}),
+      foul.(589, 3, "away", "ac", "fouls_technical_bench_disqualifying", %{
+        "free-throws-awarded" => "2",
+        "disqualified-members" => 2
+      }),
+      foul.(580, 3, "home", "ha", "fouls_technical_bench_disqualifying_circled", nil),
+      foul.(590, 4, "away", "ac", "fouls_technical_bench", %{"free-throws-awarded" => "3"}),
+      foul.(580, 4, "away", "aa", "fouls_technical_bench_disqualifying", %{
+        "disqualified-members" => 1
+      }),
+      foul.(570, 4, "home", "ha", "fouls_technical_bench", %{"free-throws-awarded" => "1"}),
+      end_event
+    ])
+
+    game_state.id
+  end
+
+  defp fiba_2026_coach(id, name, type) do
+    %{
+      id: id,
+      name: name,
+      type: type,
+      stats_values: GoChampsScoreboard.Sports.Basketball.Basketball.bootstrap_coach_stats()
+    }
+  end
+
   defp fiba_2026_player(id, name, number, is_captain) do
     %PlayerState{
       id: id,

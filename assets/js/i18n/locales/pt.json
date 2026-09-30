@@ -185,6 +185,7 @@
             "increment": "Incrementar (+)",
             "decrement": "Decrementar (-)",
             "freeThrowsAwarded": "Lances Livres Concedidos",
+            "disqualifiedMembers": "Membros do Banco Desqualificados",
             "set": "Definir (=)",
             "noFreeThrows": "Nenhum lance livre"
           },
@@ -334,6 +335,7 @@
         "disqualifyingFightingFouls": "Faltas Desqualificantes de Briga",
         "technicalBenchFouls": "Faltas Técnicas de Banco (B)",
         "technicalBenchDisqualifyingFouls": "Faltas Técnicas Desqualificantes de Banco (B Circulado)",
+        "technicalBenchDisqualifyingFoulsCircled": "Faltas Técnicas Desqualificantes de Banco (BD Circulado)",
         "gameDisqualifyingFouls": "Faltas Desqualificantes de Jogo (GD)",
         "freeThrowPercentage": "Percentual de Lances Livres",
         "freeThrowsAttempted": "Lances Livres Tentados",
@@ -444,6 +446,7 @@
         "disqualifyingFightingFouls": "F. DSQ BRIGA (F)",
         "technicalBenchFouls": "F. TÉC BANCO (B)",
         "technicalBenchDisqualifyingFouls": "F. TÉC DSQ BANCO (B CIRC)",
+        "technicalBenchDisqualifyingFoulsCircled": "F. TÉC DSQ BANCO (BD CIRC)",
         "gameDisqualifyingFouls": "F. DSQ.J (GD)",
         "fouls": "F"
       },
@@ -453,6 +456,7 @@
         "disqualifyingFightingFouls": "Faltas Desqualificantes de Briga",
         "technicalBenchFouls": "Faltas Técnicas de Banco (B)",
         "technicalBenchDisqualifyingFouls": "Faltas Técnicas Desqualificantes de Banco (B Circulado)",
+        "technicalBenchDisqualifyingFoulsCircled": "Faltas Técnicas Desqualificantes de Banco (BD Circulado)",
         "gameDisqualifyingFouls": "Faltas Desqualificantes de Jogo (GD)",
         "fouls": "Total de Faltas"
       }

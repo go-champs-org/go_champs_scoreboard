@@ -84,6 +84,8 @@ export const COACH_STAT_KEYS = {
   FOULS_DISQUALIFYING_FIGHTING: 'fouls_disqualifying_fighting',
   FOULS_TECHNICAL_BENCH: 'fouls_technical_bench',
   FOULS_TECHNICAL_BENCH_DISQUALIFYING: 'fouls_technical_bench_disqualifying',
+  FOULS_TECHNICAL_BENCH_DISQUALIFYING_CIRCLED:
+    'fouls_technical_bench_disqualifying_circled',
   FOULS_GAME_DISQUALIFYING: 'fouls_game_disqualifying',
 
   // Calculated stats
@@ -777,6 +779,14 @@ export const COACH_STATS = [
       'basketball.coachStats.abbreviations.technicalBenchDisqualifyingFouls',
     labelTranslationKey:
       'basketball.coachStats.labels.technicalBenchDisqualifyingFouls',
+  },
+  {
+    key: COACH_STAT_KEYS.FOULS_TECHNICAL_BENCH_DISQUALIFYING_CIRCLED,
+    type: STAT_TYPES.MANUAL,
+    abbreviationTranslationKey:
+      'basketball.coachStats.abbreviations.technicalBenchDisqualifyingFoulsCircled',
+    labelTranslationKey:
+      'basketball.coachStats.labels.technicalBenchDisqualifyingFoulsCircled',
   },
   {
     key: COACH_STAT_KEYS.FOULS_GAME_DISQUALIFYING,

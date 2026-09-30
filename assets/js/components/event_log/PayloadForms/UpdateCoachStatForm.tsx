@@ -9,7 +9,11 @@ interface UpdateCoachStatFormProps {
 }
 
 // Coach stats available for manual updates
-const COACH_STATS = [
+const COACH_STATS: {
+  key: string;
+  labelTranslationKey: string;
+  onlyForRulesVersion?: string;
+}[] = [
   {
     key: 'fouls_technical',
     labelTranslationKey: 'basketball.stats.labels.technicalFouls',
@@ -30,6 +34,12 @@ const COACH_STATS = [
     key: 'fouls_technical_bench_disqualifying',
     labelTranslationKey:
       'basketball.stats.labels.technicalBenchDisqualifyingFouls',
+  },
+  {
+    key: 'fouls_technical_bench_disqualifying_circled',
+    labelTranslationKey:
+      'basketball.stats.labels.technicalBenchDisqualifyingFoulsCircled',
+    onlyForRulesVersion: 'fiba-2026',
   },
   {
     key: 'fouls_game_disqualifying',
@@ -61,6 +71,15 @@ const UpdateCoachStatForm: React.FC<UpdateCoachStatFormProps> = ({
   // Check if the selected stat is a foul type
   const selectedStatId = initialPayload['stat-id'] || '';
   const isFoulStat = selectedStatId.startsWith('fouls_');
+  const rulesVersion = gameState.view_settings_state?.rules_version;
+  // FIBA 2026: a single BD without circle can disqualify up to 2 bench members
+  const isBenchDisqualifyingFoul =
+    rulesVersion === 'fiba-2026' &&
+    selectedStatId === 'fouls_technical_bench_disqualifying';
+  const availableStats = COACH_STATS.filter(
+    (stat) =>
+      !stat.onlyForRulesVersion || stat.onlyForRulesVersion === rulesVersion,
+  );
 
   const handleInputChange = (field: string, value: any) => {
     onChange((prevPayload: any) => ({
@@ -162,7 +181,7 @@ const UpdateCoachStatForm: React.FC<UpdateCoachStatFormProps> = ({
                     'basketball.modals.eventLogs.payloadFields.coachStat.selectStatType',
                   )}
                 </option>
-                {COACH_STATS.map((stat) => (
+                {availableStats.map((stat) => (
                   <option key={stat.key} value={stat.key}>
                     {t(stat.labelTranslationKey)}
                   </option>
@@ -198,6 +217,34 @@ const UpdateCoachStatForm: React.FC<UpdateCoachStatFormProps> = ({
                   <option value="2">+2</option>
                   <option value="3">+3</option>
                   <option value="C">C</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isBenchDisqualifyingFoul && (
+        <div className="column is-4">
+          <div className="field">
+            <label className="label has-text-white-ter">
+              {t(
+                'basketball.modals.eventLogs.payloadFields.coachStat.disqualifiedMembers',
+              )}
+            </label>
+            <div className="control">
+              <div className="select is-fullwidth">
+                <select
+                  value={initialPayload.metadata?.['disqualified-members'] || 1}
+                  onChange={(e) =>
+                    handleMetadataChange(
+                      'disqualified-members',
+                      Number(e.target.value),
+                    )
+                  }
+                >
+                  <option value={1}>×1</option>
+                  <option value={2}>×2</option>
                 </select>
               </div>
             </div>
