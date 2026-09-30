@@ -43,13 +43,11 @@ describe('AdditionalFoulButton', () => {
 
   it('renders the FIBA 2026 coach panel under fiba-2026', () => {
     expect(renderCoachFoulButton('fiba-2026')).toEqual([
-      'C',
       'C1',
       'CC',
       'B',
       'B1',
       'B2',
-      'B3',
       'BC',
       'BD',
       'BD2',

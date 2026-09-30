@@ -41,12 +41,12 @@ describe('Fiba2026CoachFoulsPanel', () => {
     const { buttonLabels } = renderPanel();
 
     expect(buttonLabels.filter(({ text }) => text?.startsWith('C'))).toEqual(
-      ['C', 'C1', 'CC'].map((text) => ({ text, isCircled: true })),
+      ['C1', 'CC'].map((text) => ({ text, isCircled: true })),
     );
     expect(
       buttonLabels.filter(({ text }) => /^B[123C]?$/.test(text || '')),
     ).toEqual(
-      ['B', 'B1', 'B2', 'B3', 'BC'].map((text) => ({ text, isCircled: true })),
+      ['B', 'B1', 'B2', 'BC'].map((text) => ({ text, isCircled: true })),
     );
   });
 
@@ -90,10 +90,10 @@ describe('Fiba2026CoachFoulsPanel', () => {
   it('records fouls without free throws without metadata', () => {
     const { findButton, onFoul, panelRef } = renderPanel();
 
-    fireEvent.click(findButton('C', true));
+    fireEvent.click(findButton('BD', true));
 
     expect(onFoul).toHaveBeenCalledWith(
-      'fouls_technical',
+      'fouls_technical_bench_disqualifying_circled',
       undefined,
       panelRef.close,
     );
