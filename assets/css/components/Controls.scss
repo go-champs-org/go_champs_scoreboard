@@ -9,6 +9,14 @@
   opacity: 0;
   animation: fadeIn 1s forwards;
 
+  // The fadeIn animation makes every .controls its own stacking context, so an
+  // open pop-up panel would be painted below the controls that come after it
+  // (e.g. the team controls). Lift the controls that hold the open panel.
+  &:has(.pop-up-panel--open) {
+    position: relative;
+    z-index: 10;
+  }
+
   .chip-label {
     display: flex;
     vertical-align: middle;

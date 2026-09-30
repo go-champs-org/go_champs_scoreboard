@@ -45,7 +45,7 @@ function Fiba2026CoachFoulsPanel({
       letter: 'C',
       isCircled: true,
       className: 'is-warning',
-      options: optionsFor([null, '1', 'C']),
+      options: optionsFor(['1', 'C']),
       disabled: disableDisqualifying,
     },
     {
@@ -53,7 +53,7 @@ function Fiba2026CoachFoulsPanel({
       letter: 'B',
       isCircled: true,
       className: 'is-info',
-      options: optionsFor([null, '1', '2', '3', 'C']),
+      options: optionsFor([null, '1', '2', 'C']),
       disabled: disableDisqualifying,
     },
     {
