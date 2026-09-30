@@ -881,4 +881,160 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.UpdateCoac
       assert Enum.count(foul_types, fn type -> type == "B" end) == 1
     end
   end
+
+  describe "process/2 with fiba-2026 rules" do
+    alias GoChampsScoreboard.Events.EventLog
+
+    defp coach_foul_event_log(stat_id, metadata \\ nil) do
+      payload = %{
+        "operation" => "increment",
+        "team-type" => "home",
+        "coach-id" => "coach-id",
+        "stat-id" => stat_id
+      }
+
+      payload = if metadata, do: Map.put(payload, "metadata", metadata), else: payload
+
+      %EventLog{key: "update-coach-stat", payload: payload, game_clock_period: 2}
+    end
+
+    defp coach_scoresheet_for_rules(rules_version, existing_fouls \\ []) do
+      team_a_coach = %FibaScoresheet.Coach{id: "coach-id", name: "Coach 1", fouls: existing_fouls}
+
+      %{
+        fiba_scoresheet_fixture(team_a_coach: team_a_coach)
+        | info: %FibaScoresheet.Info{rules_version: rules_version}
+      }
+    end
+
+    defp circled_coach_foul(type) do
+      %FibaScoresheet.Foul{type: type, period: 1, is_last_of_half: false, is_circled: true}
+    end
+
+    defp coach_fouls(scoresheet), do: scoresheet.team_a.coach.fouls
+
+    test "records technical fouls as circled C" do
+      fouls =
+        "fouls_technical"
+        |> coach_foul_event_log(%{"free-throws-awarded" => "1"})
+        |> UpdateCoachStatProcessor.process(coach_scoresheet_for_rules("fiba-2026"))
+        |> coach_fouls()
+
+      assert [%FibaScoresheet.Foul{type: "C", extra_action: "1", is_circled: true, period: 2}] =
+               fouls
+    end
+
+    test "records technical bench fouls as circled B" do
+      fouls =
+        "fouls_technical_bench"
+        |> coach_foul_event_log(%{"free-throws-awarded" => "3"})
+        |> UpdateCoachStatProcessor.process(coach_scoresheet_for_rules("fiba-2026"))
+        |> coach_fouls()
+
+      assert [%FibaScoresheet.Foul{type: "B", extra_action: "3", is_circled: true}] = fouls
+    end
+
+    test "records the circled BD as a circled BD" do
+      fouls =
+        "fouls_technical_bench_disqualifying_circled"
+        |> coach_foul_event_log(%{"free-throws-awarded" => "2"})
+        |> UpdateCoachStatProcessor.process(coach_scoresheet_for_rules("fiba-2026"))
+        |> coach_fouls()
+
+      assert [%FibaScoresheet.Foul{type: "BD", extra_action: "2", is_circled: true}] = fouls
+    end
+
+    test "records the BD without circle as BD without circle" do
+      fouls =
+        "fouls_technical_bench_disqualifying"
+        |> coach_foul_event_log(%{"free-throws-awarded" => "2"})
+        |> UpdateCoachStatProcessor.process(coach_scoresheet_for_rules("fiba-2026"))
+        |> coach_fouls()
+
+      assert [%FibaScoresheet.Foul{type: "BD", extra_action: "2", is_circled: false}] = fouls
+    end
+
+    test "records one BD entry per disqualified bench member" do
+      fouls =
+        "fouls_technical_bench_disqualifying"
+        |> coach_foul_event_log(%{"free-throws-awarded" => "2", "disqualified-members" => 2})
+        |> UpdateCoachStatProcessor.process(
+          coach_scoresheet_for_rules("fiba-2026", [circled_coach_foul("B")])
+        )
+        |> coach_fouls()
+
+      assert [
+               %FibaScoresheet.Foul{type: "B", is_circled: true},
+               %FibaScoresheet.Foul{type: "BD", extra_action: "2", is_circled: false},
+               %FibaScoresheet.Foul{type: "BD", extra_action: "2", is_circled: false}
+             ] = fouls
+    end
+
+    test "adds GD on the second circled C" do
+      fouls =
+        "fouls_technical"
+        |> coach_foul_event_log()
+        |> UpdateCoachStatProcessor.process(
+          coach_scoresheet_for_rules("fiba-2026", [circled_coach_foul("C")])
+        )
+        |> coach_fouls()
+
+      assert ["C", "C", "GD"] == Enum.map(fouls, & &1.type)
+    end
+
+    test "adds GD on 2 circled B and 1 circled BD" do
+      fouls =
+        "fouls_technical_bench_disqualifying_circled"
+        |> coach_foul_event_log()
+        |> UpdateCoachStatProcessor.process(
+          coach_scoresheet_for_rules("fiba-2026", [
+            circled_coach_foul("B"),
+            circled_coach_foul("B")
+          ])
+        )
+        |> coach_fouls()
+
+      assert ["B", "B", "BD", "GD"] == Enum.map(fouls, & &1.type)
+    end
+
+    test "adds GD on 1 circled C and 2 circled B" do
+      fouls =
+        "fouls_technical_bench"
+        |> coach_foul_event_log()
+        |> UpdateCoachStatProcessor.process(
+          coach_scoresheet_for_rules("fiba-2026", [
+            circled_coach_foul("C"),
+            circled_coach_foul("B")
+          ])
+        )
+        |> coach_fouls()
+
+      assert ["C", "B", "B", "GD"] == Enum.map(fouls, & &1.type)
+    end
+
+    test "does not add GD on 2 circled B and 1 BD without circle" do
+      fouls =
+        "fouls_technical_bench_disqualifying"
+        |> coach_foul_event_log()
+        |> UpdateCoachStatProcessor.process(
+          coach_scoresheet_for_rules("fiba-2026", [
+            circled_coach_foul("B"),
+            circled_coach_foul("B")
+          ])
+        )
+        |> coach_fouls()
+
+      assert ["B", "B", "BD"] == Enum.map(fouls, & &1.type)
+    end
+
+    test "keeps the fiba-2024 coach fouls without circle" do
+      fouls =
+        "fouls_technical_bench_disqualifying"
+        |> coach_foul_event_log(%{"disqualified-members" => 2})
+        |> UpdateCoachStatProcessor.process(coach_scoresheet_for_rules("fiba-2024"))
+        |> coach_fouls()
+
+      assert [%FibaScoresheet.Foul{type: "BD", is_circled: false}] = fouls
+    end
+  end
 end

@@ -100,6 +100,15 @@ const fixtures: FixtureCase[] = [
     expectedStrings: ['Falcons', 'Ravens'],
   },
   {
+    name: 'fiba_2026_coach_fouls',
+    path: 'test/fixtures/fiba_scoresheet/fiba_2026_coach_fouls.json',
+    // FIBA 2026 rules: circled C/B/BD with free throw variants, BD without
+    // circle for one and two bench members (BD2 x2), and GD after 2 circled
+    // C and after 3 circled B/BD.
+    expectedNumPages: 2,
+    expectedStrings: ['Falcons', 'Ravens'],
+  },
+  {
     name: 'real_game_final_cbi_05_10_2026',
     path: 'test/fixtures/fiba_scoresheet/real_games/final-cbi-05-10-2026.expected.json',
     // A real, anonymized production game's contract (team names/scores are

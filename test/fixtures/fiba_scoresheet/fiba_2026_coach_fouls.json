@@ -1,0 +1,247 @@
+{
+  "umpire_2": {
+    "signature": null,
+    "name": "",
+    "id": "",
+    "federation": null
+  },
+  "umpire_1": {
+    "signature": null,
+    "name": "",
+    "id": "",
+    "federation": null
+  },
+  "tournament_name": null,
+  "timekeeper": {
+    "signature": null,
+    "name": "",
+    "id": "",
+    "federation": null
+  },
+  "team_b": {
+    "timeouts": [],
+    "score": 0,
+    "running_score": {},
+    "points_summary": {},
+    "points_by_period": {},
+    "players": [
+      {
+        "signature": null,
+        "number": 10,
+        "name": "Away Player",
+        "license_number": null,
+        "is_captain": true,
+        "id": "a1",
+        "has_started": null,
+        "has_played": null,
+        "fouls": [],
+        "first_played_period": null
+      }
+    ],
+    "name": "Ravens",
+    "head_coach_challenges": [],
+    "has_walkover": false,
+    "coach": {
+      "signature": null,
+      "name": "Away Coach",
+      "id": "ac",
+      "fouls": [
+        {
+          "type": "B",
+          "period": 3,
+          "is_last_of_half": false,
+          "is_circled": true,
+          "extra_action": "2"
+        },
+        {
+          "type": "BD",
+          "period": 3,
+          "is_last_of_half": false,
+          "is_circled": false,
+          "extra_action": "2"
+        },
+        {
+          "type": "BD",
+          "period": 3,
+          "is_last_of_half": false,
+          "is_circled": false,
+          "extra_action": "2"
+        },
+        {
+          "type": "B",
+          "period": 4,
+          "is_last_of_half": false,
+          "is_circled": true,
+          "extra_action": "3"
+        }
+      ]
+    },
+    "assistant_coach": {
+      "signature": null,
+      "name": "Away Assistant",
+      "id": "aa",
+      "fouls": [
+        {
+          "type": "BD",
+          "period": 1,
+          "is_last_of_half": false,
+          "is_circled": true,
+          "extra_action": "2"
+        },
+        {
+          "type": "B",
+          "period": 2,
+          "is_last_of_half": false,
+          "is_circled": true,
+          "extra_action": "C"
+        },
+        {
+          "type": "BD",
+          "period": 4,
+          "is_last_of_half": false,
+          "is_circled": false,
+          "extra_action": null
+        }
+      ]
+    },
+    "all_fouls": []
+  },
+  "team_a": {
+    "timeouts": [],
+    "score": 0,
+    "running_score": {},
+    "points_summary": {},
+    "points_by_period": {},
+    "players": [
+      {
+        "signature": null,
+        "number": 4,
+        "name": "Home Player",
+        "license_number": null,
+        "is_captain": true,
+        "id": "h1",
+        "has_started": null,
+        "has_played": null,
+        "fouls": [],
+        "first_played_period": null
+      }
+    ],
+    "name": "Falcons",
+    "head_coach_challenges": [],
+    "has_walkover": false,
+    "coach": {
+      "signature": null,
+      "name": "Home Coach",
+      "id": "hc",
+      "fouls": [
+        {
+          "type": "C",
+          "period": 1,
+          "is_last_of_half": false,
+          "is_circled": true,
+          "extra_action": "1"
+        },
+        {
+          "type": "C",
+          "period": 2,
+          "is_last_of_half": false,
+          "is_circled": true,
+          "extra_action": "C"
+        },
+        {
+          "type": "GD",
+          "period": 2,
+          "is_last_of_half": false,
+          "is_circled": false,
+          "extra_action": null
+        }
+      ]
+    },
+    "assistant_coach": {
+      "signature": null,
+      "name": "Home Assistant",
+      "id": "ha",
+      "fouls": [
+        {
+          "type": "B",
+          "period": 1,
+          "is_last_of_half": false,
+          "is_circled": true,
+          "extra_action": null
+        },
+        {
+          "type": "BD",
+          "period": 3,
+          "is_last_of_half": false,
+          "is_circled": true,
+          "extra_action": null
+        },
+        {
+          "type": "B",
+          "period": 4,
+          "is_last_of_half": false,
+          "is_circled": true,
+          "extra_action": "1"
+        },
+        {
+          "type": "GD",
+          "period": 4,
+          "is_last_of_half": false,
+          "is_circled": false,
+          "extra_action": null
+        }
+      ]
+    },
+    "all_fouls": []
+  },
+  "shot_clock_operator": {
+    "signature": null,
+    "name": "",
+    "id": "",
+    "federation": null
+  },
+  "scorer": {
+    "signature": null,
+    "name": "",
+    "id": "",
+    "federation": null
+  },
+  "protest": {
+    "state": "no_protest",
+    "signature": null,
+    "player_name": ""
+  },
+  "info": {
+    "web_url": "",
+    "tournament_slug": "",
+    "tournament_name": "",
+    "tournament_logo_url": "",
+    "sponsors": [],
+    "rules_version": "fiba-2026",
+    "organization_slug": "",
+    "organization_name": "",
+    "organization_logo_url": "",
+    "number": "",
+    "location": "",
+    "initial_period_time": 0,
+    "game_report": "",
+    "ended_periods": [],
+    "datetime": "2025-01-01T12:00:00Z",
+    "city": "",
+    "actual_start_datetime": null,
+    "actual_end_datetime": null
+  },
+  "game_id": "a0000000-0000-0000-0000-000000000007",
+  "crew_chief": {
+    "signature": null,
+    "name": "",
+    "id": "",
+    "federation": null
+  },
+  "assistant_scorer": {
+    "signature": null,
+    "name": "",
+    "id": "",
+    "federation": null
+  }
+}

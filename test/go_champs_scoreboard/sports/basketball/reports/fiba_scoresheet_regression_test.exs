@@ -88,6 +88,18 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheetRegressionT
     end
   end
 
+  describe "fiba-2026 rules: every coach foul type" do
+    test "matches the golden contract for circled and non-circled coach fouls" do
+      game_id = fiba_2026_coach_fouls_scenario_fixture()
+
+      result = fetch_and_normalize(game_id)
+
+      expected = FibaScoresheetFixtures.load_golden!("fiba_2026_coach_fouls")
+
+      assert result == expected
+    end
+  end
+
   describe "EventLogs.delete/3: removing a middle scoring event" do
     test "recalculates scores, running_score, and fouls for all subsequent events" do
       game_id = game_with_deleted_event_scenario_fixture()

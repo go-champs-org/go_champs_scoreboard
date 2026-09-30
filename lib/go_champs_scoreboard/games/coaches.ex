@@ -12,14 +12,18 @@ defmodule GoChampsScoreboard.Games.Coaches do
   @spec update_manual_stats_values(CoachState.t(), Stat.t(), String.t()) :: CoachState.t()
   def update_manual_stats_values(coach_state, player_stat, operation) do
     new_stat_value =
-      Map.fetch!(coach_state.stats_values, player_stat.key)
+      Map.get(coach_state.stats_values, player_stat.key, 0)
       |> Operations.calc(operation)
 
     if new_stat_value < 0 do
       coach_state
     else
-      coach_state
-      |> update_stats_values(player_stat, new_stat_value)
+      # Map.put so stats added after the game was bootstrapped (e.g. new FIBA
+      # rules stats) are recorded instead of silently dropped
+      %{
+        coach_state
+        | stats_values: Map.put(coach_state.stats_values, player_stat.key, new_stat_value)
+      }
     end
   end
 

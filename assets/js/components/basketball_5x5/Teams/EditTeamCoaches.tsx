@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { TeamState, TeamType } from '../../../types';
 import AddCoachRow from '../Coaches/AddCoachRow';
 import EditCoachRow from '../Coaches/EditCoachRow';
+import FoulLetter from '../Stats/FoulLetter';
+import { useRulesVersion } from '../../../shared/ViewSettingsContext';
 
 interface EditTeamCoachesProps {
   team: TeamState;
@@ -20,6 +22,7 @@ function EditTeamCoaches({
   setShowAddCoachRow,
 }: EditTeamCoachesProps) {
   const { t } = useTranslation();
+  const isFiba2026 = useRulesVersion() === 'fiba-2026';
 
   return (
     <div className="box">
@@ -54,7 +57,11 @@ function EditTeamCoaches({
                 {t('basketball.coaches.modal.type')}
               </th>
               <th style={{ minWidth: '65px', maxWidth: '65px' }}>
-                {t('basketball.stats.abbreviations.technicalFoulsShort')}
+                {isFiba2026 ? (
+                  <FoulLetter letter="C" isCircled />
+                ) : (
+                  t('basketball.stats.abbreviations.technicalFoulsShort')
+                )}
               </th>
               <th style={{ minWidth: '65px', maxWidth: '65px' }}>
                 {t('basketball.stats.abbreviations.disqualifyingFoulsShort')}
@@ -65,13 +72,26 @@ function EditTeamCoaches({
                 )}
               </th>
               <th style={{ minWidth: '65px', maxWidth: '65px' }}>
-                {t('basketball.stats.abbreviations.technicalBenchFoulsShort')}
-              </th>
-              <th style={{ minWidth: '65px', maxWidth: '65px' }}>
-                {t(
-                  'basketball.stats.abbreviations.technicalBenchDisqualifyingFoulsShort',
+                {isFiba2026 ? (
+                  <FoulLetter letter="B" isCircled />
+                ) : (
+                  t('basketball.stats.abbreviations.technicalBenchFoulsShort')
                 )}
               </th>
+              <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+                {isFiba2026 ? (
+                  <FoulLetter letter="BD" />
+                ) : (
+                  t(
+                    'basketball.stats.abbreviations.technicalBenchDisqualifyingFoulsShort',
+                  )
+                )}
+              </th>
+              {isFiba2026 && (
+                <th style={{ minWidth: '65px', maxWidth: '65px' }}>
+                  <FoulLetter letter="BD" isCircled />
+                </th>
+              )}
               <th style={{ minWidth: '50px', maxWidth: '50px' }}>
                 {t('basketball.coaches.modal.actions')}
               </th>

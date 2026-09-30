@@ -10,6 +10,7 @@ import {
   HeadCoachChallenge as HeadCoachChallengeType,
 } from '../FibaScoresheet';
 import { textColorForPeriod, RED, BLUE, colorForPeriod } from './styles';
+import { RulesVersion } from '../../../../types';
 
 const EMPTY_FOUL = {
   type: '',
@@ -319,16 +320,25 @@ function borderForFoul(foul: CoachFoul) {
   return {};
 }
 
-// FIBA 2026: circled player fouls (category 1 technical and flagrant).
-// The circle is drawn inside the foul box so the box lines never cover it,
-// and the free throw marker is drawn last (on top of the circle), tucked
-// against the letter without covering it.
+// FIBA 2026: circled fouls (player category 1 technical and flagrant; coach
+// C, B and BD). The circle is drawn inside the foul box so the box lines never
+// cover it, and the free throw marker is drawn last (on top of the circle),
+// tucked against the letter without covering it.
 const CIRCLED_FOUL_LAYOUT: Record<
   string,
-  { fontSize: number; letterLeft: number; extraActionLeft: number }
+  {
+    fontSize: number;
+    letterLeft: number;
+    extraActionLeft: number;
+    // Smaller letters are pushed down to stay centered in the circle
+    letterTop?: number;
+  }
 > = {
   T: { fontSize: 7, letterLeft: 3.6, extraActionLeft: 7.6 },
   FL: { fontSize: 6, letterLeft: 2, extraActionLeft: 8.3 },
+  C: { fontSize: 7, letterLeft: 3, extraActionLeft: 7.4 },
+  B: { fontSize: 7, letterLeft: 3.2, extraActionLeft: 7.6 },
+  BD: { fontSize: 5, letterLeft: 2, extraActionLeft: 8.4, letterTop: 4 },
 };
 
 // FIBA 2026: the disruptive foul (DI) keeps the regular layout, with its free
@@ -338,7 +348,7 @@ function extraActionOffsetForDisruptiveFoul(foul: PlayerFoul) {
   return foul.type === 'DI' ? { bottom: 3, left: 9, right: 'auto' } : {};
 }
 
-function CircledPlayerFoul({ foul }: { foul: PlayerFoul }) {
+function CircledFoul({ foul }: { foul: PlayerFoul | CoachFoul }) {
   const layout = CIRCLED_FOUL_LAYOUT[foul.type] || CIRCLED_FOUL_LAYOUT.T;
 
   return (
@@ -357,7 +367,7 @@ function CircledPlayerFoul({ foul }: { foul: PlayerFoul }) {
       <Text
         style={{
           position: 'absolute',
-          top: 3,
+          top: layout.letterTop ?? 3,
           left: layout.letterLeft,
           fontSize: layout.fontSize,
           ...textColorForPeriod(foul.period),
@@ -388,6 +398,39 @@ function foulContent(foul: CoachFoul) {
   }
 
   return foul.type;
+}
+
+// FIBA 2026: the BD without circle is written as BD, with its free throw
+// marker tucked against the letters
+function Fiba2026BenchDisqualifyingFoul({ foul }: { foul: CoachFoul }) {
+  return (
+    <>
+      <Text
+        style={{
+          position: 'absolute',
+          top: 2,
+          left: 1,
+          fontSize: 6,
+          ...textColorForPeriod(foul.period),
+        }}
+      >
+        {foul.type}
+      </Text>
+      {foul.extra_action && (
+        <Text
+          style={{
+            position: 'absolute',
+            bottom: 2,
+            left: 9,
+            fontSize: 4.5,
+            ...textColorForPeriod(foul.period),
+          }}
+        >
+          {foul.extra_action}
+        </Text>
+      )}
+    </>
+  );
 }
 
 function FoulBox({
@@ -631,6 +674,7 @@ export interface TeamProps {
   type: 'A' | 'B';
   team: Team;
   isGameEnded?: boolean;
+  rulesVersion?: RulesVersion;
 }
 
 function UnsedCell() {
@@ -776,7 +820,7 @@ function PlayerRow({
               }
             >
               {foul !== EMPTY_FOUL && foul.is_circled ? (
-                <CircledPlayerFoul foul={foul} />
+                <CircledFoul foul={foul} />
               ) : foul !== EMPTY_FOUL ? (
                 <>
                   <Text
@@ -815,10 +859,12 @@ function CoachRow({
   coach,
   type,
   isGameEnded = false,
+  rulesVersion,
 }: {
   coach: any;
   type: 'head' | 'assistant';
   isGameEnded?: boolean;
+  rulesVersion?: RulesVersion;
 }) {
   const { t } = useTranslation();
   const label =
@@ -853,7 +899,13 @@ function CoachRow({
               ...defineFoulBorders(foul, index, isGameEnded),
             }}
           >
-            {foul !== EMPTY_FOUL ? (
+            {foul !== EMPTY_FOUL && foul.is_circled ? (
+              <CircledFoul foul={foul} />
+            ) : foul !== EMPTY_FOUL &&
+              foul.type === 'BD' &&
+              rulesVersion === 'fiba-2026' ? (
+              <Fiba2026BenchDisqualifyingFoul foul={foul} />
+            ) : foul !== EMPTY_FOUL ? (
               <>
                 <Text
                   style={{
@@ -914,6 +966,7 @@ function createRenderCoach(coach: Coach) {
             period: coach.fouls[index].period,
             extra_action: coach.fouls[index].extra_action,
             is_last_of_half: coach.fouls[index].is_last_of_half,
+            is_circled: coach.fouls[index].is_circled,
           }
         : EMPTY_FOUL,
     );
@@ -926,6 +979,7 @@ export default function TeamBox({
   type,
   team,
   isGameEnded = false,
+  rulesVersion,
 }: TeamProps) {
   const { t } = useTranslation();
   const renderPlayers = Array.from({ length: 12 }).map((_, index) => {
@@ -1044,12 +1098,18 @@ export default function TeamBox({
                 isGameEnded={false}
               ></PlayerRow>
             ))}
-            <CoachRow coach={renderCoach} type="head" isGameEnded={false} />
+            <CoachRow
+              coach={renderCoach}
+              type="head"
+              isGameEnded={false}
+              rulesVersion={rulesVersion}
+            />
             <CoachRow
               coach={renderAssistantCoach}
               type="assistant"
               isGameEnded={false}
-            ></CoachRow>
+              rulesVersion={rulesVersion}
+            />
             <View style={styles.teamContainer.table.walkoverMessage}>
               <Text>{t('basketball.reports.fibaScoresheet.absent')}</Text>
             </View>
@@ -1088,11 +1148,13 @@ export default function TeamBox({
               coach={renderCoach}
               type="head"
               isGameEnded={isGameEnded}
+              rulesVersion={rulesVersion}
             />
             <CoachRow
               coach={renderAssistantCoach}
               type="assistant"
               isGameEnded={isGameEnded}
+              rulesVersion={rulesVersion}
             />
           </>
         )}

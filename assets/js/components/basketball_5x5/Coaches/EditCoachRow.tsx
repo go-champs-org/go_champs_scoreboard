@@ -3,6 +3,7 @@ import { CoachState, TeamType } from '../../../types';
 import DoubleClickButton from '../../DoubleClickButton';
 import { t } from 'i18next';
 import { selectCoachTypeLabelKey } from './selectors';
+import { useRulesVersion } from '../../../shared/ViewSettingsContext';
 
 interface StatInputProps {
   teamType: TeamType;
@@ -87,6 +88,7 @@ interface EditCoachRowProps {
 }
 
 function EditCoachRow({ coach, teamType, pushEvent }: EditCoachRowProps) {
+  const rulesVersion = useRulesVersion();
   const onRemoveCoach = () => {
     pushEvent('remove-coach-in-team', {
       ['team-type']: teamType,
@@ -144,6 +146,16 @@ function EditCoachRow({ coach, teamType, pushEvent }: EditCoachRowProps) {
           teamType={teamType}
         />
       </td>
+      {rulesVersion === 'fiba-2026' && (
+        <td>
+          <StatInput
+            coach={coach}
+            statKey="fouls_technical_bench_disqualifying_circled"
+            pushEvent={pushEvent}
+            teamType={teamType}
+          />
+        </td>
+      )}
       <td>
         <DoubleClickButton
           className="button is-warning is-small"
