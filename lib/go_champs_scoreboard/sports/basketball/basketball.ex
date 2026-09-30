@@ -25,9 +25,11 @@ defmodule GoChampsScoreboard.Sports.Basketball.Basketball do
     Stat.new("fouls", :calculated, [], &Statistics.calc_player_fouls/1),
     Stat.new("fouls_disqualifying", :manual, [:increment, :decrement]),
     Stat.new("fouls_disqualifying_fighting", :manual, [:increment, :decrement]),
+    Stat.new("fouls_disruptive", :manual, [:increment, :decrement]),
     Stat.new("fouls_flagrant", :manual, [:increment, :decrement]),
     Stat.new("fouls_personal", :manual, [:increment, :decrement]),
     Stat.new("fouls_technical", :manual, [:increment, :decrement]),
+    Stat.new("fouls_technical_category_1", :manual, [:increment, :decrement]),
     Stat.new("fouls_unsportsmanlike", :manual, [:increment, :decrement]),
     Stat.new(
       "fouls_game_disqualifying",
@@ -132,6 +134,26 @@ defmodule GoChampsScoreboard.Sports.Basketball.Basketball do
   def find_calculated_player_stats() do
     Enum.filter(@player_stats, fn stat -> stat.type == :calculated and stat.level == :player end)
   end
+
+  @doc """
+  Returns the calculated player stats for the given rules version.
+  Under fiba-2026 the game disqualifying foul is calculated from circled fouls only.
+  """
+  @spec find_calculated_player_stats(String.t()) :: [Stat.t()]
+  def find_calculated_player_stats("fiba-2026") do
+    Enum.map(find_calculated_player_stats(), &apply_fiba_2026_calculation/1)
+  end
+
+  def find_calculated_player_stats(_rules_version), do: find_calculated_player_stats()
+
+  defp apply_fiba_2026_calculation(%Stat{key: "fouls_game_disqualifying"} = stat) do
+    %{
+      stat
+      | calculation_function: &Statistics.calc_player_game_disqualifying_fouls_fiba_2026/1
+    }
+  end
+
+  defp apply_fiba_2026_calculation(stat), do: stat
 
   @spec find_player_stat_by_type([atom()]) :: [Stat.t()]
   def find_player_stat_by_type(types) when is_list(types) do

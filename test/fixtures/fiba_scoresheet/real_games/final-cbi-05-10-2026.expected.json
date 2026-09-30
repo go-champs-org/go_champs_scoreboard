@@ -382,13 +382,15 @@
             "type": "T",
             "period": 3,
             "is_last_of_half": false,
-            "extra_action": "1"
+            "extra_action": "1",
+            "is_circled": false
           },
           {
             "type": "P",
             "period": 4,
             "is_last_of_half": true,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           }
         ],
         "first_played_period": 1
@@ -407,13 +409,15 @@
             "type": "P",
             "period": 1,
             "is_last_of_half": false,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           },
           {
             "type": "P",
             "period": 1,
             "is_last_of_half": true,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           }
         ],
         "first_played_period": 1
@@ -432,7 +436,8 @@
             "type": "P",
             "period": 4,
             "is_last_of_half": true,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           }
         ],
         "first_played_period": 1
@@ -451,13 +456,15 @@
             "type": "P",
             "period": 1,
             "is_last_of_half": false,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           },
           {
             "type": "P",
             "period": 1,
             "is_last_of_half": true,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           }
         ],
         "first_played_period": 1
@@ -476,7 +483,8 @@
             "type": "P",
             "period": 2,
             "is_last_of_half": true,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           }
         ],
         "first_played_period": 2
@@ -495,13 +503,15 @@
             "type": "P",
             "period": 1,
             "is_last_of_half": true,
-            "extra_action": "2"
+            "extra_action": "2",
+            "is_circled": false
           },
           {
             "type": "P",
             "period": 3,
             "is_last_of_half": true,
-            "extra_action": "2"
+            "extra_action": "2",
+            "is_circled": false
           }
         ],
         "first_played_period": 1
@@ -532,13 +542,15 @@
             "type": "P",
             "period": 2,
             "is_last_of_half": true,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           },
           {
             "type": "P",
             "period": 4,
             "is_last_of_half": true,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           }
         ],
         "first_played_period": 2
@@ -557,25 +569,29 @@
             "type": "P",
             "period": 2,
             "is_last_of_half": true,
-            "extra_action": "3"
+            "extra_action": "3",
+            "is_circled": false
           },
           {
             "type": "U",
             "period": 4,
             "is_last_of_half": false,
-            "extra_action": "2"
+            "extra_action": "2",
+            "is_circled": false
           },
           {
             "type": "P",
             "period": 4,
             "is_last_of_half": false,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           },
           {
             "type": "P",
             "period": 4,
             "is_last_of_half": true,
-            "extra_action": "2"
+            "extra_action": "2",
+            "is_circled": false
           }
         ],
         "first_played_period": 1
@@ -594,13 +610,15 @@
             "type": "P",
             "period": 3,
             "is_last_of_half": false,
-            "extra_action": "2"
+            "extra_action": "2",
+            "is_circled": false
           },
           {
             "type": "P",
             "period": 3,
             "is_last_of_half": true,
-            "extra_action": "2"
+            "extra_action": "2",
+            "is_circled": false
           }
         ],
         "first_played_period": 1
@@ -619,7 +637,8 @@
             "type": "P",
             "period": 4,
             "is_last_of_half": true,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           }
         ],
         "first_played_period": 1
@@ -650,115 +669,134 @@
         "type": "P",
         "period": 1,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 1,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 1,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 1,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 1,
         "is_last_of_half": false,
-        "extra_action": "2"
+        "extra_action": "2",
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 2,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 2,
         "is_last_of_half": false,
-        "extra_action": "3"
+        "extra_action": "3",
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 2,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 3,
         "is_last_of_half": false,
-        "extra_action": "2"
+        "extra_action": "2",
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 3,
         "is_last_of_half": false,
-        "extra_action": "2"
+        "extra_action": "2",
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 3,
         "is_last_of_half": false,
-        "extra_action": "2"
+        "extra_action": "2",
+        "is_circled": false
       },
       {
         "type": "T",
         "period": 3,
         "is_last_of_half": false,
-        "extra_action": "1"
+        "extra_action": "1",
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 4,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 4,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       },
       {
         "type": "U",
         "period": 4,
         "is_last_of_half": false,
-        "extra_action": "2"
+        "extra_action": "2",
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 4,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 4,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 4,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 4,
         "is_last_of_half": false,
-        "extra_action": "2"
+        "extra_action": "2",
+        "is_circled": false
       }
     ]
   },
@@ -1157,7 +1195,8 @@
             "type": "P",
             "period": 4,
             "is_last_of_half": true,
-            "extra_action": "2"
+            "extra_action": "2",
+            "is_circled": false
           }
         ],
         "first_played_period": 3
@@ -1176,25 +1215,29 @@
             "type": "P",
             "period": 1,
             "is_last_of_half": true,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           },
           {
             "type": "P",
             "period": 3,
             "is_last_of_half": false,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           },
           {
             "type": "P",
             "period": 4,
             "is_last_of_half": false,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           },
           {
             "type": "P",
             "period": 4,
             "is_last_of_half": true,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           }
         ],
         "first_played_period": 1
@@ -1213,7 +1256,8 @@
             "type": "P",
             "period": 1,
             "is_last_of_half": true,
-            "extra_action": "2"
+            "extra_action": "2",
+            "is_circled": false
           }
         ],
         "first_played_period": 1
@@ -1232,19 +1276,22 @@
             "type": "U",
             "period": 1,
             "is_last_of_half": false,
-            "extra_action": "2"
+            "extra_action": "2",
+            "is_circled": false
           },
           {
             "type": "T",
             "period": 2,
             "is_last_of_half": false,
-            "extra_action": "1"
+            "extra_action": "1",
+            "is_circled": false
           },
           {
             "type": "GD",
             "period": 2,
             "is_last_of_half": true,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           }
         ],
         "first_played_period": 1
@@ -1275,7 +1322,8 @@
             "type": "P",
             "period": 4,
             "is_last_of_half": true,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           }
         ],
         "first_played_period": 1
@@ -1306,31 +1354,36 @@
             "type": "P",
             "period": 1,
             "is_last_of_half": false,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           },
           {
             "type": "P",
             "period": 2,
             "is_last_of_half": true,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           },
           {
             "type": "P",
             "period": 3,
             "is_last_of_half": false,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           },
           {
             "type": "P",
             "period": 4,
             "is_last_of_half": false,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           },
           {
             "type": "P",
             "period": 4,
             "is_last_of_half": true,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           }
         ],
         "first_played_period": 1
@@ -1349,13 +1402,15 @@
             "type": "P",
             "period": 1,
             "is_last_of_half": true,
-            "extra_action": "2"
+            "extra_action": "2",
+            "is_circled": false
           },
           {
             "type": "P",
             "period": 3,
             "is_last_of_half": true,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           }
         ],
         "first_played_period": 1
@@ -1374,7 +1429,8 @@
             "type": "P",
             "period": 4,
             "is_last_of_half": true,
-            "extra_action": "2"
+            "extra_action": "2",
+            "is_circled": false
           }
         ],
         "first_played_period": 1
@@ -1393,7 +1449,8 @@
             "type": "P",
             "period": 4,
             "is_last_of_half": true,
-            "extra_action": null
+            "extra_action": null,
+            "is_circled": false
           }
         ],
         "first_played_period": 2
@@ -1412,7 +1469,8 @@
             "type": "P",
             "period": 2,
             "is_last_of_half": true,
-            "extra_action": "2"
+            "extra_action": "2",
+            "is_circled": false
           }
         ],
         "first_played_period": 1
@@ -1438,115 +1496,134 @@
         "type": "U",
         "period": 1,
         "is_last_of_half": false,
-        "extra_action": "2"
+        "extra_action": "2",
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 1,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 1,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 1,
         "is_last_of_half": false,
-        "extra_action": "2"
+        "extra_action": "2",
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 1,
         "is_last_of_half": false,
-        "extra_action": "2"
+        "extra_action": "2",
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 2,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       },
       {
         "type": "T",
         "period": 2,
         "is_last_of_half": false,
-        "extra_action": "1"
+        "extra_action": "1",
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 2,
         "is_last_of_half": false,
-        "extra_action": "2"
+        "extra_action": "2",
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 3,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 3,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 3,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 4,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 4,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 4,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 4,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 4,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 4,
         "is_last_of_half": false,
-        "extra_action": "2"
+        "extra_action": "2",
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 4,
         "is_last_of_half": false,
-        "extra_action": null
+        "extra_action": null,
+        "is_circled": false
       },
       {
         "type": "P",
         "period": 4,
         "is_last_of_half": false,
-        "extra_action": "2"
+        "extra_action": "2",
+        "is_circled": false
       }
     ]
   },
@@ -1595,7 +1672,8 @@
     "datetime": "2026-05-10T19:00:00Z",
     "city": "Synthetic City",
     "actual_start_datetime": "2026-05-10T22:15:00Z",
-    "actual_end_datetime": "2026-05-11T00:10:00Z"
+    "actual_end_datetime": "2026-05-11T00:10:00Z",
+    "rules_version": "fiba-2024"
   },
   "crew_chief": {
     "signature": "SIGNATURE-0003",

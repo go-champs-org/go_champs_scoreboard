@@ -1,7 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import PopUpButton from '../../PopUpButton';
+import { useRulesVersion } from '../../../shared/ViewSettingsContext';
 import PlayerFoulsPanel from './PlayerFoulsPanel';
+import Fiba2026PlayerFoulsPanel from './Fiba2026PlayerFoulsPanel';
 import CoachFoulsPanel from './CoachFoulsPanel';
 
 interface AdditionalFoulButtonProps {
@@ -9,7 +11,7 @@ interface AdditionalFoulButtonProps {
   disabled: boolean;
   label: string;
   shortcut: string;
-  /** Disable U fouls in the panel (player is not playing) */
+  /** Disable U fouls (DI and FL under fiba-2026) in the panel (player is not playing) */
   disablePlayerUnsportsmanlike?: boolean;
   /** Disable D fouls in the panel (player already has a disqualifying foul) */
   disablePlayerDisqualifying?: boolean;
@@ -29,11 +31,16 @@ function AdditionalFoulButton({
   onStatUpdate,
 }: AdditionalFoulButtonProps) {
   const { t } = useTranslation();
+  const rulesVersion = useRulesVersion();
 
   const handleQuickClick = () => {
     // Default action for quick click
     if (type === 'player') {
-      onStatUpdate('fouls_unsportsmanlike');
+      onStatUpdate(
+        rulesVersion === 'fiba-2026'
+          ? 'fouls_disruptive'
+          : 'fouls_unsportsmanlike',
+      );
     } else {
       onStatUpdate('fouls_technical');
     }
@@ -62,7 +69,18 @@ function AdditionalFoulButton({
     panelRef: { close: () => void },
     firstButtonRef: React.RefObject<HTMLButtonElement | null>,
   ) => {
-    if (type === 'player') {
+    if (type === 'player' && rulesVersion === 'fiba-2026') {
+      return (
+        <Fiba2026PlayerFoulsPanel
+          panelRef={panelRef}
+          onFoulWithoutFreeThrows={handleFoulWithoutFreeThrows}
+          onFoulWithFreeThrows={handleFoulWithFreeThrows}
+          firstButtonRef={firstButtonRef}
+          disableOnCourtFouls={disablePlayerUnsportsmanlike}
+          disableDisqualifying={disablePlayerDisqualifying}
+        />
+      );
+    } else if (type === 'player') {
       return (
         <PlayerFoulsPanel
           panelRef={panelRef}

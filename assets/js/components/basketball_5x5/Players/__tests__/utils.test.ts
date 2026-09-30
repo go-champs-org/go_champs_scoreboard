@@ -7,6 +7,7 @@ import {
   TranslationFunction,
   getPlayerButtonClassName,
   UserActionState,
+  countCircledFouls,
 } from '../utils';
 import { PlayerState } from '../../../../types';
 
@@ -420,6 +421,76 @@ describe('Players utils', () => {
         false,
       );
       expect(result3).toBe('player-button button');
+    });
+  });
+
+  describe('fiba-2026 foul warnings', () => {
+    const mockT: TranslationFunction = (key: string) => {
+      const translations: Record<string, string> = {
+        'basketball.players.disqualified': 'Disqualified',
+        'basketball.players.warningCircled': 'Circled foul',
+      };
+      return translations[key] || key;
+    };
+
+    const createPlayerWithStats = (
+      stats_values: Record<string, number>,
+      state: PlayerState['state'] = 'playing',
+    ): PlayerState => ({
+      id: 'player-1',
+      name: 'Player 1',
+      number: '10',
+      license_number: '',
+      state,
+      stats_values,
+      is_captain: false,
+    });
+
+    it('counts category 1 technical and flagrant fouls as circled fouls', () => {
+      const player = createPlayerWithStats({
+        fouls_technical_category_1: 1,
+        fouls_flagrant: 1,
+        fouls_technical: 1,
+        fouls_disruptive: 1,
+      });
+
+      expect(countCircledFouls(player)).toBe(2);
+    });
+
+    it('warns about circled fouls in the tooltip', () => {
+      const player = createPlayerWithStats({ fouls_flagrant: 1 });
+
+      expect(getPlayerTooltipText(player, mockT, 'fiba-2026')).toBe(
+        'Circled foul (1)',
+      );
+    });
+
+    it('does not warn about fouls without circle', () => {
+      const player = createPlayerWithStats({
+        fouls_technical: 1,
+        fouls_disruptive: 1,
+      });
+
+      expect(getPlayerTooltipText(player, mockT, 'fiba-2026')).toBeUndefined();
+      expect(
+        getPlayerButtonClassName(player, false, false, '', 'fiba-2026'),
+      ).not.toContain('has-foul-trouble');
+    });
+
+    it('marks the player button when the player has a circled foul', () => {
+      const player = createPlayerWithStats({ fouls_technical_category_1: 1 });
+
+      expect(
+        getPlayerButtonClassName(player, false, false, '', 'fiba-2026'),
+      ).toContain('has-foul-trouble');
+    });
+
+    it('keeps the fiba-2024 technical foul warning by default', () => {
+      const player = createPlayerWithStats({ fouls_technical: 1 });
+
+      expect(getPlayerButtonClassName(player, false, false)).toContain(
+        'has-foul-trouble',
+      );
     });
   });
 });

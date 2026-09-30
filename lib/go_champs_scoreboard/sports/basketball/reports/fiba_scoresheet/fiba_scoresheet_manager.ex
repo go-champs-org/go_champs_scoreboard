@@ -10,6 +10,7 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
   alias GoChampsScoreboard.Events.EventLog
   alias GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet
   alias GoChampsScoreboard.Games.Models.GameState
+  alias GoChampsScoreboard.Games.Models.ViewSettingsState
 
   @doc """
   Bootstraps the FIBA scoresheet data structure with initial values.
@@ -53,7 +54,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet.FibaScores
       initial_period_time: game_state.clock_state.initial_period_time,
       web_url: game_state.info.web_url,
       sponsors: map_sponsors(game_state.info.sponsors),
-      ended_periods: []
+      ended_periods: [],
+      rules_version: ViewSettingsState.rules_version(game_state.view_settings_state)
     }
   end
 

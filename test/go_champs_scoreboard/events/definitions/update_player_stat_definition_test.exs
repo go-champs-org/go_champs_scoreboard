@@ -248,4 +248,106 @@ defmodule GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinitionTest d
       assert result.clock_state.last_action_period == 2
     end
   end
+
+  describe "handle/2 game disqualifying fouls by rules version" do
+    import GoChampsScoreboard.GameStateFixtures
+
+    alias GoChampsScoreboard.Games.Models.ViewSettingsState
+    alias GoChampsScoreboard.Sports.Basketball.Basketball
+
+    defp game_state_for_rules(rules_version, stats_values) do
+      game_state_with_players_fixture(
+        home_players: [
+          %{
+            id: "123",
+            state: :playing,
+            stats_values: Map.merge(Basketball.bootstrap_player_stats(), stats_values)
+          }
+        ],
+        view_settings_state: ViewSettingsState.new("basketball-medium-stats", [], rules_version)
+      )
+    end
+
+    defp increment_home_player_stat(game_state, stat_id) do
+      event =
+        UpdatePlayerStatDefinition.create(game_state.id, 10, 1, %{
+          "operation" => "increment",
+          "team-type" => "home",
+          "player-id" => "123",
+          "stat-id" => stat_id
+        })
+
+      game_state
+      |> UpdatePlayerStatDefinition.handle(event)
+      |> Map.get(:home_team)
+      |> Map.get(:players)
+      |> Enum.find(&(&1.id == "123"))
+    end
+
+    test "fiba-2024 disqualifies the player on the second technical foul" do
+      player =
+        "fiba-2024"
+        |> game_state_for_rules(%{"fouls_technical" => 1})
+        |> increment_home_player_stat("fouls_technical")
+
+      assert player.stats_values["fouls_game_disqualifying"] == 1
+      assert player.state == :disqualified
+    end
+
+    test "fiba-2026 does not disqualify the player on the second category 2 technical foul" do
+      player =
+        "fiba-2026"
+        |> game_state_for_rules(%{"fouls_technical" => 1})
+        |> increment_home_player_stat("fouls_technical")
+
+      assert player.stats_values["fouls_game_disqualifying"] == 0
+      assert player.state == :playing
+    end
+
+    test "fiba-2026 does not disqualify the player on the second disruptive foul" do
+      player =
+        "fiba-2026"
+        |> game_state_for_rules(%{"fouls_disruptive" => 1})
+        |> increment_home_player_stat("fouls_disruptive")
+
+      assert player.stats_values["fouls_game_disqualifying"] == 0
+      assert player.stats_values["fouls"] == 2
+      assert player.state == :playing
+    end
+
+    test "fiba-2026 disqualifies the player on a category 1 technical plus a flagrant foul" do
+      player =
+        "fiba-2026"
+        |> game_state_for_rules(%{"fouls_technical_category_1" => 1})
+        |> increment_home_player_stat("fouls_flagrant")
+
+      assert player.stats_values["fouls_game_disqualifying"] == 1
+      assert player.state == :disqualified
+    end
+
+    test "fiba-2026 counts disruptive fouls toward the five fouls limit" do
+      player =
+        "fiba-2026"
+        |> game_state_for_rules(%{"fouls_personal" => 4})
+        |> increment_home_player_stat("fouls_disruptive")
+
+      assert player.stats_values["fouls"] == 5
+      assert player.state == :disqualified
+    end
+
+    test "fiba-2026 records a new stat for a player bootstrapped before it existed" do
+      stats_values = Map.drop(Basketball.bootstrap_player_stats(), ["fouls_disruptive"])
+
+      game_state =
+        game_state_with_players_fixture(
+          home_players: [%{id: "123", state: :playing, stats_values: stats_values}],
+          view_settings_state: ViewSettingsState.new("basketball-medium-stats", [], "fiba-2026")
+        )
+
+      player = increment_home_player_stat(game_state, "fouls_disruptive")
+
+      assert player.stats_values["fouls_disruptive"] == 1
+      assert player.stats_values["fouls"] == 1
+    end
+  end
 end

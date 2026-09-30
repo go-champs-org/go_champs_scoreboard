@@ -18,10 +18,12 @@ import { textColorForPeriod } from './FibaScoresheet/styles';
 import PageHeader from './Shared/PageHeader';
 
 export interface PlayerFoul {
-  type: 'P' | 'T' | 'U' | 'D' | 'GD';
+  type: 'P' | 'T' | 'U' | 'D' | 'GD' | 'DI' | 'FL';
   period: number;
   extra_action?: '1' | '2' | '3' | 'C' | '';
   is_last_of_half: boolean;
+  // FIBA 2026: category 1 technical and flagrant fouls are circled
+  is_circled?: boolean;
 }
 
 export interface CoachFoul {

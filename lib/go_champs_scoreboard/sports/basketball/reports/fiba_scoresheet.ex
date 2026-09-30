@@ -6,7 +6,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
 
     # Define valid foul types
     # Personal, Technical, Anti Sportsmanship (U), Disqualifying, Disqualifying Fighting (F), Technical due other persons (B)
-    @valid_fouls_types ["P", "T", "U", "D", "F", "B"]
+    # Disruptive (DI) and Flagrant (FL) exist since the FIBA 2026 rules
+    @valid_fouls_types ["P", "T", "U", "D", "F", "B", "DI", "FL"]
 
     @valid_extra_actions ["1", "2", "3", "C"]
 
@@ -14,14 +15,16 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
             type: String.t(),
             period: Integer.t(),
             extra_action: String.t(),
-            is_last_of_half: boolean()
+            is_last_of_half: boolean(),
+            is_circled: boolean()
           }
 
     defstruct [
       :type,
       :period,
       :extra_action,
-      :is_last_of_half
+      :is_last_of_half,
+      is_circled: false
     ]
 
     @doc """
@@ -269,7 +272,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
             game_report: String.t() | nil,
             web_url: String.t() | nil,
             sponsors: [sponsor()],
-            ended_periods: [integer()]
+            ended_periods: [integer()],
+            rules_version: String.t()
           }
 
     defstruct [
@@ -289,7 +293,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaScoresheet do
       :game_report,
       :web_url,
       :sponsors,
-      ended_periods: []
+      ended_periods: [],
+      rules_version: "fiba-2024"
     ]
   end
 

@@ -1,6 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import PopUpButton from '../../PopUpButton';
+import FoulLetter from './FoulLetter';
+import { useRulesVersion } from '../../../shared/ViewSettingsContext';
 
 interface FoulButtonProps {
   statId: 'fouls_personal' | 'fouls_technical';
@@ -18,6 +20,7 @@ function FoulButton({
   onStatUpdate,
 }: FoulButtonProps) {
   const { t } = useTranslation();
+  const rulesVersion = useRulesVersion();
 
   const handleQuickClick = () => {
     onStatUpdate(statId);
@@ -72,9 +75,54 @@ function FoulButton({
           },
         ];
 
+  // FIBA 2026: technical fouls are category 2 (T) or category 1 (circled T)
+  const fiba2026TechnicalFoulsPanel = (panelRef: {
+    close: () => void;
+    firstButtonRef: React.RefObject<HTMLButtonElement | null>;
+  }) => (
+    <div className="additional-foul-button-pop-up-panel columns">
+      {[
+        { technicalStatId: 'fouls_technical', isCircled: false },
+        { technicalStatId: 'fouls_technical_category_1', isCircled: true },
+      ].map(({ technicalStatId, isCircled }, columnIndex) => (
+        <div className="column" key={technicalStatId}>
+          {['1', 'C'].map((freeThrows, optionIndex) => (
+            <button
+              key={freeThrows}
+              className="button is-fullwidth is-small is-warning"
+              ref={
+                columnIndex === 0 && optionIndex === 0
+                  ? panelRef.firstButtonRef
+                  : undefined
+              }
+              onClick={() => {
+                onStatUpdate(technicalStatId, {
+                  ['free-throws-awarded']: freeThrows,
+                });
+                panelRef.close();
+              }}
+            >
+              <FoulLetter
+                letter="T"
+                isCircled={isCircled}
+                suffix={freeThrows}
+              />
+            </button>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+
+  const isFiba2026TechnicalFoul =
+    statId === 'fouls_technical' && rulesVersion === 'fiba-2026';
+
   return (
     <PopUpButton
-      popUpButtons={popUpButtons}
+      popUpPanel={
+        isFiba2026TechnicalFoul ? fiba2026TechnicalFoulsPanel : undefined
+      }
+      popUpButtons={isFiba2026TechnicalFoul ? [] : popUpButtons}
       keyboardKey={shortcut.toLowerCase()}
       className="button is-stat is-warning"
       onQuickClick={handleQuickClick}

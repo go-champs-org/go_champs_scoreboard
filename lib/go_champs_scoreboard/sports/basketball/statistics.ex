@@ -50,13 +50,19 @@ defmodule GoChampsScoreboard.Sports.Basketball.Statistics do
     fouls_disqualifying_fighting =
       Map.get(player_state.stats_values, "fouls_disqualifying_fighting", 0)
 
+    fouls_disruptive = Map.get(player_state.stats_values, "fouls_disruptive", 0)
     fouls_flagrant = Map.get(player_state.stats_values, "fouls_flagrant", 0)
     personal_fouls = Map.get(player_state.stats_values, "fouls_personal", 0)
     technical_fouls = Map.get(player_state.stats_values, "fouls_technical", 0)
+
+    technical_fouls_category_1 =
+      Map.get(player_state.stats_values, "fouls_technical_category_1", 0)
+
     fouls_unsportsmanlike = Map.get(player_state.stats_values, "fouls_unsportsmanlike", 0)
 
-    personal_fouls + technical_fouls + fouls_flagrant + fouls_disqualifying +
-      fouls_disqualifying_fighting + fouls_unsportsmanlike
+    personal_fouls + technical_fouls + technical_fouls_category_1 + fouls_flagrant +
+      fouls_disruptive + fouls_disqualifying + fouls_disqualifying_fighting +
+      fouls_unsportsmanlike
   end
 
   @spec calc_player_free_throw_percentage(PlayerState.t()) :: float()
@@ -120,13 +126,18 @@ defmodule GoChampsScoreboard.Sports.Basketball.Statistics do
   @spec calc_team_fouls(TeamState.t()) :: float()
   def calc_team_fouls(team_state) do
     fouls_disqualifying = Map.get(team_state.total_player_stats, "fouls_disqualifying", 0)
+    fouls_disruptive = Map.get(team_state.total_player_stats, "fouls_disruptive", 0)
     fouls_flagrant = Map.get(team_state.total_player_stats, "fouls_flagrant", 0)
     fouls_personal = Map.get(team_state.total_player_stats, "fouls_personal", 0)
     fouls_technical = Map.get(team_state.total_player_stats, "fouls_technical", 0)
+
+    fouls_technical_category_1 =
+      Map.get(team_state.total_player_stats, "fouls_technical_category_1", 0)
+
     fouls_unsportsmanlike = Map.get(team_state.total_player_stats, "fouls_unsportsmanlike", 0)
 
-    fouls_disqualifying + fouls_flagrant + fouls_personal + fouls_technical +
-      fouls_unsportsmanlike
+    fouls_disqualifying + fouls_disruptive + fouls_flagrant + fouls_personal + fouls_technical +
+      fouls_technical_category_1 + fouls_unsportsmanlike
   end
 
   @spec calc_team_technical_fouls(TeamState.t()) :: float()
@@ -158,6 +169,20 @@ defmodule GoChampsScoreboard.Sports.Basketball.Statistics do
       technical_fouls >= 1 and unsportsmanlike_fouls >= 1 -> 1
       true -> 0
     end
+  end
+
+  @doc """
+  FIBA 2026 (B.8.6): only circled fouls count toward the game disqualification.
+  Circled fouls are the category 1 technical fouls and the flagrant fouls.
+  """
+  @spec calc_player_game_disqualifying_fouls_fiba_2026(PlayerState.t()) :: float()
+  def calc_player_game_disqualifying_fouls_fiba_2026(player_state) do
+    technical_fouls_category_1 =
+      Map.get(player_state.stats_values, "fouls_technical_category_1", 0)
+
+    flagrant_fouls = Map.get(player_state.stats_values, "fouls_flagrant", 0)
+
+    if technical_fouls_category_1 + flagrant_fouls >= 2, do: 1, else: 0
   end
 
   @spec calc_coach_game_disqualifying_fouls(CoachState.t()) :: float()

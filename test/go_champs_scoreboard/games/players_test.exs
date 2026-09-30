@@ -31,6 +31,23 @@ defmodule GoChampsScoreboard.Games.PlayersTest do
              } == Players.update_manual_stats_values(player_state, player_stat, "increment")
     end
 
+    test "records a stat missing from a player bootstrapped before the stat existed" do
+      player_state = %{
+        stats_values: %{
+          "fouls_personal" => 1
+        }
+      }
+
+      player_stat = Stat.new("fouls_disruptive", :manual, [:increment])
+
+      assert %{
+               stats_values: %{
+                 "fouls_personal" => 1,
+                 "fouls_disruptive" => 1
+               }
+             } == Players.update_manual_stats_values(player_state, player_stat, "increment")
+    end
+
     test "does not update the player state if new value is negative" do
       player_state = %{
         stats_values: %{

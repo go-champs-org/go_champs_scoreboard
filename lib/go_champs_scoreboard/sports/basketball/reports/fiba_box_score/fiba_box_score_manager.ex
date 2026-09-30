@@ -91,6 +91,8 @@ defmodule GoChampsScoreboard.Sports.Basketball.Reports.FibaBoxScore.FibaBoxScore
         "rebounds" => 0,
         "fouls_personal" => 0,
         "fouls_technical" => 0,
+        "fouls_technical_category_1" => 0,
+        "fouls_disruptive" => 0,
         "fouls_flagrant" => 0,
         "fouls_disqualifying" => 0,
         "fouls_disqualifying_fighting" => 0,

@@ -4,6 +4,7 @@ import { Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import {
   Coach,
   CoachFoul,
+  PlayerFoul,
   Team,
   Timeout,
   HeadCoachChallenge as HeadCoachChallengeType,
@@ -304,8 +305,8 @@ const styles = StyleSheet.create({
   },
 });
 
-function borderForFoul(foul: CoachFoul) {
-  if (foul.type === 'BD') {
+function borderForFoul(foul: PlayerFoul | CoachFoul) {
+  if (foul.type === 'BD' || ('is_circled' in foul && foul.is_circled)) {
     return {
       margin: '-1px 0 0 -1px',
       padding: '1px 3px',
@@ -717,6 +718,7 @@ function PlayerRow({
                     style={{
                       ...styles.teamContainer.table.row.columnFouls.fouls.type,
                       ...textColorForPeriod(foul.period),
+                      ...borderForFoul(foul),
                     }}
                   >
                     {foul.type}
@@ -875,6 +877,7 @@ export default function TeamBox({
                 period: teamPlayer.fouls[index].period,
                 extra_action: teamPlayer.fouls[index].extra_action,
                 is_last_of_half: teamPlayer.fouls[index].is_last_of_half,
+                is_circled: teamPlayer.fouls[index].is_circled,
               }
             : EMPTY_FOUL,
         ),

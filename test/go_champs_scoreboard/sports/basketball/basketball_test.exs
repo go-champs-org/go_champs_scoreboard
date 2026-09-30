@@ -17,10 +17,12 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
         "fouls" => 0,
         "fouls_disqualifying" => 0,
         "fouls_disqualifying_fighting" => 0,
+        "fouls_disruptive" => 0,
         "fouls_game_disqualifying" => 0,
         "fouls_flagrant" => 0,
         "fouls_personal" => 0,
         "fouls_technical" => 0,
+        "fouls_technical_category_1" => 0,
         "fouls_unsportsmanlike" => 0,
         "free_throw_percentage" => 0,
         "free_throws_attempted" => 0,
@@ -108,6 +110,25 @@ defmodule GoChampsScoreboard.Sports.Basketball.BasketballTest do
         ])
 
       assert MapSet.equal?(stat_keys, expected_keys)
+    end
+  end
+
+  describe "find_calculated_player_stats/1" do
+    test "returns the fiba-2024 calculations for fiba-2024" do
+      assert Basketball.find_calculated_player_stats("fiba-2024") ==
+               Basketball.find_calculated_player_stats()
+    end
+
+    test "uses the circled fouls game disqualifying calculation for fiba-2026" do
+      calculated_stats = Basketball.find_calculated_player_stats("fiba-2026")
+
+      gd_stat = Enum.find(calculated_stats, &(&1.key == "fouls_game_disqualifying"))
+
+      assert gd_stat.calculation_function ==
+               (&GoChampsScoreboard.Sports.Basketball.Statistics.calc_player_game_disqualifying_fouls_fiba_2026/1)
+
+      assert Enum.map(calculated_stats, & &1.key) ==
+               Enum.map(Basketball.find_calculated_player_stats(), & &1.key)
     end
   end
 

@@ -1,4 +1,4 @@
-import { PlayerState } from '../../../types';
+import { PlayerState, RulesVersion } from '../../../types';
 
 /**
  * Filter function to find players who are currently playing
@@ -76,16 +76,40 @@ export const sortPlayers = (players: PlayerState[]): PlayerState[] => {
 export type TranslationFunction = (key: string) => string;
 
 /**
+ * Counts the fouls that count toward the game disqualification under the
+ * FIBA 2026 rules (category 1 technical fouls and flagrant fouls)
+ * @param player Player state
+ * @returns Number of circled fouls
+ */
+export const countCircledFouls = (player: PlayerState): number =>
+  (player.stats_values['fouls_technical_category_1'] || 0) +
+  (player.stats_values['fouls_flagrant'] || 0);
+
+/**
  * Generates tooltip text for a player button based on their state and fouls
  * @param player Player state to generate tooltip for
  * @param t Translation function
+ * @param rulesVersion FIBA rules version of the game
  * @returns Tooltip text or undefined if no tooltip needed
  */
 export const getPlayerTooltipText = (
   player: PlayerState,
   t: TranslationFunction,
+  rulesVersion: RulesVersion = 'fiba-2024',
 ): string | undefined => {
   const isDisqualified = player.state === 'disqualified';
+
+  if (rulesVersion === 'fiba-2026') {
+    if (isDisqualified) {
+      return t('basketball.players.disqualified');
+    }
+
+    const circledFouls = countCircledFouls(player);
+    return circledFouls >= 1
+      ? `${t('basketball.players.warningCircled')} (${circledFouls})`
+      : undefined;
+  }
+
   const technicalFouls = player.stats_values['fouls_technical'] || 0;
   const unsportsmanlikeFouls =
     player.stats_values['fouls_unsportsmanlike'] || 0;
@@ -126,6 +150,7 @@ export type UserActionState = 'normal' | 'selected' | 'disabled';
  * @param isSelected Whether the button is selected
  * @param disabled Whether the button is disabled
  * @param customClassName Additional custom CSS classes
+ * @param rulesVersion FIBA rules version of the game
  * @returns Complete CSS class string for the button
  */
 export const getPlayerButtonClassName = (
@@ -133,6 +158,7 @@ export const getPlayerButtonClassName = (
   isSelected: boolean,
   disabled: boolean,
   customClassName: string = '',
+  rulesVersion: RulesVersion = 'fiba-2024',
 ): string => {
   // Player info states
   const isDisqualified = player.state === 'disqualified';
@@ -140,9 +166,11 @@ export const getPlayerButtonClassName = (
   const fouls = player.stats_values['fouls'] || 0;
   const unsportsmanlikeFouls =
     player.stats_values['fouls_unsportsmanlike'] || 0;
-  const isWarning =
-    (technicalFouls >= 1 || unsportsmanlikeFouls >= 1 || fouls == 4) &&
-    !isDisqualified;
+  const hasFoulWarning =
+    rulesVersion === 'fiba-2026'
+      ? countCircledFouls(player) >= 1
+      : technicalFouls >= 1 || unsportsmanlikeFouls >= 1;
+  const isWarning = (hasFoulWarning || fouls == 4) && !isDisqualified;
 
   // User action state calculation
   const isButtonDisabled = disabled || isDisqualified;

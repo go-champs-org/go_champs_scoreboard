@@ -12,3 +12,13 @@
     }
   }
 }
+
+.foul-letter.is-circled {
+  display: inline-block;
+  min-width: 1.5em;
+  padding: 0 3px;
+  border: 1px solid currentColor;
+  border-radius: 50px;
+  line-height: 1.3;
+  text-align: center;
+}
