@@ -316,6 +316,39 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
   end
 
   describe "persist/1" do
+    test "emits the persist duration telemetry event" do
+      ref = make_ref()
+      test_pid = self()
+
+      :telemetry.attach(
+        "persist-telemetry-#{inspect(ref)}",
+        [:go_champs_scoreboard, :persist, :duration],
+        fn _event, measurements, metadata, _ ->
+          send(test_pid, {:persist_duration, measurements, metadata})
+        end,
+        nil
+      )
+
+      on_exit(fn -> :telemetry.detach("persist-telemetry-#{inspect(ref)}") end)
+
+      event =
+        GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
+          "7488a646-e31f-11e4-aace-600308960668",
+          10,
+          1,
+          %{
+            "operation" => "increment",
+            "team-type" => "home",
+            "player-id" => "123",
+            "stat-id" => "field_goals_made"
+          }
+        )
+
+      {:ok, _event_log} = EventLogs.persist(event, game_state_fixture())
+
+      assert_receive {:persist_duration, %{duration: _}, %{result: :ok}}
+    end
+
     test "persists the event along with the snapshot to the database" do
       update_player_stat_event =
         GoChampsScoreboard.Events.Definitions.UpdatePlayerStatDefinition.create(
@@ -2878,6 +2911,26 @@ defmodule GoChampsScoreboard.Games.EventLogsTest do
   end
 
   describe "rebuild_all_snapshots/1" do
+    test "emits the rebuild duration telemetry event tagged with the result" do
+      ref = make_ref()
+      test_pid = self()
+
+      :telemetry.attach(
+        "rebuild-telemetry-#{inspect(ref)}",
+        [:go_champs_scoreboard, :snapshot_rebuild, :duration],
+        fn _event, measurements, metadata, _ ->
+          send(test_pid, {:rebuild_duration, measurements, metadata})
+        end,
+        nil
+      )
+
+      on_exit(fn -> :telemetry.detach("rebuild-telemetry-#{inspect(ref)}") end)
+
+      assert {:error, :no_events_found} = EventLogs.rebuild_all_snapshots(Ecto.UUID.generate())
+
+      assert_receive {:rebuild_duration, %{duration: _}, %{result: :error}}
+    end
+
     test "rebuilds all snapshots for a game in chronological order" do
       game_state = basketball_game_state_fixture()
 

@@ -46,7 +46,10 @@ defmodule GoChampsScoreboard.Application do
       # Start a worker by calling: GoChampsScoreboard.Worker.start_link(arg)
       # {GoChampsScoreboard.Worker, arg},
       # Start to serve requests, typically the last entry
-      GoChampsScoreboardWeb.Endpoint
+      GoChampsScoreboardWeb.Endpoint,
+      # Start the metrics collector once the endpoint config exists: PromEx reads
+      # the endpoint URL/port on boot and crashes if the config table is missing
+      GoChampsScoreboard.PromEx
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

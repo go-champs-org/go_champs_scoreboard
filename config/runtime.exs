@@ -38,6 +38,9 @@ if config_env() == :prod do
 
   config :go_champs_scoreboard, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
 
+  # Bearer token guarding GET /metrics. Without it the endpoint answers 404.
+  config :go_champs_scoreboard, :metrics_token, System.get_env("METRICS_TOKEN")
+
   config :go_champs_scoreboard, GoChampsScoreboardWeb.Endpoint,
     url: [host: host, port: 443, scheme: "https"],
     http: [

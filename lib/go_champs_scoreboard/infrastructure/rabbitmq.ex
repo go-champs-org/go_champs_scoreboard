@@ -3,6 +3,7 @@ defmodule GoChampsScoreboard.Infrastructure.RabbitMQ do
   require Logger
 
   alias GoChampsScoreboard.Infrastructure.RabbitMQ.Topology
+  alias GoChampsScoreboard.Telemetry
 
   @exchange "game-events"
 
@@ -38,7 +39,9 @@ defmodule GoChampsScoreboard.Infrastructure.RabbitMQ do
   end
 
   def publish(payload) do
-    GenServer.call(__MODULE__, {:publish, payload})
+    Telemetry.span(:rabbitmq_publish, fn ->
+      GenServer.call(__MODULE__, {:publish, payload})
+    end)
   end
 
   def handle_call(
@@ -70,6 +73,8 @@ defmodule GoChampsScoreboard.Infrastructure.RabbitMQ do
         {:basic_return, payload, %{exchange: exchange, routing_key: routing_key}},
         state
       ) do
+    Telemetry.rabbitmq_unroutable()
+
     Logger.error("RabbitMQ could not route a published message",
       exchange: exchange,
       routing_key: routing_key,

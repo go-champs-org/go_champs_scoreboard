@@ -39,6 +39,15 @@ config :go_champs_scoreboard, GoChampsScoreboard.Infrastructure.RabbitMQ,
   password: System.get_env("RABBIT_MQ_PASSWORD") || "local_pass",
   virtual_host: System.get_env("RABBIT_MQ_VHOST") || "/"
 
+# Prometheus metrics. Dashboards are imported by hand in Grafana Cloud and the
+# app is scraped through GET /metrics, so PromEx's own Grafana upload and
+# standalone metrics server stay off.
+config :go_champs_scoreboard, GoChampsScoreboard.PromEx,
+  disabled: false,
+  drop_metrics_groups: [],
+  grafana: :disabled,
+  metrics_server: :disabled
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails

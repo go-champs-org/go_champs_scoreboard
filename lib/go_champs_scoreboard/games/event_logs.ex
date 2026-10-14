@@ -10,6 +10,7 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   alias GoChampsScoreboard.Events.Handler
   alias GoChampsScoreboard.Sports.Sports
   alias GoChampsScoreboard.Games.SnapshotStaleTracker
+  alias GoChampsScoreboard.Telemetry
   import Ecto.Query
 
   require Logger
@@ -147,6 +148,12 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   @spec persist(Event.t(), GameState.t(), module(), module()) ::
           {:ok, EventLog.t()} | {:error, any()}
   def persist(event, game_state, event_log_cache \\ EventLogCache, pub_sub \\ PubSub) do
+    Telemetry.span(:persist, fn ->
+      do_persist(event, game_state, event_log_cache, pub_sub)
+    end)
+  end
+
+  defp do_persist(event, game_state, event_log_cache, pub_sub) do
     Repo.transaction(fn ->
       # First, create a new event log
       event_log_changeset =
@@ -752,6 +759,10 @@ defmodule GoChampsScoreboard.Games.EventLogs do
   """
   @spec rebuild_all_snapshots(Ecto.UUID.t()) :: :ok | {:error, any()}
   def rebuild_all_snapshots(game_id) do
+    Telemetry.span(:snapshot_rebuild, fn -> do_rebuild_all_snapshots(game_id) end)
+  end
+
+  defp do_rebuild_all_snapshots(game_id) do
     # Get the first event (which is immutable and serves as the base)
     first_event = get_first_created_by_game_id(game_id)
 
