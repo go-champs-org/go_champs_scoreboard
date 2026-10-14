@@ -34,6 +34,9 @@ defmodule GoChampsScoreboardWeb.Plugs.MetricsEndpointTest do
     Telemetry.span(:snapshot_rebuild, fn -> :ok end)
     Telemetry.span(:rabbitmq_publish, fn -> :ok end)
     Telemetry.rabbitmq_unroutable()
+    # The same function PromEx polls every few seconds, so the series does not
+    # depend on waiting for a poll.
+    Telemetry.live_games()
 
     body =
       conn
@@ -49,6 +52,9 @@ defmodule GoChampsScoreboardWeb.Plugs.MetricsEndpointTest do
 
     assert body =~ "go_champs_scoreboard_prom_ex_rabbitmq_publish_duration_milliseconds_bucket"
     assert body =~ "go_champs_scoreboard_prom_ex_rabbitmq_unroutable_total"
+    assert body =~ "go_champs_scoreboard_prom_ex_game_live_games"
     assert body =~ "go_champs_scoreboard_prom_ex_beam_"
+    # Only exported when PromEx is up before the endpoint initializes.
+    assert body =~ "go_champs_scoreboard_prom_ex_phoenix_endpoint_url_info"
   end
 end

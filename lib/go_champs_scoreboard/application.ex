@@ -45,11 +45,11 @@ defmodule GoChampsScoreboard.Application do
       {Finch, name: GoChampsScoreboard.Finch},
       # Start a worker by calling: GoChampsScoreboard.Worker.start_link(arg)
       # {GoChampsScoreboard.Worker, arg},
+      # Start the metrics collector before the endpoint so it catches the one-shot
+      # [:phoenix, :endpoint, :init] event that feeds the endpoint URL/port series
+      GoChampsScoreboard.PromEx,
       # Start to serve requests, typically the last entry
-      GoChampsScoreboardWeb.Endpoint,
-      # Start the metrics collector once the endpoint config exists: PromEx reads
-      # the endpoint URL/port on boot and crashes if the config table is missing
-      GoChampsScoreboard.PromEx
+      GoChampsScoreboardWeb.Endpoint
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
