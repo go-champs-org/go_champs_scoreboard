@@ -1,6 +1,8 @@
 defmodule GoChampsScoreboard.Infrastructure.GameEventsListener do
   use GenServer
+  alias GoChampsScoreboard.Events.Definitions.GameTickDefinition
   alias GoChampsScoreboard.Games.EventLogs
+  alias GoChampsScoreboard.Telemetry
   alias GoChampsScoreboard.Infrastructure.Stream.{PayloadBuilder, Publisher}
   alias GoChampsScoreboard.Events.StreamConfigs
   alias GoChampsScoreboard.Games.Messages.PubSub
@@ -18,6 +20,10 @@ defmodule GoChampsScoreboard.Infrastructure.GameEventsListener do
   def handle_info(msg, state) do
     case msg do
       {:game_reacted_to_event, %{event: event, game_state: game_state} = payload} ->
+        if event.key != GameTickDefinition.key() do
+          Telemetry.game_event_processed(event.key)
+        end
+
         stream_config = StreamConfigs.find_for_game_event(event.key)
 
         if stream_config.streamable do

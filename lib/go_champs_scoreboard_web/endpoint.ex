@@ -43,6 +43,10 @@ defmodule GoChampsScoreboardWeb.Endpoint do
     plug Phoenix.Ecto.CheckRepoStatus, otp_app: :go_champs_scoreboard
   end
 
+  # Answers /metrics before telemetry and logging, so scrapes do not count as
+  # traffic nor flood the logs.
+  plug GoChampsScoreboardWeb.Plugs.MetricsEndpoint, prom_ex_module: GoChampsScoreboard.PromEx
+
   plug Phoenix.LiveDashboard.RequestLogger,
     param_key: "request_logger",
     cookie_key: "request_logger"

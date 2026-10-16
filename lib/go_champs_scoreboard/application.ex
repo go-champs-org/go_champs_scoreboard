@@ -45,6 +45,9 @@ defmodule GoChampsScoreboard.Application do
       {Finch, name: GoChampsScoreboard.Finch},
       # Start a worker by calling: GoChampsScoreboard.Worker.start_link(arg)
       # {GoChampsScoreboard.Worker, arg},
+      # Start the metrics collector before the endpoint so it catches the one-shot
+      # [:phoenix, :endpoint, :init] event that feeds the endpoint URL/port series
+      GoChampsScoreboard.PromEx,
       # Start to serve requests, typically the last entry
       GoChampsScoreboardWeb.Endpoint
     ]

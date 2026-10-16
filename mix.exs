@@ -50,6 +50,7 @@ defmodule GoChampsScoreboard.MixProject do
       {:dart_sass, "~> 0.7", runtime: Mix.env() == :dev},
       {:swoosh, "~> 1.5"},
       {:finch, "~> 0.13"},
+      {:prom_ex, "~> 1.11.0"},
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.20"},
